@@ -1,0 +1,125 @@
+---
+title: Плавающее меню
+description: Всплывающее меню с анимированным раскрытием и адаптивным дизайном.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import FloatingMenu from '$lib/components/ui/FloatingMenu.svelte';
+	import floatingMenuSource from '$lib/components/ui/FloatingMenu.svelte?raw';
+</script>
+
+# Плавающее меню
+
+Плавающее навигационное меню с анимированным раскрытием. На мобильных раскрывается на весь экран, на десктопе — компактное всплывающее меню. Поддерживает группы ссылок, кастомный контент по центру и действия справа.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'FloatingMenu.svelte', code: floatingMenuSource, language: 'svelte' }
+	]}
+	class="min-h-72"
+>
+	<div style="transform: translateZ(0); position: relative; width: 100%; height: 260px; overflow: hidden;">
+		<FloatingMenu
+			menuGroups={[
+				{
+					title: 'Платформа',
+					links: [
+						{ label: 'Документация', href: '/docs' },
+						{ label: 'Статьи', href: '/article' }
+					]
+				},
+				{
+					title: 'Компоненты',
+					variant: 'muted',
+					links: [
+						{ label: 'Библиотека', href: '/components' }
+					]
+				}
+			]}
+		>
+			{#snippet centerContent()}
+				<span class="font-medium lowercase tracking-tight text-foreground">opensophy</span>
+			{/snippet}
+		</FloatingMenu>
+	</div>
+</ComponentPreview>
+
+Нажмите на кнопку-гамбургер — меню раскроется внутри контейнера.
+
+## Особенности
+
+- Floating-режим: фиксированное положение относительно ближайшего трансформируемого предка
+- Анимированное появление ссылок с задержкой (stagger)
+- Группы ссылок с вариантами оформления (`default` / `muted`)
+- Полноэкранный режим на мобильных
+- Слот `centerContent` для логотипа или названия бренда
+- Слот `actionsEnd` для кнопок (ThemeToggle и др.)
+- Поддержка `onclick` на ссылках для модальных окон
+
+## Использование
+
+```svelte
+<script>
+	import FloatingMenu from '$lib/components/ui/FloatingMenu.svelte';
+	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
+</script>
+
+<FloatingMenu
+	menuGroups={[
+		{
+			title: 'Платформа',
+			links: [
+				{ label: 'Документация', href: '/docs' },
+				{ label: 'Статьи', href: '/article' }
+			]
+		}
+	]}
+>
+	{#snippet centerContent()}
+		<span class="font-medium">Бренд</span>
+	{/snippet}
+	{#snippet actionsEnd()}
+		<ThemeToggle />
+	{/snippet}
+</FloatingMenu>
+```
+
+## Пропсы
+
+| Пропс | Тип | Описание |
+| --- | --- | --- |
+| `menuGroups` | `MenuGroup[]` | Массив групп ссылок |
+| `centerContent` | `Snippet` | Контент по центру шапки |
+| `actionsEnd` | `Snippet` | Действия справа (иконки, кнопки) |
+| `primaryButton` | `MenuButton` | Основная кнопка-ссылка |
+| `secondaryButton` | `MenuButton` | Вторичная кнопка-ссылка |
+| `class` | `string` | Дополнительные CSS-классы |
+
+## Структура MenuGroup
+
+```typescript
+interface MenuGroup {
+	title: string;
+	variant?: 'default' | 'muted'; // muted — с фоном
+	links: MenuLink[];
+}
+
+interface MenuLink {
+	label: string;
+	href: string;
+	onclick?: (e: MouseEvent) => void;
+}
+```
+
+## Важно о position: fixed
+
+FloatingMenu использует `position: fixed`, поэтому он позиционируется относительно ближайшего предка с CSS `transform`. Для использования внутри контейнера оберните в элемент с `transform: translateZ(0)`:
+
+```svelte
+<div style="transform: translateZ(0); position: relative; overflow: hidden;">
+	<FloatingMenu ... />
+</div>
+```

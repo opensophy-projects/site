@@ -1,0 +1,111 @@
+---
+title: Светящаяся карточка
+description: Светящаяся карточка с интерактивным mesh-gradient glow-эффектом при наведении.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import CardProject from '$lib/components/ui/CardProject.svelte';
+	import cardProjectSource from '$lib/components/ui/CardProject.svelte?raw';
+</script>
+
+# Светящаяся карточка
+
+Светящаяся карточка с интерактивным mesh-gradient эффектом. При наведении появляется градиентное свечение, следующее за курсором. Подходит для портфолио, продуктов, плиток с проектами.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'CardProject.svelte', code: cardProjectSource, language: 'svelte' }
+	]}
+>
+	<div class="grid grid-cols-2 gap-4 p-4 w-full max-w-sm">
+		<CardProject
+			colors={['#c084fc', '#f472b6', '#38bdf8']}
+			glowColor="280 70 70"
+			borderRadius={12}
+		>
+			<div class="p-4">
+				<span class="text-sm font-bold font-mono text-foreground">os.docs</span>
+				<p class="text-xs text-foreground-muted mt-1">Платформа документации</p>
+			</div>
+		</CardProject>
+		<CardProject
+			colors={['#fca5a5', '#ef4444', '#fecdd3']}
+			glowColor="0 80 65"
+			borderRadius={12}
+		>
+			<div class="p-4">
+				<span class="text-sm font-bold font-mono text-foreground">os.ui</span>
+				<p class="text-xs text-foreground-muted mt-1">Библиотека компонентов</p>
+			</div>
+		</CardProject>
+		<CardProject
+			colors={['#86efac', '#22c55e', '#bbf7d0']}
+			glowColor="142 70 60"
+			borderRadius={12}
+		>
+			<div class="p-4">
+				<span class="text-sm font-bold font-mono text-foreground">os.mtls</span>
+				<p class="text-xs text-foreground-muted mt-1">Управление сертификатами</p>
+			</div>
+		</CardProject>
+		<CardProject
+			colors={['#93c5fd', '#3b82f6', '#bfdbfe']}
+			glowColor="217 85 65"
+			borderRadius={12}
+		>
+			<div class="p-4">
+				<span class="text-sm font-bold font-mono text-foreground">os.port</span>
+				<p class="text-xs text-foreground-muted mt-1">Управление серверами</p>
+			</div>
+		</CardProject>
+	</div>
+</ComponentPreview>
+
+Наведите курсор — появится градиентное свечение.
+
+## Особенности
+
+- Интерактивный mesh-gradient, следующий за курсором
+- Конический градиент направлен от курсора к краю карточки
+- Outer glow с настраиваемой интенсивностью и радиусом
+- Поддержка анимированного sweep-режима (`animated={true}`)
+- Настраиваемые цвета через массив `colors`
+
+## Использование
+
+```svelte
+<script>
+	import CardProject from '$lib/components/ui/CardProject.svelte';
+</script>
+
+<CardProject
+	colors={['#c084fc', '#f472b6', '#38bdf8']}
+	glowColor="280 70 70"
+	borderRadius={16}
+>
+	<div class="p-5">
+		<h3>Название проекта</h3>
+		<p>Описание</p>
+	</div>
+</CardProject>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `colors` | `string[]` | `['#c084fc', '#f472b6', '#38bdf8']` | Цвета mesh-градиента |
+| `glowColor` | `string` | `'40 80 80'` | HSL цвет glow (без функции hsl()) |
+| `glowRadius` | `number` | `40` | Радиус внешнего свечения в px |
+| `glowIntensity` | `number` | `1.0` | Интенсивность glow |
+| `borderRadius` | `number` | `28` | Скругление углов в px |
+| `backgroundColor` | `string` | `'var(--background)'` | Фон карточки |
+| `baseBorderColor` | `string` | `'var(--border)'` | Статичная обводка |
+| `edgeSensitivity` | `number` | `30` | Чувствительность к краю |
+| `coneSpread` | `number` | `25` | Угол конического градиента |
+| `fillOpacity` | `number` | `0.5` | Прозрачность fill-gradient |
+| `animated` | `boolean` | `false` | Автоматический sweep при монтировании |
+| `className` | `string` | `''` | Дополнительные CSS-классы |

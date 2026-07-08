@@ -1,0 +1,155 @@
+name: Sync technical changes to main
+
+# Triggers when prod receives a push (feat/* PR merged).
+# Creates a filtered PR to main with only framework/technical files,
+# excluding project-specific content, branding, and static assets.
+
+on:
+  push:
+    branches: [prod]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    name: Create filtered PR to main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check for technical changes
+        id: check
+        run: |
+          git fetch origin main prod
+
+          # Files changed between main and prod
+          CHANGED=$(git diff --name-only origin/main origin/prod)
+
+          if [ -z "$CHANGED" ]; then
+            echo "No changes between main and prod."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # ── Paths allowed in the template (main) ──────────────────
+          # Include: framework code, components, utils, routes, config
+          # Exclude: project content, branding, static assets, landing page
+          ALLOWED=""
+          while IFS= read -r file; do
+            # Skip empty lines
+            [ -z "$file" ] && continue
+
+            # ── Exclusions (project-specific) ─────────────────────
+            [[ "$file" == apps/web/src/lib/content/* ]]          && continue
+            [[ "$file" == apps/web/static/* ]]                   && continue
+            [[ "$file" == "apps/web/src/routes/+page.svelte" ]]  && continue
+            [[ "$file" == "apps/web/src/routes/+layout.svelte" ]] && continue
+            [[ "$file" == "apps/web/src/routes/layout.css" ]]    && continue
+            [[ "$file" == "apps/web/src/lib/config/branding.ts" ]] && continue
+            [[ "$file" == "apps/web/src/lib/config/site.ts" ]]   && continue
+            [[ "$file" == "apps/web/src/lib/components/ui/Teamsection.svelte" ]] && continue
+            [[ "$file" == "apps/web/src/lib/components/ui/CardSection.svelte" ]] && continue
+            [[ "$file" == "apps/web/src/lib/components/ui/CardProject.svelte" ]] && continue
+
+            # ── Inclusions (template / framework) ─────────────────
+            [[ "$file" == apps/web/src/lib/components/* ]]  && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == apps/web/src/lib/utils/* ]]       && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == apps/web/src/lib/stores/* ]]      && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/src/lib/index.ts" ]]    && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/src/lib/config/content-ui.ts" ]] && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/src/lib/config/navigation.ts" ]] && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == apps/web/src/routes/\[section\]/* ]] && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == apps/web/src/routes/llms.txt/* ]]    && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == apps/web/src/routes/robots.txt/* ]]  && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == apps/web/src/routes/sitemap.xml/* ]] && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/src/app.html" ]]        && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/src/app.d.ts" ]]        && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/src/hooks.server.ts" ]] && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/vite.config.ts" ]]      && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/svelte.config.ts" ]]    && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/tsconfig.json" ]]       && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/package.json" ]]        && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/eslint.config.ts" ]]    && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/.npmrc" ]]              && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "apps/web/.gitignore" ]]          && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "package.json" ]]                 && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == "package-lock.json" ]]            && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == .github/* ]]                      && ALLOWED="$ALLOWED $file" && continue
+          done <<< "$CHANGED"
+
+          ALLOWED=$(echo "$ALLOWED" | xargs)
+
+          if [ -z "$ALLOWED" ]; then
+            echo "No technical (template) changes found. Skipping PR to main."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          # Pass file list as newline-separated via env file
+          printf "%s\n" $ALLOWED >> /tmp/allowed_files.txt
+          echo "Allowed files:"
+          cat /tmp/allowed_files.txt
+
+      - name: Create filtered branch and open PR
+        if: steps.check.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          BRANCH="sync/to-main-${SHORT_SHA}"
+
+          # Create branch from main
+          git checkout -b "$BRANCH" origin/main
+
+          # Apply only the allowed files from prod
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            # Ensure parent directory exists
+            mkdir -p "$(dirname "$file")"
+            git checkout origin/prod -- "$file" 2>/dev/null || echo "Warning: $file not in prod, skipping"
+          done < /tmp/allowed_files.txt
+
+          # Check if anything actually changed vs main
+          if git diff --cached --quiet && git diff --quiet; then
+            echo "No effective diff vs main after filtering. Skipping."
+            exit 0
+          fi
+
+          git add -A
+          git commit -m "chore: sync technical changes from prod (${SHORT_SHA})"
+          git push origin "$BRANCH"
+
+          # Build PR body
+          FILES_LIST=$(cat /tmp/allowed_files.txt | sed 's/^/- /')
+
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore: sync template changes from prod (${SHORT_SHA})" \
+            --body "## Auto-generated sync PR
+
+This PR was automatically created when changes were pushed to \`prod\`.
+It contains **only framework/technical files** — project-specific content,
+branding, static assets, and landing page are excluded.
+
+### Included files
+$FILES_LIST
+
+### Review checklist
+- [ ] No project-specific content leaked in
+- [ ] Config changes are template-safe (no hardcoded project values)
+- [ ] Component changes are generic and reusable
+"

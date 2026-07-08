@@ -1,0 +1,99 @@
+---
+title: Отзыв
+description: Карточка отзыва с аватаром, именем, ролью и текстом. Автоматически генерирует инициалы при отсутствии аватара.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+	import { TestimonialSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'text',
+			name: 'name',
+			label: 'Имя',
+			defaultValue: 'Анна Иванова'
+		},
+		{
+			type: 'text',
+			name: 'role',
+			label: 'Роль',
+			defaultValue: 'DevOps Engineer'
+		},
+		{
+			type: 'text',
+			name: 'content',
+			label: 'Текст отзыва',
+			defaultValue: 'Opensophy помог нам внедрить DevSecOps практики за рекордное время. Качество документации — на высшем уровне.'
+		}
+	];
+</script>
+
+# Testimonial
+
+Карточка отзыва с аватаром, именем, ролью и текстом. При отсутствии аватара автоматически генерирует инициалы из имени.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'Testimonial.svelte', code: TestimonialSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="w-full max-w-md">
+			<Testimonial
+				name={values.name as string}
+				role={values.role as string}
+				content={values.content as string}
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Примеры использования
+
+### С аватаром
+
+<Testimonial
+	name="Алексей Петров"
+	role="Tech Lead"
+	content="Отличный инструмент для автоматизации процессов. Интеграция прошла гладко."
+	avatar="/og-image.jpg"
+/>
+
+```svelte
+<Testimonial
+	name="Алексей Петров"
+	role="Tech Lead"
+	content="Отличный инструмент для автоматизации процессов."
+	avatar="/avatar.jpg"
+/>
+```
+
+### Без аватара (автоинициалы)
+
+<Testimonial
+	name="Мария Сидорова"
+	role="Product Manager"
+	content="Удобный интерфейс и отличная документация. Рекомендую!"
+/>
+
+```svelte
+<Testimonial
+	name="Мария Сидорова"
+	role="Product Manager"
+	content="Удобный интерфейс и отличная документация."
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `name` | `string` | — | Имя автора |
+| `role` | `string` | — | Роль/должность |
+| `content` | `string` | — | Текст отзыва |
+| `avatar` | `string` | — | URL аватара (опционально) |
+| `class` | `string` | — | Дополнительные классы |

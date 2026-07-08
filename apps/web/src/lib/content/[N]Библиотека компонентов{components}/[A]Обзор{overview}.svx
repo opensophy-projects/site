@@ -1,0 +1,100 @@
+---
+title: Библиотека компонентов
+description: Готовые Svelte-компоненты для документации, лендингов и интерфейсов — с живым превью и исходным кодом.
+---
+
+# Библиотека компонентов
+
+Коллекция готовых компонентов, используемых в платформе opensophy. Каждая страница содержит интерактивное демо и полный исходный код с подсветкой синтаксиса.
+
+## Стек
+
+<Cards>
+<Card eyebrow="UI" title="SvelteKit + Svelte 5">Рунный синтаксис `$state`, `$derived`, `$props`. Все компоненты совместимы с SSR и статической генерацией.</Card>
+<Card eyebrow="Стили" title="Tailwind CSS v4">Утилитарные классы + CSS custom properties для темизации. Поддержка тёмной и светлой тем через класс `.dark`.</Card>
+<Card eyebrow="Код" title="TypeScript">Типизированные пропсы, интерфейсы, строгий режим. Все компоненты экспортируют корректные типы.</Card>
+<Card eyebrow="Иконки" title="Carbon Icons">Библиотека `carbon-icons-svelte` для системных иконок — более 2000 SVG-иконок.</Card>
+<Card eyebrow="Анимации" title="GSAP">Продвинутые анимации через GSAP в `TextLoop`. CSS transitions — везде где достаточно.</Card>
+<Card eyebrow="Подсветка" title="Shiki">Подсветка синтаксиса кода через Shiki — github-light / github-dark темы.</Card>
+</Cards>
+
+## Разделы
+
+### Интерфейс
+
+Компоненты для навигации и интерактивного UI:
+
+<Cards>
+<Card eyebrow="01" title="Переключатель темы" href="/components/theme-toggle">Кнопка переключения тёмной/светлой темы с плавной анимацией иконок.</Card>
+<Card eyebrow="02" title="Цикличный текст" href="/components/text-loop">Анимированная смена текста через GSAP — для hero-секций и заголовков.</Card>
+<Card eyebrow="03" title="Плавающее меню" href="/components/floating-menu">Плавающее навигационное меню с поддержкой групп ссылок и кастомных слотов.</Card>
+<Card eyebrow="04" title="Кнопка" href="/components/button">Варианты кнопок: accent, outline, ghost, danger — с hover-эффектами.</Card>
+<Card eyebrow="05" title="Боковая панель" href="/components/sidebar">Навигационная панель с древовидной структурой и hover-индикаторами.</Card>
+<Card eyebrow="06" title="Палитра поиска" href="/components/search-palette">Модальное окно поиска с горячими клавишами и клавиатурной навигацией.</Card>
+<Card eyebrow="07" title="Токены дизайна" href="/components/design-tokens">Система дизайн-токенов: цвета, типографика, отступы, тени.</Card>
+<Card eyebrow="08" title="Бейдж" href="/components/badge">Компактный бейдж для меток и статусов с шестью вариантами оформления.</Card>
+<Card eyebrow="09" title="Бейдж статуса" href="/components/status-badge">Бейдж с точкой-индикатором для отображения статусов процессов.</Card>
+<Card eyebrow="10" title="Переключатель" href="/components/toggle">Переключатель с двумя состояниями и плавной анимацией.</Card>
+<Card eyebrow="11" title="Прогресс-бар" href="/components/progress">Индикатор прогресса с настраиваемым значением и анимацией.</Card>
+</Cards>
+
+### Карточки
+
+Компоненты для отображения контента в карточном формате:
+
+<Cards>
+<Card eyebrow="12" title="Карточка проекта" href="/components/card-project">Карточка с интерактивным mesh-gradient glow при наведении.</Card>
+<Card eyebrow="13" title="Секция карточек" href="/components/card-section">Секция из 6 карточек услуг с кастомными SVG-визуализациями.</Card>
+<Card eyebrow="14" title="Карточка" href="/components/card">Универсальная карточка с eyebrow, заголовком и поддержкой ссылок.</Card>
+<Card eyebrow="15" title="Отзыв" href="/components/testimonial">Карточка отзыва с аватаром, именем и текстом.</Card>
+<Card eyebrow="16" title="Подсвеченный блок" href="/components/highlight-box">Блок с подсветкой для акцентирования внимания.</Card>
+<Card eyebrow="17" title="Светящаяся карточка" href="/components/glow-card">Карточка с эффектом свечения при наведении.</Card>
+</Cards>
+
+### Анимации
+
+Анимированные компоненты для динамичного интерфейса:
+
+<Cards>
+<Card eyebrow="18" title="Бегущая строка" href="/components/marquee">Бесконечная горизонтальная прокрутка контента с плавной анимацией.</Card>
+</Cards>
+
+### Галереи
+
+Галереи изображений и медиа:
+
+<Cards>
+<Card eyebrow="19" title="Бесконечная физическая галерея" href="/components/infinite-physics-gallery">Галерея с физикой инерции, drag-прокруткой и бесконечным повторением контента.</Card>
+</Cards>
+
+### Медиа
+
+Компоненты для работы с медиа-контентом:
+
+<Cards>
+<Card eyebrow="20" title="Видеоплеер" href="/components/video-player">Кастомизируемый видеоплеер с управлением и поддержкой плакатов.</Card>
+</Cards>
+
+### Текстовые эффекты
+
+Эффекты для текста и заголовков:
+
+<Cards>
+<Card eyebrow="21" title="Волна веса" href="/components/weight-wave">Анимация изменения веса шрифта по волне.</Card>
+<Card eyebrow="22" title="Раздвижение текста" href="/components/text-split-hover">Эффект раздвижения текста при наведении.</Card>
+<Card eyebrow="23" title="Разделённое появление" href="/components/split-reveal">Появление текста с разделением на части.</Card>
+<Card eyebrow="24" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
+<Card eyebrow="25" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
+</Cards>
+
+### Документация
+
+Компоненты для разметки и структурирования документации:
+
+<Cards>
+<Card eyebrow="26" title="Блоки уведомления" href="/components/admonition">Пять вариантов callout-блоков: note, tip, important, warning, caution.</Card>
+<Card eyebrow="27" title="Шаги со статусами" href="/components/steps">Нумерованные шаги с индикаторами: todo, active, done, warning.</Card>
+<Card eyebrow="28" title="Блок кода" href="/components/codeblock">Блоки кода с подсветкой Shiki, копированием и встроенным поиском.</Card>
+<Card eyebrow="29" title="Графики" href="/components/charts">Все типы графиков через `:::chart`: line, bar, pie, radar и другие.</Card>
+<Card eyebrow="30" title="TOC индикатор" href="/components/toc-indicator">Оглавление с активным индикатором, SVG-линиями и pulse-анимацией.</Card>
+</Cards>

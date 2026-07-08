@@ -1,0 +1,177 @@
+---
+title: Кнопка
+description: Универсальная кнопка с вариантами оформления, размерами и поддержкой ссылок. Интерактивное демо с управлением пропсами.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Button from '$lib/components/ui-registry/Button.svelte';
+	import { ButtonSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'variant',
+			label: 'Вариант',
+			defaultValue: 'primary',
+			options: [
+				{ label: 'Primary', value: 'primary' },
+				{ label: 'Secondary', value: 'secondary' },
+				{ label: 'Outline', value: 'outline' },
+				{ label: 'Ghost', value: 'ghost' },
+				{ label: 'Danger', value: 'danger' }
+			]
+		},
+		{
+			type: 'select',
+			name: 'size',
+			label: 'Размер',
+			defaultValue: 'md',
+			options: [
+				{ label: 'Small', value: 'sm' },
+				{ label: 'Medium', value: 'md' },
+				{ label: 'Large', value: 'lg' }
+			]
+		},
+		{
+			type: 'text',
+			name: 'label',
+			label: 'Текст',
+			defaultValue: 'Нажми меня'
+		},
+		{
+			type: 'boolean',
+			name: 'disabled',
+			label: 'Отключена',
+			defaultValue: false
+		}
+	];
+</script>
+
+# Button
+
+Универсальная кнопка с пятью вариантами оформления, тремя размерами и поддержкой режима ссылки. Построена на CSS-переменных темы.
+
+## Интерактивное демо
+
+Меняйте вариант, размер, текст и состояние кнопки в панели управления. Кнопка сброса вернёт все значения к значениям по умолчанию.
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'Button.svelte', code: ButtonSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<Button
+			variant={values.variant as 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'}
+			size={values.size as 'sm' | 'md' | 'lg'}
+			disabled={values.disabled as boolean}
+		>
+			{values.label}
+		</Button>
+	{/snippet}
+</ComponentPreview>
+
+## Варианты оформления
+
+Все варианты построены на CSS-переменных темы и поддерживают hover/active состояния с плавными переходами.
+
+### Primary (основная)
+
+<button type="button" class="inline-flex h-9 items-center justify-center rounded-sm bg-accent px-4 text-sm font-medium text-background transition-colors duration-150 hover:bg-accent/85 active:scale-[0.98]">
+	Основная кнопка
+</button>
+
+```svelte
+<Button variant="primary">Основная кнопка</Button>
+```
+
+### Secondary (вторичная)
+
+<button type="button" class="inline-flex h-9 items-center justify-center rounded-sm bg-background-inset px-4 text-sm font-medium text-foreground transition-colors duration-150 hover:bg-background-muted active:scale-[0.98]">
+	Вторичная кнопка
+</button>
+
+```svelte
+<Button variant="secondary">Вторичная кнопка</Button>
+```
+
+### Outline (контурная)
+
+<button type="button" class="inline-flex h-9 items-center justify-center rounded-sm border border-border bg-transparent px-4 text-sm font-medium text-foreground transition-colors duration-150 hover:bg-background-muted active:scale-[0.98]">
+	Контурная кнопка
+</button>
+
+```svelte
+<Button variant="outline">Контурная кнопка</Button>
+```
+
+### Ghost (призрачная)
+
+<button type="button" class="inline-flex h-9 items-center justify-center rounded-sm bg-transparent px-4 text-sm font-medium text-foreground-muted transition-colors duration-150 hover:bg-background-muted hover:text-foreground active:scale-[0.98]">
+	Призрачная кнопка
+</button>
+
+```svelte
+<Button variant="ghost">Призрачная кнопка</Button>
+```
+
+### Danger (опасное действие)
+
+<button type="button" class="inline-flex h-9 items-center justify-center rounded-sm bg-red-500/10 px-4 text-sm font-medium text-red-500 transition-colors duration-150 hover:bg-red-500/20 active:scale-[0.98]">
+	Удалить
+</button>
+
+```svelte
+<Button variant="danger">Удалить</Button>
+```
+
+## Размеры
+
+| Размер | Высота | Шрифт | Паддинг |
+| --- | --- | --- | --- |
+| Small | `h-7` | `text-xs` | `px-2.5` |
+| Medium | `h-9` | `text-sm` | `px-4` |
+| Large | `h-11` | `text-base` | `px-6` |
+
+## Кнопка-ссылка
+
+Используйте проп `href` для превращения кнопки в ссылку:
+
+```svelte
+<Button href="/docs" variant="primary">
+	Перейти в документацию
+</Button>
+```
+
+## С иконкой
+
+<Button variant="primary">
+	<svg class="size-4" viewBox="0 0 16 16" fill="currentColor"><path d="M8 2a1 1 0 011 1v4h4a1 1 0 110 2H9v4a1 1 0 11-2 0V9H3a1 1 0 010-2h4V3a1 1 0 011-1z"/></svg>
+	Добавить
+</Button>
+
+```svelte
+<Button variant="primary">
+	<SomeIcon size={16} />
+	Добавить
+</Button>
+```
+
+## Состояния
+
+- `:hover` — плавное изменение фона / цвета
+- `:active` — `scale(0.98)` для тактильного отклика
+- `:focus-visible` — ring для навигации с клавиатуры
+- `:disabled` — `opacity-50 cursor-not-allowed`
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `variant` | `'primary' \| 'secondary' \| 'outline' \| 'ghost' \| 'danger'` | `'primary'` | Вариант оформления |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Размер кнопки |
+| `href` | `string` | — | Превращает кнопку в ссылку |
+| `type` | `'button' \| 'submit' \| 'reset'` | `'button'` | Тип кнопки |
+| `disabled` | `boolean` | `false` | Отключённое состояние |
+| `class` | `string` | — | Дополнительные классы |

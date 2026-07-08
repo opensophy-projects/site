@@ -1,0 +1,77 @@
+---
+title: Блок кода
+description: Кодовые блоки с подсветкой синтаксиса Shiki, копированием и встроенным поиском.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Pre from '$lib/components/docs/markdown/Pre.svelte';
+	import preSource from '$lib/components/docs/markdown/Pre.svelte?raw';
+</script>
+
+# Блок кода
+
+Компонент `Pre` оборачивает кодовые блоки с подсветкой синтаксиса через Shiki, кнопкой копирования и встроенным поиском. Используется автоматически для всех ```` ``` ```` блоков в mdsvex.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'Pre.svelte', code: preSource, language: 'svelte' }
+	]}
+>
+	<Pre code="const greeting = 'Привет, мир!';
+console.log(greeting);
+export default greeting;">
+		<pre class="shiki github-light" style="background-color: transparent;"><code><span class="line"><span style="color:#D73A49;">const</span><span style="color:#24292E;"> greeting </span><span style="color:#D73A49;">=</span><span style="color:#032F62;"> 'Привет, мир!'</span><span style="color:#24292E;">;</span></span>
+<span class="line"><span style="color:#24292E;">console.</span><span style="color:#6F42C1;">log</span><span style="color:#24292E;">(greeting);</span></span>
+<span class="line"><span style="color:#D73A49;">export</span><span style="color:#D73A49;"> default</span><span style="color:#24292E;"> greeting;</span></span></code></pre>
+	</Pre>
+</ComponentPreview>
+
+Нажмите иконку поиска — появится поле для поиска по коду. Иконка копирования — копирует в буфер.
+
+## Особенности
+
+- Подсветка синтаксиса через Shiki (темы `github-light` / `github-dark`)
+- Кнопка копирования в буфер обмена
+- Встроенный поиск с подсветкой совпадений
+- Горизонтальный скролл для длинных строк (ScrollArea)
+- Адаптируется к теме сайта
+
+## В markdown (.svx)
+
+Кодовые блоки преобразуются автоматически:
+
+````markdown
+```typescript
+export function add(a: number, b: number) {
+	return a + b;
+}
+```
+````
+
+## Прямое использование
+
+```svelte
+<script>
+	import Pre from '$lib/components/docs/markdown/Pre.svelte';
+</script>
+
+<Pre code="const x = 42;">
+	<!-- Подсвеченный HTML от Shiki -->
+</Pre>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `code` | `string` | `''` | Исходный код для поиска и копирования |
+| `unstyled` | `boolean` | `false` | Отключить стили обёртки |
+| `class` | `string` | `''` | Дополнительные CSS-классы |
+| `children` | `Snippet` | — | Подсвеченный HTML код |
+
+## Поддерживаемые языки
+
+`typescript`, `svelte`, `bash`, `json`, `html`, `css`, `markdown`, `text` и другие — список задаётся в `svelte.config.ts`.

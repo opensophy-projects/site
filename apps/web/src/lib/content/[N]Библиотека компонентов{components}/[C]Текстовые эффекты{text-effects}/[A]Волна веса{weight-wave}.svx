@@ -1,0 +1,92 @@
+---
+title: Волна веса
+description: Интерактивное изменение насыщенности шрифта при движении курсора.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import WeightWave from '$lib/components/ui-registry/WeightWave.svelte';
+	import { WeightWaveSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'baseWeight',
+			label: 'Базовый вес',
+			defaultValue: 350,
+			min: 100,
+			max: 500,
+			step: 50
+		},
+		{
+			type: 'number',
+			name: 'hoverWeight',
+			label: 'Пиксовый вес',
+			defaultValue: 750,
+			min: 500,
+			max: 900,
+			step: 50
+		}
+	];
+</script>
+
+# WeightWave
+
+Интерактивный эффект изменения насыщенности (weight) шрифта при движении курсора. Создаёт "волну" жирности, следующую за мышью.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'WeightWave.svelte', code: WeightWaveSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<WeightWave
+			baseWeight={values.baseWeight as number}
+			hoverWeight={values.hoverWeight as number}
+		>
+			<span class="text-2xl text-foreground" style="font-family: system-ui;">
+				Проведите курсором по тексту для изменения насыщенности
+			</span>
+		</WeightWave>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовое использование
+
+```svelte
+<WeightWave>
+	<span>Текст с эффектом волны</span>
+</WeightWave>
+```
+
+### С кастомными параметрами
+
+```svelte
+<WeightWave
+	baseWeight={300}
+	hoverWeight={800}
+	influenceRadius={5}
+>
+	<span class="text-3xl">Контролируйте радиус влияния</span>
+</WeightWave>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `baseWeight` | `number` | `350` | Базовый вес шрифта |
+| `hoverWeight` | `number` | `750` | Пиковый вес под курсором |
+| `influenceRadius` | `number` | `3` | Радиус влияния (символы) |
+| `falloffPower` | `number` | `1.5` | Степень затухания |
+| `duration` | `number` | `1.0` | Длительность анимации (с) |
+| `ease` | `string` | `"power3.out"` | Easing функция |
+| `class` | `string` | — | Дополнительные классы |
+
+## Примечание
+
+Для наилучшего эффекта используйте шрифты с поддержкой variable font (насыщенность от 100 до 900).

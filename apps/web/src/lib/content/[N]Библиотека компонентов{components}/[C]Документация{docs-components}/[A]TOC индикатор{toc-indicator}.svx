@@ -1,0 +1,99 @@
+---
+title: TOC индикатор
+description: Оглавление страницы с активным индикатором, SVG-линиями связи и pulse-анимацией.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import TableOfContents from '$lib/components/docs/TableOfContents.svelte';
+	import tocSource from '$lib/components/docs/TableOfContents.svelte?raw';
+</script>
+
+# TOC индикатор
+
+Компонент `TableOfContents` создаёт оглавление страницы с визуальным индикатором текущего раздела. Автоматически собирает заголовки с DOM, подсвечивает активные разделы и рисует SVG-линии иерархии.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'TableOfContents.svelte', code: tocSource, language: 'svelte' }
+	]}
+>
+	<div class="w-full max-w-xs bg-background-inset rounded-lg p-4">
+		<TableOfContents
+			title="На этой странице"
+			headings={[
+				{ id: 'intro', text: 'Введение', level: 2 },
+				{ id: 'features', text: 'Особенности', level: 2 },
+				{ id: 'usage', text: 'Использование', level: 2 },
+				{ id: 'props', text: 'Пропсы', level: 2 },
+				{ id: 'example', text: 'Пример вложенного', level: 3 }
+			]}
+		/>
+	</div>
+</ComponentPreview>
+
+## Особенности
+
+- Автоматический сбор заголовков `h2`, `h3` со страницы
+- Активный индикатор — gradient glow-линия вдоль дерева
+- SVG-линии иерархии между заголовками
+- Иерархические отступы по уровням
+- Плавная прокрутка к разделу при клике
+- Pulse-анимация точки при навигации
+- Fade-оверлеи при переполнении списка
+- Отключается автоматически при узком viewport (`< 1280px`)
+
+## Использование
+
+```svelte
+<script>
+	import TableOfContents from '$lib/components/docs/TableOfContents.svelte';
+</script>
+
+<!-- Автоматический сбор заголовков -->
+<TableOfContents />
+
+<!-- С явно заданными заголовками -->
+<TableOfContents
+	title="Содержание"
+	headings={[
+		{ id: 'section-1', text: 'Раздел 1', level: 2 },
+		{ id: 'section-2', text: 'Раздел 2', level: 2 },
+		{ id: 'subsection', text: 'Подраздел', level: 3 }
+	]}
+/>
+```
+
+## Интеграция с layout
+
+Добавьте атрибут `data-doc-content` к контейнеру контента — компонент автоматически найдёт заголовки:
+
+```svelte
+<div data-doc-content>
+	<!-- Заголовки h2, h3 здесь -->
+</div>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `selector` | `string` | `'[data-doc-content] h2, ...'` | CSS-селектор заголовков |
+| `title` | `string` | `'On this page'` | Заголовок секции TOC |
+| `emptyLabel` | `string` | `'No headings'` | Текст при пустом списке |
+| `minViewportWidth` | `number` | `1280` | Мин. ширина для активации |
+| `scrollContainerId` | `string` | — | ID контейнера прокрутки |
+| `headings` | `ContentTocHeading[]` | — | Явно заданные заголовки |
+| `maxHeight` | `string` | `'70vh'` | Макс. высота списка |
+
+## Структура ContentTocHeading
+
+```typescript
+interface ContentTocHeading {
+	id: string;     // Якорь-ссылка (#id)
+	text: string;   // Текст заголовка
+	level: number;  // Уровень: 2 для h2, 3 для h3
+}
+```

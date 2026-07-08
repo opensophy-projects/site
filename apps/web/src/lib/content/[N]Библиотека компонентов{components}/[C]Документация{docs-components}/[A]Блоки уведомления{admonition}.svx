@@ -1,0 +1,75 @@
+---
+title: Блоки уведомления
+description: Пять вариантов callout-блоков для выделения важной информации в документации.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Admonition from '$lib/components/docs/markdown/Admonition.svelte';
+	import admonitionSource from '$lib/components/docs/markdown/Admonition.svelte?raw';
+</script>
+
+# Блоки уведомления
+
+Компонент `Admonition` выделяет важную информацию в документации. Пять вариантов с уникальной иконкой и цветовым акцентом — от нейтральной заметки до опасного предупреждения.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'Admonition.svelte', code: admonitionSource, language: 'svelte' }
+	]}
+>
+	<div class="flex flex-col gap-0 w-full max-w-lg p-4">
+		<Admonition variant="note">Полезная информация без агрессивного предупреждения.</Admonition>
+		<Admonition variant="tip" title="Совет">Рекомендация по лучшему использованию.</Admonition>
+		<Admonition variant="important">Критичная информация для корректного выполнения.</Admonition>
+		<Admonition variant="warning" title="Предупреждение">Возможная проблема или несовместимость.</Admonition>
+		<Admonition variant="caution">Опасная операция, которая может сломать проект.</Admonition>
+	</div>
+</ComponentPreview>
+
+## Варианты
+
+| Вариант | Иконка | Заголовок по умолчанию | Назначение |
+| --- | --- | --- | --- |
+| `note` | Information | Примечание | Полезная информация |
+| `tip` | Idea | Совет | Рекомендация |
+| `important` | CheckmarkFilled | Важно | Критичная информация |
+| `warning` | WarningAlt | Предупреждение | Риск или ограничение |
+| `caution` | Error | Осторожно | Опасная операция |
+
+## Использование
+
+```svelte
+<script>
+	import Admonition from '$lib/components/docs/markdown/Admonition.svelte';
+</script>
+
+<Admonition variant="note">
+	Просто информация.
+</Admonition>
+
+<Admonition variant="warning" title="Внимание">
+	Важное предупреждение с кастомным заголовком.
+</Admonition>
+```
+
+## В markdown (.svx)
+
+Компонент доступен напрямую без импорта:
+
+```svelte
+<Admonition variant="tip">
+	Совет по использованию.
+</Admonition>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `variant` | `'note' \| 'tip' \| 'important' \| 'warning' \| 'caution'` | `'note'` | Тип уведомления |
+| `title` | `string` | — | Кастомный заголовок |
+| `class` | `string` | `''` | Дополнительные классы |
+| `children` | `Snippet` | — | Содержимое блока |

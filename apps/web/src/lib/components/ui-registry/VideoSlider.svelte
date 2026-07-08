@@ -1,0 +1,235 @@
+<script lang="ts">
+	import { gsap } from "gsap";
+	import { cn } from "$lib/utils/cn";
+
+	type Props = {
+		currentTime: number;
+		duration: number;
+		onScrubStart: () => void;
+		onScrubEnd: () => void;
+		onSeek: (time: number) => void;
+		class?: string;
+	};
+
+	let {
+		currentTime,
+		duration,
+		onScrubStart,
+		onScrubEnd,
+		onSeek,
+		class: className,
+	}: Props = $props();
+
+	let sliderRef: HTMLElement | undefined;
+	let thumbRef: HTMLElement | undefined;
+	let hoverTimeRef: HTMLElement | undefined;
+	let rootRef: HTMLElement | undefined;
+
+	const attachRootRef = (node: HTMLElement) => {
+		rootRef = node;
+	};
+
+	const attachSliderRef = (node: HTMLElement) => {
+		sliderRef = node;
+	};
+
+	const attachThumbRef = (node: HTMLElement) => {
+		thumbRef = node;
+	};
+
+	const attachHoverTimeRef = (node: HTMLElement) => {
+		hoverTimeRef = node;
+	};
+
+	let isHovered = $state(false);
+	let isDragging = $state(false);
+	let hoverTime = $state(0);
+	let hoverX = $state(0);
+	let safeDuration = $derived(Math.max(duration || 0, 0));
+	let safeCurrentTime = $derived(
+		Math.max(0, Math.min(currentTime || 0, safeDuration)),
+	);
+	let isDisabled = $derived(safeDuration <= 0);
+
+	function formatTime(seconds: number) {
+		if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
+		const m = Math.floor(seconds / 60);
+		const s = Math.floor(seconds % 60);
+		return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+	}
+
+	function handlePointerMove(e: PointerEvent) {
+		if (isDisabled || !sliderRef) return;
+		const bounds = sliderRef.getBoundingClientRect();
+		if (bounds.width <= 0) return;
+		const clientX = e.clientX;
+
+		let x = clientX - bounds.left;
+		const clampedX = Math.max(0, Math.min(x, bounds.width));
+		const percent = clampedX / bounds.width;
+
+		hoverTime = percent * duration;
+		hoverX = clampedX;
+
+		if (isDragging) {
+			onSeek(hoverTime);
+		}
+	}
+
+	function handlePointerDown(e: PointerEvent) {
+		if (isDisabled || !sliderRef) return;
+		sliderRef.setPointerCapture(e.pointerId);
+		isDragging = true;
+		onScrubStart();
+		handlePointerMove(e);
+	}
+
+	function handlePointerUp(e: PointerEvent) {
+		sliderRef?.releasePointerCapture(e.pointerId);
+		isDragging = false;
+		onScrubEnd();
+	}
+
+	function handlePointerLeave() {
+		if (!isDragging) {
+			isHovered = false;
+		}
+	}
+
+	function clampTime(time: number) {
+		return Math.max(0, Math.min(time, safeDuration));
+	}
+
+	function handleKeyDown(e: KeyboardEvent) {
+		if (isDisabled) return;
+
+		const smallStep = Math.max(safeDuration / 100, 0.1);
+		const largeStep = Math.max(safeDuration / 10, 1);
+		let nextTime: number | null = null;
+
+		switch (e.key) {
+			case "ArrowLeft":
+			case "ArrowDown":
+				nextTime = safeCurrentTime - smallStep;
+				break;
+			case "ArrowRight":
+			case "ArrowUp":
+				nextTime = safeCurrentTime + smallStep;
+				break;
+			case "PageDown":
+				nextTime = safeCurrentTime - largeStep;
+				break;
+			case "PageUp":
+				nextTime = safeCurrentTime + largeStep;
+				break;
+			case "Home":
+				nextTime = 0;
+				break;
+			case "End":
+				nextTime = safeDuration;
+				break;
+		}
+
+		if (nextTime === null) return;
+
+		e.preventDefault();
+		onScrubStart();
+		onSeek(clampTime(nextTime));
+		onScrubEnd();
+	}
+
+	let progressPercent = $derived(
+		safeDuration > 0 ? (safeCurrentTime / safeDuration) * 100 : 0,
+	);
+
+	$effect(() => {
+		if (!sliderRef || !thumbRef || !hoverTimeRef) return;
+		const slider = sliderRef;
+		const thumb = thumbRef;
+		const hoverTimeEl = hoverTimeRef;
+
+		const ctx = gsap.context(() => {
+			if (isHovered || isDragging) {
+				gsap.to(slider, {
+					height: 28,
+					duration: 0.3,
+					ease: "power4.out",
+				});
+				gsap.to(thumb, {
+					opacity: 1,
+					x: hoverX,
+					duration: 0.1,
+					overwrite: true,
+				});
+				gsap.to(hoverTimeEl, {
+					opacity: 1,
+					x: hoverX,
+					duration: 0.1,
+					overwrite: true,
+				});
+			} else {
+				gsap.to(slider, {
+					height: 6,
+					duration: 0.3,
+					ease: "power4.out",
+				});
+				gsap.to(thumb, {
+					opacity: 0,
+					duration: 0.2,
+				});
+				gsap.to(hoverTimeEl, {
+					opacity: 0,
+					duration: 0.2,
+				});
+			}
+		}, rootRef);
+
+		return () => {
+			ctx.revert();
+		};
+	});
+</script>
+
+<div
+	{@attach attachRootRef}
+	class={cn(
+		"relative flex h-10 w-full touch-none items-center justify-center select-none",
+		className,
+	)}
+	role="slider"
+	tabindex={isDisabled ? -1 : 0}
+	aria-label="Video timeline"
+	aria-disabled={isDisabled}
+	aria-valuemin={0}
+	aria-valuemax={safeDuration}
+	aria-valuenow={safeCurrentTime}
+	aria-valuetext={formatTime(safeCurrentTime)}
+	onpointerenter={() => (isHovered = true)}
+	onpointerleave={handlePointerLeave}
+	onpointermove={handlePointerMove}
+	onpointerdown={handlePointerDown}
+	onpointerup={handlePointerUp}
+	onkeydown={handleKeyDown}
+>
+	<div
+		{@attach attachSliderRef}
+		class="relative h-1.5 w-full overflow-hidden rounded-lg bg-fixed-light/10 backdrop-blur-md transition-[height]"
+	>
+		<div
+			class="absolute inset-0 h-full w-full origin-left bg-fixed-light/20 backdrop-blur-md"
+			style="transform: scaleX({progressPercent / 100})"
+		></div>
+	</div>
+
+	<div
+		{@attach attachThumbRef}
+		class="pointer-events-none absolute top-0 bottom-0 left-0 h-full w-px bg-accent opacity-0"
+	></div>
+
+	<div
+		{@attach attachHoverTimeRef}
+		class="pointer-events-none absolute -top-8 left-0 -translate-x-1/2 rounded bg-fixed-light/10 px-1.5 py-0.5 font-mono text-[10px] leading-none text-fixed-light opacity-0 shadow-sm backdrop-blur-md"
+	>
+		{formatTime(hoverTime)}
+	</div>
+</div>
