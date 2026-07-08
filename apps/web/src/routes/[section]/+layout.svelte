@@ -53,7 +53,7 @@
 	const canonicalUrl = $derived(metadata ? new URL(metadata.href, siteOrigin).href : null);
 
 	const docOgImage = $derived(
-		metadata
+		metadata?.sourceType === 'svx'
 			? new URL(`/og${data.metadata.href}.png`, siteOrigin).href
 			: new URL(siteConfig.ogImage, siteOrigin).href
 	);
