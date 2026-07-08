@@ -71,6 +71,7 @@ jobs:
             [[ "$file" == "apps/web/src/lib/config/content-ui.ts" ]] && ALLOWED="$ALLOWED $file" && continue
             [[ "$file" == "apps/web/src/lib/config/navigation.ts" ]] && ALLOWED="$ALLOWED $file" && continue
             [[ "$file" == apps/web/src/routes/\[section\]/* ]] && ALLOWED="$ALLOWED $file" && continue
+            [[ "$file" == apps/web/src/routes/og/* ]]          && ALLOWED="$ALLOWED $file" && continue
             [[ "$file" == apps/web/src/routes/llms.txt/* ]]    && ALLOWED="$ALLOWED $file" && continue
             [[ "$file" == apps/web/src/routes/robots.txt/* ]]  && ALLOWED="$ALLOWED $file" && continue
             [[ "$file" == apps/web/src/routes/sitemap.xml/* ]] && ALLOWED="$ALLOWED $file" && continue

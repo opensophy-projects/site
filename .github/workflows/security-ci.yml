@@ -1,68 +1,18 @@
-name: Security CI
+# This workflow has been consolidated into deploy.yml.
+# Lint, dependency audit, Semgrep, and SonarCloud now run as part of
+# the main CI/Deploy pipeline: lint → audit → semgrep → sonarcloud → build → deploy.
+
+name: Security CI (deprecated)
 
 on:
-  push:
-    branches: [main, prod]
-  pull_request:
-    branches: [main, prod]
   workflow_dispatch:
 
 permissions:
   contents: read
-  security-events: write
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  quality:
-    name: Security & Quality Gate
+  notice:
+    name: Consolidated into deploy.yml
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      # ── Tests ──────────────────────────────────────────────────────
-      - name: Test
-        run: npm test
-
-      # ── SAST: SonarCloud ───────────────────────────────────────────
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v6
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      # ── SAST: Semgrep ──────────────────────────────────────────────
-      - name: Semgrep Security Scan
-        uses: semgrep/semgrep-action@v1
-        with:
-          config: >-
-            p/owasp-top-ten
-            p/security-audit
-            p/javascript
-            p/typescript
-        env:
-          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-
-      # ── Lint ───────────────────────────────────────────────────────
-      - name: Lint
-        run: npm run lint
-
-      # ── SCA: dependency vulnerabilities ───────────────────────────
-      - name: Dependency Audit
-        run: npm audit --audit-level=moderate
-
-      # ── Build ──────────────────────────────────────────────────────
-      - name: Build
-        run: npm run build
+      - run: echo "Security checks are now part of deploy.yml"
