@@ -64,7 +64,7 @@ const clampText = (value: string, maxLength: number) => {
 export const GET: RequestHandler = async ({ params }) => {
 	const { section: sectionId, slug } = params;
 
-	const pathname = slug ? `/${sectionId}/${slug}` : `/${sectionId}`;
+	const pathname = `/${sectionId}/${slug}`;
 	const metadata = getContentSectionMetadata(sectionId, pathname);
 	if (!metadata) {
 		error(404, 'Document not found');
