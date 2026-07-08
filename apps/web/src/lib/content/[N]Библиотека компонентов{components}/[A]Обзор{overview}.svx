@@ -43,7 +43,7 @@ description: Готовые Svelte-компоненты для документ�
 Компоненты для отображения контента в карточном формате:
 
 <Cards>
-<Card eyebrow="12" title="Карточка проекта" href="/components/card-project">Карточка с интерактивным mesh-gradient glow при наведении.</Card>
+<Card eyebrow="12" title="Карточка проекта" href="/components/glow-card">Карточка с интерактивным mesh-gradient glow при наведении.</Card>
 <Card eyebrow="13" title="Секция карточек" href="/components/card-section">Секция из 6 карточек услуг с кастомными SVG-визуализациями.</Card>
 <Card eyebrow="14" title="Карточка" href="/components/card">Универсальная карточка с eyebrow, заголовком и поддержкой ссылок.</Card>
 <Card eyebrow="15" title="Отзыв" href="/components/testimonial">Карточка отзыва с аватаром, именем и текстом.</Card>
