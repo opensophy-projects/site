@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { brandingConfig, siteConfig } from '$lib';
+	import { siteConfig } from '$lib';
 	import { searchState } from '$lib/stores/search.svelte';
-	import FloatingMenu from '$lib/components/ui/FloatingMenu.svelte';
-	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
+	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import Search from 'carbon-icons-svelte/lib/Search.svelte';
 	import ArrowLeft from 'carbon-icons-svelte/lib/ArrowLeft.svelte';
 
@@ -19,29 +18,6 @@
 			? 'Страница, которую вы ищете, не существует или была перемещена. Воспользуйтесь поиском или вернитесь на главную.'
 			: message
 	);
-
-	const menuGroups = [
-		{
-			title: 'Платформа',
-			links: [
-				{ label: 'Документация', href: resolve('/docs') },
-				{ label: 'Статьи', href: resolve('/article') },
-				{ label: 'Компоненты', href: resolve('/components') }
-			]
-		},
-		{
-			title: 'Ресурсы',
-			links: [
-				{ label: 'GitHub', href: siteConfig.links.github }
-			]
-		},
-		{
-			title: 'Проект',
-			links: [
-				{ label: 'На главную', href: resolve('/') }
-			]
-		}
-	];
 </script>
 
 <svelte:head>
@@ -50,14 +26,7 @@
 	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
-<FloatingMenu {menuGroups}>
-	{#snippet centerContent()}
-		<span class="font-medium lowercase tracking-tight text-foreground">{brandingConfig.name}</span>
-	{/snippet}
-	{#snippet actionsEnd()}
-		<ThemeToggle />
-	{/snippet}
-</FloatingMenu>
+<SiteMenu />
 
 <main class="error-page">
 	<p class="error-code" aria-hidden="true">{status}</p>
