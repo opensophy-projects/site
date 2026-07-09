@@ -208,7 +208,6 @@
 >
 	{#if control.type === 'number'}
 		<div
-			id={inputId}
 			role="slider"
 			tabindex="0"
 			aria-label={control.label}
@@ -239,15 +238,14 @@
 		</div>
 	{/if}
 
-	<label
-		for={inputId}
+	<span
 		class={cn(
 			'relative z-10 min-w-0 flex-1 truncate pr-3 text-sm tracking-normal text-foreground-muted',
 			control.type === 'number' && 'pointer-events-none text-foreground-muted'
 		)}
 	>
 		{control.label}
-	</label>
+	</span>
 
 	<div class="relative z-10 flex shrink-0 items-center justify-end gap-2">
 		{#if control.type === 'number'}
@@ -258,7 +256,6 @@
 			</span>
 		{:else if control.type === 'boolean'}
 			<button
-				id={inputId}
 				type="button"
 				role="switch"
 				aria-label={control.label}
