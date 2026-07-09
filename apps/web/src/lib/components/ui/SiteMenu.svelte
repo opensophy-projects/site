@@ -94,7 +94,7 @@
 			<div class="flex flex-col gap-2">
 				{#each contacts as contact (contact.href)}
 					{@const Icon = contact.icon}
-					
+					<a
 						href={contact.href}
 						target={contact.href.startsWith('http') ? '_blank' : undefined}
 						rel={contact.href.startsWith('http') ? 'external' : undefined}
