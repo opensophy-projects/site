@@ -22,7 +22,7 @@ description: Светящаяся карточка с интерактивным
 >
 	<div class="grid grid-cols-2 gap-4 p-4 w-full max-w-sm">
 		<CardProject
-			colors={['#c084fc', '#f472b6', '#38bdf8']}
+			colors={['#f43f5e', '#f43f5e', '#ffffff']}
 			glowColor="280 70 70"
 			borderRadius={12}
 		>
