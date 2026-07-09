@@ -93,13 +93,14 @@
 			<p class="mb-5 text-sm text-foreground-muted">Свяжитесь через удобный канал.</p>
 			<div class="flex flex-col gap-2">
 				{#each contacts as contact (contact.href)}
+					{@const Icon = contact.icon}
 					
 						href={contact.href}
 						target={contact.href.startsWith('http') ? '_blank' : undefined}
 						rel={contact.href.startsWith('http') ? 'external' : undefined}
 						class="flex items-center gap-3 rounded-sm border border-border bg-background-inset px-4 py-3 text-sm font-medium text-foreground-muted transition-colors duration-150 ease-out hover:bg-background-muted hover:text-foreground"
 					>
-						<contact.icon size={18} />
+						<Icon size={18} />
 						<span class="truncate">{contact.label}</span>
 					</a>
 				{/each}
