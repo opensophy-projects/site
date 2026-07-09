@@ -32,6 +32,10 @@
 				{
 					label: 'GitHub',
 					href: 'https://github.com/opensophy-projects'
+				},
+				{
+					label: 'os.mtls',
+					href: 'https://github.com/opensophy-projects/mtls'
 				}
 			]
 		},
@@ -97,8 +101,8 @@
 			title: 'os.mtls',
 			description:
 				'Инструмент для быстрого создания и управления mTLS-сертификатами. Для тех, кто хочет надёжно закрыть доступ к своим сервисам и серверам без лишней головной боли.',
-			colors: ['#86efac', '#22c55e', '#bbf7d0'],
-			glowColor: '142 70 60',
+			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
+			glowColor: '330 70 65',
 			wip: false,
 		},
 	];
@@ -200,7 +204,6 @@
 		</div>
 
 		<div class="relative z-10 flex flex-col items-center gap-6 text-center max-w-5xl w-full">
-			<p class="section-overline">Сотрудничество</p>
 			<h2 class="cta-heading">
 				Готовы к&nbsp;<span class="text-accent">сотрудничеству?</span>
 			</h2>
@@ -492,16 +495,12 @@
 	/* ─── Projects Grid ────────────────────────────────────────── */
 	.projects-grid {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(2, 1fr);
 		gap: 1rem;
 	}
 
 	@media (max-width: 479px) {
 		.projects-grid { grid-template-columns: 1fr; }
-	}
-
-	@media (min-width: 480px) and (max-width: 767px) {
-		.projects-grid { grid-template-columns: repeat(2, 1fr); }
 	}
 
 	/* ─── Project Card ─────────────────────────────────────────── */

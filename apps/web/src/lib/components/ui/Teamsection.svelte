@@ -11,7 +11,7 @@
 	<div class="team-inner">
 		<p class="section-overline">О создателе</p>
 		<h2 class="team-heading">
-			DevSecOps-инженер<br />и исследователь<br /><span class="text-accent">безопасности</span>
+			<span class="text-foreground">DevSecOps-инженер</span> и исследователь <span class="text-accent">безопасности</span>
 		</h2>
 		<p class="team-sub">
 			Внедрение DevSecOps, аудит приложений и инфраструктуры, автоматизация, ответственное раскрытие уязвимостей.
@@ -37,7 +37,6 @@
 		max-width: 80rem;
 		margin: 0 auto;
 		padding: 0 1rem;
-		max-width: 42rem;
 	}
 	.section-overline {
 		font-size: 1rem;
@@ -45,15 +44,15 @@
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
 		color: var(--foreground-muted);
-		margin: 0 0 1.5rem;
+		margin: 0 0 2rem;
 	}
 	.team-heading {
-		font-size: clamp(1.75rem, 3vw, 2.5rem);
+		font-size: clamp(1.75rem, 3.5vw, 2.6rem);
 		font-weight: 500;
 		letter-spacing: -0.02em;
-		line-height: 1.2;
-		color: var(--foreground);
-		margin: 0 0 1.25rem;
+		line-height: 1.55;
+		color: var(--foreground-muted);
+		margin: 0 0 1.5rem;
 	}
 	.team-sub {
 		font-size: 0.9rem;
