@@ -10,7 +10,7 @@ description: Эффект раздвигания текста при навед�
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 </script>
 
-# Раздвижение текста
+# SplitHover
 
 Компонент для создания эффекта "раздвигания" текста при наведении. Текст дублируется, и символы анимируются вертикально один за другим.
 
