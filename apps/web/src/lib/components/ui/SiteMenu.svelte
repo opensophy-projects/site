@@ -66,7 +66,7 @@
 {#if contactsState.isOpen}
 	<div
 		class="contacts-overlay fixed inset-0 z-[100] flex items-center justify-center bg-background-inset/80 backdrop-blur-sm"
-		onclick={() => contactsState.close()}
+		onclick={() => { contactsState.close(); }}
 		onkeydown={handleOverlayKeydown}
 		role="button"
 		tabindex="-1"
@@ -84,7 +84,7 @@
 			<button
 				type="button"
 				class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-sm text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
-				onclick={() => contactsState.close()}
+				onclick={() => { contactsState.close(); }}
 				aria-label="Закрыть"
 			>
 				<Close size={18} />
