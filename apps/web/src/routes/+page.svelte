@@ -81,7 +81,7 @@
 			title: 'os.ui',
 			description:
 				'Библиотека готовых компонентов с живым превью и настройками. Анимации, интерактивные блоки, кастомные элементы и фирменные компоненты Opensophy — для разработчиков и дизайнеров.',
-			colors: ['#fca5a5', '#ef4444', '#fecdd3'],
+			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '0 80 65',
 			wip: false,
 		},
@@ -89,7 +89,7 @@
 			title: 'os.net',
 			description:
 				'GUI-платформа управления безопасным удалённым доступом: P2P, VPN, proxy, mTLS — всё в одном интерфейсе.',
-			colors: ['#fdba74', '#f97316', '#fed7aa'],
+			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '25 90 65',
 			wip: true,
 		},
@@ -100,22 +100,6 @@
 			colors: ['#86efac', '#22c55e', '#bbf7d0'],
 			glowColor: '142 70 60',
 			wip: false,
-		},
-		{
-			title: 'os.port',
-			description:
-				'GUI-платформа для управления серверами и развёртывания приложений. Простой и удобный способ контролировать инфраструктуру.',
-			colors: ['#93c5fd', '#3b82f6', '#bfdbfe'],
-			glowColor: '217 85 65',
-			wip: true,
-		},
-		{
-			title: 'os.engine',
-			description:
-				'TUI-инструмент для быстрого управления Linux в homelab и малых командах. Минималистичный и мощный.',
-			colors: ['#d8b4fe', '#a855f7', '#ede9fe'],
-			glowColor: '270 70 65',
-			wip: true,
 		},
 	];
 </script>
