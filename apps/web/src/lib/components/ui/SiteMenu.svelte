@@ -8,7 +8,6 @@
 	import Email from 'carbon-icons-svelte/lib/Email.svelte';
 	import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte';
 	import Close from 'carbon-icons-svelte/lib/Close.svelte';
-
 	const menuGroups = [
 		{
 			title: 'Платформа',
@@ -40,7 +39,6 @@
 			]
 		}
 	];
-
 	const contacts = [
 		{
 			label: 'GitHub',
@@ -53,12 +51,10 @@
 			icon: Email
 		}
 	];
-
 	function handleOverlayKeydown(e: KeyboardEvent) {
 		if (e.key === 'Escape') contactsState.close();
 	}
 </script>
-
 <FloatingMenu {menuGroups}>
 	{#snippet centerContent()}
 		<span class="font-medium lowercase tracking-tight text-foreground">{brandingConfig.name}</span>
@@ -67,11 +63,10 @@
 		<ThemeToggle />
 	{/snippet}
 </FloatingMenu>
-
 {#if contactsState.isOpen}
 	<div
 		class="contacts-overlay fixed inset-0 z-[100] flex items-center justify-center bg-background-inset/80 backdrop-blur-sm"
-		onclick={contactsState.close}
+		onclick={() => contactsState.close()}
 		onkeydown={handleOverlayKeydown}
 		role="button"
 		tabindex="-1"
@@ -89,7 +84,7 @@
 			<button
 				type="button"
 				class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-sm text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
-				onclick={contactsState.close}
+				onclick={() => contactsState.close()}
 				aria-label="Закрыть"
 			>
 				<Close size={18} />
@@ -98,7 +93,7 @@
 			<p class="mb-5 text-sm text-foreground-muted">Свяжитесь через удобный канал.</p>
 			<div class="flex flex-col gap-2">
 				{#each contacts as contact (contact.href)}
-					<a
+					
 						href={contact.href}
 						target={contact.href.startsWith('http') ? '_blank' : undefined}
 						rel={contact.href.startsWith('http') ? 'external' : undefined}
@@ -112,21 +107,17 @@
 		</div>
 	</div>
 {/if}
-
 <style>
 	.contacts-overlay {
 		animation: fade-in 200ms ease-out;
 	}
-
 	.contacts-modal {
 		animation: scale-in 250ms ease-out;
 	}
-
 	@keyframes fade-in {
 		from { opacity: 0; }
 		to { opacity: 1; }
 	}
-
 	@keyframes scale-in {
 		from {
 			opacity: 0;
