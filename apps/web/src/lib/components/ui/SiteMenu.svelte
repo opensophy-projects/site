@@ -27,7 +27,6 @@
 		{
 			title: 'Проект',
 			links: [
-				{ label: 'На главную', href: resolve('/') },
 				{
 					label: 'Контакты',
 					href: '#',
