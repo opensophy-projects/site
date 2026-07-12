@@ -6,16 +6,6 @@
 	import ColorPicker from './ColorPicker.svelte';
 	import ChevronSort from 'carbon-icons-svelte/lib/ChevronSort.svelte';
 
-	function popTransition(_node: Element) {
-		return {
-			duration: 100,
-			css: (t: number) => {
-				const s = String(1 - (1 - 0.95) * (1 - t));
-				return `opacity: ${t}; transform: scale(${s}); transform-origin: 50% top;`;
-			}
-		};
-	}
-
 	type Props = {
 		control: ComponentPreviewControl;
 		value?: ComponentPreviewValue;
@@ -378,7 +368,13 @@
 				<button
 					bind:this={triggerEl}
 					type="button"
-					onclick={() => (selectOpen ? (selectOpen = false) : openSelect())}
+					onclick={() => {
+						if (selectOpen) {
+							selectOpen = false;
+						} else {
+							openSelect();
+						}
+					}}
 					class="inset-shadow flex h-8 w-full cursor-default items-center justify-between gap-1 rounded-sm bg-background-inset px-3 text-sm font-medium text-foreground transition-colors duration-150"
 				>
 					<span class="truncate">{activeOption?.label ?? 'Выберите…'}</span>
@@ -394,8 +390,7 @@
 						bind:this={dropdownEl}
 						use:portal={'body'}
 						class="fixed z-[100] flex flex-col gap-0.5 rounded-sm bg-background p-1 shadow-2xl card"
-						style={`top: ${dropdownTop}px; left: ${dropdownLeft}px; min-width: ${dropdownWidth}px;`}
-						transition:popTransition
+						style={`top: ${dropdownTop.toString()}px; left: ${dropdownLeft.toString()}px; min-width: ${dropdownWidth.toString()}px;`}
 					>
 						{#each control.options as option (option.value)}
 							<button

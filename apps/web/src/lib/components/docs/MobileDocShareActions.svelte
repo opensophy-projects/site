@@ -301,7 +301,7 @@
 						use:portal={'main'}
 						id={dropdownId}
 						style={dropdownStyle}
-						class="z-50 flex w-48 origin-top-right flex-col gap-0.5 rounded-md bg-background p-1 card"
+						class="z-[100] flex w-48 origin-top-right flex-col gap-0.5 rounded-md bg-background p-1 card"
 						role="menu"
 						aria-label={pageActionsConfig.moreActionsAriaLabel}
 						in:fly={{ y: -5, duration: 200, easing: backOut }}

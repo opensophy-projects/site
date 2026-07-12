@@ -18,13 +18,8 @@
 </script>
 
 {#if controls.length}
-	<div
-		class="mt-2 flex flex-col overflow-visible rounded-md bg-background card"
-		aria-label="Пропсы компонента"
-	>
-		<div
-			class="relative flex items-center justify-between bg-background px-4 py-2.5 text-sm after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-border after:content-['']"
-		>
+	<div class="mt-2 flex flex-col overflow-visible rounded-md bg-background card" aria-label="Пропсы компонента">
+		<div class="relative flex items-center justify-between rounded-t-md bg-background px-4 py-2.5 text-sm after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-border after:content-['']">
 			<h2 class="font-medium tracking-normal text-foreground">Пропсы</h2>
 			<button
 				onclick={onReset}
