@@ -26,16 +26,15 @@ description: Готовые Svelte-компоненты для документ�
 
 <Cards>
 <Card eyebrow="01" title="Переключатель темы" href="/components/theme-toggle">Кнопка переключения тёмной/светлой темы с плавной анимацией иконок.</Card>
-<Card eyebrow="02" title="Цикличный текст" href="/components/text-loop">Анимированная смена текста через GSAP — для hero-секций и заголовков.</Card>
-<Card eyebrow="03" title="Плавающее меню" href="/components/floating-menu">Плавающее навигационное меню с поддержкой групп ссылок и кастомных слотов.</Card>
-<Card eyebrow="04" title="Кнопка" href="/components/button">Варианты кнопок: accent, outline, ghost, danger — с hover-эффектами.</Card>
-<Card eyebrow="05" title="Боковая панель" href="/components/sidebar">Навигационная панель с древовидной структурой и hover-индикаторами.</Card>
-<Card eyebrow="06" title="Палитра поиска" href="/components/search-palette">Модальное окно поиска с горячими клавишами и клавиатурной навигацией.</Card>
-<Card eyebrow="07" title="Токены дизайна" href="/components/design-tokens">Система дизайн-токенов: цвета, типографика, отступы, тени.</Card>
-<Card eyebrow="08" title="Бейдж" href="/components/badge">Компактный бейдж для меток и статусов с шестью вариантами оформления.</Card>
-<Card eyebrow="09" title="Бейдж статуса" href="/components/status-badge">Бейдж с точкой-индикатором для отображения статусов процессов.</Card>
-<Card eyebrow="10" title="Переключатель" href="/components/toggle">Переключатель с двумя состояниями и плавной анимацией.</Card>
-<Card eyebrow="11" title="Прогресс-бар" href="/components/progress">Индикатор прогресса с настраиваемым значением и анимацией.</Card>
+<Card eyebrow="02" title="Плавающее меню" href="/components/floating-menu">Плавающее навигационное меню с поддержкой групп ссылок и кастомных слотов.</Card>
+<Card eyebrow="03" title="Кнопка" href="/components/button">Варианты кнопок: accent, outline, ghost, danger — с hover-эффектами.</Card>
+<Card eyebrow="04" title="Боковая панель" href="/components/sidebar">Навигационная панель с древовидной структурой и hover-индикаторами.</Card>
+<Card eyebrow="05" title="Палитра поиска" href="/components/search-palette">Модальное окно поиска с горячими клавишами и клавиатурной навигацией.</Card>
+<Card eyebrow="06" title="Токены дизайна" href="/components/design-tokens">Система дизайн-токенов: цвета, типографика, отступы, тени.</Card>
+<Card eyebrow="07" title="Бейдж" href="/components/badge">Компактный бейдж для меток и статусов с шестью вариантами оформления.</Card>
+<Card eyebrow="08" title="Бейдж статуса" href="/components/status-badge">Бейдж с точкой-индикатором для отображения статусов процессов.</Card>
+<Card eyebrow="09" title="Переключатель" href="/components/toggle">Переключатель с двумя состояниями и плавной анимацией.</Card>
+<Card eyebrow="10" title="Прогресс-бар" href="/components/progress">Индикатор прогресса с настраиваемым значением и анимацией.</Card>
 </Cards>
 
 ### Карточки
@@ -75,16 +74,17 @@ description: Готовые Svelte-компоненты для документ�
 <Card eyebrow="20" title="Видеоплеер" href="/components/video-player">Кастомизируемый видеоплеер с управлением и поддержкой плакатов.</Card>
 </Cards>
 
-### Текстовые эффекты
+### Типографика
 
 Эффекты для текста и заголовков:
 
 <Cards>
-<Card eyebrow="21" title="Волна веса" href="/components/weight-wave">Анимация изменения веса шрифта по волне.</Card>
-<Card eyebrow="22" title="Раздвижение текста" href="/components/text-split-hover">Эффект раздвижения текста при наведении.</Card>
-<Card eyebrow="23" title="Разделённое появление" href="/components/split-reveal">Появление текста с разделением на части.</Card>
-<Card eyebrow="24" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
-<Card eyebrow="25" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
+<Card eyebrow="21" title="Цикличный текст" href="/components/text-loop">Анимированная смена текста через GSAP — для hero-секций и заголовков.</Card>
+<Card eyebrow="22" title="Волна веса" href="/components/weight-wave">Анимация изменения веса шрифта по волне.</Card>
+<Card eyebrow="23" title="Раздвижение текста" href="/components/text-split-hover">Эффект раздвижения текста при наведении.</Card>
+<Card eyebrow="24" title="Разделённое появление" href="/components/split-reveal">Появление текста с разделением на части.</Card>
+<Card eyebrow="25" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
+<Card eyebrow="26" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
 </Cards>
 
 ### Документация
