@@ -38,12 +38,8 @@
 
 	$effect(() => {
 		if (!copiedFormat) return;
-		const t = setTimeout(() => {
-			copiedFormat = null;
-		}, 2000);
-		return () => {
-			clearTimeout(t);
-		};
+		const t = setTimeout(() => { copiedFormat = null; }, 2000);
+		return () => { clearTimeout(t); };
 	});
 
 	function tableText() {
@@ -87,9 +83,7 @@
 
 		if (nextDir === 'none') {
 			sortState = null;
-			originalRowsOrder.forEach((row) => {
-				tbody.append(row);
-			});
+			originalRowsOrder.forEach((row) => { tbody.append(row); });
 			allRows = [...originalRowsOrder];
 		} else {
 			sortState = { index, dir: nextDir };
@@ -98,9 +92,7 @@
 				const bText = b.children[index].textContent.trim();
 				return aText.localeCompare(bText) * (nextDir === 'asc' ? 1 : -1);
 			});
-			sortedRows.forEach((row) => {
-				tbody.append(row);
-			});
+			sortedRows.forEach((row) => { tbody.append(row); });
 			allRows = sortedRows;
 		}
 	}
@@ -127,7 +119,7 @@
 		menuOpen = false;
 	}
 
-	function onScroll() {
+	function onScrollOrResize() {
 		if (menuOpen) updateMenuPosition();
 	}
 
@@ -135,42 +127,37 @@
 		if (!menuOpen) return;
 		requestAnimationFrame(() => {
 			document.addEventListener('click', closeMenuOnOutside);
-			window.addEventListener('scroll', onScroll, true);
-			window.addEventListener('resize', updateMenuPosition);
+			window.addEventListener('scroll', onScrollOrResize, true);
+			window.addEventListener('resize', onScrollOrResize);
 		});
 		return () => {
 			document.removeEventListener('click', closeMenuOnOutside);
-			window.removeEventListener('scroll', onScroll, true);
-			window.removeEventListener('resize', updateMenuPosition);
+			window.removeEventListener('scroll', onScrollOrResize, true);
+			window.removeEventListener('resize', onScrollOrResize);
 		};
 	});
 
 	const ARROWS_VERTICAL_PATH =
 		'M24 22.6l-5-5-1.4 1.42 6.7 6.7 6.7-6.7-1.4-1.42-5 5V2h-2v20.6zM8 9.4l5 5 1.4-1.42-6.7-6.7-6.7 6.7 1.4 1.42 5-5V30h2V9.4z';
-	const ARROWS_VERTICAL_SVG = (extraClass: string) =>
-		`<svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor" class="${extraClass}"><path d="${ARROWS_VERTICAL_PATH}"/></svg>`;
+	const ARROWS_VERTICAL_SVG = () =>
+		`<svg width="12" height="12" viewBox="0 0 32 32" fill="currentColor"><path d="${ARROWS_VERTICAL_PATH}"/></svg>`;
 
 	$effect(() => {
 		if (!tableElement) return;
 		tableElement.querySelectorAll('thead th').forEach((th, index) => {
-			const existing = th.querySelector('.sort-indicator');
-			if (existing) existing.remove();
-
+			th.querySelector('.sort-indicator')?.remove();
 			const indicator = document.createElement('span');
 			indicator.className = 'sort-indicator ml-1 inline-flex items-center';
-
 			if (sortState?.index === index) {
-				indicator.classList.remove('opacity-30');
 				if (sortState.dir === 'asc') {
-					indicator.innerHTML = `<span class="flex items-center text-accent">${ARROWS_VERTICAL_SVG('')}<span class="text-[10px] font-bold ml-0.5">A</span><span class="text-[10px] opacity-40 ml-0.5">Z</span></span>`;
+					indicator.innerHTML = `<span class="flex items-center text-accent">${ARROWS_VERTICAL_SVG()}<span class="text-[10px] font-bold ml-0.5">A</span><span class="text-[10px] opacity-40 ml-0.5">Z</span></span>`;
 				} else {
-					indicator.innerHTML = `<span class="flex items-center text-accent">${ARROWS_VERTICAL_SVG('')}<span class="text-[10px] opacity-40 ml-0.5">A</span><span class="text-[10px] font-bold ml-0.5">Z</span></span>`;
+					indicator.innerHTML = `<span class="flex items-center text-accent">${ARROWS_VERTICAL_SVG()}<span class="text-[10px] opacity-40 ml-0.5">A</span><span class="text-[10px] font-bold ml-0.5">Z</span></span>`;
 				}
 			} else {
 				indicator.classList.add('opacity-30');
-				indicator.innerHTML = `${ARROWS_VERTICAL_SVG('')}<span class="text-[10px] ml-0.5">AZ</span>`;
+				indicator.innerHTML = `${ARROWS_VERTICAL_SVG()}<span class="text-[10px] ml-0.5">AZ</span>`;
 			}
-
 			th.appendChild(indicator);
 		});
 	});
@@ -180,20 +167,19 @@
 		allRows = Array.from(tableElement.querySelectorAll('tbody tr'));
 		originalRowsOrder = [...allRows];
 		tableElement.querySelectorAll('thead th').forEach((th, index) => {
-			(th as HTMLElement).onclick = () => {
-				sortBy(index);
-			};
+			(th as HTMLElement).onclick = () => { sortBy(index); };
 		});
 	});
 </script>
 
 <div class="inset-shadow my-8 rounded-lg bg-background-inset p-1.5">
 	<div class="relative rounded-md bg-background card">
-		<div class="flex items-center justify-end px-2 py-1.5">
+		<!-- Three-dots button overlaid at top-right, matching CopyCodeButton style -->
+		<div class="pointer-events-none absolute top-2 right-2 z-10 flex items-center gap-2">
 			<button
 				bind:this={menuTriggerEl}
 				type="button"
-				class="flex size-7 items-center justify-center rounded-sm text-foreground-muted transition-colors duration-150 hover:bg-background-muted hover:text-foreground"
+				class="pointer-events-auto inset-shadow flex size-7 items-center justify-center rounded-sm bg-background-inset text-foreground transition-transform duration-150 ease-out active:scale-[0.95]"
 				onclick={toggleMenu}
 				aria-label="Меню таблицы"
 			>
@@ -205,63 +191,38 @@
 			<div
 				bind:this={menuDropdownEl}
 				use:portal={'body'}
-				class="fixed z-[100] grid min-w-48 gap-1 rounded-md bg-background p-1 text-sm shadow-2xl card"
+				class="fixed z-[100] min-w-48 rounded-md bg-background p-1 text-sm shadow-2xl card"
 				style={`top: ${menuTop}px; left: ${menuLeft}px;`}
-				transition:popTransition
 			>
 				<button
-					class="flex items-center gap-2 rounded-sm px-3 py-2 text-left text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
-					onclick={() => {
-						void copyWithFeedback('md');
-					}}
+					class="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-left text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
+					onclick={() => { void copyWithFeedback('md'); menuOpen = false; }}
 				>
-					<span class="relative flex size-3.5 items-center justify-center">
-						<span
-							class="absolute transition-[opacity,transform] duration-150 ease-out {copiedFormat ===
-							'md'
-								? 'scale-0 opacity-0'
-								: 'scale-100 opacity-100'}"
-						>
+					<span class="relative flex size-3.5 shrink-0 items-center justify-center">
+						<span class="absolute transition-[opacity,transform] duration-150 {copiedFormat === 'md' ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}">
 							<Copy size={14} />
 						</span>
-						<span
-							class="absolute text-success transition-[opacity,transform] duration-150 ease-out {copiedFormat ===
-							'md'
-								? 'scale-100 opacity-100'
-								: 'scale-0 opacity-0'}"
-						>
+						<span class="absolute text-success transition-[opacity,transform] duration-150 {copiedFormat === 'md' ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}">
 							<Checkmark size={14} />
 						</span>
 					</span>
-					<span class="transition-[color] duration-150 {copiedFormat === 'md' ? 'text-success' : ''}">
+					<span class={copiedFormat === 'md' ? 'text-success' : ''}>
 						{copiedFormat === 'md' ? 'Скопировано!' : 'Копировать как Markdown'}
 					</span>
-                </button>
-                <button
-					class="flex items-center gap-2 rounded-sm px-3 py-2 text-left text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
-					onclick={() => {
-						void copyWithFeedback('tsv');
-					}}
+				</button>
+				<button
+					class="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-left text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
+					onclick={() => { void copyWithFeedback('tsv'); menuOpen = false; }}
 				>
-					<span class="relative flex size-3.5 items-center justify-center">
-						<span
-							class="absolute transition-[opacity,transform] duration-150 ease-out {copiedFormat ===
-							'tsv'
-								? 'scale-0 opacity-0'
-								: 'scale-100 opacity-100'}"
-						>
+					<span class="relative flex size-3.5 shrink-0 items-center justify-center">
+						<span class="absolute transition-[opacity,transform] duration-150 {copiedFormat === 'tsv' ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}">
 							<Copy size={14} />
 						</span>
-						<span
-							class="absolute text-success transition-[opacity,transform] duration-150 ease-out {copiedFormat ===
-							'tsv'
-								? 'scale-100 opacity-100'
-								: 'scale-0 opacity-0'}"
-						>
+						<span class="absolute text-success transition-[opacity,transform] duration-150 {copiedFormat === 'tsv' ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}">
 							<Checkmark size={14} />
 						</span>
 					</span>
-					<span class="transition-[color] duration-150 {copiedFormat === 'tsv' ? 'text-success' : ''}">
+					<span class={copiedFormat === 'tsv' ? 'text-success' : ''}>
 						{copiedFormat === 'tsv' ? 'Скопировано!' : 'Копировать как Excel/TSV'}
 					</span>
 				</button>
