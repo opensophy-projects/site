@@ -57,22 +57,33 @@
 
 		/* ── Shared card shell ────────────────────────────────────────────── */
 		.card-shell {
-			inset-shadow: var(--inset-shadow, inset 0 1px 0 rgba(255,255,255,0.06));
 			position: relative;
+			isolation: isolate;
 			overflow: hidden;
-			border-radius: 0.5rem;
+			border-radius: 0.55rem;
 			background: var(--background-inset);
-			padding: 0.375rem;
+			padding: 1.5px;
+			box-shadow:
+				inset 0px 1px 1px -0.5px rgba(0, 0, 0, 0.06),
+				inset 0px 3px 3px -1.5px rgba(0, 0, 0, 0.06),
+				inset 0px 6px 6px -3px rgba(0, 0, 0, 0.06),
+				inset 0 -0.5px rgba(255, 255, 255, 0.08),
+				inset 0 0 0 0.5px oklch(from var(--highlight) l c h / 8%);
 		}
 
 		.card-inner {
 			position: relative;
-			border-radius: 0.375rem;
+			border-radius: calc(0.55rem - 1.5px);
 			background: var(--background);
 			overflow: hidden;
 			display: flex;
 			flex-direction: column;
 			min-height: 18rem;
+			box-shadow:
+				0 -0.5px rgba(255, 255, 255, 0.08),
+				0 4px 8px rgba(0, 0, 0, 0.06),
+				0 0 0 0.5px oklch(from var(--highlight) l c h / 8%),
+				0 1px 6px -4px #000;
 		}
 
 		/* ── Visual areas ────────────────────────────────────────────────── */
@@ -346,7 +357,7 @@
 			width: 52%;
 			height: auto;
 			flex-shrink: 0;
-			border-radius: 0 0 0 0.375rem;
+			border-radius: 0 0 0 calc(0.55rem - 1.5px);
 		}
 
 		.card-automation .card-body {

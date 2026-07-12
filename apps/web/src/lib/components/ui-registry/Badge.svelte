@@ -16,7 +16,7 @@
 	}: Props = $props();
 
 	const variantClasses: Record<Variant, string> = {
-		default: 'bg-background-inset text-foreground',
+		default: 'bg-background text-foreground',
 		accent: 'bg-accent/10 text-accent',
 		success: 'bg-green-500/10 text-green-500',
 		warning: 'text-orange-500',
@@ -29,13 +29,14 @@
 	};
 </script>
 
-<span
-	class={cn(
-		'inline-flex items-center rounded-sm px-2 py-0.5 text-xs font-medium',
-		variantClasses[variant],
-		className
-	)}
-	style={variantStyles[variant] ?? ''}
->
-	{@render children?.()}
+<span class={cn('inset-shadow inline-flex rounded-sm bg-background-inset p-[1.5px]', className)}>
+	<span
+		class={cn(
+			'inline-flex items-center rounded-[calc(var(--radius-sm)-1.5px)] px-2 py-0.5 text-xs font-medium card',
+			variantClasses[variant]
+		)}
+		style={variantStyles[variant] ?? ''}
+	>
+		{@render children?.()}
+	</span>
 </span>

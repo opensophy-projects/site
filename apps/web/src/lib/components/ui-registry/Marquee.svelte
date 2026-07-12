@@ -104,16 +104,21 @@
 	});
 </script>
 
-<div {@attach attachContainer} class={cn("flex h-full w-full", className)}>
-	{#each Array(repeat) as _, i (i)}
-		<div
-			class="marquee-part flex shrink-0"
-			style:gap="{gap}px"
-			style:padding-left="{gap / 2}px"
-			style:padding-right="{gap / 2}px"
-			aria-hidden={i > 0}
-		>
-			{@render children?.()}
-		</div>
-	{/each}
+<div class={cn("inset-shadow rounded-lg bg-background-inset p-[1.5px]", className)}>
+	<div
+		{@attach attachContainer}
+		class="flex h-full w-full overflow-hidden rounded-[calc(var(--radius-lg)-1.5px)] bg-background card"
+	>
+		{#each Array(repeat) as _, i (i)}
+			<div
+				class="marquee-part flex shrink-0"
+				style:gap="{gap}px"
+				style:padding-left="{gap / 2}px"
+				style:padding-right="{gap / 2}px"
+				aria-hidden={i > 0}
+			>
+				{@render children?.()}
+			</div>
+		{/each}
+	</div>
 </div>
