@@ -42,7 +42,12 @@
 		return () => { clearTimeout(t); };
 	});
 
-	function tableText() {
+	// Close the menu after copy so the checkmark animation is visible first
+	$effect(() => {
+		if (!copiedFormat || !menuOpen) return;
+		const t = setTimeout(() => { menuOpen = false; }, 1000);
+		return () => { clearTimeout(t); };
+	});	function tableText() {
 		if (!tableElement) return { headers: [] as string[], rows: [] as string[][] };
 		return {
 			headers: Array.from(tableElement.querySelectorAll('thead th')).map((th) => {
@@ -192,11 +197,11 @@
 				bind:this={menuDropdownEl}
 				use:portal={'body'}
 				class="fixed z-[100] min-w-48 rounded-md bg-background p-1 text-sm shadow-2xl card"
-				style={`top: ${menuTop}px; left: ${menuLeft}px;`}
+				style={`top: ${menuTop.toString()}px; left: ${menuLeft.toString()}px;`}
 			>
 				<button
 					class="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-left text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
-					onclick={() => { void copyWithFeedback('md'); menuOpen = false; }}
+					onclick={() => { void copyWithFeedback('md'); }}
 				>
 					<span class="relative flex size-3.5 shrink-0 items-center justify-center">
 						<span class="absolute transition-[opacity,transform] duration-150 {copiedFormat === 'md' ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}">
@@ -212,7 +217,7 @@
 				</button>
 				<button
 					class="flex w-full items-center gap-2 rounded-sm px-3 py-2 text-left text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
-					onclick={() => { void copyWithFeedback('tsv'); menuOpen = false; }}
+					onclick={() => { void copyWithFeedback('tsv'); }}
 				>
 					<span class="relative flex size-3.5 shrink-0 items-center justify-center">
 						<span class="absolute transition-[opacity,transform] duration-150 {copiedFormat === 'tsv' ? 'scale-0 opacity-0' : 'scale-100 opacity-100'}">
