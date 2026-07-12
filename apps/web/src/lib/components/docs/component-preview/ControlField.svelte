@@ -3,6 +3,17 @@
 	import type { ComponentPreviewControl, ComponentPreviewValue } from './types';
 	import { getDefaultControlValue } from './types';
 	import ColorPicker from './ColorPicker.svelte';
+	import ChevronSort from 'carbon-icons-svelte/lib/ChevronSort.svelte';
+
+	function popTransition(_node: Element) {
+		return {
+			duration: 100,
+			css: (t: number) => {
+				const s = String(1 - (1 - 0.95) * (1 - t));
+				return `opacity: ${t}; transform: scale(${s}); transform-origin: 50% top;`;
+			}
+		};
+	}
 
 	type Props = {
 		control: ComponentPreviewControl;
@@ -12,9 +23,16 @@
 
 	let { control, value, onChange }: Props = $props();
 
+	let selectOpen = $state(false);
+	let selectRef = $state<HTMLElement | null>(null);
+
 	const inputId = $derived(`preview-control-${control.name}`);
 	const currentValue = $derived(value ?? getDefaultControlValue(control));
 	const stringValue = $derived(String(currentValue));
+	const activeOption = $derived.by(() => {
+		if (control.type !== 'select') return null;
+		return control.options.find((opt) => String(opt.value) === stringValue) ?? control.options[0];
+	});
 	const numberValue = $derived(
 		typeof currentValue === 'number' ? currentValue : Number(currentValue)
 	);
@@ -187,6 +205,20 @@
 		onChange(control.name, matchedOption?.value ?? rawValue);
 	};
 
+	function closeSelectOnOutside(e: MouseEvent) {
+		if (selectRef && !selectRef.contains(e.target as Node)) {
+			selectOpen = false;
+		}
+	}
+
+	$effect(() => {
+		if (!selectOpen) return;
+		requestAnimationFrame(() => {
+			document.addEventListener('click', closeSelectOnOutside);
+		});
+		return () => document.removeEventListener('click', closeSelectOnOutside);
+	});
+
 	const updateFile = async (event: Event) => {
 		if (control.type !== 'file') return;
 
@@ -314,23 +346,44 @@
 				}}
 			/>
 		{:else if control.type === 'select'}
-			<div class="relative">
-				<select
-					id={inputId}
-					value={stringValue}
-					class="h-8 appearance-none rounded-sm bg-background pr-8 pl-3 text-left text-sm font-medium text-foreground card transition-colors duration-150 ease-out focus-visible:outline-transparent focus-visible:transition-none"
-					onchange={(event) => {
-						updateSelect(event.currentTarget.value);
-					}}
+			<div bind:this={selectRef} class="relative">
+				<button
+					type="button"
+					onclick={() => (selectOpen = !selectOpen)}
+					class="inset-shadow flex h-8 w-full cursor-default items-center justify-between gap-1 rounded-sm bg-background-inset px-3 text-sm font-medium text-foreground transition-colors duration-150"
 				>
-					{#each control.options as option (option.value)}
-						<option value={String(option.value)}>{option.label}</option>
-					{/each}
-				</select>
-				<span
-					aria-hidden="true"
-					class="pointer-events-none absolute top-1/2 right-3 h-2 w-2 -translate-y-1/2 rotate-45 border-r-2 border-b-2 border-foreground-muted"
-				></span>
+					<span class="truncate">{activeOption?.label ?? 'Выберите…'}</span>
+					<ChevronSort
+						class={cn(
+							'size-3.5 shrink-0 text-foreground-muted transition-transform duration-150',
+							selectOpen && 'rotate-180'
+						)}
+					/>
+				</button>
+				{#if selectOpen}
+					<div
+						class="absolute top-full left-0 z-50 mt-1 flex min-w-full flex-col gap-0.5 rounded-sm bg-background p-1 shadow-2xl card"
+						transition:popTransition
+					>
+						{#each control.options as option (option.value)}
+							<button
+								type="button"
+								class={cn(
+									'flex w-full items-center rounded-xs px-3 py-1.5 text-left text-sm transition-colors duration-150 ease-out',
+									String(option.value) === stringValue
+										? 'bg-accent/10 text-accent'
+										: 'text-foreground-muted hover:bg-background-muted hover:text-foreground'
+								)}
+								onclick={() => {
+									updateSelect(String(option.value));
+									selectOpen = false;
+								}}
+							>
+								{option.label}
+							</button>
+						{/each}
+					</div>
+				{/if}
 			</div>
 		{/if}
 	</div>

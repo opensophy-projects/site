@@ -47,64 +47,69 @@
 		});
 	}
 
-	function highlightSearch(root: HTMLElement, query: string) {
-		clearMarks(root);
-		if (!query) return;
-
-		const lowerQuery = query.toLowerCase();
-		const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-			acceptNode(node) {
-				const parent = node.parentElement;
-				if (!parent) return NodeFilter.FILTER_REJECT;
-				if (parent.tagName === 'MARK' && parent.hasAttribute(MARK_ATTR))
-					return NodeFilter.FILTER_REJECT;
-				if (!node.nodeValue || !node.nodeValue.toLowerCase().includes(lowerQuery))
-					return NodeFilter.FILTER_REJECT;
-				return NodeFilter.FILTER_ACCEPT;
-			}
-		});
-
-		const targets: Text[] = [];
-		let current = walker.nextNode();
-		while (current) {
-			targets.push(current as Text);
-			current = walker.nextNode();
-		}
-
-		for (const textNode of targets) {
-			const text = textNode.nodeValue!;
-			const lower = text.toLowerCase();
-			const parent = textNode.parentElement;
-			if (!parent) continue;
-
-			const frag = document.createDocumentFragment();
-			let i = 0;
-			let idx: number;
-			while ((idx = lower.indexOf(lowerQuery, i)) !== -1) {
-				if (idx > i) frag.appendChild(document.createTextNode(text.slice(i, idx)));
-				const mark = document.createElement('mark');
-				mark.setAttribute(MARK_ATTR, '');
-				mark.style.cssText =
-					'background: oklch(0.85 0.17 80 / 0.5); border-radius: 2px; color: inherit;';
-				mark.textContent = text.slice(idx, idx + query.length);
-				frag.appendChild(mark);
-				i = idx + query.length;
-			}
-			if (i < text.length) frag.appendChild(document.createTextNode(text.slice(i)));
-			parent.replaceChild(frag, textNode);
-		}
-	}
-
 	let observer: MutationObserver | null = null;
+
+	function applyHighlight(root: HTMLElement, query: string) {
+		observer?.disconnect();
+
+		clearMarks(root);
+
+		if (query) {
+			const lowerQuery = query.toLowerCase();
+			const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+				acceptNode(node) {
+					const parent = node.parentElement;
+					if (!parent) return NodeFilter.FILTER_REJECT;
+					if (parent.tagName === 'MARK' && parent.hasAttribute(MARK_ATTR))
+						return NodeFilter.FILTER_REJECT;
+					if (!node.nodeValue || !node.nodeValue.toLowerCase().includes(lowerQuery))
+						return NodeFilter.FILTER_REJECT;
+					return NodeFilter.FILTER_ACCEPT;
+				}
+			});
+
+			const targets: Text[] = [];
+			let current = walker.nextNode();
+			while (current) {
+				targets.push(current as Text);
+				current = walker.nextNode();
+			}
+
+			for (const textNode of targets) {
+				const text = textNode.nodeValue!;
+				const lower = text.toLowerCase();
+				const parent = textNode.parentElement;
+				if (!parent) continue;
+
+				const frag = document.createDocumentFragment();
+				let i = 0;
+				let idx: number;
+				while ((idx = lower.indexOf(lowerQuery, i)) !== -1) {
+					if (idx > i) frag.appendChild(document.createTextNode(text.slice(i, idx)));
+					const mark = document.createElement('mark');
+					mark.setAttribute(MARK_ATTR, '');
+					mark.style.cssText =
+						'background: oklch(0.85 0.17 80 / 0.5); border-radius: 2px; color: inherit;';
+					mark.textContent = text.slice(idx, idx + query.length);
+					frag.appendChild(mark);
+					i = idx + query.length;
+				}
+				if (i < text.length) frag.appendChild(document.createTextNode(text.slice(i)));
+				parent.replaceChild(frag, textNode);
+			}
+		}
+
+		observer?.observe(root, { childList: true, subtree: true });
+	}
 
 	$effect(() => {
 		if (!contentEl) return;
 		const query = searchQuery;
 
-		highlightSearch(contentEl, query);
+		applyHighlight(contentEl, query);
 
 		observer = new MutationObserver(() => {
-			highlightSearch(contentEl!, query);
+			if (contentEl) applyHighlight(contentEl, query);
 		});
 		observer.observe(contentEl, { childList: true, subtree: true });
 
