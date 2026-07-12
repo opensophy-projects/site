@@ -24,7 +24,10 @@
 	let { control, value, onChange }: Props = $props();
 
 	let selectOpen = $state(false);
-	let selectRef = $state<HTMLElement | null>(null);
+	let triggerEl = $state<HTMLElement | null>(null);
+	let dropdownTop = $state(0);
+	let dropdownLeft = $state(0);
+	let dropdownWidth = $state(0);
 
 	const inputId = $derived(`preview-control-${control.name}`);
 	const currentValue = $derived(value ?? getDefaultControlValue(control));
@@ -206,9 +209,19 @@
 	};
 
 	function closeSelectOnOutside(e: MouseEvent) {
-		if (selectRef && !selectRef.contains(e.target as Node)) {
+		if (triggerEl && !triggerEl.contains(e.target as Node)) {
 			selectOpen = false;
 		}
+	}
+
+	function openSelect() {
+		if (triggerEl) {
+			const rect = triggerEl.getBoundingClientRect();
+			dropdownTop = rect.bottom + 4;
+			dropdownLeft = rect.left;
+			dropdownWidth = rect.width;
+		}
+		selectOpen = true;
 	}
 
 	$effect(() => {
@@ -346,10 +359,11 @@
 				}}
 			/>
 		{:else if control.type === 'select'}
-			<div bind:this={selectRef} class="relative">
+			<div class="relative">
 				<button
+					bind:this={triggerEl}
 					type="button"
-					onclick={() => (selectOpen = !selectOpen)}
+					onclick={() => (selectOpen ? (selectOpen = false) : openSelect())}
 					class="inset-shadow flex h-8 w-full cursor-default items-center justify-between gap-1 rounded-sm bg-background-inset px-3 text-sm font-medium text-foreground transition-colors duration-150"
 				>
 					<span class="truncate">{activeOption?.label ?? 'Выберите…'}</span>
@@ -362,7 +376,8 @@
 				</button>
 				{#if selectOpen}
 					<div
-						class="absolute top-full left-0 z-50 mt-1 flex min-w-full flex-col gap-0.5 rounded-sm bg-background p-1 shadow-2xl card"
+						class="fixed z-[9999] flex flex-col gap-0.5 rounded-sm bg-background p-1 shadow-2xl card"
+						style={`top: ${dropdownTop}px; left: ${dropdownLeft}px; min-width: ${dropdownWidth}px;`}
 						transition:popTransition
 					>
 						{#each control.options as option (option.value)}
