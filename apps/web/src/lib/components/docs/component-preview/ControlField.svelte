@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { cn } from '$lib/utils/cn';
+	import { portal } from '$lib/utils/use-portal';
 	import type { ComponentPreviewControl, ComponentPreviewValue } from './types';
 	import { getDefaultControlValue } from './types';
 	import ColorPicker from './ColorPicker.svelte';
@@ -25,6 +26,7 @@
 
 	let selectOpen = $state(false);
 	let triggerEl = $state<HTMLElement | null>(null);
+	let dropdownEl = $state<HTMLElement | null>(null);
 	let dropdownTop = $state(0);
 	let dropdownLeft = $state(0);
 	let dropdownWidth = $state(0);
@@ -208,28 +210,41 @@
 		onChange(control.name, matchedOption?.value ?? rawValue);
 	};
 
-	function closeSelectOnOutside(e: MouseEvent) {
-		if (triggerEl && !triggerEl.contains(e.target as Node)) {
-			selectOpen = false;
-		}
+	function updateDropdownPosition() {
+		if (!triggerEl) return;
+		const rect = triggerEl.getBoundingClientRect();
+		dropdownTop = rect.bottom + 4;
+		dropdownLeft = rect.left;
+		dropdownWidth = rect.width;
 	}
 
 	function openSelect() {
-		if (triggerEl) {
-			const rect = triggerEl.getBoundingClientRect();
-			dropdownTop = rect.bottom + 4;
-			dropdownLeft = rect.left;
-			dropdownWidth = rect.width;
-		}
+		updateDropdownPosition();
 		selectOpen = true;
+	}
+
+	function closeSelectOnOutside(e: MouseEvent) {
+		const target = e.target as Node;
+		if (triggerEl?.contains(target) || dropdownEl?.contains(target)) return;
+		selectOpen = false;
+	}
+
+	function onScroll() {
+		if (selectOpen) updateDropdownPosition();
 	}
 
 	$effect(() => {
 		if (!selectOpen) return;
 		requestAnimationFrame(() => {
 			document.addEventListener('click', closeSelectOnOutside);
+			window.addEventListener('scroll', onScroll, true);
+			window.addEventListener('resize', updateDropdownPosition);
 		});
-		return () => document.removeEventListener('click', closeSelectOnOutside);
+		return () => {
+			document.removeEventListener('click', closeSelectOnOutside);
+			window.removeEventListener('scroll', onScroll, true);
+			window.removeEventListener('resize', updateDropdownPosition);
+		};
 	});
 
 	const updateFile = async (event: Event) => {
@@ -376,7 +391,9 @@
 				</button>
 				{#if selectOpen}
 					<div
-						class="fixed z-[9999] flex flex-col gap-0.5 rounded-sm bg-background p-1 shadow-2xl card"
+						bind:this={dropdownEl}
+						use:portal={'body'}
+						class="fixed z-[100] flex flex-col gap-0.5 rounded-sm bg-background p-1 shadow-2xl card"
 						style={`top: ${dropdownTop}px; left: ${dropdownLeft}px; min-width: ${dropdownWidth}px;`}
 						transition:popTransition
 					>
