@@ -60,9 +60,9 @@
 			position: relative;
 			isolation: isolate;
 			overflow: hidden;
-			border-radius: 0.55rem;
+			border-radius: 0.75rem;
 			background: var(--background-inset);
-			padding: 1.5px;
+			padding: 0.375rem;
 			box-shadow:
 				inset 0px 1px 1px -0.5px rgba(0, 0, 0, 0.06),
 				inset 0px 3px 3px -1.5px rgba(0, 0, 0, 0.06),
@@ -73,7 +73,8 @@
 
 		.card-inner {
 			position: relative;
-			border-radius: calc(0.55rem - 1.5px);
+			border-radius: 0.5rem;
+			border: 1px solid var(--border);
 			background: var(--background);
 			overflow: hidden;
 			display: flex;
@@ -357,7 +358,7 @@
 			width: 52%;
 			height: auto;
 			flex-shrink: 0;
-			border-radius: 0 0 0 calc(0.55rem - 1.5px);
+			border-radius: 0 0 0 0.5rem;
 		}
 
 		.card-automation .card-body {

@@ -28,8 +28,8 @@
 	);
 </script>
 
-<div class={cn('inset-shadow rounded-md bg-background-inset p-[1.5px]', className)}>
-	<div class="rounded-[calc(var(--radius-md)-1.5px)] bg-background p-4 card">
+<div class={cn('inset-shadow rounded-xl bg-background-inset p-1.5', className)}>
+	<div class="rounded-lg border border-border bg-background p-5 card">
 		<div class="flex items-start gap-3">
 			{#if avatar}
 				<img src={avatar} alt={name} class="size-10 rounded-full object-cover" />
