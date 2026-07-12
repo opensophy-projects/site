@@ -12,12 +12,19 @@
 
 <div
 	class={cn(
-		'rounded-xl border p-5 transition-colors duration-150',
+		'rounded-xl p-1.5 transition-colors duration-150',
 		active
-			? 'border-accent/40 bg-accent/5'
-			: 'inset-shadow border-border bg-background-inset',
+			? 'bg-accent/8 ring-1 ring-accent/15'
+			: 'border border-border bg-background-inset',
 		className
 	)}
 >
-	{@render children?.()}
+	<div
+		class={cn(
+			'rounded-lg border p-5',
+			active ? 'border-accent/15 bg-background/60' : 'border-border bg-background card'
+		)}
+	>
+		{@render children?.()}
+	</div>
 </div>
