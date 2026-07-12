@@ -3,6 +3,7 @@
 	import type { ComponentPreviewControl, ComponentPreviewValue } from './types';
 	import { getDefaultControlValue } from './types';
 	import ColorPicker from './ColorPicker.svelte';
+	import Dropdown from '$lib/components/ui/Dropdown.svelte';
 
 	type Props = {
 		control: ComponentPreviewControl;
@@ -314,23 +315,15 @@
 				}}
 			/>
 		{:else if control.type === 'select'}
-			<div class="relative">
-				<select
-					id={inputId}
-					value={stringValue}
-					class="h-8 appearance-none rounded-sm bg-background pr-8 pl-3 text-left text-sm font-medium text-foreground card transition-colors duration-150 ease-out focus-visible:outline-transparent focus-visible:transition-none"
-					onchange={(event) => {
-						updateSelect(event.currentTarget.value);
-					}}
-				>
-					{#each control.options as option (option.value)}
-						<option value={String(option.value)}>{option.label}</option>
-					{/each}
-				</select>
-				<span
-					aria-hidden="true"
-					class="pointer-events-none absolute top-1/2 right-3 h-2 w-2 -translate-y-1/2 rotate-45 border-r-2 border-b-2 border-foreground-muted"
-				></span>
+			<div class="w-36">
+				<Dropdown
+					items={control.options.map((option) => ({
+						label: option.label,
+						value: String(option.value),
+						active: String(option.value) === stringValue
+					}))}
+					onItemClick={updateSelect}
+				/>
 			</div>
 		{/if}
 	</div>

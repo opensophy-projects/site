@@ -54,8 +54,8 @@
 				{#if searchOpen}
 					<input
 						bind:value={searchQuery}
-						class="pointer-events-auto h-7 w-40 rounded-sm bg-background-inset px-2 text-xs text-foreground"
-						placeholder="Search code"
+						class="inset-shadow pointer-events-auto h-7 w-44 rounded-sm bg-background px-2 text-sm text-foreground placeholder:text-foreground-muted/60 focus-visible:outline-transparent"
+						placeholder="Поиск по коду…"
 					/>
 				{/if}
 				<button

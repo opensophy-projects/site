@@ -19,11 +19,11 @@
 
 {#if controls.length}
 	<div
-		class="mt-2 overflow-visible rounded-md rounded-b-md bg-background card"
+		class="inset-shadow mt-2 overflow-visible rounded-xl bg-background-inset p-1.5"
 		aria-label="Пропсы компонента"
 	>
 		<div
-			class="relative flex items-center justify-between px-4 py-2.5 after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-border after:shadow-2xs after:shadow-white after:content-[''] dark:after:bg-background-inset dark:after:shadow-border"
+			class="relative flex items-center justify-between rounded-lg border border-border bg-background px-4 py-2.5 card after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-border after:content-[''] dark:after:bg-border"
 		>
 			<h2 class="text-sm font-medium tracking-normal text-foreground">Пропсы</h2>
 			<button
