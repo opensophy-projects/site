@@ -205,125 +205,13 @@ function transformChartBlocks(content: string) {
 	);
 }
 
-function transformAdmonitionBlocks(content: string) {
-	return withFencedCodeBlocksProtected(content, (text) =>
-		text.replace(
-			/^:::(note|tip|warning|caution|important)(?:[ \t]+([^\n]+))?\s*\n([\s\S]*?)^:::[ \t]*$/gm,
-			(_match, variant: string, title: string | undefined, body: string) => {
-				const titleAttr = title ? ` title="${title.trim()}"` : '';
-				return `<Admonition variant="${variant}"${titleAttr}>${body.trim()}</Admonition>`;
-			}
-		)
-	);
-}
 
-function transformKatexBlocks(content: string) {
-	return withFencedCodeBlocksProtected(content, (text) =>
-		text.replace(
-			/^:::katex\s*\n([\s\S]*?)^:::\s*$/gm,
-			(_match, body: string) => `<Katex block>${body.trim()}</Katex>`
-		)
-	);
-}
 
-function transformStepsBlocks(content: string) {
-	return withFencedCodeBlocksProtected(content, (text) =>
-		text.replace(/^:::steps\s*\n([\s\S]*?)^:::\s*$/gm, (_match, body: string) => {
-			const lines = body
-				.trim()
-				.split('\n')
-				.filter((l) => l.trim());
-			const steps = lines.map((line) => {
-				const parts = line.split('|');
-				const status = (parts[0] ?? 'todo').trim();
-				const title = (parts[1] ?? '').trim();
-				const text = (parts[2] ?? '').trim();
-				return `<Step title="${title}" status="${status}">${text}</Step>`;
-			});
-			return `<Steps>\n${steps.join('\n')}\n</Steps>`;
-		})
-	);
-}
 
-function transformColumnsBlocks(content: string) {
-	return withFencedCodeBlocksProtected(content, (text) =>
-		text.replace(
-			/^:::columns(?:\s+count=(\d+))?\s*\n([\s\S]*?)^:::\s*$/gm,
-			(_match, countStr: string | undefined, body: string) => {
-				const count = countStr ? parseInt(countStr, 10) : 2;
-				const lines = body
-					.trim()
-					.split('\n')
-					.filter((l) => l.trim());
-				const cards = lines.map((line) => {
-					const sepIdx = line.indexOf('|');
-					const title = sepIdx >= 0 ? line.slice(0, sepIdx).trim() : line.trim();
-					const text = sepIdx >= 0 ? line.slice(sepIdx + 1).trim() : '';
-					return `<Card title="${title}">${text}</Card>`;
-				});
-				return `<Columns count={${count.toString()}}>\n${cards.join('\n')}\n</Columns>`;
-			}
-		)
-	);
-}
 
-function transformCardsBlocks(content: string) {
-	return withFencedCodeBlocksProtected(content, (text) =>
-		text.replace(/^:::cards\s*\n([\s\S]*?)^:::\s*$/gm, (_match, body: string) => {
-			const lines = body
-				.trim()
-				.split('\n')
-				.filter((l) => l.trim());
-			const cards = lines.map((line) => {
-				const parts = line.split('|');
-				const eyebrow = (parts[0] ?? '').trim();
-				const title = (parts[1] ?? '').trim();
-				const text = (parts[2] ?? '').trim();
-				const eyebrowAttr = eyebrow ? ` eyebrow="${eyebrow}"` : '';
-				return `<Card${eyebrowAttr} title="${title}">${text}</Card>`;
-			});
-			return `<Cards>\n${cards.join('\n')}\n</Cards>`;
-		})
-	);
-}
 
-function transformFaqBlocks(content: string) {
-	return withFencedCodeBlocksProtected(content, (text) =>
-		text.replace(/^:::faq\s*\n([\s\S]*?)^:::\s*$/gm, (_match, body: string) => {
-			const items: { question: string; answer: string }[] = [];
-			const lines = body.trim().split('\n');
-			let currentQ = '';
-			const currentA: string[] = [];
-			for (const line of lines) {
-				if (line.startsWith('? ')) {
-					if (currentQ) {
-						items.push({ question: currentQ, answer: currentA.join(' ').trim() });
-						currentA.length = 0;
-					}
-					currentQ = line.slice(2).trim();
-				} else if (currentQ && line.trim()) {
-					currentA.push(line.trim());
-				}
-			}
-			if (currentQ) {
-				items.push({ question: currentQ, answer: currentA.join(' ').trim() });
-			}
-			return `<Faq items={${JSON.stringify(items)}} />`;
-		})
-	);
-}
 
-const MARKDOWN_COMPONENTS = [
-	'Admonition',
-	'Card',
-	'Cards',
-	'Chart',
-	'Columns',
-	'Faq',
-	'Katex',
-	'Step',
-	'Steps'
-] as const;
+const MARKDOWN_COMPONENTS = ['Admonition', 'Card', 'Cards', 'Chart', 'Columns', 'Faq', 'Katex', 'Step', 'Steps'] as const;
 
 function injectMarkdownComponentImports(content: string, filename: string) {
 	// Check if this is a .svx file (use includes() for robustness)
@@ -424,20 +312,7 @@ const config: Config = {
 	preprocess: [
 		{
 			markup: ({ content, filename = '' }) => ({
-				code: injectMarkdownComponentImports(
-					transformFaqBlocks(
-						transformCardsBlocks(
-							transformColumnsBlocks(
-								transformStepsBlocks(
-									transformKatexBlocks(
-										transformAdmonitionBlocks(transformChartBlocks(content))
-									)
-								)
-							)
-						)
-					),
-					filename
-				)
+				code: injectMarkdownComponentImports(transformChartBlocks(content), filename)
 			})
 		},
 		mdsvex(mdsvexOptions as unknown as Parameters<typeof mdsvex>[0]),
