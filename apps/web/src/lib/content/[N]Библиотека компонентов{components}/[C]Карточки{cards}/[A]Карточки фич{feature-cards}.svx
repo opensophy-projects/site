@@ -1,0 +1,80 @@
+---
+title: Карточки фич
+description: Сетка карточек с иконками для демонстрации ключевых возможностей продукта или раздела.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import FeatureCards from '$lib/components/ui-registry/FeatureCards.svelte';
+	import { FeatureCardsSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+</script>
+
+# Карточки фич
+
+Сетка карточек с иконкой, заголовком и описанием. Используется для демонстрации ключевых возможностей продукта, преимуществ или разделов документации. Поддерживает кастомный список карточек через пропс.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'FeatureCards.svelte', code: FeatureCardsSource, language: 'svelte' }
+	]}
+>
+	<div class="w-full max-w-2xl p-4">
+		<FeatureCards />
+	</div>
+</ComponentPreview>
+
+## Особенности
+
+- Адаптивная сетка: 1 колонка на мобильных, 2 — на широких экранах
+- Иконка с `inset-shadow` в цвете `accent`
+- Фиксированная высота карточки (`h-54` / `h-72`) с вертикальным выравниванием контента
+- Полностью управляемый список карточек через пропс `cards`
+
+## Использование
+
+### Дефолтные карточки
+
+```svelte
+<script>
+	import FeatureCards from '$lib/components/ui-registry/FeatureCards.svelte';
+</script>
+
+<FeatureCards />
+```
+
+### Кастомные карточки
+
+```svelte
+<FeatureCards
+	cards={[
+		{
+			title: 'Быстрая интеграция',
+			description: 'Подключите за несколько строк кода — никаких лишних зависимостей.',
+			icon: 'contracts'
+		},
+		{
+			title: 'Расписание задач',
+			description: 'Управляйте очерёдностью задач через декларативный планировщик.',
+			icon: 'scheduling'
+		}
+	]}
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `cards` | `FeatureCard[]` | 4 дефолтных карточки | Массив карточек |
+| `class` | `string` | `''` | Дополнительные CSS-классы |
+
+### Тип `FeatureCard`
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `title` | `string` | Заголовок карточки |
+| `description` | `string` | Описание |
+| `icon` | `'contracts' \| 'scheduling' \| 'processing' \| 'diagnostics'` | Иконка карточки |
