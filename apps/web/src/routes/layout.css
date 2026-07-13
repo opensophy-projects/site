@@ -111,6 +111,13 @@ html {
 	color: var(--foreground);
 }
 
+mark {
+	background-color: var(--accent);
+	color: var(--background);
+	border-radius: 2px;
+	padding: 0 2px;
+}
+
 @utility inset-shadow {
 	position: relative;
 	isolation: isolate;
@@ -147,7 +154,8 @@ html {
 		cursor: default;
 	}
 
-	[data-doc-content] .task-list-item:has(input[type='checkbox']:checked) {
-		color: var(--color-accent);
+	[data-doc-content] .task-list-item:has(input[type='checkbox']:checked),
+	[data-doc-content] .task-list-item[data-checked] {
+		color: var(--color-accent) !important;
 	}
 }
