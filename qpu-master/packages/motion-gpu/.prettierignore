@@ -1,0 +1,4 @@
+dist
+.svelte-kit
+benchmarks/results
+test-results

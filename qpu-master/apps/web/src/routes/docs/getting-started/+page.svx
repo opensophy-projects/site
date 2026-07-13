@@ -1,0 +1,70 @@
+---
+title: Getting Started
+description: Step-by-step guide to installing Motion GPU and building your first shader.
+---
+
+<script lang="ts">
+	import InstallationTabs from '$lib/components/docs/InstallationTabs.svelte';
+	import FrameworkBlock from '$lib/components/docs/FrameworkBlock.svelte';
+	import * as ex from './examples';
+</script>
+
+This guide walks you through installing Motion GPU and building your first fullscreen shader, step by step. By the end, you will understand the core `defineMaterial` → `FragCanvas` → runtime hooks (`useFrame`, `usePointer`) workflow.
+
+## Prerequisites
+
+- **Svelte 5** project (SvelteKit or standalone), **React 19** project, or **Vue 3** project
+- A browser with **WebGPU** support (Chrome 113+, Edge 113+, Safari 18+, Firefox Nightly behind flag)
+
+## Install
+
+<InstallationTabs />
+
+Adapter peer dependencies are optional and only required for the adapter you use:
+
+- `svelte ^5` for `@motion-core/motion-gpu/svelte`
+- `react ^18 || ^19` + `react-dom ^18 || ^19` for `@motion-core/motion-gpu/react`
+- `vue ^3.5` for `@motion-core/motion-gpu/vue`
+
+## Step 1: Draw a static gradient
+
+The simplest possible setup — a fullscreen UV gradient with no animation:
+
+<FrameworkBlock svelteCode={ex.step1Svelte} reactCode={ex.step1React} vueCode={ex.step1Vue} />
+
+**What is happening here:**
+
+1. `defineMaterial` validates your fragment string and freezes the result into an immutable `FragMaterial`.
+2. The fragment must declare `fn frag(uv: vec2f) -> vec4f` — this is the only hard contract. `uv` ranges from `(0, 0)` at bottom-left to `(1, 1)` at top-right.
+3. `FragCanvas` initializes WebGPU, compiles the shader, and renders every frame.
+4. The container `<div>` determines the canvas size. `FragCanvas` fills its parent.
+
+## Step 2: Add a time-based animation
+
+To animate your shader, you need a `uniform` and a `useFrame` callback. Because `useFrame` must run inside the `FragCanvas` context, you put it in a **child component**:
+
+<FrameworkBlock svelteCode={ex.step2AppSvelte} reactCode={ex.step2AppReact} vueCode={ex.step2AppVue} />
+
+<FrameworkBlock svelteCode={ex.step2RuntimeSvelte} reactCode={ex.step2RuntimeReact} vueCode={ex.step2RuntimeVue} />
+
+**What is happening here:**
+
+1. `uniforms: { uTime: { type: 'f32', value: 0 } }` declares a single `f32` uniform with initial value `0`.
+2. In the fragment shader, `uTime` is available as `motiongpuUniforms.uTime` — the library generates the binding automatically.
+3. `useFrame` registers a task that runs **every frame** before rendering. `state.time` is the `requestAnimationFrame` timestamp in seconds (monotonic clock).
+4. `state.setUniform('uTime', state.time)` updates the uniform value in the runtime override map. The renderer writes only dirty ranges to the GPU buffer.
+
+## Step 3: Run this baseline in your app
+
+At this point you have the minimal production baseline:
+
+1. strict `frag(...)` contract,
+2. validated immutable material,
+3. runtime updates via `useFrame` in canvas subtree.
+
+## Recommended first-production checklist
+
+1. Keep shader contracts strict (`frag` for material and `PingPongShaderPass`, `shade` for post-process `ShaderPass`).
+2. Predeclare every runtime-updated uniform/texture in `defineMaterial`.
+3. Select render mode intentionally (`always`, `on-demand`, `manual`) for your workload.
+4. Wire `onError` and decide overlay strategy (`showErrorOverlay`/custom renderer).

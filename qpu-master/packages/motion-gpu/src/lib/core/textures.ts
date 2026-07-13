@@ -1,0 +1,331 @@
+import { storageTextureSampleScalarType } from './compute-shader.js';
+import { assertUniformName } from './uniforms.js';
+import type {
+	TextureData,
+	TextureDefinition,
+	TextureDefinitionMap,
+	TextureUpdateMode,
+	TextureValue
+} from './types.js';
+
+/**
+ * Texture definition with defaults and normalized numeric limits applied.
+ */
+export interface NormalizedTextureDefinition {
+	/**
+	 * Normalized source value.
+	 */
+	source: TextureValue;
+	/**
+	 * Effective color space.
+	 */
+	colorSpace: 'srgb' | 'linear';
+	/**
+	 * Effective texture format.
+	 */
+	format: GPUTextureFormat;
+	/**
+	 * Effective flip-y flag.
+	 */
+	flipY: boolean;
+	/**
+	 * Effective mipmap toggle.
+	 */
+	generateMipmaps: boolean;
+	/**
+	 * Effective premultiplied-alpha flag.
+	 */
+	premultipliedAlpha: boolean;
+	/**
+	 * Effective dynamic update strategy.
+	 */
+	update?: TextureUpdateMode;
+	/**
+	 * Effective anisotropy level.
+	 */
+	anisotropy: number;
+	/**
+	 * Effective filter mode.
+	 */
+	filter: GPUFilterMode;
+	/**
+	 * Effective U address mode.
+	 */
+	addressModeU: GPUAddressMode;
+	/**
+	 * Effective V address mode.
+	 */
+	addressModeV: GPUAddressMode;
+	/**
+	 * Whether this texture is a storage texture (writable by compute).
+	 */
+	storage: boolean;
+	/**
+	 * Whether this texture should be exposed as a fragment-stage sampled binding.
+	 */
+	fragmentVisible: boolean;
+	/**
+	 * Explicit width for storage textures. Undefined when derived from source.
+	 */
+	width?: number;
+	/**
+	 * Explicit height for storage textures. Undefined when derived from source.
+	 */
+	height?: number;
+}
+
+export interface TextureSamplingLayout {
+	sampleType: GPUTextureSampleType;
+	samplerType: GPUSamplerBindingType;
+	effectiveFilter: GPUFilterMode;
+	filterWasCoerced: boolean;
+}
+
+/**
+ * Default sampling filter for textures when no explicit value is provided.
+ */
+const DEFAULT_TEXTURE_FILTER: GPUFilterMode = 'linear';
+
+/**
+ * Default addressing mode for textures when no explicit value is provided.
+ */
+const DEFAULT_TEXTURE_ADDRESS_MODE: GPUAddressMode = 'clamp-to-edge';
+
+export function isFloat32TextureFormat(format: GPUTextureFormat): boolean {
+	return format === 'r32float' || format === 'rg32float' || format === 'rgba32float';
+}
+
+function hasFloat32FilterableFeature(features: GPUSupportedFeatures | undefined): boolean {
+	return features?.has?.('float32-filterable' as GPUFeatureName) === true;
+}
+
+export function resolveTextureSamplingLayout(input: {
+	format: GPUTextureFormat;
+	filter: GPUFilterMode;
+	deviceFeatures?: GPUSupportedFeatures;
+}): TextureSamplingLayout {
+	if (input.format.endsWith('uint')) {
+		return {
+			sampleType: 'uint',
+			samplerType: 'non-filtering',
+			effectiveFilter: 'nearest',
+			filterWasCoerced: input.filter !== 'nearest'
+		};
+	}
+
+	if (input.format.endsWith('sint')) {
+		return {
+			sampleType: 'sint',
+			samplerType: 'non-filtering',
+			effectiveFilter: 'nearest',
+			filterWasCoerced: input.filter !== 'nearest'
+		};
+	}
+
+	if (isFloat32TextureFormat(input.format) && !hasFloat32FilterableFeature(input.deviceFeatures)) {
+		return {
+			sampleType: 'unfilterable-float',
+			samplerType: 'non-filtering',
+			effectiveFilter: 'nearest',
+			filterWasCoerced: input.filter !== 'nearest'
+		};
+	}
+
+	return {
+		sampleType: 'float',
+		samplerType: input.filter === 'linear' ? 'filtering' : 'non-filtering',
+		effectiveFilter: input.filter,
+		filterWasCoerced: false
+	};
+}
+
+/**
+ * Validates and returns sorted texture keys.
+ *
+ * @param textures - Texture definition map.
+ * @returns Lexicographically sorted texture keys.
+ */
+export function resolveTextureKeys(textures: TextureDefinitionMap): string[] {
+	const keys = Object.keys(textures).sort();
+	for (const key of keys) {
+		assertUniformName(key);
+	}
+	return keys;
+}
+
+/**
+ * Applies defaults and clamps to a single texture definition.
+ *
+ * @param definition - Optional texture definition.
+ * @returns Normalized definition with deterministic defaults.
+ */
+export function normalizeTextureDefinition(
+	definition: TextureDefinition | undefined
+): NormalizedTextureDefinition {
+	const isStorage = definition?.storage === true;
+	const defaultFormat = definition?.colorSpace === 'linear' ? 'rgba8unorm' : 'rgba8unorm-srgb';
+	const format = definition?.format ?? defaultFormat;
+	const sampleScalar = isStorage ? storageTextureSampleScalarType(format) : 'f32';
+	const explicitFragmentVisible = definition?.fragmentVisible;
+
+	if (explicitFragmentVisible === true && sampleScalar !== 'f32') {
+		throw new Error(
+			`Texture with storage format "${format}" cannot be fragmentVisible: ` +
+				`fragment shader uses texture_2d<f32>, which is incompatible with ${sampleScalar} sample type. ` +
+				`Set fragmentVisible: false or use a float-sampled storage format.`
+		);
+	}
+
+	const fragmentVisible = explicitFragmentVisible ?? sampleScalar === 'f32';
+	const normalized: NormalizedTextureDefinition = {
+		source: definition?.source ?? null,
+		colorSpace: definition?.colorSpace ?? 'srgb',
+		format,
+		flipY: definition?.flipY ?? true,
+		generateMipmaps: definition?.generateMipmaps ?? false,
+		premultipliedAlpha: definition?.premultipliedAlpha ?? false,
+		anisotropy: Math.max(1, Math.min(16, Math.floor(definition?.anisotropy ?? 1))),
+		filter: definition?.filter ?? DEFAULT_TEXTURE_FILTER,
+		addressModeU: definition?.addressModeU ?? DEFAULT_TEXTURE_ADDRESS_MODE,
+		addressModeV: definition?.addressModeV ?? DEFAULT_TEXTURE_ADDRESS_MODE,
+		storage: isStorage,
+		fragmentVisible
+	};
+
+	if (definition?.width !== undefined) {
+		normalized.width = definition.width;
+	}
+	if (definition?.height !== undefined) {
+		normalized.height = definition.height;
+	}
+
+	if (definition?.update !== undefined) {
+		normalized.update = definition.update;
+	}
+
+	return normalized;
+}
+
+/**
+ * Normalizes all texture definitions for already-resolved texture keys.
+ *
+ * @param textures - Source texture definitions.
+ * @param textureKeys - Texture keys to normalize.
+ * @returns Normalized map keyed by `textureKeys`.
+ */
+export function normalizeTextureDefinitions(
+	textures: TextureDefinitionMap,
+	textureKeys: string[]
+): Record<string, NormalizedTextureDefinition> {
+	const out: Record<string, NormalizedTextureDefinition> = {};
+	for (const key of textureKeys) {
+		out[key] = normalizeTextureDefinition(textures[key]);
+	}
+	return out;
+}
+
+/**
+ * Checks whether a texture value is a structured `{ source, width?, height? }` object.
+ */
+export function isTextureData(value: TextureValue): value is TextureData {
+	return typeof value === 'object' && value !== null && 'source' in value;
+}
+
+/**
+ * Converts supported texture input variants to normalized `TextureData`.
+ *
+ * @param value - Texture value input.
+ * @returns Structured texture data or `null`.
+ */
+export function toTextureData(value: TextureValue): TextureData | null {
+	if (value === null) {
+		return null;
+	}
+
+	if (isTextureData(value)) {
+		return value;
+	}
+
+	return { source: value };
+}
+
+/**
+ * Resolves effective runtime texture update strategy.
+ */
+export function resolveTextureUpdateMode(input: {
+	source: TextureData['source'];
+	override?: TextureUpdateMode;
+	defaultMode?: TextureUpdateMode;
+}): TextureUpdateMode {
+	if (input.override) {
+		return input.override;
+	}
+
+	if (input.defaultMode) {
+		return input.defaultMode;
+	}
+
+	if (isVideoTextureSource(input.source)) {
+		return 'perFrame';
+	}
+
+	return 'once';
+}
+
+/**
+ * Resolves texture dimensions from explicit values or source metadata.
+ *
+ * @param data - Texture payload.
+ * @returns Positive integer width/height.
+ * @throws {Error} When dimensions cannot be resolved to positive values.
+ */
+export function resolveTextureSize(data: TextureData): {
+	width: number;
+	height: number;
+} {
+	const source = data.source as {
+		width?: number;
+		height?: number;
+		naturalWidth?: number;
+		naturalHeight?: number;
+		videoWidth?: number;
+		videoHeight?: number;
+	};
+
+	const width = data.width ?? source.naturalWidth ?? source.videoWidth ?? source.width ?? 0;
+	const height = data.height ?? source.naturalHeight ?? source.videoHeight ?? source.height ?? 0;
+
+	if (width <= 0 || height <= 0) {
+		throw new Error('Texture source must have positive width and height');
+	}
+
+	return { width, height };
+}
+
+/**
+ * Computes the number of mipmap levels for a base texture size.
+ *
+ * @param width - Base width.
+ * @param height - Base height.
+ * @returns Total mip level count (minimum `1`).
+ */
+export function getTextureMipLevelCount(width: number, height: number): number {
+	let levels = 1;
+	let currentWidth = Math.max(1, width);
+	let currentHeight = Math.max(1, height);
+
+	while (currentWidth > 1 || currentHeight > 1) {
+		currentWidth = Math.max(1, Math.floor(currentWidth / 2));
+		currentHeight = Math.max(1, Math.floor(currentHeight / 2));
+		levels += 1;
+	}
+
+	return levels;
+}
+
+/**
+ * Checks whether the source is an `HTMLVideoElement`.
+ */
+export function isVideoTextureSource(source: TextureData['source']): source is HTMLVideoElement {
+	return typeof HTMLVideoElement !== 'undefined' && source instanceof HTMLVideoElement;
+}

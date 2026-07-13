@@ -1,0 +1,163 @@
+@import 'tailwindcss';
+
+@variant dark (&:where(.dark, .dark *));
+
+@font-face {
+	font-family: 'APK Galeria';
+	src: url('../lib/assets/fonts/APK-Galeria-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'APK Galeria';
+	src: url('../lib/assets/fonts/APK-Galeria-Medium.woff2') format('woff2');
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Berkeley Mono';
+	src: url('/fonts/BerkeleyMono-Regular.woff2') format('woff2');
+	font-weight: 200 800;
+	font-style: normal;
+	font-display: swap;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+:root {
+	--base-hue: 265;
+
+	--radius-base: 0.275rem;
+
+	--background-inset: oklch(0.9764 0.0013 var(--base-hue));
+	--background: oklch(1 0 0);
+	--background-muted: oklch(0.9264 0.002 var(--base-hue));
+	--white-fixed: oklch(1 0 0);
+	--foreground: oklch(0.1881 0.006 var(--base-hue));
+	--foreground-muted: oklch(0.5493 0.0081 var(--base-hue));
+	--accent: oklch(0.6996 0.201959 44.4414);
+	--accent-secondary: oklch(0.5096 0.151959 44.4414);
+	--border: oklch(0 0.0013 var(--base-hue) / 0.08);
+	--highlight: oklch(0 0.0013 var(--base-hue));
+}
+
+.dark {
+	--background-inset: oklch(0.2099 0.0039 var(--base-hue));
+	--background: oklch(0.2574 0.0056 var(--base-hue));
+	--background-muted: oklch(0.3017 0.0073 var(--base-hue));
+	--foreground: oklch(0.9674 0.0013 var(--base-hue));
+	--foreground-muted: oklch(0.669 0.0107 var(--base-hue));
+	--accent: oklch(0.6996 0.181959 44.4414);
+	--accent-secondary: oklch(0.5096 0.131959 44.4414);
+	--border: oklch(1 0.013 var(--base-hue) / 0.05);
+	--highlight: oklch(1 0.013 var(--base-hue));
+}
+
+@theme inline {
+	--font-sans: 'APK Galeria';
+	--font-mono: 'Berkeley Mono';
+
+	--color-background-inset: var(--background-inset);
+	--color-background: var(--background);
+	--color-background-muted: var(--background-muted);
+	--color-foreground: var(--foreground);
+	--color-foreground-muted: var(--foreground-muted);
+	--color-white-fixed: var(--white-fixed);
+	--color-accent: var(--accent);
+	--color-accent-secondary: var(--accent-secondary);
+	--color-border: var(--border);
+
+	--radius-xs: calc(var(--radius-base) * 1);
+	--radius-sm: calc(var(--radius-base) * 2);
+	--radius-md: calc(var(--radius-base) * 3);
+	--radius-lg: calc(var(--radius-base) * 4);
+	--radius-xl: calc(var(--radius-base) * 6);
+	--radius-2xl: calc(var(--radius-base) * 8);
+	--radius-3xl: calc(var(--radius-base) * 12);
+	--radius-4xl: calc(var(--radius-base) * 16);
+	--radius-full: 9999px;
+}
+
+@layer base {
+	body {
+		@apply bg-background font-sans text-foreground antialiased;
+	}
+
+	* {
+		outline: 2px solid transparent;
+		outline-offset: 2px;
+		transition:
+			outline-color 0.15s ease-out,
+			outline-offset 0.15s ease-out;
+	}
+
+	*:focus-visible {
+		outline-color: var(--color-accent);
+		outline-offset: 2px;
+	}
+
+	::selection {
+		background-color: oklch(from var(--color-accent) l c h / 0.25);
+		color: var(--color-foreground);
+	}
+}
+
+@utility inset-shadow {
+	position: relative;
+	isolation: isolate;
+	box-shadow:
+		inset 0px 1px 1px -0.5px rgba(0, 0, 0, 0.06),
+		inset 0px 3px 3px -1.5px rgba(0, 0, 0, 0.06),
+		inset 0px 6px 6px -3px rgba(0, 0, 0, 0.06),
+		inset 0 -0.5px rgba(255, 255, 255, 0.08),
+		inset 0 0 0 0.5px oklch(from var(--highlight) l c h / 8%);
+}
+
+@utility card {
+	box-shadow:
+		0 -0.5px rgba(255, 255, 255, 0.08),
+		0 4px 8px rgba(0, 0, 0, 0.06),
+		0 0 0 0.5px oklch(from var(--highlight) l c h / 8%),
+		0 1px 6px -4px #000;
+}
+
+@utility bg-dashed {
+	background-image: linear-gradient(
+		45deg,
+		var(--color-border) 12.5%,
+		transparent 12.5%,
+		transparent 50%,
+		var(--color-border) 50%,
+		var(--color-border) 62.5%,
+		transparent 62.5%,
+		transparent 100%
+	);
+	background-size: 0.25rem 0.25rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	:root.js [data-landing-anim-root][data-landing-anim-state='preparing'] [data-reveal='badge'],
+	:root.js [data-landing-anim-root][data-landing-anim-state='preparing'] [data-reveal='card'],
+	:root.js
+		[data-landing-anim-root][data-landing-anim-state='preparing']
+		[data-reveal='actions']
+		> *,
+	:root.js [data-landing-anim-root][data-landing-anim-state='preparing'] [data-reveal-section] h1,
+	:root.js [data-landing-anim-root][data-landing-anim-state='preparing'] [data-reveal-section] h2,
+	:root.js [data-landing-anim-root][data-landing-anim-state='preparing'] [data-reveal-section] h3,
+	:root.js [data-landing-anim-root][data-landing-anim-state='preparing'] [data-reveal-section] p,
+	:root.js [data-landing-anim-root][data-landing-anim-state='preparing'] [data-reveal-section] a,
+	:root.js
+		[data-landing-anim-root][data-landing-anim-state='preparing']
+		[data-reveal-section]
+		[data-reveal='text'] {
+		opacity: 0;
+		transform: translateY(15px);
+	}
+}

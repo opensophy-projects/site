@@ -1,0 +1,80 @@
+---
+title: Material API
+description: Reference for defineMaterial, resolveMaterial, and material contract types.
+---
+
+API contracts for material authoring and compilation boundary.
+
+## Entrypoints
+
+| Entrypoint                       | Exports                             |
+| -------------------------------- | ----------------------------------- |
+| `@motion-core/motion-gpu/svelte` | `defineMaterial`                    |
+| `@motion-core/motion-gpu/react`  | `defineMaterial`                    |
+| `@motion-core/motion-gpu/vue`    | `defineMaterial`                    |
+| `@motion-core/motion-gpu`        | `defineMaterial`, `resolveMaterial` |
+
+## `defineMaterial(input)`
+
+Validates and freezes material definitions. Use this for all user-facing material creation.
+
+### Input: `FragMaterialInput`
+
+| Field            | Type                         | Required |
+| ---------------- | ---------------------------- | -------- |
+| `fragment`       | `string`                     | Yes      |
+| `uniforms`       | `UniformMap`                 | No       |
+| `textures`       | `TextureDefinitionMap`       | No       |
+| `defines`        | `MaterialDefines`            | No       |
+| `includes`       | `MaterialIncludes`           | No       |
+| `storageBuffers` | `StorageBufferDefinitionMap` | No       |
+
+### Output: `FragMaterial`
+
+Immutable, validated object with frozen top-level maps:
+
+- `fragment`
+- `uniforms`
+- `textures`
+- `defines`
+- `includes`
+- `storageBuffers`
+
+`signature` and preprocessed WGSL are internal runtime outputs, not public fields of `FragMaterial`.
+
+## `resolveMaterial(material)`
+
+Framework-agnostic core helper that turns a validated `FragMaterial` into runtime-ready payload:
+
+- preprocessed WGSL source
+- uniform layout metadata
+- texture metadata (including storage + `fragmentVisible` config)
+- storage buffer keys and definitions
+- storage texture keys
+- deterministic material signature
+
+Use this in adapter implementations or low-level tooling.
+
+## Hard contracts
+
+| Contract                                                                         | Behavior                          |
+| -------------------------------------------------------------------------------- | --------------------------------- |
+| Fragment entrypoint must be `fn frag(uv: vec2f) -> vec4f`                        | Throws during validation          |
+| Fragment output colors use straight alpha; Motion GPU premultiplies at canvas presentation | Preserves shader/pass targets while matching premultiplied canvas compositing |
+| Uniform/texture/define/include/storage buffer keys must be WGSL-safe identifiers | Throws during validation          |
+| Storage buffer `size` must be `> 0` and a multiple of 4                          | Throws during validation          |
+| Matrix uniforms should use typed form `{ type: 'mat4x4f', value: [...] }`        | Ensures stable layout and packing |
+
+## Define value types
+
+`MaterialDefines` accepts booleans, untyped numbers (`f32`), typed scalar values (`bool`, `f32`, `i32`, `u32`), and typed float vectors (`vec2f`, `vec3f`, `vec4f`). Vector define values must be finite numeric tuples with the matching component count.
+
+## Related docs
+
+- [Defining Materials](/docs/defining-materials)
+- [Writing Shaders](/docs/writing-shaders)
+- [Textures](/docs/textures)
+- [Shader Includes and Defines](/docs/shader-includes-and-defines)
+- [Storage Buffers](/docs/storage-buffers)
+- [Compute Shaders](/docs/compute-shaders)
+- [Passes API](/docs/api-passes-reference)
