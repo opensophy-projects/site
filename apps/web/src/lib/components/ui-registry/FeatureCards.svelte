@@ -5,10 +5,12 @@
 	import Information from 'carbon-icons-svelte/lib/Information.svelte';
 	import Idea from 'carbon-icons-svelte/lib/Idea.svelte';
 
+	type IconKey = 'contracts' | 'scheduling' | 'processing' | 'diagnostics';
+
 	type FeatureCard = {
 		title: string;
 		description: string;
-		icon: 'contracts' | 'scheduling' | 'processing' | 'diagnostics';
+		icon: IconKey;
 	};
 
 	type Props = {
@@ -49,7 +51,9 @@
 <div class={cn('inset-shadow w-full overflow-hidden rounded-xl bg-background-inset p-2', className)}>
 	<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
 		{#each cards as card (card.title)}
-			<div class="inset-shadow relative overflow-hidden rounded-lg bg-background-inset p-1.5">
+			<div
+				class="inset-shadow relative overflow-hidden rounded-lg bg-background-inset p-1.5"
+			>
 				<article class="grid h-54 rounded-md bg-background p-4 card sm:h-72 sm:p-6">
 					<div class="flex items-start justify-start">
 						<div
@@ -68,7 +72,9 @@
 					</div>
 					<div class="mt-auto grid gap-4">
 						<h3 class="text-xl font-medium tracking-tight text-foreground">{card.title}</h3>
-						<p class="text-base font-normal tracking-normal text-foreground-muted">{card.description}</p>
+						<p class="text-base font-normal tracking-normal text-foreground-muted">
+							{card.description}
+						</p>
 					</div>
 				</article>
 			</div>

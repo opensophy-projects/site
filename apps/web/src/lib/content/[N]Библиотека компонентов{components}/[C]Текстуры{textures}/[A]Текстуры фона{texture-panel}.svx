@@ -1,0 +1,117 @@
+---
+title: Текстуры фона
+description: Декоративные панели с CSS-текстурами — штриховка, сетка, точки и линии на основе токена border.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import TexturePanel from '$lib/components/ui-registry/TexturePanel.svelte';
+	import { TexturePanelSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'variant',
+			label: 'Вариант',
+			defaultValue: 'dashed',
+			options: [
+				{ label: 'Диагональная штриховка', value: 'dashed' },
+				{ label: 'Сетка', value: 'grid' },
+				{ label: 'Точки', value: 'dots' },
+				{ label: 'Горизонтальные линии', value: 'lines-h' },
+				{ label: 'Вертикальные линии', value: 'lines-v' },
+				{ label: 'Пустая', value: 'blank' }
+			]
+		}
+	];
+</script>
+
+# Текстуры фона
+
+Контейнер с CSS-текстурой на фоне. Паттерн строится на `var(--color-border)`, поэтому автоматически адаптируется к светлой и тёмной теме. Используется как декоративный фон секций, боковых панелей и пустых областей.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'TexturePanel.svelte', code: TexturePanelSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="w-full p-4">
+			<TexturePanel variant={values.variant as 'dashed' | 'grid' | 'dots' | 'lines-h' | 'lines-v' | 'blank'} class="min-h-32" />
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Все варианты
+
+<ComponentPreview
+	sources={[{ name: 'TexturePanel.svelte', code: TexturePanelSource, language: 'svelte' }]}
+>
+	<div class="grid grid-cols-2 gap-3 p-4 w-full sm:grid-cols-3">
+		<TexturePanel variant="dashed">
+			<div class="flex h-20 items-center justify-center text-xs text-foreground-muted">dashed</div>
+		</TexturePanel>
+		<TexturePanel variant="grid">
+			<div class="flex h-20 items-center justify-center text-xs text-foreground-muted">grid</div>
+		</TexturePanel>
+		<TexturePanel variant="dots">
+			<div class="flex h-20 items-center justify-center text-xs text-foreground-muted">dots</div>
+		</TexturePanel>
+		<TexturePanel variant="lines-h">
+			<div class="flex h-20 items-center justify-center text-xs text-foreground-muted">lines-h</div>
+		</TexturePanel>
+		<TexturePanel variant="lines-v">
+			<div class="flex h-20 items-center justify-center text-xs text-foreground-muted">lines-v</div>
+		</TexturePanel>
+		<TexturePanel variant="blank">
+			<div class="flex h-20 items-center justify-center text-xs text-foreground-muted">blank</div>
+		</TexturePanel>
+	</div>
+</ComponentPreview>
+
+## Особенности
+
+- 6 вариантов: `dashed`, `grid`, `dots`, `lines-h`, `lines-v`, `blank`
+- Паттерн использует `var(--color-border)` — работает в светлой и тёмной теме
+- Принимает любой `children` — удобно для позиционирования контента поверх текстуры
+- Обёртка с `inset-shadow` и `bg-background-inset` в стиле проекта
+
+## Использование
+
+```svelte
+<script>
+	import TexturePanel from '$lib/components/ui-registry/TexturePanel.svelte';
+</script>
+
+<!-- Диагональная штриховка -->
+<TexturePanel variant="dashed" />
+
+<!-- Сетка с контентом -->
+<TexturePanel variant="grid">
+	<div class="p-6">
+		<h2>Контент поверх сетки</h2>
+	</div>
+</TexturePanel>
+```
+
+## Боковые панели секции (паттерн из дизайна)
+
+Типичное использование — боковые декоративные области в секциях страницы:
+
+```svelte
+<div class="grid grid-cols-[1fr_minmax(0,64rem)_1fr]">
+	<TexturePanel variant="dashed" class="rounded-none" />
+	<div class="px-8 py-16">Контент секции</div>
+	<TexturePanel variant="dashed" class="rounded-none" />
+</div>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `variant` | `'dashed' \| 'grid' \| 'dots' \| 'lines-h' \| 'lines-v' \| 'blank'` | `'dashed'` | Тип текстуры |
+| `class` | `string` | `''` | Дополнительные CSS-классы |
+| `children` | `Snippet` | — | Контент поверх текстуры |
