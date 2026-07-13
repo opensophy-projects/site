@@ -125,13 +125,14 @@ const markdownFeatureFormatter = () => {
 						el.properties = {
 							...el.properties,
 					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-							class: `${String(el.properties?.class ?? '')} task-list-item`.trim()
+							class: `${String(el.properties?.class ?? '')} task-list-item`.trim(),
+							...(checked ? { 'data-checked': true } : {})
 						};
 						first.value = first.value.slice(match[0].length);
 						el.children.unshift({
 							type: 'element',
 							tagName: 'input',
-							properties: { type: 'checkbox', checked, disabled: true, ariaHidden: true },
+							properties: { type: 'checkbox', checked, ariaHidden: true },
 							children: []
 						});
 					}
@@ -205,16 +206,13 @@ function transformChartBlocks(content: string) {
 	);
 }
 
-const MARKDOWN_COMPONENTS = [
-	'Admonition',
-	'Card',
-	'Cards',
-	'Chart',
-	'Columns',
-	'Katex',
-	'Step',
-	'Steps'
-] as const;
+
+
+
+
+
+
+const MARKDOWN_COMPONENTS = ['Admonition', 'Card', 'Cards', 'Chart', 'Columns', 'Faq', 'Katex', 'Step', 'Steps'] as const;
 
 function injectMarkdownComponentImports(content: string, filename: string) {
 	// Check if this is a .svx file (use includes() for robustness)

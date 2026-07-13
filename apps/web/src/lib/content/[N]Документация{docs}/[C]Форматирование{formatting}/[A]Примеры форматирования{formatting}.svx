@@ -2,6 +2,18 @@
 title: Примеры форматирования Markdown
 ---
 
+<script lang="ts">
+	import Faq from '$lib/components/ui/Faq.svelte';
+	import Admonition from '$lib/components/docs/markdown/Admonition.svelte';
+	import Card from '$lib/components/docs/markdown/Card.svelte';
+	import Cards from '$lib/components/docs/markdown/Cards.svelte';
+	import Chart from '$lib/components/docs/markdown/Chart.svelte';
+	import Columns from '$lib/components/docs/markdown/Columns.svelte';
+	import Step from '$lib/components/docs/markdown/Step.svelte';
+	import Katex from '$lib/components/docs/markdown/Katex.svelte';
+	import Steps from '$lib/components/docs/markdown/Steps.svelte';
+</script>
+
 Эта страница показывает, как писать контент в новой системе документации. Каждый пример сначала показывает результат, а сразу ниже — codeblock с исходным синтаксисом.
 
 # Заголовок H1
@@ -528,3 +540,28 @@ export function example(title: string) {
 | Творчество   | 6           | 9        |
 :::
 ````
+
+## FAQ аккордеон
+
+Компонент `Faq` отображает раскрывающийся список вопросов и ответов с плавной анимацией.
+
+<Faq />
+
+```svelte
+<script>
+	import Faq from '$lib/components/ui/Faq.svelte';
+</script>
+
+<Faq />
+```
+
+### Кастомные вопросы
+
+```svelte
+<Faq
+	items={[
+		{ question: 'Что это?', answer: 'Это шаблонный ответ на ваш вопрос.' },
+		{ question: 'Как начать?', answer: 'Следуйте руководству по быстрому старту.' }
+	]}
+/>
+```

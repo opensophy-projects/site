@@ -13,6 +13,8 @@ import TextRepelSource from './TextRepel.svelte?raw';
 import TextScrambleSource from './TextScramble.svelte?raw';
 import WeightWaveSource from './WeightWave.svelte?raw';
 import InfinitePhysicsGallerySource from './InfinitePhysicsGallery.svelte?raw';
+import FeatureCardsSource from './FeatureCards.svelte?raw';
+import TexturePanelSource from './TexturePanel.svelte?raw';
 
 export {
 	ButtonSource,
@@ -29,5 +31,7 @@ export {
 	TextRepelSource,
 	TextScrambleSource,
 	WeightWaveSource,
-	InfinitePhysicsGallerySource
+	InfinitePhysicsGallerySource,
+	FeatureCardsSource,
+	TexturePanelSource
 };
