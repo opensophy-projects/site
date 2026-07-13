@@ -208,10 +208,10 @@ function transformChartBlocks(content: string) {
 function transformAdmonitionBlocks(content: string) {
 	return withFencedCodeBlocksProtected(content, (text) =>
 		text.replace(
-			/^:::(note|tip|warning|caution|important)(?:\s+([^\n]+))?\s*\n([\s\S]*?)^:::\s*$/gm,
+			/^:::(note|tip|warning|caution|important)(?:[ \t]+([^\n]+))?\s*\n([\s\S]*?)^:::[ \t]*$/gm,
 			(_match, variant: string, title: string | undefined, body: string) => {
 				const titleAttr = title ? ` title="${title.trim()}"` : '';
-				return `<Admonition variant="${variant}"${titleAttr}>\n${body.trim()}\n</Admonition>`;
+				return `<Admonition variant="${variant}"${titleAttr}>${body.trim()}</Admonition>`;
 			}
 		)
 	);
