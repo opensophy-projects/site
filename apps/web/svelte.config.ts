@@ -132,7 +132,7 @@ const markdownFeatureFormatter = () => {
 						el.children.unshift({
 							type: 'element',
 							tagName: 'input',
-							properties: { type: 'checkbox', checked, disabled: true, ariaHidden: true },
+							properties: { type: 'checkbox', checked, ariaHidden: true },
 							children: []
 						});
 					}

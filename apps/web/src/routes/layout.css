@@ -152,6 +152,7 @@ mark {
 		height: 1rem;
 		accent-color: var(--color-accent);
 		cursor: default;
+		pointer-events: none;
 	}
 
 	[data-doc-content] .task-list-item:has(input[type='checkbox']:checked),
