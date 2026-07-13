@@ -146,4 +146,8 @@ html {
 		accent-color: var(--color-accent);
 		cursor: default;
 	}
+
+	[data-doc-content] .task-list-item:has(input[type='checkbox']:checked) {
+		color: var(--color-accent);
+	}
 }
