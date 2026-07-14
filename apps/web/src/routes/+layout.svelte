@@ -113,10 +113,10 @@
 		</svelte:element>
 	{:else if !currentSection}
 		<title>{siteName} — DevSecOps и open-source</title>
-		<meta name="description" content={homeDescription} />
+		<meta name="description" content={siteConfig.fallbackDescription} />
 		<link rel="canonical" href={canonicalUrl} />
 		<meta property="og:title" content="{siteName} — DevSecOps и open-source" />
-		<meta property="og:description" content={homeDescription} />
+		<meta property="og:description" content={siteConfig.fallbackDescription} />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:image" content={sharedOgImage} />
