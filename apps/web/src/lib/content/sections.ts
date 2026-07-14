@@ -1,6 +1,6 @@
 import type { ContentItem, ContentSectionLink, ContentSectionConfig } from '$lib/config/navigation';
 import { parseNamedContentPath, type _NamedContentKind } from '$lib/content/naming';
-import { mergeSectionUiConfig, type SectionUiConfig } from '$lib/config/content-ui';
+import { mergeSectionUiConfig, type SectionUiConfig, type DeepPartial } from '$lib/config/content-ui';
 import { parseContentSource } from '$lib/content/frontmatter';
 import { getCustomPage } from '$lib/content/custom-pages';
 import {
@@ -91,6 +91,15 @@ function buildSectionDirMap(): Map<string, string> {
 	return map;
 }
 
+// UI-оверрайды для конкретных секций
+const sectionUiOverrides: Record<string, DeepPartial<SectionUiConfig>> = {
+	status: {
+		toc: { enabled: false },
+		pageActions: { enabled: false },
+		pagination: { enabled: false }
+	}
+};
+
 // Автоматическое обнаружение секций контента из [N]-директорий
 function discoverContentSections(): ContentSectionConfig[] {
 	const sections: ContentSectionConfig[] = [];
@@ -103,7 +112,8 @@ function discoverContentSections(): ContentSectionConfig[] {
 			id: slug,
 			label: nav.name,
 			navigation: nav.items,
-			description: nav.description
+			description: nav.description,
+			ui: sectionUiOverrides[slug]
 		});
 	}
 

@@ -142,17 +142,17 @@
 		{ url: 'forum.opensophy.com', label: 'os.forum (в разработке)' }
 	];
 
-	const statusMeta: Record<ProjectStatus, { label: string; color: string; dot: string; ring: string }> = {
-		active:  { label: 'Активен',     color: 'text-emerald-500', dot: 'bg-emerald-500', ring: 'text-emerald-500' },
-		frozen:  { label: 'Заморожен',   color: 'text-sky-500',     dot: 'bg-sky-500',     ring: 'text-sky-500'     },
-		planned: { label: 'Планируется',  color: 'text-rose-500',    dot: 'bg-rose-500',    ring: 'text-rose-500'    }
+	const statusMeta: Record<ProjectStatus, { label: string; color: string; dot: string }> = {
+		active:  { label: 'Активен',     color: 'text-emerald-500', dot: 'bg-emerald-500' },
+		frozen:  { label: 'Заморожен',   color: 'text-sky-500',     dot: 'bg-sky-500'     },
+		planned: { label: 'Планируется',  color: 'text-rose-500',    dot: 'bg-rose-500'    }
 	};
 </script>
 
-<div class="w-full space-y-8">
+<div class="w-full space-y-6 p-4 lg:p-8">
 	<!-- Header -->
-	<div class="space-y-3">
-		<h1 class="text-3xl font-bold tracking-tight text-foreground">Прогресс проектов</h1>
+	<div class="space-y-2">
+		<h1 class="text-2xl font-bold tracking-tight text-foreground">Прогресс проектов</h1>
 		<p class="text-sm leading-relaxed text-foreground-muted max-w-2xl">
 			Актуальный статус разработки открытых проектов Opensophy. Обновляется вручную по мере продвижения.
 		</p>
@@ -169,20 +169,20 @@
 	</div>
 
 	<!-- Projects grid -->
-	<div class="inset-shadow w-full overflow-hidden rounded-xl bg-background-inset p-2">
-		<div class="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+	<div class="inset-shadow w-full overflow-hidden rounded-xl bg-background-inset p-1">
+		<div class="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3">
 			{#each projects as project (project.slug)}
 			{@const meta = statusMeta[project.status]}
 			{@const isComplete = project.progress === 100}
 			{@const isPlanned = project.status === 'planned'}
-				<div class="inset-shadow relative overflow-hidden rounded-lg bg-background-inset p-1.5">
-					<article class="grid h-full min-h-64 rounded-md bg-background p-4 card sm:p-5">
+				<div class="inset-shadow relative overflow-hidden rounded-lg bg-background-inset p-1">
+					<article class="flex h-full min-h-56 flex-col rounded-md bg-background p-4 card">
 						<!-- Top: icon + status -->
 						<div class="flex items-start justify-between">
 							<div
-								class="inset-shadow grid size-12 place-items-center rounded-sm bg-background-inset {isComplete ? 'text-accent' : meta.ring}"
+								class="inset-shadow grid size-10 place-items-center rounded-sm bg-background-inset {isComplete ? 'text-accent' : meta.color}"
 							>
-								<project.icon size={28} />
+								<project.icon size={24} />
 							</div>
 							<div class="flex items-center gap-1.5 text-xs font-medium {meta.color}">
 								<span class="relative flex size-2">
@@ -195,27 +195,27 @@
 							</div>
 						</div>
 
-						<!-- Middle: title + description -->
-						<div class="mt-4 grid gap-2">
-							<h3 class="font-mono text-lg font-bold tracking-tight text-foreground">
+						<!-- Title + description -->
+						<div class="mt-3 grid gap-1.5">
+							<h3 class="font-mono text-base font-bold tracking-tight text-foreground">
 								{project.title}
 							</h3>
-							<p class="text-sm leading-relaxed text-foreground-muted">
+							<p class="text-xs leading-relaxed text-foreground-muted">
 								{project.description}
 							</p>
 						</div>
 
 						<!-- Bottom: progress + tasks -->
-						<div class="mt-auto grid gap-3 pt-4">
+						<div class="mt-auto grid gap-2.5 pt-3">
 							<!-- Progress bar -->
-							<div class="flex items-center gap-3">
-								<div class="h-1.5 flex-1 overflow-hidden rounded-full bg-background-inset">
+							<div class="flex items-center gap-2.5">
+								<div class="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
 									<div
 										class="h-full rounded-full transition-all duration-500 {isComplete ? 'bg-accent' : isPlanned ? 'bg-foreground-muted/30' : meta.dot}"
-										style="width: {project.progress}%"
+										style="width: {Math.max(project.progress, 3)}%"
 									></div>
 								</div>
-								<span class="shrink-0 font-mono text-sm font-bold tabular-nums {isComplete ? 'text-accent' : 'text-foreground-muted'}">
+								<span class="shrink-0 font-mono text-xs font-bold tabular-nums {isComplete ? 'text-accent' : 'text-foreground-muted'}">
 									{project.progress}%
 								</span>
 							</div>
@@ -246,15 +246,15 @@
 
 							<!-- Tasks / notes -->
 							{#if project.tasks.length > 0}
-								<div class="space-y-1.5">
+								<div class="space-y-1">
 									{#if project.tasksHeader}
 										<p class="text-xs font-semibold tracking-wide uppercase text-foreground-muted/60">
 											{project.tasksHeader}
 										</p>
 									{/if}
-									<ul class="space-y-1">
+									<ul class="space-y-0.5">
 										{#each project.tasks as task (task)}
-											<li class="flex items-start gap-2 text-xs text-foreground-muted">
+											<li class="flex items-start gap-1.5 text-xs text-foreground-muted">
 												<span class="mt-1 size-1.5 shrink-0 rounded-full {isComplete ? 'bg-accent' : 'bg-foreground-muted/30'}"></span>
 												{task}
 											</li>
@@ -270,19 +270,19 @@
 	</div>
 
 	<!-- Platforms section -->
-	<div class="inset-shadow rounded-xl bg-background-inset p-2">
-		<div class="rounded-lg bg-background p-5 card space-y-3">
+	<div class="inset-shadow rounded-xl bg-background-inset p-1">
+		<div class="rounded-lg bg-background p-4 card space-y-3">
 			<p class="text-xs font-semibold tracking-widest uppercase text-foreground-muted/60">
 				Платформы
 			</p>
-			<div class="grid gap-2 sm:grid-cols-2">
+			<div class="grid gap-1 sm:grid-cols-2">
 				{#each platforms as platform (platform.url)}
-					<div class="flex items-center gap-3 rounded-lg border border-border bg-background-inset px-4 py-3">
-						<div class="inset-shadow grid size-10 place-items-center rounded-sm bg-background text-accent">
-							<Globe size={22} />
+					<div class="flex items-center gap-3 rounded-lg border border-border bg-background-inset px-3 py-2.5">
+						<div class="inset-shadow grid size-9 place-items-center rounded-sm bg-background text-accent">
+							<Globe size={20} />
 						</div>
 						<div class="min-w-0 space-y-0.5">
-							<p class="font-mono text-sm font-semibold text-foreground truncate">
+							<p class="font-mono text-xs font-semibold text-foreground truncate">
 								{platform.url}
 							</p>
 							<p class="text-xs text-foreground-muted">
