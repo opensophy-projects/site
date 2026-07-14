@@ -1,0 +1,58 @@
+---
+title: Бейдж
+description: Компактный бейдж для меток и статусов с шестью вариантами оформления.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Badge from '$lib/components/ui-registry/Badge.svelte';
+	import { BadgeSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'variant',
+			label: 'Вариант',
+			defaultValue: 'accent',
+			options: [
+				{ label: 'Default', value: 'default' },
+				{ label: 'Accent', value: 'accent' },
+				{ label: 'Success', value: 'success' },
+				{ label: 'Warning', value: 'warning' },
+				{ label: 'Error', value: 'error' },
+				{ label: 'Outline', value: 'outline' }
+			]
+		},
+		{
+			type: 'text',
+			name: 'text',
+			label: 'Текст',
+			defaultValue: 'New'
+		}
+	];
+</script>
+
+# Бейдж
+
+Компактный бейдж для отображения меток, статусов и категорий. Шесть вариантов оформления, построенных на цветовой системе темы.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'Badge.svelte', code: BadgeSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<Badge variant={values.variant as 'default' | 'accent' | 'success' | 'warning' | 'error' | 'outline'}>
+			{values.text}
+		</Badge>
+	{/snippet}
+</ComponentPreview>
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `variant` | `'default' \| 'accent' \| 'success' \| 'warning' \| 'error' \| 'outline'` | `'default'` | Вариант оформления |
+| `class` | `string` | — | Дополнительные классы |

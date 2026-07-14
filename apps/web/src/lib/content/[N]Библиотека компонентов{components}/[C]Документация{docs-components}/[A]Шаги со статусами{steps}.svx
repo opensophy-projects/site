@@ -1,0 +1,101 @@
+---
+title: Шаги со статусами
+description: Нумерованный список шагов с визуальными статусами: todo, active, done, warning.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Steps from '$lib/components/docs/markdown/Steps.svelte';
+	import Step from '$lib/components/docs/markdown/Step.svelte';
+	import stepsSource from '$lib/components/docs/markdown/Steps.svelte?raw';
+	import stepSource from '$lib/components/docs/markdown/Step.svelte?raw';
+</script>
+
+# Шаги со статусами
+
+Компоненты `Steps` и `Step` создают нумерованный список шагов с визуальными индикаторами статуса. Подходит для инструкций, процессов и прогресс-индикаторов.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'Steps.svelte', code: stepsSource, language: 'svelte' },
+		{ name: 'Step.svelte', code: stepSource, language: 'svelte' }
+	]}
+>
+	<div class="p-4 w-full max-w-md">
+		<Steps>
+			<Step title="Подготовить страницу" status="done">
+				Страница создана и подключена к навигации.
+			</Step>
+			<Step title="Проверить оформление" status="active">
+				Идёт проверка markdown-блоков.
+			</Step>
+			<Step title="Опубликовать" status="todo">
+				Следующий шаг после ревью.
+			</Step>
+			<Step title="Проверить зависимости" status="warning">
+				Обнаружены устаревшие пакеты.
+			</Step>
+		</Steps>
+	</div>
+</ComponentPreview>
+
+## Статусы
+
+| Статус | Иконка | Описание |
+| --- | --- | --- |
+| `todo` | Номер шага | Ожидает выполнения |
+| `active` | Часы (Clock) | В процессе выполнения |
+| `done` | Галочка (Checkmark) | Завершён успешно |
+| `warning` | Предупреждение (Warning) | Требует внимания |
+
+## Использование
+
+```svelte
+<script>
+	import Steps from '$lib/components/docs/markdown/Steps.svelte';
+	import Step from '$lib/components/docs/markdown/Step.svelte';
+</script>
+
+<Steps>
+	<Step title="Первый шаг" status="done">
+		Первый шаг выполнен.
+	</Step>
+	<Step title="Второй шаг" status="active">
+		Этот шаг в процессе.
+	</Step>
+	<Step title="Третий шаг" status="todo">
+		Ещё не начат.
+	</Step>
+</Steps>
+```
+
+## В markdown (.svx)
+
+```svelte
+<Steps>
+<Step title="Установить зависимости" status="done">
+	`npm install` выполнен.
+</Step>
+<Step title="Запустить сервер" status="active">
+	Запущен на localhost:5173.
+</Step>
+</Steps>
+```
+
+## Пропсы Steps
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `class` | `string` | `''` | Дополнительные классы |
+| `children` | `Snippet` | — | Шаги `<Step>` |
+
+## Пропсы Step
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `title` | `string` | — | Заголовок шага |
+| `status` | `'todo' \| 'active' \| 'done' \| 'warning'` | `'todo'` | Статус |
+| `class` | `string` | `''` | Дополнительные классы |
+| `children` | `Snippet` | — | Содержимое шага |

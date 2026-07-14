@@ -1,0 +1,95 @@
+---
+title: Переключатель
+description: Кнопка-переключатель с двумя состояниями для управления логическими настройками.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Toggle from '$lib/components/ui-registry/Toggle.svelte';
+	import { ToggleSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'boolean',
+			name: 'checked',
+			label: 'Включён',
+			defaultValue: true
+		},
+		{
+			type: 'text',
+			name: 'label',
+			label: 'Подпись',
+			defaultValue: 'Тёмная тема'
+		}
+	];
+</script>
+
+# Переключатель
+
+Кнопка-переключатель с двумя состояниями (вкл/выкл). Используется для управления логическими настройками.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'Toggle.svelte', code: ToggleSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="flex items-center gap-3">
+			<Toggle checked={values.checked as boolean} label={values.label as string} />
+			<span class="text-sm text-foreground-muted">{values.label}</span>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Примеры использования
+
+### Включённое состояние
+
+<div class="flex items-center gap-3">
+	<Toggle checked={true} label="Включено" />
+	<span class="text-sm text-foreground-muted">Включено</span>
+</div>
+
+```svelte
+<Toggle checked={true} label="Включено" />
+```
+
+### Выключенное состояние
+
+<div class="flex items-center gap-3">
+	<Toggle checked={false} label="Выключено" />
+	<span class="text-sm text-foreground-muted">Выключено</span>
+</div>
+
+```svelte
+<Toggle checked={false} label="Выключено" />
+```
+
+### С обработчиком изменений
+
+```svelte
+<script>
+	let isEnabled = $state(false);
+
+	function handleChange(checked) {
+		isEnabled = checked;
+		console.log('Состояние:', checked);
+	}
+</script>
+
+<div class="flex items-center gap-3">
+	<Toggle checked={isEnabled} onchange={handleChange} label="Настройка" />
+	<span>Настройка {isEnabled ? 'включена' : 'выключена'}</span>
+</div>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `checked` | `boolean` | `false` | Текущее состояние |
+| `label` | `string` | — | Подпись для aria-label |
+| `class` | `string` | — | Дополнительные классы |
+| `onchange` | `(checked: boolean) => void` | — | Колбэк при изменении |

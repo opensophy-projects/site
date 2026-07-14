@@ -1,0 +1,133 @@
+---
+title: Боковая панель
+description: Навигационная панель с древовидной структурой, hover-индикаторами и активной позицией.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import ContentSidebar from '$lib/components/content/ContentSidebar.svelte';
+	import sidebarSource from '$lib/components/content/ContentSidebar.svelte?raw';
+</script>
+
+# Боковая панель
+
+Навигационная боковая панель для разделов документации. Поддерживает древовидную структуру навигации, анимированные hover-эффекты, подсветку активного элемента с glow-эффектом, а также интеграцию поиска и переключателя темы.
+
+## Особенности
+
+- **Древовидная навигация**: вложенные группы с анимированным раскрытием через `slide` transition
+- **Hover-индикатор**: плавающий фон, следующий за курсором
+- **Active-индикатор**: вертикальная линия с glow-эффектом на активном элементе
+- **Автодополнение**: автоматическое раскрытие родительских групп при навигации
+- **Dropdown-переключатель**: выбор секции документа через выпадающий список
+- **Интеграция поиска**: триггер поиска с горячей клавишей
+- **Брендинг**: логотип и название проекта в шапке
+
+## Составные части
+
+Компонент состоит из нескольких элементов:
+
+| Элемент | Компонент | Описание |
+| --- | --- | --- |
+| Шапка | `Logo` + брендинг | Логотип и название |
+| Dropdown | `Dropdown` | Переключение между секциями |
+| Search | `SearchTrigger` | Кнопка открытия поиска |
+| Навигация | `nav` с `renderNavItem` | Древовидная структура ссылок |
+| Footer | `ThemeToggle`, `ContactsToggle`, GitHub | Нижние действия |
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `navigation` | `ContentItem[]` | — | Массив навигационных элементов |
+| `navigationLabel` | `string` | `'Documentation'` | ARIA-метка навигации |
+| `basePath` | `string` | `'/docs'` | Базовый путь для ссылок |
+| `showSearch` | `boolean` | `true` | Показать кнопку поиска |
+| `showThemeToggle` | `boolean` | `true` | Показать переключатель темы |
+| `showRepositoryLink` | `boolean` | `true` | Показать ссылку на GitHub |
+| `repositoryUrl` | `string` | — | URL репозитория |
+| `sectionLinks` | `ContentSectionLink[]` | `[]` | Ссылки на секции для dropdown |
+| `showBranding` | `boolean` | `true` | Показать брендинг |
+
+## Использование
+
+```svelte
+<script>
+	import ContentSidebar from '$lib/components/content/ContentSidebar.svelte';
+	import { getContentSectionConfig } from '$lib/content/sections';
+
+	const section = getContentSectionConfig('docs');
+</script>
+
+<ContentSidebar
+	navigation={section.navigation}
+	basePath="/docs"
+	sectionLinks={[
+		{ label: 'Документация', href: '/docs' },
+		{ label: 'Компоненты', href: '/components' }
+	]}
+/>
+```
+
+## Анимации
+
+### Hover-индикатор
+
+При наведении на элемент навигации появляется плавающий фон:
+
+```css
+.sidebar-nav::before {
+  background: var(--color-background-muted);
+  transform: translateY(var(--sidebar-hover-top));
+  transition: transform 150ms ease-out;
+}
+```
+
+### Active-индикатор
+
+На активном элементе появляется вертикальная линия с градиентом и glow-эффектом:
+
+```css
+.sidebar-nav::after {
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    oklch(from var(--color-accent) l c h / 0.68) 18%,
+    var(--color-accent) 50%,
+    transparent
+  );
+  filter: drop-shadow(0 0 6px oklch(from var(--color-accent) l c h / 0.38));
+}
+```
+
+## Структура ContentItem
+
+```typescript
+interface ContentItem {
+  slug: string;
+  name: string;
+  items?: ContentItem[]; // вложенные элементы
+}
+```
+
+## ScrollArea
+
+Навигация обёрнута в `ScrollArea` с mask-градиентом для создания эффекта затухания краёв:
+
+```svelte
+<ScrollArea
+  viewportStyle="mask-image: linear-gradient(to bottom, transparent, black 16px, black calc(100% - 16px), transparent);"
+>
+  <!-- навигация -->
+</ScrollArea>
+```
+
+## Зависимости
+
+- `ScrollArea` — кастомный скролл-контейнер
+- `Dropdown` — выпадающий список секций
+- `ThemeToggle` — переключатель темы
+- `ContactsToggle` — кнопка контактов
+- `SearchTrigger` — триггер поиска
+- `Logo` — логотип бренда
+- `carbon-icons-svelte` — иконки (ChevronRight, LogoGithub)

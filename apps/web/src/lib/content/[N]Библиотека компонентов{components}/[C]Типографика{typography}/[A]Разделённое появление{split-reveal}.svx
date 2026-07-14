@@ -1,0 +1,111 @@
+---
+title: Разделённое появление
+description: Анимация появления текста с разбивкой на строки, слова или символы.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import SplitReveal from '$lib/components/ui-registry/SplitReveal.svelte';
+	import { SplitRevealSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'mode',
+			label: 'Режим',
+			defaultValue: 'lines',
+			options: [
+				{ label: 'Строки', value: 'lines' },
+				{ label: 'Слова', value: 'words' },
+				{ label: 'Символы', value: 'chars' }
+			]
+		},
+		{
+			type: 'boolean',
+			name: 'triggerOnScroll',
+			label: 'Триггер при прокрутке',
+			defaultValue: false
+		}
+	];
+</script>
+
+# Разделённое появление
+
+Анимация появления текста с плавным раскрытием. Текст разбивается на строки, слова или символы, которые появляются последовательно.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'SplitReveal.svelte', code: SplitRevealSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<SplitReveal
+			mode={values.mode as 'lines' | 'words' | 'chars'}
+			triggerOnScroll={values.triggerOnScroll as boolean}
+		>
+			<span class="text-lg text-foreground">
+				Этот текст появляется плавно, строка за строкой.
+				Каждая часть анимируется независимо.
+			</span>
+		</SplitReveal>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Анимация строк
+
+```svelte
+<SplitReveal mode="lines">
+	<p>Первая строка текста.</p>
+	<p>Вторая строка текста.</p>
+</SplitReveal>
+```
+
+### Анимация слов
+
+```svelte
+<SplitReveal mode="words">
+	<p>Каждое слово появляется отдельно</p>
+</SplitReveal>
+```
+
+### Анимация символов
+
+```svelte
+<SplitReveal mode="chars">
+	<p>Посимвольная анимация</p>
+</SplitReveal>
+```
+
+### При прокрутке
+
+```svelte
+<SplitReveal mode="lines" triggerOnScroll={true}>
+	<p>Текст появляется при прокрутке до него.</p>
+</SplitReveal>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `mode` | `'lines' \| 'words' \| 'chars'` | `'lines'` | Режим разбивки |
+| `config` | `SplitRevealConfig` | — | Настройки длительности и stagger |
+| `delay` | `number` | `0` | Задержка перед началом анимации |
+| `triggerOnScroll` | `boolean` | `false` | Запуск при прокрутке |
+| `scrollElement` | `string \| HTMLElement \| null` | — | Элемент для ScrollTrigger |
+| `as` | `keyof HTMLElementTagNameMap` | `'div'` | HTML-тег обёртки |
+| `class` | `string` | — | Дополнительные классы |
+
+### SplitRevealConfig
+
+```typescript
+interface SplitRevealConfig {
+	lines?: { duration?: number; stagger?: number };
+	words?: { duration?: number; stagger?: number };
+	chars?: { duration?: number; stagger?: number };
+}
+```

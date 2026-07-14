@@ -1,0 +1,167 @@
+---
+title: Палитра поиска
+description: Модальное окно командной палитры с поиском по контенту и навигацией клавиатурой.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import CommandPalette from '$lib/components/content/search/CommandPalette.svelte';
+	import SearchTrigger from '$lib/components/content/search/SearchTrigger.svelte';
+	import commandPaletteSource from '$lib/components/content/search/CommandPalette.svelte?raw';
+	import searchTriggerSource from '$lib/components/content/search/SearchTrigger.svelte?raw';
+</script>
+
+# Палитра поиска
+
+Модальное окно поиска с командной палитрой. Поддерживает горячие клавиши (Ctrl+K), навигацию стрелками, выделение совпадений и плавные анимации появления.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'CommandPalette.svelte', code: commandPaletteSource, language: 'svelte' },
+		{ name: 'SearchTrigger.svelte', code: searchTriggerSource, language: 'svelte' }
+	]}
+>
+	<div class="w-full max-w-sm p-4">
+		<SearchTrigger />
+		<p class="mt-4 text-xs text-foreground-muted">Нажмите на кнопку выше или используйте Ctrl+K для открытия поиска.</p>
+	</div>
+</ComponentPreview>
+
+## Особенности
+
+- **Горячая клавиша**: открытие по `Ctrl+K` или `Cmd+K`
+- **Клавиатурная навигация**: `↑`/`↓` для выбора, `Enter` для перехода, `Esc` для закрытия
+- **Выделение совпадений**: подсветка найденного текста акцентным цветом
+- **Группировка результатов**: заголовки страниц + заголовки секций + контент
+- **Active-индикатор**: вертикальная линия с glow на выбранном элементе
+- **Плавные анимации**: scale + fade при появлении/скрытии
+
+## Составные части
+
+| Компонент | Назначение |
+| --- | --- |
+| `SearchTrigger` | Кнопка-триггер с placeholder и горячей клавишей |
+| `CommandPalette` | Модальное окно с поиском и результатами |
+| `Overlay` | Затемнение фона и закрытие по клику |
+| `ScrollArea` | Прокрутка результатов с mask-градиентом |
+
+## Пропсы CommandPalette
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `searchConfig` | `SectionUiConfig['search']` | `contentUiDefaults.search` | Конфигурация поиска |
+
+## Пропсы SearchTrigger
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `class` | `string` | `''` | Дополнительные CSS-классы |
+| `searchConfig` | `SectionUiConfig['search']` | `contentUiDefaults.search` | Конфигурация поиска |
+
+## Использование
+
+```svelte
+<script>
+	import CommandPalette from '$lib/components/content/search/CommandPalette.svelte';
+	import SearchTrigger from '$lib/components/content/search/SearchTrigger.svelte';
+</script>
+
+<!-- Триггер в сайдбаре -->
+<SearchTrigger />
+
+<!-- Модальное окно (рендерится один раз в layout) -->
+<CommandPalette />
+```
+
+## Конфигурация поиска
+
+Поиск настраивается через `content-ui.ts`:
+
+```typescript
+search: {
+  enabled: true,
+  triggerPlaceholder: 'Поиск...',
+  dialogPlaceholder: 'Найти документацию...',
+  hotkey: {
+    enabled: true,
+    key: 'k',
+    metaOrCtrl: true,
+    label: '⌘K'
+  },
+  maxGroups: 5,
+  maxChildrenPerGroup: 3,
+  submitHintLabel: 'перейти',
+  noResultsLabel: 'Ничего не найдено'
+}
+```
+
+## Состояние поиска
+
+Глобальное состояние управляется через `searchState` из `$lib/stores/search.svelte`:
+
+```typescript
+import { searchState } from '$lib/stores/search.svelte';
+
+searchState.open();   // открыть поиск
+searchState.close();  // закрыть поиск
+searchState.toggle(); // переключить
+searchState.isOpen;   // текущее состояние
+```
+
+## Анимации
+
+### Появление модального окна
+
+```svelte
+transition:scale={{
+  duration: 300,
+  start: 0.95,
+  easing: cubicOut
+}}
+```
+
+### Hover-индикатор на результате
+
+Плавающий фон с плавной сменой позиции:
+
+```css
+.command-results::before {
+  transform: translateY(var(--command-selected-top));
+  transition: transform 150ms ease-out;
+}
+```
+
+### Glow-индикатор на вложенном результате
+
+Для результатов-заголовков и контента показывается вертикальная линия:
+
+```css
+.command-results::after {
+  background-image: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  filter: drop-shadow(0 0 6px oklch(...));
+}
+```
+
+## Highlighting
+
+Найденные совпадения подсвечиваются акцентным цветом:
+
+```typescript
+function highlight(text: string, search: string) {
+  const regex = new RegExp(`(${search})`, 'gi');
+  return text.split(regex).map(part => ({
+    text: part,
+    highlight: part.toLowerCase() === search.toLowerCase()
+  }));
+}
+```
+
+## Зависимости
+
+- `Overlay` — модальный фон
+- `ScrollArea` — скролл контейнер
+- `carbon-icons-svelte` — Search, Return
+- `$lib/utils/search` — `searchContent()`
+- `$lib/stores/search.svelte` — `searchState`

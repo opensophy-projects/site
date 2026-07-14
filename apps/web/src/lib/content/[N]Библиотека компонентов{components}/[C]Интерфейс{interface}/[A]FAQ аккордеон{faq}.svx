@@ -1,0 +1,77 @@
+---
+title: FAQ аккордеон
+description: Аккордеон часто задаваемых вопросов с плавным раскрытием и поддержкой кастомных вопросов.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Faq from '$lib/components/ui/Faq.svelte';
+	import faqSource from '$lib/components/ui/Faq.svelte?raw';
+</script>
+
+# FAQ аккордеон
+
+Аккордеон для отображения часто задаваемых вопросов с плавным раскрытием через `slide`-переход. Поддерживает одновременно открытые несколько элементов. Передаётся кастомный список вопросов через пропс `items`.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'Faq.svelte', code: faqSource, language: 'svelte' }
+	]}
+>
+	<div class="w-full max-w-2xl p-4">
+		<Faq />
+	</div>
+</ComponentPreview>
+
+## Особенности
+
+- Плавное раскрытие через `svelte/transition` → `slide`
+- Иконка `+` поворачивается на 45° при открытии (→ крестик закрытия)
+- Несколько элементов могут быть открыты одновременно
+- `aria-expanded` и `aria-controls` для доступности
+- Полностью кастомизируемый список через пропс `items`
+
+## Использование
+
+### Дефолтный список
+
+```svelte
+<script>
+	import Faq from '$lib/components/ui/Faq.svelte';
+</script>
+
+<Faq />
+```
+
+### Кастомные вопросы
+
+```svelte
+<Faq
+	items={[
+		{
+			question: 'Как начать работу?',
+			answer: 'Установите пакет и следуйте руководству по быстрому старту.'
+		},
+		{
+			question: 'Есть ли поддержка TypeScript?',
+			answer: 'Да, все компоненты имеют полную типизацию.'
+		}
+	]}
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `items` | `FaqItem[]` | 7 дефолтных вопросов | Список вопросов и ответов |
+| `class` | `string` | `''` | Дополнительные CSS-классы |
+
+### Тип `FaqItem`
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `question` | `string` | Текст вопроса |
+| `answer` | `string` | Текст ответа |

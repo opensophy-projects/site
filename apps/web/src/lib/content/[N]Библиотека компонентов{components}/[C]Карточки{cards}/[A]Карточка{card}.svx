@@ -1,0 +1,82 @@
+---
+title: Карточка
+description: Универсальная карточка контента с заголовком, eyebrow и поддержкой ссылок.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Card from '$lib/components/docs/markdown/Card.svelte';
+	import cardSource from '$lib/components/docs/markdown/Card.svelte?raw';
+</script>
+
+# Карточка
+
+Универсальный компонент карточки для отображения контента. Поддерживает eyebrow (надзаголовок), заголовок, тело и опциональную ссылку. При наведении — лёгкий подъём. При `href` — превращается в `<a>`.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'Card.svelte', code: cardSource, language: 'svelte' }
+	]}
+>
+	<div class="grid grid-cols-2 gap-4 p-4 max-w-sm w-full">
+		<Card eyebrow="01" title="Component-first">
+			Каждый паттерн живёт как Svelte-компонент с typed props.
+		</Card>
+		<Card eyebrow="02" title="Canvas-ready">
+			Визуальные эффекты оборачиваются в markdown-friendly блоки.
+		</Card>
+		<Card title="Без eyebrow">
+			Карточка без надзаголовка — только заголовок и контент.
+		</Card>
+		<Card eyebrow="→" title="Ссылка" href="/docs">
+			Карточка с href — рендерится как ссылка.
+		</Card>
+	</div>
+</ComponentPreview>
+
+## Особенности
+
+- Hover-эффект: `-translate-y-0.5` + акцент на границе
+- При `href` рендерится как `<a>`, иначе — `<div>`
+- Поддерживает eyebrow (маленький акцентный надзаголовок)
+- Используется внутри `<Cards>` для сеточного отображения
+
+## Использование
+
+```svelte
+<script>
+	import Card from '$lib/components/docs/markdown/Card.svelte';
+</script>
+
+<Card eyebrow="01" title="Название">
+	Описание карточки.
+</Card>
+
+<Card href="/docs" title="Документация">
+	Карточка-ссылка.
+</Card>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `eyebrow` | `string` | — | Акцентный надзаголовок |
+| `title` | `string` | — | Заголовок карточки |
+| `href` | `string` | — | Ссылка (рендерит как `<a>`) |
+| `class` | `string` | `''` | Дополнительные CSS-классы |
+| `children` | `Snippet` | — | Тело карточки |
+
+## Внутри Cards
+
+Компонент часто используется в `<Cards>` для отзывчивой сетки:
+
+```svelte
+<Cards>
+	<Card eyebrow="01" title="Пункт 1">Описание 1.</Card>
+	<Card eyebrow="02" title="Пункт 2">Описание 2.</Card>
+	<Card eyebrow="03" title="Пункт 3">Описание 3.</Card>
+</Cards>
+```

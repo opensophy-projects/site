@@ -1,0 +1,76 @@
+---
+title: Переключатель темы
+description: Кнопка переключения между светлой и тёмной темой с плавной анимацией иконок.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
+	import { themeToggleSource, themeStoreSource } from '$lib/components/ui/demo-sources';
+</script>
+
+# Переключатель темы
+
+Кнопка переключения темы с плавной анимацией иконок солнца и луны. Сохраняет выбор в `localStorage` и автоматически синхронизируется с системными настройками.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'ThemeToggle.svelte', code: themeToggleSource, language: 'svelte' },
+		{ name: 'theme.svelte.ts', code: themeStoreSource, language: 'typescript' }
+	]}
+>
+	<ThemeToggle />
+</ComponentPreview>
+
+## Особенности
+
+- Плавная анимация переключения иконок через CSS transitions (blur + scale)
+- Автоматическое определение системной темы через `prefers-color-scheme`
+- Сохранение выбора в `localStorage`
+- Доступность: кнопка с `aria-label` для экранных читалок
+- Корректно работает при серверном рендеринге (SSR)
+
+## Использование
+
+```svelte
+<script>
+	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
+</script>
+
+<ThemeToggle />
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `class` | `string` | `''` | Дополнительные CSS-классы |
+
+## Theme Store
+
+Компонент использует `themeStore` из `$lib/stores/theme.svelte.ts`:
+
+| Свойство / Метод | Тип | Описание |
+| --- | --- | --- |
+| `current` | `'light' \| 'dark'` | Текущая тема |
+| `isDark` | `boolean` | Проверка тёмной темы |
+| `set(theme)` | `(theme: Theme) => void` | Установить тему |
+| `toggle()` | `() => void` | Переключить тему |
+
+## Прямое использование store
+
+```svelte
+<script>
+	import { themeStore } from '$lib/stores/theme.svelte';
+</script>
+
+{#if themeStore.isDark}
+	<p>Тёмная тема активна</p>
+{/if}
+
+<button onclick={() => themeStore.toggle()}>
+	Переключить тему
+</button>
+```

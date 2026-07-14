@@ -1,0 +1,18 @@
+# This workflow has been consolidated into deploy.yml.
+# Lint, dependency audit, Semgrep, and SonarCloud now run as part of
+# the main CI/Deploy pipeline: lint → audit → semgrep → sonarcloud → build → deploy.
+
+name: Security CI (deprecated)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  notice:
+    name: Consolidated into deploy.yml
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Security checks are now part of deploy.yml"

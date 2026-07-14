@@ -1,0 +1,76 @@
+---
+title: Бейдж статуса
+description: Анимированный бейдж статуса с пульсирующей точкой и настраиваемым цветом.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import StatusBadge from '$lib/components/ui-registry/StatusBadge.svelte';
+	import { StatusBadgeSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'color',
+			name: 'dotColor',
+			label: 'Цвет точки',
+			defaultValue: '#10b981'
+		},
+		{
+			type: 'text',
+			name: 'label',
+			label: 'Текст',
+			defaultValue: 'Система активна'
+		}
+	];
+</script>
+
+# Бейдж статуса
+
+Анимированный бейдж статуса с пульсирующей точкой (ping-анимация) и настраиваемым цветом. Идеален для индикации состояния системы, онлайн-статуса и живых метрик.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'StatusBadge.svelte', code: StatusBadgeSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<StatusBadge dotColor={values.dotColor as string}>
+			{values.label}
+		</StatusBadge>
+	{/snippet}
+</ComponentPreview>
+
+## Примеры использования
+
+### Онлайн статус
+
+<StatusBadge dotColor="#10b981">Онлайн</StatusBadge>
+
+```svelte
+<StatusBadge dotColor="#10b981">Онлайн</StatusBadge>
+```
+
+### Оффлайн статус
+
+<StatusBadge dotColor="#ef4444">Оффлайн</StatusBadge>
+
+```svelte
+<StatusBadge dotColor="#ef4444">Оффлайн</StatusBadge>
+```
+
+### Загрузка
+
+<StatusBadge dotColor="#f59e0b">Загрузка...</StatusBadge>
+
+```svelte
+<StatusBadge dotColor="#f59e0b">Загрузка...</StatusBadge>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `dotColor` | `string` | `'#f43f5e'` | Цвет точки (HEX) |
+| `class` | `string` | — | Дополнительные классы |

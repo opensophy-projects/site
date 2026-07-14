@@ -1,0 +1,80 @@
+---
+title: Прогресс-бар
+description: Индикатор прогресса с настраиваемым значением и плавной анимацией.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Progress from '$lib/components/ui-registry/Progress.svelte';
+	import { ProgressSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'progress',
+			label: 'Значение',
+			defaultValue: 65,
+			min: 0,
+			max: 100,
+			step: 1,
+			unit: '%'
+		}
+	];
+</script>
+
+# Прогресс-бар
+
+Индикатор прогресса с плавной анимацией изменения ширины. Значение от 0 до 100.
+
+## Интерактивное демо
+
+Перетащите слайдер, чтобы изменить значение прогресса.
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'Progress.svelte', code: ProgressSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="w-full max-w-md">
+			<div class="mb-2 flex items-center justify-between text-sm">
+				<span class="text-foreground-muted">Загрузка...</span>
+				<span class="font-mono text-foreground tabular-nums">{values.progress}%</span>
+			</div>
+			<Progress progress={values.progress as number} />
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Примеры использования
+
+### Базовый прогресс
+
+<Progress progress={45} />
+
+```svelte
+<Progress progress={45} />
+```
+
+### Полная загрузка
+
+<Progress progress={100} />
+
+```svelte
+<Progress progress={100} />
+```
+
+### Небольшой прогресс
+
+<Progress progress={15} />
+
+```svelte
+<Progress progress={15} />
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `progress` | `number` | — | Значение прогресса (0–100) |
+| `class` | `string` | — | Дополнительные классы |
