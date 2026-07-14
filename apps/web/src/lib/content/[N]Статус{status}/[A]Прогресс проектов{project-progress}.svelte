@@ -8,6 +8,7 @@
 </script>
 
 <script lang="ts">
+	import CardProject from '$lib/components/ui/CardProject.svelte';
 	import Documentation from 'carbon-icons-svelte/lib/Documentation.svelte';
 	import ApplicationWeb from 'carbon-icons-svelte/lib/ApplicationWeb.svelte';
 	import Network_3 from 'carbon-icons-svelte/lib/Network_3.svelte';
@@ -33,6 +34,8 @@
 		tasksHeader: string;
 		tasks: string[];
 		icon: typeof Component;
+		colors: string[];
+		glowColor: string;
 	};
 
 	const projects: Project[] = [
@@ -48,7 +51,9 @@
 			tasks: [
 				'разработка dev-панели для быстрого создания проектов и управления контентом'
 			],
-			icon: Documentation
+			icon: Documentation,
+			colors: ['#f43f5e', '#f43f5e', '#fda4af'],
+			glowColor: '350 80 65'
 		},
 		{
 			slug: 'os.ui',
@@ -62,7 +67,9 @@
 			tasks: [
 				'пополнение библиотеки новыми компонентами'
 			],
-			icon: ApplicationWeb
+			icon: ApplicationWeb,
+			colors: ['#f43f5e', '#fb7185', '#fda4af'],
+			glowColor: '350 80 65'
 		},
 		{
 			slug: 'os.net',
@@ -79,7 +86,9 @@
 				'интеграция с community-решениями',
 				'управление mTLS для Traefik и NGINX (под вопросом — ищем нативный способ интеграции, совместимый со всеми прокси)'
 			],
-			icon: Network_3
+			icon: Network_3,
+			colors: ['#38bdf8', '#0ea5e9', '#7dd3fc'],
+			glowColor: '200 85 60'
 		},
 		{
 			slug: 'os.mtls',
@@ -95,7 +104,9 @@
 				'интеграция с os.port и os.net',
 				'разработка версии под NGINX и публикация в NPM'
 			],
-			icon: Certificate
+			icon: Certificate,
+			colors: ['#34d399', '#10b981', '#6ee7b7'],
+			glowColor: '155 70 55'
 		},
 		{
 			slug: 'os.oasm',
@@ -107,7 +118,9 @@
 			statusText: 'разработка не начата',
 			tasksHeader: '',
 			tasks: [],
-			icon: Security
+			icon: Security,
+			colors: ['#f87171', '#ef4444', '#fca5a5'],
+			glowColor: '0 80 65'
 		},
 		{
 			slug: 'os.port',
@@ -121,7 +134,9 @@
 			tasks: [
 				'проект проходит пересмотр архитектуры и технологического стека под новые требования'
 			],
-			icon: Deploy
+			icon: Deploy,
+			colors: ['#a78bfa', '#8b5cf6', '#c4b5fd'],
+			glowColor: '255 70 70'
 		},
 		{
 			slug: 'os.forum',
@@ -133,7 +148,9 @@
 			statusText: 'разработка не начата',
 			tasksHeader: '',
 			tasks: [],
-			icon: Forum
+			icon: Forum,
+			colors: ['#fbbf24', '#f59e0b', '#fcd34d'],
+			glowColor: '40 90 60'
 		}
 	];
 
@@ -169,104 +186,107 @@
 	</div>
 
 	<!-- Projects grid -->
-	<div class="inset-shadow w-full overflow-hidden rounded-xl bg-background-inset p-1">
-		<div class="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3">
-			{#each projects as project (project.slug)}
-			{@const meta = statusMeta[project.status]}
-			{@const isComplete = project.progress === 100}
-			{@const isPlanned = project.status === 'planned'}
-				<div class="inset-shadow relative overflow-hidden rounded-lg bg-background-inset p-1">
-					<article class="flex h-full min-h-56 flex-col rounded-md bg-background p-4 card">
-						<!-- Top: icon + status -->
-						<div class="flex items-start justify-between">
-							<div
-								class="inset-shadow grid size-10 place-items-center rounded-sm bg-background-inset {isComplete ? 'text-accent' : meta.color}"
-							>
-								<project.icon size={24} />
-							</div>
-							<div class="flex items-center gap-1.5 text-xs font-medium {meta.color}">
-								<span class="relative flex size-2">
-									{#if project.status === 'active' && !isComplete}
-										<span class="absolute inline-flex size-full animate-ping rounded-full opacity-60 {meta.dot}"></span>
-									{/if}
-									<span class="relative inline-flex size-2 rounded-full {meta.dot}"></span>
-								</span>
-								{meta.label}
-							</div>
+	<div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+		{#each projects as project (project.slug)}
+		{@const meta = statusMeta[project.status]}
+		{@const isComplete = project.progress === 100}
+		{@const isPlanned = project.status === 'planned'}
+			<CardProject
+				colors={project.colors}
+				glowColor={project.glowColor}
+				borderRadius={12}
+				glowRadius={30}
+			>
+				<div class="flex h-full min-h-56 flex-col p-4">
+					<!-- Top: icon + status -->
+					<div class="flex items-start justify-between">
+						<div
+							class="inset-shadow grid size-10 place-items-center rounded-sm bg-background-inset {isComplete ? 'text-accent' : meta.color}"
+						>
+							<project.icon size={24} />
 						</div>
-
-						<!-- Title + description -->
-						<div class="mt-3 grid gap-1.5">
-							<h3 class="font-mono text-base font-bold tracking-tight text-foreground">
-								{project.title}
-							</h3>
-							<p class="text-xs leading-relaxed text-foreground-muted">
-								{project.description}
-							</p>
-						</div>
-
-						<!-- Bottom: progress + tasks -->
-						<div class="mt-auto grid gap-2.5 pt-3">
-							<!-- Progress bar -->
-							<div class="flex items-center gap-2.5">
-								<div class="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
-									<div
-										class="h-full rounded-full transition-all duration-500 {isComplete ? 'bg-accent' : isPlanned ? 'bg-foreground-muted/30' : meta.dot}"
-										style="width: {Math.max(project.progress, 3)}%"
-									></div>
-								</div>
-								<span class="shrink-0 font-mono text-xs font-bold tabular-nums {isComplete ? 'text-accent' : 'text-foreground-muted'}">
-									{project.progress}%
-								</span>
-							</div>
-
-							<!-- Status text -->
-							<p class="text-xs leading-relaxed text-foreground-muted">
-								{#if isComplete}
-									<span class="inline-flex items-center gap-1 font-medium {meta.color}">
-										<CheckmarkFilled size={14} />
-										100% — {project.statusText}
-									</span>
-								{:else if isPlanned}
-									<span class="inline-flex items-center gap-1 font-medium {meta.color}">
-										<Time size={14} />
-										{project.progress}% — {project.statusText}
-									</span>
-								{:else}
-									<span class="inline-flex items-center gap-1 font-medium {meta.color}">
-										{#if project.status === 'frozen'}
-											<Time size={14} />
-										{:else}
-											<Warning size={14} />
-										{/if}
-										{project.progress}% — {project.statusText}
-									</span>
+						<div class="flex items-center gap-1.5 text-xs font-medium {meta.color}">
+							<span class="relative flex size-2">
+								{#if project.status === 'active' && !isComplete}
+									<span class="absolute inline-flex size-full animate-ping rounded-full opacity-60 {meta.dot}"></span>
 								{/if}
-							</p>
-
-							<!-- Tasks / notes -->
-							{#if project.tasks.length > 0}
-								<div class="space-y-1">
-									{#if project.tasksHeader}
-										<p class="text-xs font-semibold tracking-wide uppercase text-foreground-muted/60">
-											{project.tasksHeader}
-										</p>
-									{/if}
-									<ul class="space-y-0.5">
-										{#each project.tasks as task (task)}
-											<li class="flex items-start gap-1.5 text-xs text-foreground-muted">
-												<span class="mt-1 size-1.5 shrink-0 rounded-full {isComplete ? 'bg-accent' : 'bg-foreground-muted/30'}"></span>
-												{task}
-											</li>
-										{/each}
-									</ul>
-								</div>
-							{/if}
+								<span class="relative inline-flex size-2 rounded-full {meta.dot}"></span>
+							</span>
+							{meta.label}
 						</div>
-					</article>
+					</div>
+
+					<!-- Title + description -->
+					<div class="mt-3 grid gap-1.5">
+						<h3 class="font-mono text-base font-bold tracking-tight text-foreground">
+							{project.title}
+						</h3>
+						<p class="text-xs leading-relaxed text-foreground-muted">
+							{project.description}
+						</p>
+					</div>
+
+					<!-- Bottom: progress + tasks -->
+					<div class="mt-auto grid gap-2.5 pt-3">
+						<!-- Progress bar -->
+						<div class="flex items-center gap-2.5">
+							<div class="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
+								<div
+									class="h-full rounded-full transition-all duration-500 {isComplete ? 'bg-accent' : isPlanned ? 'bg-foreground-muted/30' : meta.dot}"
+									style="width: {Math.max(project.progress, 3)}%"
+								></div>
+							</div>
+							<span class="shrink-0 font-mono text-xs font-bold tabular-nums {isComplete ? 'text-accent' : 'text-foreground-muted'}">
+								{project.progress}%
+							</span>
+						</div>
+
+						<!-- Status text -->
+						<p class="text-xs leading-relaxed text-foreground-muted">
+							{#if isComplete}
+								<span class="inline-flex items-center gap-1 font-medium {meta.color}">
+									<CheckmarkFilled size={14} />
+									100% — {project.statusText}
+								</span>
+							{:else if isPlanned}
+								<span class="inline-flex items-center gap-1 font-medium {meta.color}">
+									<Time size={14} />
+									{project.progress}% — {project.statusText}
+								</span>
+							{:else}
+								<span class="inline-flex items-center gap-1 font-medium {meta.color}">
+									{#if project.status === 'frozen'}
+										<Time size={14} />
+									{:else}
+										<Warning size={14} />
+									{/if}
+									{project.progress}% — {project.statusText}
+								</span>
+							{/if}
+						</p>
+
+						<!-- Tasks / notes -->
+						{#if project.tasks.length > 0}
+							<div class="space-y-1">
+								{#if project.tasksHeader}
+									<p class="text-xs font-semibold tracking-wide uppercase text-foreground-muted/60">
+										{project.tasksHeader}
+									</p>
+								{/if}
+								<ul class="space-y-0.5">
+									{#each project.tasks as task (task)}
+										<li class="flex items-start gap-1.5 text-xs text-foreground-muted">
+											<span class="mt-1 size-1.5 shrink-0 rounded-full {isComplete ? 'bg-accent' : 'bg-foreground-muted/30'}"></span>
+											{task}
+										</li>
+									{/each}
+								</ul>
+							</div>
+						{/if}
+					</div>
 				</div>
-			{/each}
-		</div>
+			</CardProject>
+		{/each}
 	</div>
 
 	<!-- Platforms section -->

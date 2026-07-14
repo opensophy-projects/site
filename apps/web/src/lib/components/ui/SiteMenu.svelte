@@ -20,6 +20,7 @@
 		{
 			title: 'Ресурсы',
 			links: [
+				{ label: 'Статус проектов', href: resolve('/status') },
 				{ label: 'GitHub', href: 'https://github.com/opensophy-projects' },
 				{ label: 'os.mtls', href: 'https://github.com/opensophy-projects/mtls' }
 			]
