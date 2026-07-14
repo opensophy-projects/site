@@ -34,10 +34,16 @@
 		tasksHeader: string;
 		tasks: string[];
 		icon: typeof Component;
+		glowColors: string[];
+		glowColor: string;
 	};
 
-	const GLOW_COLORS = ['#f43f5e', '#fb7185', '#fda4af'];
-	const GLOW_COLOR = '350 80 65';
+	const GREEN_GLOW_COLORS = ['#10b981', '#34d399', '#6ee7b7'];
+	const GREEN_GLOW_COLOR = '155 70 55';
+	const BLUE_GLOW_COLORS = ['#0ea5e9', '#38bdf8', '#7dd3fc'];
+	const BLUE_GLOW_COLOR = '200 85 60';
+	const ROSE_GLOW_COLORS = ['#f43f5e', '#fb7185', '#fda4af'];
+	const ROSE_GLOW_COLOR = '350 80 65';
 
 	const projects: Project[] = [
 		{
@@ -52,7 +58,9 @@
 			tasks: [
 				'разработка dev-панели для быстрого создания проектов и управления контентом'
 			],
-			icon: Documentation
+			icon: Documentation,
+			glowColors: GREEN_GLOW_COLORS,
+			glowColor: GREEN_GLOW_COLOR
 		},
 		{
 			slug: 'os.ui',
@@ -66,7 +74,9 @@
 			tasks: [
 				'пополнение библиотеки новыми компонентами'
 			],
-			icon: ApplicationWeb
+			icon: ApplicationWeb,
+			glowColors: GREEN_GLOW_COLORS,
+			glowColor: GREEN_GLOW_COLOR
 		},
 		{
 			slug: 'os.net',
@@ -83,7 +93,9 @@
 				'интеграция с community-решениями',
 				'управление mTLS для Traefik и NGINX (под вопросом — ищем нативный способ интеграции, совместимый со всеми прокси)'
 			],
-			icon: Network_3
+			icon: Network_3,
+			glowColors: BLUE_GLOW_COLORS,
+			glowColor: BLUE_GLOW_COLOR
 		},
 		{
 			slug: 'os.mtls',
@@ -99,7 +111,9 @@
 				'интеграция с os.port и os.net',
 				'разработка версии под NGINX и публикация в NPM'
 			],
-			icon: Certificate
+			icon: Certificate,
+			glowColors: GREEN_GLOW_COLORS,
+			glowColor: GREEN_GLOW_COLOR
 		},
 		{
 			slug: 'os.oasm',
@@ -111,7 +125,9 @@
 			statusText: 'разработка не начата',
 			tasksHeader: '',
 			tasks: [],
-			icon: Security
+			icon: Security,
+			glowColors: ROSE_GLOW_COLORS,
+			glowColor: ROSE_GLOW_COLOR
 		},
 		{
 			slug: 'os.port',
@@ -125,7 +141,9 @@
 			tasks: [
 				'проект проходит пересмотр архитектуры и технологического стека под новые требования'
 			],
-			icon: Deploy
+			icon: Deploy,
+			glowColors: ROSE_GLOW_COLORS,
+			glowColor: ROSE_GLOW_COLOR
 		},
 		{
 			slug: 'os.forum',
@@ -137,7 +155,9 @@
 			statusText: 'разработка не начата',
 			tasksHeader: '',
 			tasks: [],
-			icon: Forum
+			icon: Forum,
+			glowColors: ROSE_GLOW_COLORS,
+			glowColor: ROSE_GLOW_COLOR
 		}
 	];
 
@@ -170,15 +190,15 @@
 		{@const isComplete = project.progress === 100}
 		{@const isPlanned = project.status === 'planned'}
 			<CardProject
-				colors={GLOW_COLORS}
-				glowColor={GLOW_COLOR}
+				colors={project.glowColors}
+				glowColor={project.glowColor}
 				borderRadius={12}
 				glowRadius={30}
 			>
 				<div class="flex h-full min-h-56 flex-col p-4">
 					<!-- Top: icon + title + status -->
 					<div class="flex items-center justify-between gap-3">
-						<div class="flex items-center gap-2.5 min-w-0">
+						<div class="flex items-center gap-3.5 min-w-0">
 							<div
 								class="inset-shadow grid size-10 shrink-0 place-items-center rounded-sm bg-background-inset"
 								style="color: {isComplete ? 'var(--color-accent)' : meta.color}"
@@ -214,10 +234,10 @@
 							<div class="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
 								<div
 									class="h-full rounded-full transition-all duration-500"
-									style="width: {Math.max(project.progress, 3)}%; background-color: {isComplete ? 'var(--color-accent)' : isPlanned ? 'color-mix(in srgb, var(--color-foreground-muted) 30%, transparent)' : meta.dot}"
+									style="width: {Math.max(project.progress, 3)}%; background-color: {isComplete ? meta.dot : isPlanned ? 'color-mix(in srgb, var(--color-foreground-muted) 30%, transparent)' : meta.dot}"
 								></div>
 							</div>
-							<span class="shrink-0 font-mono text-xs font-bold tabular-nums" style="color: {isComplete ? 'var(--color-accent)' : 'var(--color-foreground-muted)'}">
+							<span class="shrink-0 font-mono text-xs font-bold tabular-nums" style="color: {isComplete ? meta.color : 'var(--color-foreground-muted)'}">
 								{project.progress}%
 							</span>
 						</div>
@@ -257,7 +277,7 @@
 								<ul class="space-y-0.5">
 									{#each project.tasks as task (task)}
 										<li class="flex items-start gap-1.5 text-xs text-foreground-muted">
-											<span class="mt-1 size-1.5 shrink-0 rounded-full" style="background-color: {isComplete ? 'var(--color-accent)' : 'color-mix(in srgb, var(--color-foreground-muted) 30%, transparent)'}"></span>
+											<span class="mt-1 size-1.5 shrink-0 rounded-full" style="background-color: {isComplete ? meta.dot : 'color-mix(in srgb, var(--color-foreground-muted) 30%, transparent)'}"></span>
 											{task}
 										</li>
 									{/each}
