@@ -17,12 +17,9 @@ class CopyError extends Error {
 export async function copyToClipboard(text: string): Promise<void> {
 	if (!text) throw new CopyError('No content to copy');
 
-	const canUseWindow = typeof window !== 'undefined';
-	const canUseDocument = typeof document !== 'undefined';
-
 	// Пробуем современный Clipboard API
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (canUseWindow && navigator.clipboard?.writeText) {
+	if (navigator.clipboard?.writeText) {
 		try {
 			await navigator.clipboard.writeText(text);
 			return;
@@ -32,7 +29,7 @@ export async function copyToClipboard(text: string): Promise<void> {
 	}
 
 	// Fallback для окружений без рабочего Clipboard API
-	if (!canUseDocument) {
+	if (typeof document === 'undefined') {
 		throw new CopyError('Clipboard unavailable');
 	}
 
@@ -49,17 +46,12 @@ export async function copyToClipboard(text: string): Promise<void> {
 	textArea.focus();
 	textArea.select();
 
-	try {
-		// execCommand устарел, но остаётся единственным fallback для старых браузеров
-		// eslint-disable-next-line @typescript-eslint/no-deprecated
-		if (document.queryCommandSupported('copy') && document.execCommand('copy')) {
-			textArea.remove();
-			return;
-		}
-	} catch {
-		// Оба метода недоступны
-	}
+	// eslint-disable-next-line @typescript-eslint/no-deprecated
+	const copied = document.execCommand('copy');
 
 	textArea.remove();
-	throw new CopyError('Clipboard unavailable');
+
+	if (!copied) {
+		throw new CopyError('Clipboard unavailable');
+	}
 }

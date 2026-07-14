@@ -1,4 +1,5 @@
 <script lang="ts">
+	/* eslint-disable svelte/no-navigation-without-resolve */
 	import { brandingConfig } from '$lib';
 	import CardSection from '$lib/components/ui/CardSection.svelte';
 	import CardProject from '$lib/components/ui/CardProject.svelte';
@@ -185,10 +186,11 @@
 						<div class="project-card-header">
 							<span class="project-slug">{project.title}</span>
 							{#if project.status.modalText}
+								{@const modalText = project.status.modalText}
 								<button
 									type="button"
 									class="project-status project-status-{project.status.variant}"
-									onclick={() => openStatusModal(project.status.modalText!)}
+									onclick={() => { openStatusModal(modalText); }}
 								>
 									{project.status.label}
 								</button>
