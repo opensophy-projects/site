@@ -6,44 +6,116 @@
 	import TextLoop from '$lib/components/ui/TextLoop.svelte';
 	import Teamsection from '$lib/components/ui/Teamsection.svelte';
 	import ArrowRight from 'carbon-icons-svelte/lib/ArrowRight.svelte';
+	import Close from 'carbon-icons-svelte/lib/Close.svelte';
 	import { contactsState } from '$lib/stores/contacts.svelte';
+	import { resolve } from '$app/paths';
 
 	const heroLoopTexts = ['знания', 'open-source', 'безопасность', 'разработку'];
 
-	const projects = [
+	type StatusVariant = 'in-progress' | 'released' | 'frozen' | 'not-started';
+
+	type ProjectStatus = {
+		variant: StatusVariant;
+		label: string;
+		href?: string;
+		modalText?: string;
+	};
+
+	type Project = {
+		title: string;
+		description: string;
+		colors: string[];
+		glowColor: string;
+		status: ProjectStatus;
+	};
+
+	const projects: Project[] = [
 		{
 			title: 'os.docs',
 			description:
-				'Платформа для документации и публикации контента. Подходит для технических команд, авторов и всех, кто хочет красиво и структурировано делиться знаниями.',
+				'Платформа для документации и публикации контента. Подходит для технических команд, авторов и всех, кто хочет структурированно делиться знаниями.',
 			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '330 70 65',
-			wip: false,
+			status: { variant: 'in-progress', label: 'В процессе' }
 		},
 		{
 			title: 'os.ui',
 			description:
-				'Библиотека готовых компонентов с живым превью и настройками. Анимации, интерактивные блоки, кастомные элементы и фирменные компоненты Opensophy — для разработчиков и дизайнеров.',
+				'Библиотека готовых UI-компонентов с живым превью и гибкими настройками. Включает анимации, интерактивные блоки и фирменные компоненты Opensophy — для разработчиков и дизайнеров.',
 			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '330 70 65',
-			wip: false,
+			status: {
+				variant: 'released',
+				label: 'Проект в релизе',
+				href: resolve('/components')
+			}
 		},
 		{
 			title: 'os.net',
 			description:
-				'GUI-платформа управления безопасным удалённым доступом: P2P, VPN, proxy, mTLS — всё в одном интерфейсе.',
+				'Форк проекта Netbird. GUI-платформа для управления безопасным удалённым доступом: P2P, VPN, proxy, mTLS — всё в одном интерфейсе. Бесплатная enterprise-версия.',
 			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '330 70 65',
-			wip: true,
+			status: {
+				variant: 'frozen',
+				label: 'Частично готов. В заморозке.',
+				modalText:
+					'Ожидаем, пока upstream-разработчики выведут proxy и расширенное управление из бета-версии.'
+			}
 		},
 		{
 			title: 'os.mtls',
 			description:
-				'Инструмент для быстрого создания и управления mTLS-сертификатами. Для тех, кто хочет надёжно закрыть доступ к своим сервисам и серверам без лишней головной боли.',
+				'Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik. Позволяет надёжно закрыть доступ к сервисам и серверам без лишних сложностей.',
 			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '330 70 65',
-			wip: false,
+			status: {
+				variant: 'released',
+				label: 'Проект в релизе',
+				href: 'https://github.com/opensophy-projects/mtls'
+			}
 		},
+		{
+			title: 'os.oasm',
+			description:
+				'Open App Sec Models — система защиты веб-приложений (WAF) на основе машинного обучения. Opensophy будет поставлять готовые модели для интеграции WAF в сторонние проекты.',
+			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
+			glowColor: '330 70 65',
+			status: { variant: 'not-started', label: 'Разработка не начата' }
+		},
+		{
+			title: 'os.port',
+			description:
+				'Форк проекта Dokploy — платформа для управления серверами и деплоя приложений. Бесплатная enterprise-версия с обновлённым дизайном, встроенным управлением mTLS и русификацией.',
+			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
+			glowColor: '330 70 65',
+			status: { variant: 'not-started', label: 'Разработка не начата' }
+		},
+		{
+			title: 'os.forum',
+			description:
+				'Платформа для создания форума на базе возможностей GitHub — Issues, Discussions, авторизация через GitHub.',
+			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
+			glowColor: '330 70 65',
+			status: { variant: 'not-started', label: 'Разработка не начата' }
+		}
 	];
+
+	let statusModalOpen = $state(false);
+	let statusModalText = $state('');
+
+	function openStatusModal(text: string) {
+		statusModalText = text;
+		statusModalOpen = true;
+	}
+
+	function closeStatusModal() {
+		statusModalOpen = false;
+	}
+
+	function isExternal(href: string) {
+		return /^https?:\/\//.test(href);
+	}
 </script>
 
 <a
@@ -112,8 +184,27 @@
 					<div class="project-card-body">
 						<div class="project-card-header">
 							<span class="project-slug">{project.title}</span>
-							{#if project.wip}
-								<span class="project-wip">В разработке</span>
+							{#if project.status.modalText}
+								<button
+									type="button"
+									class="project-status project-status-{project.status.variant}"
+									onclick={() => openStatusModal(project.status.modalText!)}
+								>
+									{project.status.label}
+								</button>
+							{:else if project.status.href}
+								<a
+									href={project.status.href}
+									target={isExternal(project.status.href) ? '_blank' : undefined}
+									rel={isExternal(project.status.href) ? 'noreferrer' : undefined}
+									class="project-status project-status-{project.status.variant} project-status-link"
+								>
+									{project.status.label}
+								</a>
+							{:else}
+								<span class="project-status project-status-{project.status.variant}">
+									{project.status.label}
+								</span>
 							{/if}
 						</div>
 						<p class="project-desc">{project.description}</p>
@@ -154,6 +245,36 @@
 	</section>
 </main>
 
+{#if statusModalOpen}
+	<div
+		class="status-modal-overlay"
+		onclick={closeStatusModal}
+		onkeydown={(e) => { if (e.key === 'Escape') closeStatusModal(); }}
+		role="button"
+		tabindex="-1"
+		aria-label="Закрыть"
+	>
+		<div
+			class="status-modal"
+			onclick={(e) => { e.stopPropagation(); }}
+			onkeydown={(e) => { e.stopPropagation(); }}
+			role="dialog"
+			aria-modal="true"
+			aria-label="Информация о статусе"
+			tabindex="-1"
+		>
+			<button
+				type="button"
+				class="status-modal-close"
+				onclick={closeStatusModal}
+				aria-label="Закрыть"
+			>
+				<Close size={18} />
+			</button>
+			<p class="status-modal-text">{statusModalText}</p>
+		</div>
+	</div>
+{/if}
 
 <style>
 	/* ─── Hero Section ─────────────────────────────────────────── */
@@ -393,17 +514,152 @@
 		.project-slug { font-size: 1rem; }
 	}
 
-	.project-wip {
+	.project-status {
 		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-		font-size: 0.58rem;
+		font-size: 0.62rem;
 		font-weight: 700;
-		letter-spacing: 0.08em;
+		letter-spacing: 0.06em;
+		border: none;
+		padding: 0;
+		cursor: default;
+	}
+
+	.project-status-in-progress {
 		text-transform: uppercase;
 		color: var(--foreground-muted);
 		background: var(--background-inset);
 		border: 1px solid var(--border);
 		padding: 0.15rem 0.45rem;
 		border-radius: 999px;
+	}
+
+	.project-status-released {
+		text-transform: uppercase;
+		color: var(--foreground-muted);
+		background: var(--background-inset);
+		border: 1px solid var(--border);
+		padding: 0.15rem 0.45rem;
+		border-radius: 999px;
+	}
+
+	.project-status-frozen {
+		text-transform: uppercase;
+		color: var(--foreground-muted);
+		background: var(--background-inset);
+		border: 1px solid var(--border);
+		padding: 0.15rem 0.45rem;
+		border-radius: 999px;
+	}
+
+	.project-status-not-started {
+		text-transform: uppercase;
+		color: var(--foreground-muted);
+		background: var(--background-inset);
+		border: 1px solid var(--border);
+		padding: 0.15rem 0.45rem;
+		border-radius: 999px;
+	}
+
+	.project-status-link {
+		display: inline-flex;
+		align-items: center;
+		font-size: 0.9rem;
+		font-weight: 500;
+		font-family: inherit;
+		letter-spacing: normal;
+		text-transform: none;
+		text-decoration: underline;
+		text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
+		text-decoration-style: dotted;
+		text-underline-offset: 4px;
+		color: var(--accent);
+		background: transparent;
+		border: none;
+		padding: 0;
+		border-radius: 0;
+		transition: color 150ms ease-out, text-decoration-color 150ms ease-out;
+		cursor: pointer;
+	}
+
+	.project-status-link:hover {
+		color: var(--foreground);
+		text-decoration-color: var(--foreground-muted);
+	}
+
+	.project-status-modal {
+		cursor: pointer;
+	}
+
+	.status-modal-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 100;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		background: color-mix(in srgb, var(--background-inset) 80%, transparent);
+		backdrop-filter: blur(6px);
+		-webkit-backdrop-filter: blur(6px);
+		animation: status-modal-fade-in 200ms ease-out;
+	}
+
+	.status-modal {
+		position: relative;
+		width: 100%;
+		max-width: 28rem;
+		margin: 1rem;
+		padding: 1.5rem;
+		border-radius: var(--radius-sm, 0.55rem);
+		border: 1px solid var(--border);
+		background: var(--background);
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+		animation: status-modal-scale-in 250ms ease-out;
+	}
+
+	.status-modal-close {
+		position: absolute;
+		top: 0.75rem;
+		right: 0.75rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border-radius: var(--radius-sm, 0.55rem);
+		border: none;
+		background: transparent;
+		color: var(--foreground-muted);
+		cursor: pointer;
+		transition: background 150ms ease-out, color 150ms ease-out;
+	}
+
+	.status-modal-close:hover {
+		background: var(--background-muted);
+		color: var(--foreground);
+	}
+
+	.status-modal-text {
+		font-size: 0.9rem;
+		line-height: 1.7;
+		color: var(--foreground-muted);
+		margin: 0;
+		padding-right: 1.5rem;
+	}
+
+	@keyframes status-modal-fade-in {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
+
+	@keyframes status-modal-scale-in {
+		from {
+			opacity: 0;
+			transform: scale(0.95);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
 
 	.project-desc {
