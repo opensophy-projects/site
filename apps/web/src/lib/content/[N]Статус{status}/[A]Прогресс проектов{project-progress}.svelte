@@ -34,9 +34,10 @@
 		tasksHeader: string;
 		tasks: string[];
 		icon: typeof Component;
-		colors: string[];
-		glowColor: string;
 	};
+
+	const GLOW_COLORS = ['#f43f5e', '#fb7185', '#fda4af'];
+	const GLOW_COLOR = '350 80 65';
 
 	const projects: Project[] = [
 		{
@@ -51,9 +52,7 @@
 			tasks: [
 				'разработка dev-панели для быстрого создания проектов и управления контентом'
 			],
-			icon: Documentation,
-			colors: ['#f43f5e', '#f43f5e', '#fda4af'],
-			glowColor: '350 80 65'
+			icon: Documentation
 		},
 		{
 			slug: 'os.ui',
@@ -67,9 +66,7 @@
 			tasks: [
 				'пополнение библиотеки новыми компонентами'
 			],
-			icon: ApplicationWeb,
-			colors: ['#f43f5e', '#fb7185', '#fda4af'],
-			glowColor: '350 80 65'
+			icon: ApplicationWeb
 		},
 		{
 			slug: 'os.net',
@@ -86,9 +83,7 @@
 				'интеграция с community-решениями',
 				'управление mTLS для Traefik и NGINX (под вопросом — ищем нативный способ интеграции, совместимый со всеми прокси)'
 			],
-			icon: Network_3,
-			colors: ['#38bdf8', '#0ea5e9', '#7dd3fc'],
-			glowColor: '200 85 60'
+			icon: Network_3
 		},
 		{
 			slug: 'os.mtls',
@@ -104,9 +99,7 @@
 				'интеграция с os.port и os.net',
 				'разработка версии под NGINX и публикация в NPM'
 			],
-			icon: Certificate,
-			colors: ['#34d399', '#10b981', '#6ee7b7'],
-			glowColor: '155 70 55'
+			icon: Certificate
 		},
 		{
 			slug: 'os.oasm',
@@ -118,9 +111,7 @@
 			statusText: 'разработка не начата',
 			tasksHeader: '',
 			tasks: [],
-			icon: Security,
-			colors: ['#f87171', '#ef4444', '#fca5a5'],
-			glowColor: '0 80 65'
+			icon: Security
 		},
 		{
 			slug: 'os.port',
@@ -134,9 +125,7 @@
 			tasks: [
 				'проект проходит пересмотр архитектуры и технологического стека под новые требования'
 			],
-			icon: Deploy,
-			colors: ['#a78bfa', '#8b5cf6', '#c4b5fd'],
-			glowColor: '255 70 70'
+			icon: Deploy
 		},
 		{
 			slug: 'os.forum',
@@ -148,9 +137,7 @@
 			statusText: 'разработка не начата',
 			tasksHeader: '',
 			tasks: [],
-			icon: Forum,
-			colors: ['#fbbf24', '#f59e0b', '#fcd34d'],
-			glowColor: '40 90 60'
+			icon: Forum
 		}
 	];
 
@@ -159,30 +146,21 @@
 		{ url: 'forum.opensophy.com', label: 'os.forum (в разработке)' }
 	];
 
+	// Status colors as hex — project theme doesn't define emerald/sky/rose
 	const statusMeta: Record<ProjectStatus, { label: string; color: string; dot: string }> = {
-		active:  { label: 'Активен',     color: 'text-emerald-500', dot: 'bg-emerald-500' },
-		frozen:  { label: 'Заморожен',   color: 'text-sky-500',     dot: 'bg-sky-500'     },
-		planned: { label: 'Планируется',  color: 'text-rose-500',    dot: 'bg-rose-500'    }
+		active:  { label: 'Активен',     color: '#10b981', dot: '#10b981' },
+		frozen:  { label: 'Заморожен',   color: '#0ea5e9', dot: '#0ea5e9' },
+		planned: { label: 'Планируется',  color: '#f43f5e', dot: '#f43f5e' }
 	};
 </script>
 
-<div class="w-full space-y-6 p-4 lg:p-8">
-	<!-- Header -->
-	<div class="space-y-2">
+<div class="w-full space-y-8 p-4 lg:p-8">
+	<!-- Header (centered) -->
+	<div class="flex flex-col items-center gap-2 text-center pt-4 pb-2">
 		<h1 class="text-2xl font-bold tracking-tight text-foreground">Прогресс проектов</h1>
 		<p class="text-sm leading-relaxed text-foreground-muted max-w-2xl">
 			Актуальный статус разработки открытых проектов Opensophy. Обновляется вручную по мере продвижения.
 		</p>
-
-		<!-- Legend -->
-		<div class="flex flex-wrap items-center gap-4 pt-1">
-			{#each Object.entries(statusMeta) as [, meta] (meta.label)}
-				<span class="flex items-center gap-1.5 text-xs font-medium {meta.color}">
-					<span class="size-2 rounded-full {meta.dot}"></span>
-					{meta.label}
-				</span>
-			{/each}
-		</div>
 	</div>
 
 	<!-- Projects grid -->
@@ -192,35 +170,38 @@
 		{@const isComplete = project.progress === 100}
 		{@const isPlanned = project.status === 'planned'}
 			<CardProject
-				colors={project.colors}
-				glowColor={project.glowColor}
+				colors={GLOW_COLORS}
+				glowColor={GLOW_COLOR}
 				borderRadius={12}
 				glowRadius={30}
 			>
 				<div class="flex h-full min-h-56 flex-col p-4">
-					<!-- Top: icon + status -->
-					<div class="flex items-start justify-between">
-						<div
-							class="inset-shadow grid size-10 place-items-center rounded-sm bg-background-inset {isComplete ? 'text-accent' : meta.color}"
-						>
-							<project.icon size={24} />
+					<!-- Top: icon + title + status -->
+					<div class="flex items-center justify-between gap-3">
+						<div class="flex items-center gap-2.5 min-w-0">
+							<div
+								class="inset-shadow grid size-10 shrink-0 place-items-center rounded-sm bg-background-inset"
+								style="color: {isComplete ? 'var(--color-accent)' : meta.color}"
+							>
+								<project.icon size={24} />
+							</div>
+							<h3 class="font-mono text-base font-bold tracking-tight text-foreground truncate">
+								{project.title}
+							</h3>
 						</div>
-						<div class="flex items-center gap-1.5 text-xs font-medium {meta.color}">
+						<div class="flex shrink-0 items-center gap-1.5 text-xs font-medium" style="color: {meta.color}">
 							<span class="relative flex size-2">
 								{#if project.status === 'active' && !isComplete}
-									<span class="absolute inline-flex size-full animate-ping rounded-full opacity-60 {meta.dot}"></span>
+									<span class="absolute inline-flex size-full animate-ping rounded-full opacity-60" style="background-color: {meta.dot}"></span>
 								{/if}
-								<span class="relative inline-flex size-2 rounded-full {meta.dot}"></span>
+								<span class="relative inline-flex size-2 rounded-full" style="background-color: {meta.dot}"></span>
 							</span>
 							{meta.label}
 						</div>
 					</div>
 
-					<!-- Title + description -->
-					<div class="mt-3 grid gap-1.5">
-						<h3 class="font-mono text-base font-bold tracking-tight text-foreground">
-							{project.title}
-						</h3>
+					<!-- Description -->
+					<div class="mt-3">
 						<p class="text-xs leading-relaxed text-foreground-muted">
 							{project.description}
 						</p>
@@ -232,11 +213,11 @@
 						<div class="flex items-center gap-2.5">
 							<div class="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
 								<div
-									class="h-full rounded-full transition-all duration-500 {isComplete ? 'bg-accent' : isPlanned ? 'bg-foreground-muted/30' : meta.dot}"
-									style="width: {Math.max(project.progress, 3)}%"
+									class="h-full rounded-full transition-all duration-500"
+									style="width: {Math.max(project.progress, 3)}%; background-color: {isComplete ? 'var(--color-accent)' : isPlanned ? 'color-mix(in srgb, var(--color-foreground-muted) 30%, transparent)' : meta.dot}"
 								></div>
 							</div>
-							<span class="shrink-0 font-mono text-xs font-bold tabular-nums {isComplete ? 'text-accent' : 'text-foreground-muted'}">
+							<span class="shrink-0 font-mono text-xs font-bold tabular-nums" style="color: {isComplete ? 'var(--color-accent)' : 'var(--color-foreground-muted)'}">
 								{project.progress}%
 							</span>
 						</div>
@@ -244,17 +225,17 @@
 						<!-- Status text -->
 						<p class="text-xs leading-relaxed text-foreground-muted">
 							{#if isComplete}
-								<span class="inline-flex items-center gap-1 font-medium {meta.color}">
+								<span class="inline-flex items-center gap-1 font-medium" style="color: {meta.color}">
 									<CheckmarkFilled size={14} />
 									100% — {project.statusText}
 								</span>
 							{:else if isPlanned}
-								<span class="inline-flex items-center gap-1 font-medium {meta.color}">
+								<span class="inline-flex items-center gap-1 font-medium" style="color: {meta.color}">
 									<Time size={14} />
 									{project.progress}% — {project.statusText}
 								</span>
 							{:else}
-								<span class="inline-flex items-center gap-1 font-medium {meta.color}">
+								<span class="inline-flex items-center gap-1 font-medium" style="color: {meta.color}">
 									{#if project.status === 'frozen'}
 										<Time size={14} />
 									{:else}
@@ -276,7 +257,7 @@
 								<ul class="space-y-0.5">
 									{#each project.tasks as task (task)}
 										<li class="flex items-start gap-1.5 text-xs text-foreground-muted">
-											<span class="mt-1 size-1.5 shrink-0 rounded-full {isComplete ? 'bg-accent' : 'bg-foreground-muted/30'}"></span>
+											<span class="mt-1 size-1.5 shrink-0 rounded-full" style="background-color: {isComplete ? 'var(--color-accent)' : 'color-mix(in srgb, var(--color-foreground-muted) 30%, transparent)'}"></span>
 											{task}
 										</li>
 									{/each}
