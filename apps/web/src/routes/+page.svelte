@@ -37,7 +37,11 @@
 				'Платформа для документации и публикации контента. Подходит для технических команд, авторов и всех, кто хочет структурированно делиться знаниями.',
 			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '330 70 65',
-			status: { variant: 'in-progress', label: 'В процессе' }
+			status: {
+				variant: 'released',
+				label: 'Проект в релизе',
+				href: 'https://github.com/opensophy-projects/docs'
+			}
 		},
 		{
 			title: 'os.ui',
@@ -90,7 +94,7 @@
 				'Форк проекта Dokploy — платформа для управления серверами и деплоя приложений. Бесплатная enterprise-версия с обновлённым дизайном, встроенным управлением mTLS и русификацией.',
 			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '330 70 65',
-			status: { variant: 'not-started', label: 'Разработка не начата' }
+			status: { variant: 'in-progress', label: 'В разработке' }
 		},
 		{
 			title: 'os.forum',
@@ -189,7 +193,7 @@
 								{@const modalText = project.status.modalText}
 								<button
 									type="button"
-									class="project-status project-status-{project.status.variant}"
+									class="project-status project-status-{project.status.variant} project-status-link"
 									onclick={() => { openStatusModal(modalText); }}
 								>
 									{project.status.label}
@@ -583,7 +587,8 @@
 		cursor: pointer;
 	}
 
-	.project-status-link:hover {
+	.project-status-link:hover,
+		button.project-status-link:hover {
 		color: var(--foreground);
 		text-decoration-color: var(--foreground-muted);
 	}

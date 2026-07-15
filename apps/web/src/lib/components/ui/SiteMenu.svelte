@@ -18,13 +18,6 @@
 			]
 		},
 		{
-			title: 'Ресурсы',
-			links: [
-				{ label: 'GitHub', href: 'https://github.com/opensophy-projects' },
-				{ label: 'os.mtls', href: 'https://github.com/opensophy-projects/mtls' }
-			]
-		},
-		{
 			title: 'Проект',
 			links: [
 				{
