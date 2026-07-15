@@ -19,7 +19,10 @@ describe('cn', () => {
 	});
 
 	it('обрабатывает условные классы', () => {
-		const classes = ['base', true && 'active', false && 'inactive'].filter(Boolean) as string[];
+		const flags: Record<string, boolean> = { active: true, inactive: false };
+		const classes = ['base', flags.active && 'active', flags.inactive && 'inactive'].filter(
+			(s): s is string => typeof s === 'string'
+		);
 		expect(cn(...classes)).toBe('base active');
 	});
 });
