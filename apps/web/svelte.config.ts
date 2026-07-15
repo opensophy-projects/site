@@ -336,7 +336,7 @@ const config: Config = {
 				const include = tsConfig.include;
 
 				if (include.length) {
-					const extraIncludes = ['../eslint.config.ts', '../svelte.config.ts'];
+					const extraIncludes = ['../eslint.config.ts', '../svelte.config.ts', '../vitest.config.ts'];
 
 					for (const extraInclude of extraIncludes) {
 						if (!include.includes(extraInclude)) {

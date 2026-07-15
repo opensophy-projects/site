@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
 	parseNamedContentPath,
 	createNamedContentName,
-	type NamedContentKind
+
 } from '$lib/content/naming';
 
 describe('parseNamedContentPath', () => {

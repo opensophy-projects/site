@@ -4,8 +4,7 @@ import {
 	resolveTocSelector,
 	resolveAssistantUrls,
 	resolveRepositoryFileUrl,
-	sectionUiDefaults,
-	type SectionUiConfig
+	sectionUiDefaults
 } from '$lib/config/content-ui';
 
 describe('mergeSectionUiConfig', () => {

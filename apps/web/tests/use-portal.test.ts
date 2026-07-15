@@ -52,7 +52,7 @@ describe('portal', () => {
 	});
 
 	it('выводит предупреждение и добавляет в body при ненайденном селекторе', async () => {
-		const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 		const node = document.createElement('span');
 		const action = portal(node, 'body');
 
