@@ -33,7 +33,7 @@
 		lg: 'h-11 px-6 text-base'
 	};
 
-	const isBordered = variant === 'primary' || variant === 'secondary';
+	const isBordered = $derived(variant === 'primary' || variant === 'secondary');
 
 	const outerVariantClasses: Record<'primary' | 'secondary', string> = {
 		primary: 'bg-accent/30',
