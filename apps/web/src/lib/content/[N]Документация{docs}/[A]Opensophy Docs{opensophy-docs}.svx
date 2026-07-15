@@ -1,5 +1,5 @@
 ---
-title: Opensophy Docs v1
+title: Opensophy Docs v2
 description: Документация по шаблону Opensophy Docs — SvelteKit-based платформе для создания технической документации.
 ---
 
