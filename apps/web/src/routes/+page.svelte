@@ -86,7 +86,7 @@
 				'Open App Sec Models — система защиты веб-приложений (WAF) на основе машинного обучения. Opensophy будет поставлять готовые модели для интеграции WAF в сторонние проекты.',
 			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '330 70 65',
-			status: { variant: 'not-started', label: 'Разработка не начата' }
+			status: { variant: 'not-started', label: 'В разработке' }
 		},
 		{
 			title: 'os.port',
