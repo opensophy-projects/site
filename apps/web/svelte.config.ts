@@ -269,7 +269,9 @@ const highlighter = await createHighlighter({
 		'ini',
 		'md',
 		'powershell',
-		'ts'
+		'ts',
+		'yaml',
+		'css'
 	]
 });
 
