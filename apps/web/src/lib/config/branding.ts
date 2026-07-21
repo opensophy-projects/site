@@ -8,11 +8,11 @@
  */
 export const brandingConfig = {
 	/** Universal logo used for both themes when logoLight/logoDark are not set. */
-	logo: '',
+	logo: '/logo.png',
 	/** Light theme logo. Falls back to logoDark, then logo. */
-	logoLight: '/light_logo.png',
+	logoLight: '',
 	/** Dark theme logo. Falls back to logoLight, then logo. */
-	logoDark: '/dark_logo.png',
+	logoDark: '',
 	/** Human-readable brand name displayed in the UI. */
 	name: 'opensophy'
 };
