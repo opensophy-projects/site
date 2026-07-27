@@ -8,7 +8,6 @@ export const prerender = true;
 
 export const entries = () => {
 	const result: { section: string; slug: string }[] = [];
-
 	for (const section of contentSections) {
 		const manifest = getContentSectionManifest(section.id);
 		for (const item of manifest) {
@@ -18,7 +17,6 @@ export const entries = () => {
 			});
 		}
 	}
-
 	return result;
 };
 
@@ -31,7 +29,6 @@ type TakumiElement = {
 	props: Record<string, unknown>;
 	key: string | null;
 };
-
 type TakumiChild = TakumiElement | string;
 
 const el = (
@@ -56,40 +53,40 @@ const clampText = (value: string, maxLength: number) => {
 	return `${text.slice(0, maxLength - 1).trimEnd()}…`;
 };
 
-const MAX_DESC_LENGTH = 120;
+const HERO_TAGLINE = 'проект про знания, open-source, безопасность и разработку';
 const ACCENT = '#f43f5e';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const { section: sectionId, slug } = params;
-
 	const pathname = `/${sectionId}/${slug}`;
 	const metadata = getContentSectionMetadata(sectionId, pathname);
+
 	if (!metadata) {
 		error(404, 'Document not found');
 	}
 
 	const title = clampText(metadata.title, MAX_TITLE_LENGTH);
-	const description = metadata.description
-		? clampText(metadata.description, MAX_DESC_LENGTH)
-		: '';
 
 	const component = el(
 		'div',
 		{
+			// Outer element: NO padding here. It's position:relative and acts
+			// as the containing block for the absolute glow overlay below.
+			// takumi resolves inset:0 against the parent's CONTENT box (inside
+			// padding), not the full box like a browser would — so padding on
+			// this element was clipping the glow ~112px short of the canvas
+			// edge and causing the hard visible boundary.
 			style: {
 				display: 'flex',
 				position: 'relative',
-				flexDirection: 'column',
-				justifyContent: 'space-between',
 				width: '100%',
 				height: '100%',
-				padding: 56,
 				background: '#090909',
 				fontFamily: 'Inter, sans-serif',
 				overflow: 'hidden'
 			}
 		},
-		// Bottom-up glow — no transparent zone, fills the whole image
+		// Hero-style radial glow — now truly covers the full 1200x630 canvas
 		el('div', {
 			style: {
 				position: 'absolute',
@@ -98,64 +95,77 @@ export const GET: RequestHandler = async ({ params }) => {
 				right: 0,
 				bottom: 0,
 				display: 'flex',
-				background: `radial-gradient(ellipse 180% 90% at 50% 110%, rgba(244,63,94,0.55) 0%, rgba(180,25,50,0.28) 35%, rgba(100,10,25,0.08) 60%, transparent 80%)`
+				background: `radial-gradient(125% 125% at 50% 0%, transparent 40%, rgba(244,63,94,0.22) 68%, rgba(253,164,175,0.14) 86%, rgba(255,241,242,0.04) 100%)`
 			}
 		}),
-		// Site name — accent colored, top-left
-		el('div', {
-			style: {
-				display: 'flex',
-				fontSize: 26,
-				fontWeight: 500,
-				color: ACCENT,
-				letterSpacing: '-0.02em',
-				position: 'relative'
-			}
-		}, siteConfig.name),
-		// Bottom content
+		// Inner wrapper: carries the padding + flex layout for content only
 		el(
 			'div',
 			{
 				style: {
 					display: 'flex',
 					flexDirection: 'column',
-					gap: 20,
+					justifyContent: 'space-between',
+					width: '100%',
+					height: '100%',
+					padding: 56,
 					position: 'relative'
 				}
 			},
+			// Site name — accent colored, top-left
 			el(
 				'div',
 				{
 					style: {
 						display: 'flex',
-						maxWidth: 1060,
-						fontSize: title.length > 40 ? 68 : 82,
-						lineHeight: 1.0,
-						color: '#f4f4f5',
+						fontSize: 26,
 						fontWeight: 500,
-						letterSpacing: '-0.03em'
+						color: ACCENT,
+						letterSpacing: '-0.02em'
 					}
 				},
-				title
+				siteConfig.name
 			),
-			...(description
-				? [
-						el(
-							'div',
-							{
-								style: {
-									display: 'flex',
-									maxWidth: 900,
-									fontSize: 28,
-									lineHeight: 1.55,
-									color: '#71717a',
-									fontWeight: 500
-								}
-							},
-							description
-						)
-				  ]
-				: [])
+			// Bottom content
+			el(
+				'div',
+				{
+					style: {
+						display: 'flex',
+						flexDirection: 'column',
+						gap: 20
+					}
+				},
+				el(
+					'div',
+					{
+						style: {
+							display: 'flex',
+							maxWidth: 1060,
+							fontSize: title.length > 40 ? 68 : 82,
+							lineHeight: 1.0,
+							color: '#f4f4f5',
+							fontWeight: 500,
+							letterSpacing: '-0.03em'
+						}
+					},
+					title
+				),
+				el(
+					'div',
+					{
+						style: {
+							display: 'flex',
+							maxWidth: 900,
+							fontSize: 28,
+							lineHeight: 1.4,
+							color: '#71717a',
+							fontWeight: 400
+						}
+					},
+					HERO_TAGLINE
+				)
+			)
 		)
 	);
 
