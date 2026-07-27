@@ -56,7 +56,7 @@ const clampText = (value: string, maxLength: number) => {
 	return `${text.slice(0, maxLength - 1).trimEnd()}…`;
 };
 
-const HERO_TAGLINE = 'проект про знания, open-source, безопасность и разработку';
+const MAX_DESC_LENGTH = 120;
 const ACCENT = '#f43f5e';
 
 export const GET: RequestHandler = async ({ params }) => {
@@ -69,6 +69,9 @@ export const GET: RequestHandler = async ({ params }) => {
 	}
 
 	const title = clampText(metadata.title, MAX_TITLE_LENGTH);
+	const description = metadata.description
+		? clampText(metadata.description, MAX_DESC_LENGTH)
+		: '';
 
 	const component = el(
 		'div',
@@ -135,20 +138,24 @@ export const GET: RequestHandler = async ({ params }) => {
 				},
 				title
 			),
-			el(
-				'div',
-				{
-					style: {
-						display: 'flex',
-						maxWidth: 900,
-						fontSize: 28,
-						lineHeight: 1.4,
-						color: '#71717a',
-						fontWeight: 400
-					}
-				},
-				HERO_TAGLINE
-			)
+			...(description
+				? [
+						el(
+							'div',
+							{
+								style: {
+									display: 'flex',
+									maxWidth: 900,
+									fontSize: 28,
+									lineHeight: 1.55,
+									color: '#71717a',
+									fontWeight: 500
+								}
+							},
+							description
+						)
+				  ]
+				: [])
 		)
 	);
 
