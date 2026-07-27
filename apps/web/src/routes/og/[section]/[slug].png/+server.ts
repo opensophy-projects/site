@@ -72,36 +72,68 @@ export const GET: RequestHandler = async ({ params }) => {
 		MAX_DESCRIPTION_LENGTH
 	);
 
+	const ACCENT = '#f43f5e';
+
 	const component = el(
 		'div',
 		{
 			style: {
 				display: 'flex',
+				position: 'relative',
 				flexDirection: 'column',
 				justifyContent: 'space-between',
 				width: '100%',
 				height: '100%',
-				padding: 40,
-				background: '#0a0a0b',
-				fontFamily: 'Inter, sans-serif'
+				padding: 56,
+				background: '#090909',
+				fontFamily: 'Inter, sans-serif',
+				overflow: 'hidden'
 			}
 		},
+		// Radial glow — same as hero section
+		el('div', {
+			style: {
+				position: 'absolute',
+				inset: 0,
+				display: 'flex',
+				background: `radial-gradient(110% 110% at 50% 110%, transparent 35%, ${ACCENT}38 62%, ${ACCENT}22 78%, transparent 100%)`
+			}
+		}),
+		// Top accent bar
 		el('div', {
 			style: {
 				display: 'flex',
-				fontSize: 28,
-				fontWeight: 500,
-				color: '#f43f5e',
-				letterSpacing: '-0.02em'
+				alignItems: 'center',
+				gap: 14
 			}
-		}, siteConfig.name),
+		},
+			el('div', {
+				style: {
+					display: 'flex',
+					width: 4,
+					height: 28,
+					borderRadius: 4,
+					background: ACCENT
+				}
+			}),
+			el('div', {
+				style: {
+					display: 'flex',
+					fontSize: 26,
+					fontWeight: 500,
+					color: '#f4f4f5',
+					letterSpacing: '-0.02em'
+				}
+			}, siteConfig.name)
+		),
+		// Bottom content
 		el(
 			'div',
 			{
 				style: {
 					display: 'flex',
 					flexDirection: 'column',
-					gap: 24
+					gap: 20
 				}
 			},
 			el(
@@ -110,10 +142,11 @@ export const GET: RequestHandler = async ({ params }) => {
 					style: {
 						display: 'flex',
 						maxWidth: 1060,
-						fontSize: 88,
-						lineHeight: 0.99,
+						fontSize: 82,
+						lineHeight: 1.0,
 						color: '#f4f4f5',
-						fontWeight: 500
+						fontWeight: 500,
+						letterSpacing: '-0.03em'
 					}
 				},
 				title
@@ -123,10 +156,10 @@ export const GET: RequestHandler = async ({ params }) => {
 				{
 					style: {
 						display: 'flex',
-						maxWidth: 1020,
-						fontSize: 32,
-						lineHeight: 1.28,
-						color: '#a1a1aa',
+						maxWidth: 960,
+						fontSize: 30,
+						lineHeight: 1.35,
+						color: '#71717a',
 						fontWeight: 400
 					}
 				},
