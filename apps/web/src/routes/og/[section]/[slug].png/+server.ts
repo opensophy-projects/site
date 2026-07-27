@@ -1,11 +1,7 @@
 import { error } from '@sveltejs/kit';
 import ImageResponse from '@takumi-rs/image-response';
 import type { RequestHandler } from './$types';
-import {
-	getContentSectionConfig,
-	getContentSectionMetadata,
-	siteConfig
-} from '$lib';
+import { getContentSectionMetadata, siteConfig } from '$lib';
 import { contentSections, getContentSectionManifest } from '$lib/content/sections';
 
 export const prerender = true;
@@ -70,16 +66,11 @@ export const GET: RequestHandler = async ({ params }) => {
 		error(404, 'Document not found');
 	}
 
-	const sectionConfig = getContentSectionConfig(sectionId);
-	const category = sectionConfig.label;
 	const title = clampText(metadata.title, MAX_TITLE_LENGTH);
 	const description = clampText(
 		metadata.description ?? siteConfig.description,
 		MAX_DESCRIPTION_LENGTH
 	);
-
-	const canonicalOrigin = new URL(siteConfig.url).origin;
-	const pageUrl = new URL(metadata.href, canonicalOrigin).href;
 
 	const component = el(
 		'div',
@@ -91,41 +82,19 @@ export const GET: RequestHandler = async ({ params }) => {
 				width: '100%',
 				height: '100%',
 				padding: 40,
-				background: '#ffffff',
+				background: '#0a0a0b',
 				fontFamily: 'Inter, sans-serif'
 			}
 		},
-		el(
-			'div',
-			{
-				style: {
-					display: 'flex',
-					alignItems: 'flex-start',
-					justifyContent: 'space-between'
-				}
-			},
-			el('div', {
-				style: {
-					display: 'flex',
-					fontSize: 28,
-					fontWeight: 500,
-					color: '#f43f5e',
-					letterSpacing: '-0.02em'
-				}
-			}, siteConfig.name),
-			el(
-				'div',
-				{
-					style: {
-						display: 'flex',
-						fontSize: 22,
-						color: '#8a8f98',
-						fontWeight: 400
-					}
-				},
-				pageUrl
-			)
-		),
+		el('div', {
+			style: {
+				display: 'flex',
+				fontSize: 28,
+				fontWeight: 500,
+				color: '#f43f5e',
+				letterSpacing: '-0.02em'
+			}
+		}, siteConfig.name),
 		el(
 			'div',
 			{
@@ -140,24 +109,10 @@ export const GET: RequestHandler = async ({ params }) => {
 				{
 					style: {
 						display: 'flex',
-						fontSize: 21,
-						letterSpacing: '0.06em',
-						textTransform: 'uppercase',
-						color: '#8a8f98',
-						fontWeight: 400
-					}
-				},
-				category
-			),
-			el(
-				'div',
-				{
-					style: {
-						display: 'flex',
 						maxWidth: 1060,
 						fontSize: 88,
 						lineHeight: 0.99,
-						color: '#111318',
+						color: '#f4f4f5',
 						fontWeight: 500
 					}
 				},
@@ -171,7 +126,7 @@ export const GET: RequestHandler = async ({ params }) => {
 						maxWidth: 1020,
 						fontSize: 32,
 						lineHeight: 1.28,
-						color: '#5f6672',
+						color: '#a1a1aa',
 						fontWeight: 400
 					}
 				},
