@@ -270,14 +270,14 @@
 			border: 1px solid color-mix(in srgb, var(--foreground, #fff) 10%, transparent);
 		}
 
-		/* inner arc accent half — lime, like the original */
+		/* inner arc accent half */
 		.pt-arc-inner-accent {
 			position: absolute;
 			left: 0; right: 0;
 			top: 3.5rem;
 			aspect-ratio: 1;
 			border-radius: 50%;
-			border: 1px solid #84cc16;
+			border: 1px solid var(--accent, #e8834a);
 			-webkit-mask-image: linear-gradient(90deg, black 50%, transparent 50%);
 			mask-image: linear-gradient(90deg, black 50%, transparent 50%);
 		}
@@ -326,7 +326,7 @@
 			width: 1.1rem;
 			height: 1.1rem;
 			border-radius: 50%;
-			background: #2f6bff;
+			background: var(--accent, #e8834a);
 			color: #fff;
 			font-size: 0.6rem;
 			font-weight: 800;
@@ -345,7 +345,7 @@
 		}
 
 		.auto-item-muted .auto-check {
-			background: color-mix(in srgb, #2f6bff 35%, rgba(255,255,255,0.15));
+			background: color-mix(in srgb, var(--accent, #e8834a) 35%, rgba(255,255,255,0.15));
 		}
 
 		/* full-width card gets a wider visual and shorter min-height */
