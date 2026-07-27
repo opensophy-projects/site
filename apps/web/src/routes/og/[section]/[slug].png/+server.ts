@@ -25,7 +25,6 @@ export const entries = () => {
 const OG_WIDTH = 1200;
 const OG_HEIGHT = 630;
 const MAX_TITLE_LENGTH = 88;
-const MAX_DESCRIPTION_LENGTH = 180;
 
 type TakumiElement = {
 	type: string;
@@ -57,6 +56,9 @@ const clampText = (value: string, maxLength: number) => {
 	return `${text.slice(0, maxLength - 1).trimEnd()}…`;
 };
 
+const HERO_TAGLINE = 'проект про знания, open-source, безопасность и разработку';
+const ACCENT = '#f43f5e';
+
 export const GET: RequestHandler = async ({ params }) => {
 	const { section: sectionId, slug } = params;
 
@@ -67,12 +69,6 @@ export const GET: RequestHandler = async ({ params }) => {
 	}
 
 	const title = clampText(metadata.title, MAX_TITLE_LENGTH);
-	const description = clampText(
-		metadata.description ?? siteConfig.description,
-		MAX_DESCRIPTION_LENGTH
-	);
-
-	const ACCENT = '#f43f5e';
 
 	const component = el(
 		'div',
@@ -90,26 +86,27 @@ export const GET: RequestHandler = async ({ params }) => {
 				overflow: 'hidden'
 			}
 		},
-		// Radial glow — matches hero section (125% wide, source at top-center)
+		// Hero-style radial glow — same gradient as .hero-bg, covers full image
 		el('div', {
 			style: {
 				position: 'absolute',
-				left: '-12.5%',
 				top: 0,
-				width: '125%',
-				height: '100%',
+				left: 0,
+				right: 0,
+				bottom: 0,
 				display: 'flex',
-				background: `radial-gradient(125% 125% at 50% 0%, transparent 40%, rgba(244,63,94,0.28) 68%, rgba(253,164,175,0.18) 86%, rgba(255,241,242,0.06) 100%)`
+				background: `radial-gradient(125% 125% at 50% 0%, transparent 40%, rgba(244,63,94,0.22) 68%, rgba(253,164,175,0.14) 86%, rgba(255,241,242,0.04) 100%)`
 			}
 		}),
-		// Site name
+		// Site name — accent colored, top-left
 		el('div', {
 			style: {
 				display: 'flex',
 				fontSize: 26,
 				fontWeight: 500,
 				color: ACCENT,
-				letterSpacing: '-0.02em'
+				letterSpacing: '-0.02em',
+				position: 'relative'
 			}
 		}, siteConfig.name),
 		// Bottom content
@@ -119,7 +116,8 @@ export const GET: RequestHandler = async ({ params }) => {
 				style: {
 					display: 'flex',
 					flexDirection: 'column',
-					gap: 20
+					gap: 20,
+					position: 'relative'
 				}
 			},
 			el(
@@ -128,7 +126,7 @@ export const GET: RequestHandler = async ({ params }) => {
 					style: {
 						display: 'flex',
 						maxWidth: 1060,
-						fontSize: 82,
+						fontSize: title.length > 40 ? 68 : 82,
 						lineHeight: 1.0,
 						color: '#f4f4f5',
 						fontWeight: 500,
@@ -142,14 +140,14 @@ export const GET: RequestHandler = async ({ params }) => {
 				{
 					style: {
 						display: 'flex',
-						maxWidth: 960,
-						fontSize: 30,
-						lineHeight: 1.35,
+						maxWidth: 900,
+						fontSize: 28,
+						lineHeight: 1.4,
 						color: '#71717a',
 						fontWeight: 400
 					}
 				},
-				description
+				HERO_TAGLINE
 			)
 		)
 	);
