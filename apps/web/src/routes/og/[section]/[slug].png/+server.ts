@@ -86,7 +86,7 @@ export const GET: RequestHandler = async ({ params }) => {
 				overflow: 'hidden'
 			}
 		},
-		// Hero-style radial glow — same gradient as .hero-bg, covers full image
+		// Bottom-up glow — no transparent zone, fills the whole image
 		el('div', {
 			style: {
 				position: 'absolute',
@@ -95,7 +95,7 @@ export const GET: RequestHandler = async ({ params }) => {
 				right: 0,
 				bottom: 0,
 				display: 'flex',
-				background: `radial-gradient(125% 125% at 50% 0%, transparent 40%, rgba(244,63,94,0.22) 68%, rgba(253,164,175,0.14) 86%, rgba(255,241,242,0.04) 100%)`
+				background: `radial-gradient(ellipse 180% 90% at 50% 110%, rgba(244,63,94,0.55) 0%, rgba(180,25,50,0.28) 35%, rgba(100,10,25,0.08) 60%, transparent 80%)`
 			}
 		}),
 		// Site name — accent colored, top-left
