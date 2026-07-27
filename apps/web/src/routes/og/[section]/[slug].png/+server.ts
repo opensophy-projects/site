@@ -90,42 +90,28 @@ export const GET: RequestHandler = async ({ params }) => {
 				overflow: 'hidden'
 			}
 		},
-		// Radial glow — same as hero section
+		// Radial glow — matches hero section (125% wide, source at top-center)
 		el('div', {
 			style: {
 				position: 'absolute',
-				inset: 0,
+				left: '-12.5%',
+				top: 0,
+				width: '125%',
+				height: '100%',
 				display: 'flex',
-				background: `radial-gradient(110% 110% at 50% 110%, transparent 35%, ${ACCENT}38 62%, ${ACCENT}22 78%, transparent 100%)`
+				background: `radial-gradient(125% 125% at 50% 0%, transparent 40%, rgba(244,63,94,0.28) 68%, rgba(253,164,175,0.18) 86%, rgba(255,241,242,0.06) 100%)`
 			}
 		}),
-		// Top accent bar
+		// Site name
 		el('div', {
 			style: {
 				display: 'flex',
-				alignItems: 'center',
-				gap: 14
+				fontSize: 26,
+				fontWeight: 500,
+				color: ACCENT,
+				letterSpacing: '-0.02em'
 			}
-		},
-			el('div', {
-				style: {
-					display: 'flex',
-					width: 4,
-					height: 28,
-					borderRadius: 4,
-					background: ACCENT
-				}
-			}),
-			el('div', {
-				style: {
-					display: 'flex',
-					fontSize: 26,
-					fontWeight: 500,
-					color: '#f4f4f5',
-					letterSpacing: '-0.02em'
-				}
-			}, siteConfig.name)
-		),
+		}, siteConfig.name),
 		// Bottom content
 		el(
 			'div',
