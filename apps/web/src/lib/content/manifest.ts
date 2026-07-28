@@ -19,7 +19,8 @@ export function flattenNavigationToManifest(
 			slug: item.slug,
 			name: item.name,
 			category: effectiveCategory,
-			showPagination: item.showPagination
+			showPagination: item.showPagination,
+			priority: item.priority
 		});
 	}
 

@@ -26,6 +26,7 @@ export type ContentItem = {
 	name: string;
 	category?: string;
 	showPagination?: boolean;
+	priority?: number;
 	items?: ContentItem[];
 };
 

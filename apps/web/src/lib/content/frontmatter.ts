@@ -2,6 +2,7 @@ export type ContentFrontmatter = {
 	title?: string;
 	name?: string;
 	description?: string;
+	priority?: number;
 };
 
 const FRONTMATTER_BLOCK_RE = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
@@ -48,7 +49,8 @@ export function parseContentSource(rawSource: string): {
 		metadata: {
 			title: parsed.title,
 			name: parsed.name,
-			description: parsed.description
+			description: parsed.description,
+			priority: parsed.priority !== undefined ? Number(parsed.priority) : undefined
 		},
 		body: rawSource.slice(match[0].length)
 	};

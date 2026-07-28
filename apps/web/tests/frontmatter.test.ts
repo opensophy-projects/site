@@ -78,4 +78,25 @@ invalid key: значение
 		expect(result.metadata.title).toBe('Заголовок');
 		expect(result.body).toBe('Контент');
 	});
+	it('парсит frontmatter с priority', () => {
+		const raw = `---
+title: Приоритетная страница
+description: Описание
+priority: 1
+---
+Контент`;
+
+		const result = parseContentSource(raw);
+		expect(result.metadata.priority).toBe(1);
+	});
+
+	it('возвращает undefined для priority если не указан', () => {
+		const raw = `---
+title: Обычная страница
+---
+Контент`;
+
+		const result = parseContentSource(raw);
+		expect(result.metadata.priority).toBeUndefined();
+	});
 });

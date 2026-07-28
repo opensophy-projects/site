@@ -159,15 +159,18 @@ function generateNavigationFromSection(
 		if (processedSlugs.has(slug)) continue;
 		processedSlugs.add(slug);
 
-		// Получаем заголовок из frontmatter, если есть
+		const item: ContentItem = { slug, name };
+
+		// Получаем заголовок и приоритет из frontmatter, если есть
 		const rawSource = allSvxRaw[path];
 		if (rawSource) {
 			const { metadata } = parseContentSource(rawSource);
-			if (metadata.title) name = metadata.title;
-			else if (metadata.name) name = metadata.name;
+			if (metadata.title) item.name = metadata.title;
+			else if (metadata.name) item.name = metadata.name;
+			if (metadata.priority !== undefined) {
+				item.priority = metadata.priority;
+			}
 		}
-
-		const item: ContentItem = { slug, name };
 
 		if (categoryHierarchy.length === 0) {
 			items.push(item);
@@ -181,7 +184,21 @@ function generateNavigationFromSection(
 	const sectionParsed = parseNamedContentPath(sectionDirName);
 	const sectionLabel = sectionParsed?.title ?? slugToDisplay(sectionId);
 
+	sortItemsByPriority(items);
+
 	return { name: sectionLabel, items };
+}
+
+function sortItemsByPriority(items: ContentItem[]): void {
+	items.sort((a, b) => {
+		const pa = a.priority ?? Number.MAX_SAFE_INTEGER;
+		const pb = b.priority ?? Number.MAX_SAFE_INTEGER;
+		if (pa !== pb) return pa - pb;
+		return a.name.localeCompare(b.name);
+	});
+	for (const item of items) {
+		if (item.items?.length) sortItemsByPriority(item.items);
+	}
 }
 
 /**

@@ -1,6 +1,7 @@
 ---
 title: Docker Fundamentals: теория и базовая эксплуатация
 description: 1 часть серии статей по Docker. Базовая теория по Docker для новичков и практиков — контейнеры, образы, Dockerfile, слои, HEALTHCHECK, multi-stage builds и шпаргалка по командам.
+priority: 1
 ---
 
 ## Введение
