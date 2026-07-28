@@ -1,6 +1,6 @@
 ---
 title: Docker Fundamentals: что внутри compose.yaml и как там всё устроено
-description: 3 часть серии статей по Docker. Подробный справочник по структуре compose-файла — top-level разделы, services, build, deploy, networks, volumes, configs, secrets, интерполяция переменных, merge-правила и YAML-фрагменты.
+description: Третья часть серии статей по Docker. Подробный справочник по структуре compose-файла — top-level разделы, services, build, deploy, networks, volumes, configs, secrets, интерполяция переменных, merge-правила и YAML-фрагменты.
 priority: 3
 ---
 
