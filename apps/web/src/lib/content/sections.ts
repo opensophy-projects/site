@@ -191,6 +191,11 @@ function generateNavigationFromSection(
 
 function sortItemsByPriority(items: ContentItem[]): void {
 	items.sort((a, b) => {
+		const aIsGroup = !!(a.items?.length);
+		const bIsGroup = !!(b.items?.length);
+		// Leaf pages (no sub-items) always appear before category groups
+		if (!aIsGroup && bIsGroup) return -1;
+		if (aIsGroup && !bIsGroup) return 1;
 		const pa = a.priority ?? Number.MAX_SAFE_INTEGER;
 		const pb = b.priority ?? Number.MAX_SAFE_INTEGER;
 		if (pa !== pb) return pa - pb;
