@@ -50,7 +50,7 @@ export function parseContentSource(rawSource: string): {
 			title: parsed.title,
 			name: parsed.name,
 			description: parsed.description,
-			priority: parsed.priority !== undefined ? Number(parsed.priority) : undefined
+			priority: 'priority' in parsed ? Number(parsed.priority) : undefined
 		},
 		body: rawSource.slice(match[0].length)
 	};
