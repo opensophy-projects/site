@@ -96,14 +96,6 @@
 			glowColor: '330 70 65',
 			status: { variant: 'in-progress', label: 'В разработке' }
 		},
-		{
-			title: 'os.forum',
-			description:
-				'Платформа для создания форума на базе возможностей GitHub — Issues, Discussions, авторизация через GitHub.',
-			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
-			glowColor: '330 70 65',
-			status: { variant: 'not-started', label: 'Разработка не начата' }
-		}
 	];
 
 	let statusModalOpen = $state(false);
