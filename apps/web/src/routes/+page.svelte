@@ -277,6 +277,7 @@
 <style>
 	/* ─── Hero Section ─────────────────────────────────────────── */
 	.hero-section {
+	}
 		min-height: 70vh;
 		position: relative;
 	}
