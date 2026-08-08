@@ -5,7 +5,6 @@
 	import CardProject from '$lib/components/ui/CardProject.svelte';
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import TextLoop from '$lib/components/ui/TextLoop.svelte';
-	import Teamsection from '$lib/components/ui/Teamsection.svelte';
 	import ArrowRight from 'carbon-icons-svelte/lib/ArrowRight.svelte';
 	import Close from 'carbon-icons-svelte/lib/Close.svelte';
 	import { contactsState } from '$lib/stores/contacts.svelte';
@@ -210,11 +209,6 @@
 				</CardProject>
 			{/each}
 		</div>
-	</section>
-
-	<!-- About Creator Section -->
-	<section class="w-full max-w-5xl mx-auto px-4">
-		<Teamsection onContactsClick={() => { contactsState.open(); }} />
 	</section>
 
 	<!-- CTA Section -->
