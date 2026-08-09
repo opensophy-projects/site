@@ -1,4 +1,4 @@
 ---
-title: test
-description: test
+title: Docker Fundamentals: полный гайд по сетям и драйверам
+description: Разбираем сетевые драйверы Docker — bridge, host, overlay, macvlan, ipvlan — DNS, порты и плагины, от основ до продвинутых сценариев.
 ---
