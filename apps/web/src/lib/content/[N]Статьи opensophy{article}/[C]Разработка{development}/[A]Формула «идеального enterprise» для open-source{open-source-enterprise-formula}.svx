@@ -1,4 +1,4 @@
 ---
-title: test
-description: test
+title: Идеальная формула enterprise для open-source проектов
+description: Как отделить платные enterprise-функции от open-source кода так, чтобы их нельзя было взломать с помощью ИИ — на примерах Dokploy и Pangolin.
 ---
