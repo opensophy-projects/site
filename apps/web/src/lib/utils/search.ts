@@ -252,15 +252,18 @@ function parseDocsContentIndex(): ContentSearchEntry[] {
 
 
 function slugFromTemplatePath(path: string) {
-	return (
-		path
-			.split('/')
-			.pop()
-			?.replace(/\.svx$/, '')
-			.replace(/[^a-zA-Z0-9а-яА-ЯёЁ]+/g, '-')
-			.replace(/^-+|-+$/g, '')
-			.toLowerCase() ?? ''
-	);
+	return path
+		.replace(/^.*\/templates\//, '')
+		.replace(/\.svx$/, '')
+		.split('/')
+		.map((part) =>
+			part
+				.replace(/[^a-zA-Z0-9а-яА-ЯёЁ]+/g, '-')
+				.replace(/^-+|-+$/g, '')
+				.toLowerCase()
+		)
+		.filter(Boolean)
+		.join('/');
 }
 
 function parseTemplateIndex(): ContentSearchEntry[] {

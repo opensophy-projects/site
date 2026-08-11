@@ -13,10 +13,12 @@
 			links: [
 				{ label: 'Документация', href: '/docs' },
 				{ label: 'Статьи', href: '/article' },
-				{ label: 'Компоненты', href: '/components' },
-				{ label: 'Реестр', href: '/templates' },
-				{ label: 'Шаблоны Docker', href: '/templates' }
+				{ label: 'Компоненты', href: '/components' }
 			]
+		},
+		{
+			title: 'Шаблоны',
+			links: [{ label: 'Docker', href: '/templates' }]
 		},
 		{
 			title: 'Проект',
