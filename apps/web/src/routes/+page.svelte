@@ -8,7 +8,6 @@
 	import ArrowRight from 'carbon-icons-svelte/lib/ArrowRight.svelte';
 	import Close from 'carbon-icons-svelte/lib/Close.svelte';
 	import { contactsState } from '$lib/stores/contacts.svelte';
-	import { resolve } from '$app/paths';
 
 	const heroLoopTexts = ['знания', 'open-source', 'безопасность', 'разработку'];
 
@@ -51,7 +50,7 @@
 			status: {
 				variant: 'released',
 				label: 'Проект в релизе',
-				href: resolve('/components')
+				href: '/components'
 			}
 		},
 		{

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { searchState } from '$lib/stores/search.svelte';
 	import { contentUiDefaults, type SectionUiConfig } from '$lib/config/content-ui';
-	import { searchContent } from '$lib/utils/search';
+	import { searchContent, type SearchMode } from '$lib/utils/search';
 	import { scale } from 'svelte/transition';
 	import { cubicOut } from 'svelte/easing';
 	import { goto, onNavigate } from '$app/navigation';
@@ -12,12 +12,21 @@
 	import { onMount } from 'svelte';
 	import Search from 'carbon-icons-svelte/lib/Search.svelte';
 	import Return from 'carbon-icons-svelte/lib/Return.svelte';
+	import Book from 'carbon-icons-svelte/lib/Book.svelte';
+	import ContainerRegistry from 'carbon-icons-svelte/lib/ContainerRegistry.svelte';
+	import SearchAdvanced from 'carbon-icons-svelte/lib/SearchAdvanced.svelte';
 
 	const { searchConfig = contentUiDefaults.search }: { searchConfig?: SectionUiConfig['search'] } =
 		$props();
 
 	let query = $state('');
-	let results = $derived(searchContent(query, searchConfig));
+	let mode = $state<SearchMode>('global');
+	const modes: { value: SearchMode; label: string; icon: typeof SearchAdvanced }[] = [
+		{ value: 'global', label: 'Везде', icon: SearchAdvanced },
+		{ value: 'docs', label: 'Документация', icon: Book },
+		{ value: 'registry', label: 'Реестр', icon: ContainerRegistry }
+	];
+	let results = $derived(searchContent(query, searchConfig, mode));
 	let selectedIndex = $state(0);
 	let inputRef = $state<HTMLInputElement>();
 	let contentHeight = $state(0);
@@ -244,6 +253,23 @@
 					placeholder={searchConfig.dialogPlaceholder}
 					aria-label={searchConfig.dialogPlaceholder}
 				/>
+				<div class="mr-2 hidden items-center rounded-md border border-border bg-background-inset p-0.5 sm:flex" aria-label="Режим поиска">
+					{#each modes as item (item.value)}
+						{@const Icon = item.icon}
+						<button
+							type="button"
+							class={cn(
+								'flex size-7 items-center justify-center rounded-sm text-foreground-muted transition',
+								mode === item.value && 'bg-background text-accent shadow-sm'
+							)}
+							onclick={() => (mode = item.value)}
+							aria-label={item.label}
+							title={item.label}
+						>
+							<Icon size={15} />
+						</button>
+					{/each}
+				</div>
 				<kbd
 					class="pointer-events-none inset-shadow relative hidden h-5 items-center gap-1 rounded-[calc(var(--radius-base)*1.5)] bg-background-inset px-1.5 font-mono text-[10px] font-medium tracking-normal text-foreground-muted/70 select-none sm:flex"
 				>

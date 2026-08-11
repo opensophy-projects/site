@@ -74,7 +74,7 @@
 {#if isBordered}
 	{#if href}
 		<span class={outerClass}>
-			<a href={resolve(href)} class={innerClass} aria-disabled={disabled}>
+			<a href={resolve(href as any)} class={innerClass} aria-disabled={disabled}>
 				{@render children?.()}
 			</a>
 		</span>
@@ -87,7 +87,7 @@
 	{/if}
 {:else}
 	{#if href}
-		<a href={resolve(href)} class={flatClass} aria-disabled={disabled}>
+		<a href={resolve(href as any)} class={flatClass} aria-disabled={disabled}>
 			{@render children?.()}
 		</a>
 	{:else}

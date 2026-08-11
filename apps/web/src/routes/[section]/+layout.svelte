@@ -54,7 +54,7 @@
 
 	const docOgImage = $derived(
 		metadata?.sourceType === 'svx'
-			? new URL(`/og${data.metadata.href}.png`, siteOrigin).href
+			? new URL(`/og${data.metadata?.href}.png`, siteOrigin).href
 			: new URL(siteConfig.ogImage, siteOrigin).href
 	);
 

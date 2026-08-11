@@ -1,7 +1,6 @@
 <script lang="ts">
 	/* eslint-disable svelte/no-navigation-without-resolve */
-	import { resolve } from '$app/paths';
-	import { brandingConfig, siteConfig } from '$lib';
+		import { brandingConfig, siteConfig } from '$lib';
 	import FloatingMenu from '$lib/components/ui/FloatingMenu.svelte';
 	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
 	import { contactsState } from '$lib/stores/contacts.svelte';
@@ -12,9 +11,11 @@
 		{
 			title: 'Платформа',
 			links: [
-				{ label: 'Документация', href: resolve('/docs') },
-				{ label: 'Статьи', href: resolve('/article') },
-				{ label: 'Компоненты', href: resolve('/components') }
+				{ label: 'Документация', href: '/docs' },
+				{ label: 'Статьи', href: '/article' },
+				{ label: 'Компоненты', href: '/components' },
+				{ label: 'Реестр', href: '/templates' },
+				{ label: 'Шаблоны Docker', href: '/templates' }
 			]
 		},
 		{

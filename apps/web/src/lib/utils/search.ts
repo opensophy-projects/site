@@ -2,6 +2,8 @@ import { contentUiDefaults, type SectionUiConfig } from '$lib/config/content-ui'
 import { parseContentSource } from '$lib/content/frontmatter';
 import { parseNamedContentPath } from '$lib/content/naming';
 
+export type SearchMode = 'global' | 'docs' | 'registry';
+
 type ContentSearchEntry = {
 	title: string;
 	slug: string;
@@ -12,6 +14,7 @@ type ContentSearchEntry = {
 	level?: number;
 	content?: string;
 	snippet?: string;
+	source?: SearchMode;
 };
 
 const slugify = (value: string) =>
@@ -201,7 +204,7 @@ function indexFileContent(
 	flushBuffer();
 }
 
-function parseContentIndex(): ContentSearchEntry[] {
+function parseDocsContentIndex(): ContentSearchEntry[] {
 	const index: ContentSearchEntry[] = [];
 
 	const modules = import.meta.glob<string>('/src/lib/content/**/*.svx', {
@@ -232,19 +235,64 @@ function parseContentIndex(): ContentSearchEntry[] {
 		const title = meta.title ?? meta.name ?? (pageSlug || sectionInfo.label);
 		const description = meta.description ?? '';
 
-		index.push({ title, slug, matchType: 'title', score: 0 });
+		index.push({ title, slug, matchType: 'title', score: 0, source: 'docs' });
 
 		if (description) {
-			index.push({ title, slug, anchor: '', matchType: 'content', content: description, score: 0 });
+			index.push({ title, slug, anchor: '', matchType: 'content', content: description, score: 0, source: 'docs' });
 		}
 
 		indexFileContent(contentBody.split('\n'), title, slug, index);
+		for (const entry of index) {
+			entry.source ??= 'docs';
+		}
 	}
 
 	return index;
 }
 
-const searchIndex = parseContentIndex();
+
+function slugFromTemplatePath(path: string) {
+	return (
+		path
+			.split('/')
+			.pop()
+			?.replace(/\.svx$/, '')
+			.replace(/[^a-zA-Z0-9а-яА-ЯёЁ]+/g, '-')
+			.replace(/^-+|-+$/g, '')
+			.toLowerCase() ?? ''
+	);
+}
+
+function parseTemplateIndex(): ContentSearchEntry[] {
+	const index: ContentSearchEntry[] = [];
+	const modules = import.meta.glob<string>('../../../../templates/**/*.svx', {
+		query: '?raw',
+		eager: true,
+		import: 'default'
+	});
+
+	for (const path in modules) {
+		const rawContent = modules[path];
+		if (typeof rawContent !== 'string') continue;
+		const { metadata: meta, body: contentBody } = parseContentSource(rawContent);
+		const slugValue = (meta as Record<string, unknown>).slug;
+		const pageSlug = typeof slugValue === 'string' ? slugValue : slugFromTemplatePath(path);
+		const slug = `/templates/${pageSlug}`;
+		const title = meta.title ?? meta.name ?? pageSlug;
+		const description = meta.description ?? '';
+		index.push({ title, slug, matchType: 'title', score: 0, source: 'registry' });
+		if (description) {
+			index.push({ title, slug, anchor: '', matchType: 'content', content: description, score: 0, source: 'registry' });
+		}
+		indexFileContent(contentBody.split('\n'), title, slug, index);
+		for (const entry of index) {
+			entry.source ??= 'registry';
+		}
+	}
+	return index;
+}
+
+const searchIndex = [...parseDocsContentIndex(), ...parseTemplateIndex()];
 
 const pageLookup = new Map<string, string>();
 searchIndex.forEach((item) => {
@@ -287,10 +335,11 @@ type SearchGroup = {
 };
 
 // Группирует результаты поиска по slug страницы
-function buildSearchGroups(normalizedQuery: string, query: string): Map<string, SearchGroup> {
+function buildSearchGroups(normalizedQuery: string, query: string, mode: SearchMode): Map<string, SearchGroup> {
 	const groups = new Map<string, SearchGroup>();
 
 	for (const item of searchIndex) {
+		if (mode !== 'global' && item.source !== mode) continue;
 		const { score, snippet } = scoreItem(item, normalizedQuery, query);
 		if (score === 0) continue;
 
@@ -326,12 +375,13 @@ function buildSearchGroups(normalizedQuery: string, query: string): Map<string, 
 
 export function searchContent(
 	query: string,
-	searchConfig: SectionUiConfig['search'] = contentUiDefaults.search
+	searchConfig: SectionUiConfig['search'] = contentUiDefaults.search,
+	mode: SearchMode = 'global'
 ): ContentSearchEntry[] {
 	if (!query) return [];
 
 	const normalizedQuery = query.toLowerCase();
-	const groups = buildSearchGroups(normalizedQuery, query);
+	const groups = buildSearchGroups(normalizedQuery, query, mode);
 
 	const sortedGroups = Array.from(groups.values())
 		.sort((a, b) => {

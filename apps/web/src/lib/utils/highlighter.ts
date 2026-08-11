@@ -15,6 +15,7 @@ import html from 'shiki/langs/html.mjs';
 import ini from 'shiki/langs/ini.mjs';
 import powershell from 'shiki/langs/powershell.mjs';
 import ts from 'shiki/langs/ts.mjs';
+import yaml from 'shiki/langs/yaml.mjs';
 
 let highlighter: ReturnType<typeof createHighlighterCoreSync> | null = null;
 
@@ -33,7 +34,8 @@ export function getHighlighter() {
 			html,
 			ini,
 			powershell,
-			ts
+			ts,
+			yaml
 		],
 		engine: createJavaScriptRegexEngine()
 	});
