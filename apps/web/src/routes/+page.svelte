@@ -55,19 +55,6 @@
 			}
 		},
 		{
-			title: 'os.net',
-			description:
-				'Форк проекта Netbird. GUI-платформа для управления безопасным удалённым доступом: P2P, VPN, proxy, mTLS — всё в одном интерфейсе. Бесплатная enterprise-версия.',
-			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
-			glowColor: '330 70 65',
-			status: {
-				variant: 'frozen',
-				label: 'Частично готов. В заморозке.',
-				modalText:
-					'Ожидаем, пока upstream-разработчики выведут proxy и расширенное управление из бета-версии.'
-			}
-		},
-		{
 			title: 'os.mtls',
 			description:
 				'Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik. Позволяет надёжно закрыть доступ к сервисам и серверам без лишних сложностей.',
@@ -80,20 +67,12 @@
 			}
 		},
 		{
-			title: 'os.oasm',
-			description:
-				'Open App Sec Models — система защиты веб-приложений (WAF) на основе машинного обучения. Opensophy будет поставлять готовые модели для интеграции WAF в сторонние проекты.',
-			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
-			glowColor: '330 70 65',
-			status: { variant: 'not-started', label: 'В разработке' }
-		},
-		{
 			title: 'os.port',
 			description:
 				'Форк проекта Dokploy — платформа для управления серверами и деплоя приложений. Бесплатная enterprise-версия с обновлённым дизайном, встроенным управлением mTLS и русификацией.',
 			colors: ['#f43f5e', '#f43f5e', '#f43f5e'],
 			glowColor: '330 70 65',
-			status: { variant: 'in-progress', label: 'В разработке' }
+			status: { variant: 'in-progress', label: 'Скоро в релизе' }
 		},
 	];
 
