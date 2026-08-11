@@ -1,0 +1,71 @@
+---
+title: демо шаблон owasp zap
+description: OWASP ZAP — инструмент динамического анализа безопасности веб-приложений, который помогает запускать baseline, full и API-сканы в контейнере и сохранять отчёты в HTML, JSON и Markdown.
+---
+
+<script lang="ts">
+	import TemplateCodeTabs from '$lib/components/templates/TemplateCodeTabs.svelte';
+
+	const compose = `services:
+  zap:
+    image: zaproxy/zap-stable:latest
+    container_name: owasp-zap-scan
+    restart: "no"                 # одноразовый запуск
+
+    environment:
+      TARGET_URL: \${TARGET_URL}
+      SCAN_TYPE: \${SCAN_TYPE:-full}       # baseline | full | api
+      SCAN_LEVEL: \${SCAN_LEVEL:-medium}
+      EXTRA_ARGS: \${EXTRA_ARGS:-}
+
+    volumes:
+      - "\${REPORT_DIR}:/zap/wrk:rw"
+
+    # Скрипт сканирования зашит base64-строкой, чтобы ни Dokploy, ни Docker
+    # Compose не трогали внутри него ни один символ "$" на этапе парсинга
+    # файла. Раскодируется и выполняется он уже внутри контейнера, поэтому
+    # переменные окружения (TARGET_URL, SCAN_TYPE и т.д.) разворачивает
+    # исключительно bash в рантайме — предсказуемо и без сюрпризов.
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - "echo IyEvYmluL2Jhc2gKc2V0IC11byBwaXBlZmFpbAplY2hvICI9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSIKZWNobyAiIE9XQVNQIFpBUCDigJQg0L7QtNC90L7RgNCw0LfQvtCy0YvQuSDRgdC60LDQvSIKZWNobyAiPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0iCgpUQVJHRVRfVVJMPSIke1RBUkdFVF9VUkw6LX0iClNDQU5fVFlQRT0iJHtTQ0FOX1RZUEU6LWZ1bGx9IgpTQ0FOX0xFVkVMPSIke1NDQU5fTEVWRUw6LW1lZGl1bX0iCkVYVFJBX0FSR1M9IiR7RVhUUkFfQVJHUzotfSIKCmlmIFsgLXogIiRUQVJHRVRfVVJMIiBdOyB0aGVuCiAgZWNobyAiW0VSUk9SXSDQndC1INC30LDQtNCw0L0gVEFSR0VUX1VSTCDigJQg0YPQutCw0LbQuCDRhtC10LvRjCDQsNGC0LDQutC4INCyIEVudmlyb25tZW50IgogIGV4aXQgMQpmaQoKVElNRVNUQU1QPSIkKGRhdGUgKyVZJW0lZF8lSCVNJVMpIgpTQUZFX0hPU1Q9IiQocHJpbnRmICclcycgIiRUQVJHRVRfVVJMIiB8IHNlZCAtRSAncyNodHRwcz86Ly8jIzsgcyNbXmEtekEtWjAtOS5fLV0jXyNnJykiClJFUE9SVF9CQVNFTkFNRT0iemFwXyR7U0NBTl9UWVBFfV8ke1NBRkVfSE9TVH1fJHtUSU1FU1RBTVB9IgoKY2FzZSAiJFNDQU5fVFlQRSIgaW4KICBiYXNlbGluZSkgU0NSSVBUPSJ6YXAtYmFzZWxpbmUucHkiIDs7CiAgZnVsbCkgICAgIFNDUklQVD0iemFwLWZ1bGwtc2Nhbi5weSIgOzsKICBhcGkpICAgICAgU0NSSVBUPSJ6YXAtYXBpLXNjYW4ucHkiIDs7CiAgKikKICAgIGVjaG8gIltFUlJPUl0g0J3QtdC40LfQstC10YHRgtC90YvQuSBTQ0FOX1RZUEU6ICRTQ0FOX1RZUEUgKGJhc2VsaW5lfGZ1bGx8YXBpKSIKICAgIGV4aXQgMQogICAgOzsKZXNhYwoKbWtkaXIgLXAgL3phcC93cmsKCmVjaG8gItCm0LXQu9GMOiAgICAgICAgICAkVEFSR0VUX1VSTCIKZWNobyAi0KLQuNC/INGB0LrQsNC90LA6ICAgICAkU0NBTl9UWVBFICgkU0NSSVBUKSIKZWNobyAi0KPRgNC+0LLQtdC90Yw6ICAgICAgICRTQ0FOX0xFVkVMIgplY2hvICJIVE1MLdC+0YLRh9GR0YI6ICAgIC96YXAvd3JrLyR7UkVQT1JUX0JBU0VOQU1FfS5odG1sIgplY2hvICJKU09OLdC+0YLRh9GR0YI6ICAgIC96YXAvd3JrLyR7UkVQT1JUX0JBU0VOQU1FfS5qc29uIgplY2hvICJNRC3QvtGC0YfRkdGCOiAgICAgIC96YXAvd3JrLyR7UkVQT1JUX0JBU0VOQU1FfS5tZCIKZWNobyAi0JTQvtC/LiDRhNC70LDQs9C4OiAgICAke0VYVFJBX0FSR1M6LTzQvdC10YI+fSIKZWNobyAiLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0iCgoiJFNDUklQVCIgXAogIC10ICIkVEFSR0VUX1VSTCIgXAogIC1yICIke1JFUE9SVF9CQVNFTkFNRX0uaHRtbCIgXAogIC13ICIke1JFUE9SVF9CQVNFTkFNRX0ubWQiIFwKICAtSiAiJHtSRVBPUlRfQkFTRU5BTUV9Lmpzb24iIFwKICAtSSBcCiAgLWQgXAogICRFWFRSQV9BUkdTCgpFWElUX0NPREU9JD8KZWNobyAiLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0iCmVjaG8gItCh0LrQsNC9INC30LDQstC10YDRiNGR0L0uINCS0L3Rg9GC0YDQtdC90L3QuNC5INC60L7QtCDQt9Cw0LLQtdGA0YjQtdC90LjRjyBaQVA6ICRFWElUX0NPREUiCmVjaG8gIigwID0g0L/RgNC+0LHQu9C10Lwg0L3QtSDQvdCw0LnQtNC10L3QviwgMiA9IFdBUk4vRkFJTCDQvdCw0LnQtNC10L3RiyDigJQg0Y3RgtC+INC90L7RgNC80LDQu9GM0L3Ri9C5INC40YHRhdC+0LQsINC90LUg0YHQsdC+0LkpIgoKaWYgWyAtZiAiL3phcC93cmsvJHtSRVBPUlRfQkFTRU5BTUV9Lmh0bWwiIF07IHRoZW4KICAgIGNobW9kIDY0NCAvemFwL3dyay8ke1JFUE9SVF9CQVNFTkFNRX0uKiAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgICBlY2hvICLQntGC0YfRkdGC0Ysg0YHQvtGF0YDQsNC90LXQvdGLINCyINC/0YDQuNC80L7QvdGC0LjRgNC+0LLQsNC90L3QvtC5INC/0LDQv9C60LUuIgplbHNlCiAgICBlY2hvICJbV0FSTl0gSFRNTC3QvtGC0YfRkdGCINC90LUg0L3QsNC50LTQtdC9IOKAlCDRgdC80L7RgtGA0Lgg0LvQvtCzINCy0YvRiNC1INC90LAg0L/RgNC10LTQvNC10YIg0L7RiNC40LHQutC4INGB0L7QtdC00LjQvdC10L3QuNGPINGBINGG0LXQu9GM0Y4uIgpmaQoKZWNobyAiPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0iCmVjaG8gIiDQmtC+0L3RgtC10LnQvdC10YAg0LfQsNCy0LXRgNGI0LDQtdGCINGA0LDQsdC+0YLRgyAo0L7QtNC90L7RgNCw0LfQvtCy0YvQuSDRgNC10LbQuNC8KSIKZWNobyAiPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0iCmV4aXQgMAo= | base64 -d | bash"
+
+    # --- лимиты ресурсов ---
+    mem_limit: \${ZAP_MEM_LIMIT:-2g}
+    memswap_limit: \${ZAP_MEM_LIMIT:-2g}
+    cpus: \${ZAP_CPU_LIMIT:-1.5}
+
+    user: "0:0"   # root — чтобы не упереться в права на bind-mount папку отчётов
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "3"`;
+
+	const env = `# Цель атаки — обязательно
+TARGET_URL=https://вашацель/
+
+# Тип скана: baseline (быстрый, пассивный) | full (активный, дольше) | api (по OpenAPI/GraphQL)
+SCAN_TYPE=baseline
+
+# Уровень настойчивости атак: LOW | MEDIUM | HIGH | INSANE
+SCAN_LEVEL=medium
+
+# Любые дополнительные флаги zap-*.py через пробел, например: -j (ajax spider) -m 5 (5 мин на паука)
+EXTRA_ARGS=
+
+# Куда класть отчёты на хосте. Папка будет создана автоматически, если её нет.
+REPORT_DIR=/home/veil/Документы/работа/security/owasp-zap-report
+
+# Лимиты ресурсов контейнера
+ZAP_MEM_LIMIT=2g
+ZAP_CPU_LIMIT=1.5`;
+</script>
+
+<TemplateCodeTabs
+	tabs={[
+		{ name: 'compose.yaml', language: 'yaml', code: compose },
+		{ name: '.env', language: 'ini', code: env }
+	]}
+/>
