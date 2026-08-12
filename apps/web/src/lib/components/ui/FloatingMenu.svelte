@@ -5,12 +5,17 @@
 	import { cn } from "../../utils/cn";
 	import AreaRangeSolid from "carbon-icons-svelte/lib/AreaRangeSolid.svelte";
 	import Close from "carbon-icons-svelte/lib/Close.svelte";
+	import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
+
+	type IconComponent = typeof Close;
 
 	type MenuVariant = "default" | "muted";
 
 	type MenuLink = {
 		label: string;
 		href: string;
+		description?: string;
+		icon?: IconComponent;
 		onclick?: (e: MouseEvent) => void;
 	}
 
@@ -98,7 +103,7 @@
 <div
 	data-slot="root"
 	class={cn(
-		"floating-menu fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 rounded-md border border-border bg-background text-foreground shadow-md md:top-4 md:max-w-[70vw] lg:max-w-[50vw]",
+		"floating-menu fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 overflow-hidden rounded-lg border border-border bg-background text-foreground shadow-2xl md:top-4 md:max-w-[70vw] lg:max-w-[64rem]",
 		isOpen && "floating-menu-open",
 		className,
 		classes?.root,
@@ -182,14 +187,14 @@
 	<div
 		data-slot="menu-wrapper"
 		class={cn(
-			"menu-wrapper w-full overflow-hidden border-t border-border",
+			"menu-wrapper w-full overflow-hidden border-t border-border bg-background-inset/40",
 			classes?.menuWrapper,
 		)}
 	>
 		<div
 			data-slot="grid"
 			class={cn(
-				"grid max-h-[65vh] grid-cols-1 gap-4 overflow-y-auto overscroll-contain p-4 md:max-h-none md:grid-cols-3 md:overflow-visible",
+				"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain md:max-h-none md:grid-cols-3 md:overflow-visible",
 				classes?.grid,
 			)}
 		>
@@ -197,7 +202,7 @@
 				<div
 					data-slot="group"
 					class={cn(
-						"flex flex-col gap-4 rounded-sm p-4 transition-colors",
+						"menu-column flex flex-col gap-5 p-5 transition-colors md:min-h-[24rem] md:border-l md:border-border/70 first:md:border-l-0",
 						group.variant === "muted" ? "bg-background-muted" : "bg-transparent",
 						classes?.group,
 						group.variant === "muted" && classes?.groupMuted,
@@ -212,37 +217,39 @@
 					>
 						{group.title}
 					</h3>
-					<div class="mt-2 flex flex-col gap-4">
+					<div class="mt-1 flex flex-col gap-3">
 						{#each group.links as link, i (link.href + link.label)}
+							{@const Icon = link.icon}
 							<a
 								href={link.href}
 								onclick={link.onclick}
 								data-slot="link"
 								class={cn(
-									"menu-link group/link relative block w-fit text-2xl font-normal text-foreground-muted transition-colors duration-300 hover:text-foreground",
+									"menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200 hover:bg-background-muted/80 focus-visible:bg-background-muted/80",
 									classes?.link,
 								)}
 								style="--delay: {i * 40}ms"
 							>
-								<span class="relative z-10 block leading-tight">
+								<span class="menu-link-icon grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-background-muted/60 text-foreground-muted shadow-sm transition-colors duration-200 group-hover/link:border-accent/40 group-hover/link:bg-accent/15 group-hover/link:text-accent">
+									{#if Icon}
+										<Icon size={20} />
+									{/if}
+								</span>
+								<span class="min-w-0 flex-1 leading-tight">
 									<span
 										data-slot="link-text"
-										class={cn("block whitespace-nowrap", classes?.linkText)}
+										class={cn("block text-sm font-medium text-foreground", classes?.linkText)}
 									>
 										{link.label}
 									</span>
+									{#if link.description}
+										<span class="mt-1 block text-sm leading-snug text-foreground-muted">
+											{link.description}
+										</span>
+									{/if}
 								</span>
-								<span
-									data-slot="link-underline"
-									class={cn(
-										"absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 bg-foreground transition-transform duration-300 group-hover/link:origin-left group-hover/link:scale-x-100",
-										classes?.linkUnderline,
-									)}
-								></span>
+								<ChevronRight class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/link:text-accent" size={16} />
 							</a>
-							{#if i < group.links.length - 1}
-								<hr data-slot="divider" class={cn("border-border", classes?.divider)} />
-							{/if}
 						{/each}
 					</div>
 				</div>

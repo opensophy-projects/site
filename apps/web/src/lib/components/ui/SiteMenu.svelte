@@ -1,39 +1,103 @@
 <script lang="ts">
 	/* eslint-disable svelte/no-navigation-without-resolve */
-		import { brandingConfig, siteConfig } from '$lib';
+	import { brandingConfig, siteConfig } from '$lib';
 	import FloatingMenu from '$lib/components/ui/FloatingMenu.svelte';
 	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
+	import DockerLogo from '$lib/components/ui/DockerLogo.svelte';
 	import { contactsState } from '$lib/stores/contacts.svelte';
+	import Categories from 'carbon-icons-svelte/lib/Categories.svelte';
+	import Close from 'carbon-icons-svelte/lib/Close.svelte';
+	import DocumentMultiple_01 from 'carbon-icons-svelte/lib/DocumentMultiple_01.svelte';
 	import Email from 'carbon-icons-svelte/lib/Email.svelte';
 	import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte';
-	import Close from 'carbon-icons-svelte/lib/Close.svelte';
+	import Network_3 from 'carbon-icons-svelte/lib/Network_3.svelte';
+	import Policy from 'carbon-icons-svelte/lib/Policy.svelte';
+	import QHintonPlot from 'carbon-icons-svelte/lib/QHintonPlot.svelte';
+	import Settings from 'carbon-icons-svelte/lib/Settings.svelte';
+	import Tag from 'carbon-icons-svelte/lib/Tag.svelte';
+	import WebServicesContainer from 'carbon-icons-svelte/lib/WebServicesContainer.svelte';
+
+	const disabledLink = (e: MouseEvent) => {
+		e.preventDefault();
+	};
+
 	const menuGroups = [
 		{
-			title: 'Платформа',
+			title: 'Продукты',
 			links: [
-				{ label: 'Документация', href: '/docs' },
-				{ label: 'Статьи', href: '/article' },
-				{ label: 'Компоненты', href: '/components' }
+				{
+					label: 'os.docs',
+					description: 'Платформа для документации и публикации контента.',
+					href: '/docs/opensophy-docs',
+					icon: DocumentMultiple_01
+				},
+				{
+					label: 'os.port',
+					description: 'Платформа для управления серверами и деплоя приложений.',
+					href: '#',
+					icon: WebServicesContainer,
+					onclick: disabledLink
+				},
+				{
+					label: 'os.mtls',
+					description: 'Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.',
+					href: '#',
+					icon: Network_3,
+					onclick: disabledLink
+				},
+				{
+					label: 'os.ui',
+					description: 'Библиотека готовых UI-компонентов с живым превью и гибкими настройками.',
+					href: '/components/overview',
+					icon: QHintonPlot
+				}
 			]
 		},
 		{
-			title: 'Шаблоны',
-			links: [{ label: 'Docker', href: '/templates/docker/' }]
-		},
-		{
-			title: 'Проект',
+			title: 'Ресурсы',
 			links: [
 				{
-					label: 'Контакты',
+					label: 'База знаний',
+					description: 'Понятные статьи и гайды по DevSecOps и не только.',
+					href: '/article/general',
+					icon: Categories
+				},
+				{
+					label: 'Статус',
+					description: 'Информация о разработке и состояние проектов.',
 					href: '#',
-					onclick: (e: MouseEvent) => {
-						e.preventDefault();
-						contactsState.open();
-					}
+					icon: Settings,
+					onclick: disabledLink
+				},
+				{
+					label: 'Шаблоны Docker',
+					description: 'Наши готовые шаблоны для инструментов DevSecOps/AppSec.',
+					href: '/templates/docker/',
+					icon: DockerLogo
+				}
+			]
+		},
+		{
+			title: 'Услуги',
+			links: [
+				{
+					label: 'Политика оказания услуг',
+					description: 'Узнайте о том как мы работаем перед тем как заказать услугу.',
+					href: '#',
+					icon: Policy,
+					onclick: disabledLink
+				},
+				{
+					label: 'Услуги',
+					description: 'Узнайте актуальные услуги которые мы сейчас готовы предоставить.',
+					href: '#',
+					icon: Tag,
+					onclick: disabledLink
 				}
 			]
 		}
 	];
+
 	const contacts = [
 		{
 			label: 'GitHub',
@@ -50,6 +114,7 @@
 		if (e.key === 'Escape') contactsState.close();
 	}
 </script>
+
 <FloatingMenu {menuGroups}>
 	{#snippet centerContent()}
 		<span class="font-medium lowercase tracking-tight text-foreground">{brandingConfig.name}</span>
@@ -61,7 +126,9 @@
 {#if contactsState.isOpen}
 	<div
 		class="contacts-overlay fixed inset-0 z-[100] flex items-center justify-center bg-background-inset/80 backdrop-blur-sm"
-		onclick={() => { contactsState.close(); }}
+		onclick={() => {
+			contactsState.close();
+		}}
 		onkeydown={handleOverlayKeydown}
 		role="button"
 		tabindex="-1"
@@ -69,8 +136,12 @@
 	>
 		<div
 			class="contacts-modal relative w-full max-w-sm rounded-lg border border-border bg-background p-6 shadow-2xl"
-			onclick={(e) => { e.stopPropagation(); }}
-			onkeydown={(e) => { e.stopPropagation(); }}
+			onclick={(e) => {
+				e.stopPropagation();
+			}}
+			onkeydown={(e) => {
+				e.stopPropagation();
+			}}
 			role="dialog"
 			aria-modal="true"
 			aria-label="Контакты"
@@ -79,7 +150,9 @@
 			<button
 				type="button"
 				class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-sm text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
-				onclick={() => { contactsState.close(); }}
+				onclick={() => {
+					contactsState.close();
+				}}
 				aria-label="Закрыть"
 			>
 				<Close size={18} />
@@ -111,8 +184,12 @@
 		animation: scale-in 250ms ease-out;
 	}
 	@keyframes fade-in {
-		from { opacity: 0; }
-		to { opacity: 1; }
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
 	}
 	@keyframes scale-in {
 		from {
