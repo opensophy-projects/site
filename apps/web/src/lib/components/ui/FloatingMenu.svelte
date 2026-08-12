@@ -211,7 +211,7 @@
 					<h3
 						data-slot="group-title"
 						class={cn(
-							"text-xs font-medium tracking-wider text-foreground-muted/50 uppercase",
+							"inset-shadow transition-scale inline-flex h-9 w-fit items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium tracking-wider text-foreground uppercase duration-150 ease-out",
 							classes?.groupTitle,
 						)}
 					>
@@ -225,12 +225,12 @@
 								onclick={link.onclick}
 								data-slot="link"
 								class={cn(
-									"menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200 hover:bg-background-muted/80 focus-visible:bg-background-muted/80",
+									"menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200",
 									classes?.link,
 								)}
 								style="--delay: {i * 40}ms"
 							>
-								<span class="menu-link-icon grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-background-muted/60 text-foreground-muted shadow-sm transition-colors duration-200 group-hover/link:border-accent/40 group-hover/link:bg-accent/15 group-hover/link:text-accent">
+								<span class="menu-link-icon grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-background-muted/60 text-foreground-muted shadow-sm">
 									{#if Icon}
 										<Icon size={20} />
 									{/if}
@@ -238,7 +238,10 @@
 								<span class="min-w-0 flex-1 leading-tight">
 									<span
 										data-slot="link-text"
-										class={cn("block text-sm font-medium text-foreground", classes?.linkText)}
+										class={cn(
+											"block text-sm font-medium text-foreground transition-colors duration-200 group-hover/link:text-accent",
+											classes?.linkText,
+										)}
 									>
 										{link.label}
 									</span>
