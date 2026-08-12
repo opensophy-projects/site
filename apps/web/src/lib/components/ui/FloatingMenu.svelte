@@ -160,7 +160,7 @@
 					href={secondaryButton.href}
 					data-slot="secondary-button"
 					class={cn(
-						"hidden h-9 items-center justify-center rounded-sm px-3 text-xs font-medium text-foreground transition-[background-color,color] duration-300 hover:bg-background-muted md:flex",
+						"inset-shadow transition-scale hidden h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95] md:flex",
 						classes?.secondaryButton,
 					)}
 				>
@@ -172,7 +172,7 @@
 					href={primaryButton.href}
 					data-slot="primary-button"
 					class={cn(
-						"flex h-9 items-center justify-center rounded-sm bg-accent/10 px-3 text-xs font-medium text-accent transition-[background-color] duration-300 hover:bg-accent/20",
+						"inset-shadow transition-scale flex h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95]",
 						classes?.primaryButton,
 					)}
 				>
@@ -227,7 +227,7 @@
 								onclick={link.onclick}
 								data-slot="link"
 								class={cn(
-									"menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200 hover:bg-background-muted/80 focus-visible:bg-background-muted/80",
+									"menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200",
 									classes?.link,
 								)}
 								style="--delay: {i * 40}ms"
