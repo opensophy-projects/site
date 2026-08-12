@@ -2,15 +2,79 @@
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import FeatureCards from "$lib/components/ui-registry/FeatureCards.svelte";
 
-  type FeatureIcon = "contracts" | "scheduling" | "processing" | "diagnostics";
+  type FeatureIcon =
+    | "security"
+    | "cicd"
+    | "pipeline"
+    | "triage"
+    | "construction"
+    | "radar"
+    | "chat"
+    | "search"
+    | "document"
+    | "terminal";
 
   const services: { title: string; description: string; icon: FeatureIcon }[] = [
-    { title: "Проверка безопасности", description: "Blackbox, graybox и whitebox-проверки сайтов, веб-приложений и API с понятным отчётом.", icon: "contracts" },
-    { title: "DevSecOps и CI/CD", description: "Настройка SAST, DAST, SCA и защиты пайплайнов без лишнего шума для команды.", icon: "scheduling" },
-    { title: "Triage уязвимостей", description: "Разбор отчётов сканеров и bug bounty, отсев false positive и приоритизация исправлений.", icon: "diagnostics" },
-    { title: "Attack Surface", description: "Мониторинг внешнего периметра: поддомены, порты, утечки и случайно опубликованные данные.", icon: "processing" },
-    { title: "Документация и процессы", description: "Политики, регламенты, чек-листы и понятные правила безопасности для команды.", icon: "contracts" },
-    { title: "Автоматизация", description: "Скрипты и сервисы для повторяющихся задач: от bash до решений под индивидуальные требования.", icon: "scheduling" }
+    {
+      title: "Проверка безопасности",
+      description:
+        "Blackbox, graybox и whitebox-проверки сайтов, веб-приложений и API — так, как это делал бы реальный злоумышленник, с понятным отчётом по итогам.",
+      icon: "security"
+    },
+    {
+      title: "Автоматическая проверка безопасности",
+      description:
+        "Подключаю SAST, DAST и SCA к вашему CI/CD, чтобы уязвимости ловились автоматически при каждом обновлении кода, ещё до релиза.",
+      icon: "cicd"
+    },
+    {
+      title: "Защита CI/CD пайплайна",
+      description:
+        "Закрываю дыры в сборке и деплое: утечки секретов, избыточные права доступа, уязвимость сборки к подмене кода.",
+      icon: "pipeline"
+    },
+    {
+      title: "Triage уязвимостей",
+      description:
+        "Разбираю накопившиеся отчёты сканеров и bug bounty программ, отсеиваю ложные срабатывания и расставляю приоритеты.",
+      icon: "triage"
+    },
+    {
+      title: "Процесс безопасности с нуля",
+      description:
+        "Выстраиваю процессы безопасности разработки с нуля: инструменты, регламенты проверки, обучение команды и чек-листы.",
+      icon: "construction"
+    },
+    {
+      title: "Attack Surface Monitoring",
+      description:
+        "Регулярно проверяю внешний периметр: новые поддомены, открытые порты, случайно опубликованные файлы и данные.",
+      icon: "radar"
+    },
+    {
+      title: "Разовая консультация",
+      description:
+        "Короткий созвон или переписка — показываете проект, я смотрю на него глазами безопасника и говорю, на что обратить внимание.",
+      icon: "chat"
+    },
+    {
+      title: "Поиск утечек данных",
+      description:
+        "Проверяю, не утекли ли данные компании или пользователя: базы, пароли, документы. Мониторю даркнет, форумы и паблики с утечками.",
+      icon: "search"
+    },
+    {
+      title: "Документация и процессы",
+      description:
+        "Пишу понятную security-документацию: политики безопасности, регламенты на случай инцидента, инструкции и чек-листы для команды.",
+      icon: "document"
+    },
+    {
+      title: "Автоматизация",
+      description:
+        "Автоматизирую рутину — от простого bash-скрипта до сложных решений под индивидуальные требования.",
+      icon: "terminal"
+    }
   ];
 </script>
 
@@ -43,7 +107,7 @@
     font-size: clamp(4rem, 14vw, 12rem);
     font-weight: 500;
     line-height: 0.9;
-    letter-spacing: -0.08em;
+    letter-spacing: 0.05em;
     text-transform: lowercase;
   }
   .services-grid {
