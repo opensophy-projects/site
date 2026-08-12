@@ -4,20 +4,42 @@
 	import Layers from 'carbon-icons-svelte/lib/Layers.svelte';
 	import Information from 'carbon-icons-svelte/lib/Information.svelte';
 	import Idea from 'carbon-icons-svelte/lib/Idea.svelte';
+	import Security from 'carbon-icons-svelte/lib/Security.svelte';
+	import IbmCloudContinuousDelivery from 'carbon-icons-svelte/lib/IbmCloudContinuousDelivery.svelte';
+	import Flow from 'carbon-icons-svelte/lib/Flow.svelte';
+	import ChartEvaluation from 'carbon-icons-svelte/lib/ChartEvaluation.svelte';
+	import Construction from 'carbon-icons-svelte/lib/Construction.svelte';
+	import Radar from 'carbon-icons-svelte/lib/Radar.svelte';
+	import Chat from 'carbon-icons-svelte/lib/Chat.svelte';
+	import SearchLocate from 'carbon-icons-svelte/lib/SearchLocate.svelte';
+	import Document from 'carbon-icons-svelte/lib/Document.svelte';
+	import Terminal from 'carbon-icons-svelte/lib/Terminal.svelte';
 
-	type IconKey = 'contracts' | 'scheduling' | 'processing' | 'diagnostics';
+	type IconKey =
+		| 'contracts'
+		| 'scheduling'
+		| 'processing'
+		| 'diagnostics'
+		| 'security'
+		| 'cicd'
+		| 'pipeline'
+		| 'triage'
+		| 'construction'
+		| 'radar'
+		| 'chat'
+		| 'search'
+		| 'document'
+		| 'terminal';
 
 	type FeatureCard = {
 		title: string;
 		description: string;
 		icon: IconKey;
 	};
-
 	type Props = {
 		class?: string;
 		cards?: FeatureCard[];
 	};
-
 	const defaultCards: FeatureCard[] = [
 		{
 			title: 'Строгие контракты',
@@ -44,7 +66,6 @@
 			icon: 'diagnostics'
 		}
 	];
-
 	let { class: className = '', cards = defaultCards }: Props = $props();
 </script>
 
@@ -65,6 +86,26 @@
 								<Time size={32} />
 							{:else if card.icon === 'processing'}
 								<Layers size={32} />
+							{:else if card.icon === 'security'}
+								<Security size={32} />
+							{:else if card.icon === 'cicd'}
+								<IbmCloudContinuousDelivery size={32} />
+							{:else if card.icon === 'pipeline'}
+								<Flow size={32} />
+							{:else if card.icon === 'triage'}
+								<ChartEvaluation size={32} />
+							{:else if card.icon === 'construction'}
+								<Construction size={32} />
+							{:else if card.icon === 'radar'}
+								<Radar size={32} />
+							{:else if card.icon === 'chat'}
+								<Chat size={32} />
+							{:else if card.icon === 'search'}
+								<SearchLocate size={32} />
+							{:else if card.icon === 'document'}
+								<Document size={32} />
+							{:else if card.icon === 'terminal'}
+								<Terminal size={32} />
 							{:else}
 								<Information size={32} />
 							{/if}
