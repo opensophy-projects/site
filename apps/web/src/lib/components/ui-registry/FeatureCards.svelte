@@ -75,7 +75,7 @@
 			<div
 				class="inset-shadow relative overflow-hidden rounded-lg bg-background-inset p-1.5"
 			>
-				<article class="grid h-54 rounded-md bg-background p-4 card sm:h-72 sm:p-6">
+				<article class="grid min-h-54 rounded-md bg-background p-4 card sm:min-h-72 sm:p-6">
 					<div class="flex items-start justify-start">
 						<div
 							class="inset-shadow grid size-12 place-items-center rounded-sm bg-background-inset text-accent"
