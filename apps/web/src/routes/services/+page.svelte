@@ -88,7 +88,7 @@
   </section>
   <section class="contact-cta" aria-label="Как заказать">
     <p>
-      Напишите мне на
+      Для оформления заказа или обсуждения деталей напишите мне на
       <a href="mailto:opensophy@gmail.com">opensophy@gmail.com</a>
       или в телеграм
       <a href="https://t.me/opensophy" target="_blank" rel="noopener noreferrer">@opensophy</a>
