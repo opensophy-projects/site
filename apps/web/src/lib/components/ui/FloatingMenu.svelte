@@ -52,6 +52,7 @@
 	type Props = {
 		menuGroups: MenuGroup[];
 		centerContent?: Snippet;
+		actionsStart?: Snippet;
 		actionsEnd?: Snippet;
 		primaryButton?: MenuButton;
 		secondaryButton?: MenuButton;
@@ -62,6 +63,7 @@
 	let {
 		menuGroups,
 		centerContent,
+		actionsStart,
 		actionsEnd,
 		primaryButton,
 		secondaryButton,
@@ -116,27 +118,12 @@
 			classes?.header,
 		)}
 	>
-		<!-- Left: hamburger toggle, styled like ThemeToggle -->
-		<button
-			type="button"
-			onclick={toggle}
-			data-slot="toggle-button"
-			data-open={isOpen}
-			class={cn(
-				"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]",
-				classes?.toggleButton,
-			)}
-			aria-expanded={isOpen}
-			aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
-		>
-			<span class="sr-only">{isOpen ? "Закрыть меню" : "Открыть меню"}</span>
-			<span class="menu-toggle-icon menu-toggle-open">
-				<AreaRangeSolid size={16} />
-			</span>
-			<span class="menu-toggle-icon menu-toggle-close">
-				<Close size={16} />
-			</span>
-		</button>
+		<!-- Left: custom actions (theme toggle on the site navigation) -->
+		<div data-slot="actions-start" class="flex items-center gap-1">
+			{#if actionsStart}
+				{@render actionsStart()}
+			{/if}
+		</div>
 
 		<!-- Center: custom content -->
 		<div
@@ -150,7 +137,7 @@
 			{/if}
 		</div>
 
-		<!-- Right: actions -->
+		<!-- Right: actions, search and menu toggle -->
 		<div
 			data-slot="actions"
 			class={cn("flex items-center gap-1", classes?.actions)}
@@ -179,9 +166,30 @@
 					{primaryButton.label}
 				</a>
 			{/if}
+
 			{#if actionsEnd}
 				{@render actionsEnd()}
 			{/if}
+			<button
+				type="button"
+				onclick={toggle}
+				data-slot="toggle-button"
+				data-open={isOpen}
+				class={cn(
+					"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]",
+					classes?.toggleButton,
+				)}
+				aria-expanded={isOpen}
+				aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
+			>
+				<span class="sr-only">{isOpen ? "Закрыть меню" : "Открыть меню"}</span>
+				<span class="menu-toggle-icon menu-toggle-open">
+					<AreaRangeSolid size={16} />
+				</span>
+				<span class="menu-toggle-icon menu-toggle-close">
+					<Close size={16} />
+				</span>
+			</button>
 		</div>
 	</div>
 
@@ -232,7 +240,7 @@
 								)}
 								style="--delay: {i * 40}ms"
 							>
-								<span class="menu-link-icon grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-background-muted/60 text-foreground-muted shadow-sm transition-colors duration-200 group-hover/link:border-accent/40 group-hover/link:bg-accent/15 group-hover/link:text-accent">
+								<span class="menu-link-icon group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]">
 									{#if Icon}
 										<Icon size={20} />
 									{/if}

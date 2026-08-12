@@ -5,6 +5,7 @@
 	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
 	import DockerLogo from '$lib/components/ui/DockerLogo.svelte';
 	import { contactsState } from '$lib/stores/contacts.svelte';
+	import { searchState } from '$lib/stores/search.svelte';
 	import Categories from 'carbon-icons-svelte/lib/Categories.svelte';
 	import Close from 'carbon-icons-svelte/lib/Close.svelte';
 	import DocumentMultiple_01 from 'carbon-icons-svelte/lib/DocumentMultiple_01.svelte';
@@ -12,6 +13,7 @@
 	import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte';
 	import Network_3 from 'carbon-icons-svelte/lib/Network_3.svelte';
 	import Policy from 'carbon-icons-svelte/lib/Policy.svelte';
+	import Search from 'carbon-icons-svelte/lib/Search.svelte';
 	import QHintonPlot from 'carbon-icons-svelte/lib/QHintonPlot.svelte';
 	import Settings from 'carbon-icons-svelte/lib/Settings.svelte';
 	import Tag from 'carbon-icons-svelte/lib/Tag.svelte';
@@ -119,8 +121,21 @@
 	{#snippet centerContent()}
 		<span class="font-medium lowercase tracking-tight text-foreground">{brandingConfig.name}</span>
 	{/snippet}
-	{#snippet actionsEnd()}
+	{#snippet actionsStart()}
 		<ThemeToggle />
+	{/snippet}
+	{#snippet actionsEnd()}
+		<button
+			type="button"
+			class="group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
+			onclick={() => {
+				searchState.open();
+			}}
+			aria-label="Открыть поиск"
+		>
+			<span class="sr-only">Открыть поиск</span>
+			<Search size={16} />
+		</button>
 	{/snippet}
 </FloatingMenu>
 {#if contactsState.isOpen}
