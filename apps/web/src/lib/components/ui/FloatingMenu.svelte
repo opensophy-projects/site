@@ -116,18 +116,20 @@
 			classes?.header,
 		)}
 	>
-		<!-- Left: hamburger toggle with pure CSS animation -->
+		<!-- Left: hamburger toggle, styled like ThemeToggle -->
 		<button
+			type="button"
 			onclick={toggle}
 			data-slot="toggle-button"
 			data-open={isOpen}
 			class={cn(
-				"inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]",
+				"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]",
 				classes?.toggleButton,
 			)}
 			aria-expanded={isOpen}
 			aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
 		>
+			<span class="sr-only">{isOpen ? "Закрыть меню" : "Открыть меню"}</span>
 			<span class="menu-toggle-icon menu-toggle-open">
 				<AreaRangeSolid size={16} />
 			</span>
