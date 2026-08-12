@@ -39,8 +39,6 @@
 		primaryButton?: ClassValue;
 		secondaryButton?: ClassValue;
 		menuWrapper?: ClassValue;
-		tabs?: ClassValue;
-		tabButton?: ClassValue;
 		grid?: ClassValue;
 		group?: ClassValue;
 		groupMuted?: ClassValue;
@@ -72,17 +70,9 @@
 	}: Props = $props();
 
 	let isOpen = $state(false);
-	let activeGroupIndex = $state(0);
 
 	function toggle() {
 		isOpen = !isOpen;
-		if (isOpen) {
-			activeGroupIndex = 0;
-		}
-	}
-
-	function selectGroup(index: number) {
-		activeGroupIndex = index;
 	}
 </script>
 
@@ -201,53 +191,46 @@
 			classes?.menuWrapper,
 		)}
 	>
-		<div class="flex max-h-[70vh] flex-col gap-4 overflow-y-auto overscroll-contain p-5 md:max-h-none md:overflow-visible">
-			<!-- Category tabs: same visual language as the theme toggle button -->
-			<div
-				data-slot="tabs"
-				class={cn("flex flex-nowrap items-center gap-2 overflow-x-auto", classes?.tabs)}
-			>
-				{#each menuGroups as group, i (group.title)}
-					<button
-						type="button"
-						onclick={() => selectGroup(i)}
-						data-slot="tab-button"
-						data-active={activeGroupIndex === i}
+		<div
+			data-slot="grid"
+			class={cn(
+				"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain md:max-h-none md:grid-cols-3 md:overflow-visible",
+				classes?.grid,
+			)}
+		>
+			{#each menuGroups as group (group.title)}
+				<div
+					data-slot="group"
+					class={cn(
+						"menu-column flex flex-col gap-5 p-5 transition-colors md:min-h-[24rem] md:border-l md:border-border/70 first:md:border-l-0",
+						group.variant === "muted" ? "bg-background-muted" : "bg-transparent",
+						classes?.group,
+						group.variant === "muted" && classes?.groupMuted,
+					)}
+				>
+					<h3
+						data-slot="group-title"
 						class={cn(
-							"inset-shadow transition-scale relative inline-flex h-9 shrink-0 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium duration-150 ease-out active:scale-[0.95]",
-							activeGroupIndex === i ? "text-accent" : "text-foreground",
-							classes?.tabButton,
+							"text-xs font-medium tracking-wider text-foreground-muted/50 uppercase",
+							classes?.groupTitle,
 						)}
 					>
 						{group.title}
-					</button>
-				{/each}
-			</div>
-
-			<!-- Active group content -->
-			{#each menuGroups as group, i (group.title)}
-				{#if activeGroupIndex === i}
-					<div
-						data-slot="group"
-						class={cn(
-							"flex flex-col gap-3",
-							classes?.group,
-							group.variant === "muted" && classes?.groupMuted,
-						)}
-					>
-						{#each group.links as link, j (link.href + link.label)}
+					</h3>
+					<div class="mt-1 flex flex-col gap-3">
+						{#each group.links as link, i (link.href + link.label)}
 							{@const Icon = link.icon}
 							<a
 								href={link.href}
 								onclick={link.onclick}
 								data-slot="link"
 								class={cn(
-									"menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200",
+									"menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200 hover:bg-background-muted/80 focus-visible:bg-background-muted/80",
 									classes?.link,
 								)}
-								style="--delay: {j * 40}ms"
+								style="--delay: {i * 40}ms"
 							>
-								<span class="menu-link-icon grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-background-muted/60 text-foreground-muted">
+								<span class="menu-link-icon grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-background-muted/60 text-foreground-muted shadow-sm transition-colors duration-200 group-hover/link:border-accent/40 group-hover/link:bg-accent/15 group-hover/link:text-accent">
 									{#if Icon}
 										<Icon size={20} />
 									{/if}
@@ -255,10 +238,7 @@
 								<span class="min-w-0 flex-1 leading-tight">
 									<span
 										data-slot="link-text"
-										class={cn(
-											"block text-sm font-medium text-foreground transition-colors duration-200 group-hover/link:text-accent",
-											classes?.linkText,
-										)}
+										class={cn("block text-sm font-medium text-foreground", classes?.linkText)}
 									>
 										{link.label}
 									</span>
@@ -272,7 +252,7 @@
 							</a>
 						{/each}
 					</div>
-				{/if}
+				</div>
 			{/each}
 		</div>
 	</div>
