@@ -1,16 +1,58 @@
 <script lang="ts">
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import FeatureCards from "$lib/components/ui-registry/FeatureCards.svelte";
-
   type FeatureIcon = "contracts" | "scheduling" | "processing" | "diagnostics";
-
   const services: { title: string; description: string; icon: FeatureIcon }[] = [
-    { title: "Проверка безопасности", description: "Blackbox, graybox и whitebox-проверки сайтов, веб-приложений и API с понятным отчётом.", icon: "contracts" },
-    { title: "DevSecOps и CI/CD", description: "Настройка SAST, DAST, SCA и защиты пайплайнов без лишнего шума для команды.", icon: "scheduling" },
-    { title: "Triage уязвимостей", description: "Разбор отчётов сканеров и bug bounty, отсев false positive и приоритизация исправлений.", icon: "diagnostics" },
-    { title: "Attack Surface", description: "Мониторинг внешнего периметра: поддомены, порты, утечки и случайно опубликованные данные.", icon: "processing" },
-    { title: "Документация и процессы", description: "Политики, регламенты, чек-листы и понятные правила безопасности для команды.", icon: "contracts" },
-    { title: "Автоматизация", description: "Скрипты и сервисы для повторяющихся задач: от bash до решений под индивидуальные требования.", icon: "scheduling" }
+    {
+      title: "Проверка безопасности снаружи",
+      description: "Blackbox, graybox и whitebox-проверки сайтов, веб-приложений и API так, как это делал бы реальный злоумышленник — с понятным отчётом.",
+      icon: "contracts"
+    },
+    {
+      title: "Автоматическая проверка в CI/CD",
+      description: "Подключаю SAST, DAST, SCA к вашему пайплайну — уязвимости ловятся при каждом коммите, в фоне, не мешая разработке.",
+      icon: "scheduling"
+    },
+    {
+      title: "Защита CI/CD пайплайна",
+      description: "Закрываю дыры в сборке и деплое: секреты не утекают, права не избыточны, подмена кода невозможна. Для GitHub Actions и GitLab CI.",
+      icon: "processing"
+    },
+    {
+      title: "Triage уязвимостей",
+      description: "Разбираю накопленный backlog от сканеров или bug bounty: отсеиваю false positive, расставляю приоритеты — что чинить срочно, что может подождать.",
+      icon: "diagnostics"
+    },
+    {
+      title: "Построение процесса безопасности",
+      description: "Выстраиваю всё с нуля: выбор инструментов, настройка процессов проверки, обучение команды, чек-листы. Для тех, кто растёт и понимает, что пора.",
+      icon: "contracts"
+    },
+    {
+      title: "Attack Surface Monitoring",
+      description: "Регулярно проверяю, что «торчит» наружу: новые поддомены, открытые порты, случайно опубликованные данные. Отчёт — если появилось что-то опасное.",
+      icon: "processing"
+    },
+    {
+      title: "Консультация «посмотри и скажи»",
+      description: "Короткий созвон или переписка — показываете проект, я говорю, на что обратить внимание глазами безопасника. Без глубокого аудита, просто быстро.",
+      icon: "diagnostics"
+    },
+    {
+      title: "Поиск утечек данных",
+      description: "Ищу, не «светятся» ли уже ваши данные в сети — в даркнете, на хакерских форумах, в слитых архивах. До того, как об этом узнают клиенты.",
+      icon: "diagnostics"
+    },
+    {
+      title: "Документация и политики",
+      description: "Пишу политики безопасности, регламенты на случай инцидента, инструкции и чек-листы — понятным языком, чтобы ими реально пользовались.",
+      icon: "contracts"
+    },
+    {
+      title: "Автоматизация",
+      description: "Превращаю повторяющиеся ручные задачи в скрипты и сервисы: от bash до сложных решений под индивидуальные требования команды.",
+      icon: "scheduling"
+    }
   ];
 </script>
 
