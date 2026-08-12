@@ -204,7 +204,7 @@
 		<div
 			data-slot="grid"
 			class={cn(
-				"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain md:max-h-none md:grid-cols-3 md:overflow-visible",
+				"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain md:max-h-none md:grid-cols-4 md:overflow-visible",
 				classes?.grid,
 			)}
 		>

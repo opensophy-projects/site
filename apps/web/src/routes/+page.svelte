@@ -143,12 +143,11 @@
     <p class="section-overline">Чем занимается</p>
     <div class="section-headlines">
       <h2 class="section-headline-plain">
-        Проверяю безопасность, настраиваю автоматические проверки и разбираю
-        реальные находки.
+        Учим безопасности, настраиваем защиту, автоматизируем рутину.
       </h2>
       <h2 class="section-headline-muted">
-        От <span class="text-accent">CI/CD + SAST/DAST/SCA</span> до triage уязвимостей,
-        поиска утечек данных и автоматизации рутины.
+        От образовательных материалов до внедрения <span class="text-accent">DevSecOps</span>
+        в реальную инфраструктуру.
       </h2>
     </div>
     <CardSection />

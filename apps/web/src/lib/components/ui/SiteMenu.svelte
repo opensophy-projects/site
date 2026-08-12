@@ -10,6 +10,7 @@
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
   import Email from "carbon-icons-svelte/lib/Email.svelte";
+  import Home from "carbon-icons-svelte/lib/Home.svelte";
   import LogoGithub from "carbon-icons-svelte/lib/LogoGithub.svelte";
   import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
   import Policy from "carbon-icons-svelte/lib/Policy.svelte";
@@ -70,9 +71,8 @@
         {
           label: "Статус",
           description: "Информация о разработке и состояние проектов.",
-          href: "#",
+          href: "/status",
           icon: Settings,
-          onclick: disabledLink,
         },
         {
           label: "Шаблоны Docker",
@@ -99,6 +99,27 @@
             "Узнайте актуальные услуги которые мы сейчас готовы предоставить.",
           href: "/services",
           icon: Tag,
+        },
+      ],
+    },
+    {
+      title: "Прочие",
+      links: [
+        {
+          label: "Главная",
+          description: "Вернуться на главную страницу сайта.",
+          href: "/",
+          icon: Home,
+        },
+        {
+          label: "Контакты",
+          description: "Связаться через GitHub или email.",
+          href: "#",
+          icon: Email,
+          onclick: (e: MouseEvent) => {
+            e.preventDefault();
+            contactsState.open();
+          },
         },
       ],
     },
