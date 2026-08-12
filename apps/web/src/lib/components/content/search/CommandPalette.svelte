@@ -66,6 +66,8 @@
 	$effect(() => {
 		if (!searchConfig.enabled) return;
 		if (searchState.isOpen && inputRef) {
+			const initialMode = searchState.consumeInitialMode();
+			if (initialMode) mode = initialMode;
 			inputRef.focus();
 		}
 	});
@@ -253,7 +255,7 @@
 					placeholder={searchConfig.dialogPlaceholder}
 					aria-label={searchConfig.dialogPlaceholder}
 				/>
-				<div class="mr-2 hidden items-center rounded-md border border-border bg-background-inset p-0.5 sm:flex" aria-label="Режим поиска">
+				<div class="mr-2 flex shrink-0 items-center rounded-md border border-border bg-background-inset p-0.5" aria-label="Режим поиска">
 					{#each modes as item (item.value)}
 						{@const Icon = item.icon}
 						<button

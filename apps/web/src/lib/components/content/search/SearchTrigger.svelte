@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { searchState } from '$lib/stores/search.svelte';
 	import { contentUiDefaults, type SectionUiConfig } from '$lib/config/content-ui';
+	import type { SearchMode } from '$lib/utils/search';
 	import { cn } from '$lib/utils/cn';
 	import Search from 'carbon-icons-svelte/lib/Search.svelte';
 
 	let {
 		class: className,
-		searchConfig = contentUiDefaults.search
-	}: { class?: string; searchConfig?: SectionUiConfig['search'] } = $props();
+		searchConfig = contentUiDefaults.search,
+		searchMode
+	}: { class?: string; searchConfig?: SectionUiConfig['search']; searchMode?: SearchMode } = $props();
 </script>
 
 {#if searchConfig.enabled}
@@ -18,7 +20,7 @@
 			className
 		)}
 		onclick={() => {
-			searchState.open();
+			searchState.open(searchMode);
 		}}
 	>
 		<Search size={16} class="text-foreground-muted/70" />

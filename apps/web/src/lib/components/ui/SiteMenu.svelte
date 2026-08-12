@@ -18,7 +18,7 @@
 		},
 		{
 			title: 'Шаблоны',
-			links: [{ label: 'Docker', href: '/templates' }]
+			links: [{ label: 'Docker', href: '/templates/docker/' }]
 		},
 		{
 			title: 'Проект',
