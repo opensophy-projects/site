@@ -86,6 +86,14 @@
   <section class="services-grid" aria-label="Список услуг">
     <FeatureCards cards={services} />
   </section>
+  <section class="contact-cta" aria-label="Как заказать">
+    <p>
+      Напишите мне на
+      <a href="mailto:opensophy@gmail.com">opensophy@gmail.com</a>
+      или в телеграм
+      <a href="https://t.me/opensophy" target="_blank" rel="noopener noreferrer">@opensophy</a>
+    </p>
+  </section>
 </main>
 
 <style>
@@ -113,5 +121,24 @@
   .services-grid {
     max-width: 64rem;
     margin: 0 auto;
+  }
+  .contact-cta {
+    max-width: 64rem;
+    margin: 3rem auto 0;
+    text-align: center;
+  }
+  .contact-cta p {
+    margin: 0;
+    color: var(--foreground-muted);
+    font-size: 1.125rem;
+    font-weight: 400;
+  }
+  .contact-cta a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .contact-cta a:hover {
+    color: var(--foreground);
   }
 </style>
