@@ -61,12 +61,15 @@
 
 	.hero-card {
 		position: absolute;
-		inset: 0;
+		/* pull the gradient up so it starts right under the fixed nav
+		   instead of leaving a dark gap (offsets the main's pt-20) */
+		top: -5rem;
+		right: 0;
+		bottom: 0;
+		left: 0;
 		max-width: 80rem;
 		margin-left: auto;
 		margin-right: auto;
-		left: 0;
-		right: 0;
 		overflow: hidden;
 		border-top-left-radius: var(--radius-3xl, 3.3rem);
 		border-top-right-radius: var(--radius-3xl, 3.3rem);
@@ -94,15 +97,17 @@
 
 	.hero-heading {
 		display: flex;
-		flex-wrap: nowrap;
+		flex-wrap: wrap;
 		justify-content: center;
 		gap: 0.25em;
 		margin: 0;
-		font-size: clamp(2.7rem, 7vw, 5.25rem);
+		font-size: clamp(2.1rem, 8vw, 5.25rem);
 		font-weight: 500;
-		letter-spacing: -0.04em;
-		line-height: 1.05;
-		white-space: nowrap;
+		letter-spacing: -0.03em;
+		line-height: 1.15;
+		white-space: normal;
+		overflow-wrap: break-word;
+		word-break: keep-all;
 	}
 
 	.section-block {
@@ -152,6 +157,11 @@
 	}
 
 	@media (min-width: 640px) {
+		.hero-heading {
+			white-space: nowrap;
+			letter-spacing: -0.04em;
+		}
+
 		.templates-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
@@ -159,7 +169,7 @@
 
 	@media (min-width: 1024px) {
 		.templates-grid {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
+			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}
 	}
 </style>
