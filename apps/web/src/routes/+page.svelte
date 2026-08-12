@@ -1,7 +1,7 @@
 <script lang="ts">
   /* eslint-disable svelte/no-navigation-without-resolve */
   import { brandingConfig } from "$lib";
-  import CardSection from "$lib/components/ui/CardSection.svelte";
+  import FeatureCards from "$lib/components/ui-registry/FeatureCards.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui/TextLoop.svelte";
@@ -143,15 +143,43 @@
     <p class="section-overline">Чем занимается</p>
     <div class="section-headlines">
       <h2 class="section-headline-plain">
-        Проверяю безопасность, настраиваю автоматические проверки и разбираю
-        реальные находки.
+        Учим безопасности, настраиваем защиту, автоматизируем рутину.
       </h2>
       <h2 class="section-headline-muted">
-        От <span class="text-accent">CI/CD + SAST/DAST/SCA</span> до triage уязвимостей,
-        поиска утечек данных и автоматизации рутины.
+        От образовательных материалов до внедрения <span class="text-accent"
+          >DevSecOps</span
+        >
+        в реальную инфраструктуру.
       </h2>
     </div>
-    <CardSection />
+    <FeatureCards
+      cards={[
+        {
+          title: "Обучение безопасности",
+          description:
+            "Готовим понятные материалы, гайды и практики для команд разработки.",
+          icon: "contracts",
+        },
+        {
+          title: "Настройка защиты",
+          description:
+            "Помогаем выстроить базовую защиту приложений, инфраструктуры и процессов.",
+          icon: "diagnostics",
+        },
+        {
+          title: "DevSecOps",
+          description:
+            "Встраиваем проверки безопасности в CI/CD и ежедневный workflow команды.",
+          icon: "processing",
+        },
+        {
+          title: "Автоматизация рутины",
+          description:
+            "Превращаем повторяющиеся ручные операции в скрипты, пайплайны и понятные процессы.",
+          icon: "scheduling",
+        },
+      ]}
+    />
     <div class="services-actions">
       <a class="services-action services-action-primary" href="/services"
         >Посмотреть все услуги</a

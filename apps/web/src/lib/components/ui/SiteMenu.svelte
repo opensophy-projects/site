@@ -10,6 +10,7 @@
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
   import Email from "carbon-icons-svelte/lib/Email.svelte";
+  import Home from "carbon-icons-svelte/lib/Home.svelte";
   import LogoGithub from "carbon-icons-svelte/lib/LogoGithub.svelte";
   import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
   import Policy from "carbon-icons-svelte/lib/Policy.svelte";
@@ -17,6 +18,7 @@
   import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
   import Settings from "carbon-icons-svelte/lib/Settings.svelte";
   import Tag from "carbon-icons-svelte/lib/Tag.svelte";
+  import UserMultiple from "carbon-icons-svelte/lib/UserMultiple.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
 
   const disabledLink = (e: MouseEvent) => {
@@ -70,9 +72,8 @@
         {
           label: "Статус",
           description: "Информация о разработке и состояние проектов.",
-          href: "#",
+          href: "/status",
           icon: Settings,
-          onclick: disabledLink,
         },
         {
           label: "Шаблоны Docker",
@@ -99,6 +100,27 @@
             "Узнайте актуальные услуги которые мы сейчас готовы предоставить.",
           href: "/services",
           icon: Tag,
+        },
+      ],
+    },
+    {
+      title: "Прочие",
+      links: [
+        {
+          label: "Контакты",
+          description: "Откройте GitHub и почту для связи с проектом.",
+          href: "#contacts",
+          icon: UserMultiple,
+          onclick: (e: MouseEvent) => {
+            e.preventDefault();
+            contactsState.open();
+          },
+        },
+        {
+          label: "На главную",
+          description: "Вернуться на главную страницу сайта.",
+          href: "/",
+          icon: Home,
         },
       ],
     },

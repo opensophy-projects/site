@@ -1,0 +1,119 @@
+---
+title: Статус проектов
+description: Текущий статус и прогресс проектов Opensophy.
+---
+
+<script>
+  import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
+</script>
+
+<main class="status-page">
+  <SiteMenu />
+  <article class="status-document" data-doc-content>
+    <h1>статус</h1>
+
+| Название проекта | Статус | Ссылка на GitHub | Прогресс |
+| --- | --- | --- | --- |
+| **os.docs** | <span class="status-badge status-badge--release">релиз</span> | <a class="status-link-button" href="https://github.com/opensophy-projects/docs" target="_blank" rel="external">GitHub</a> | <div class="status-progress" aria-label="Прогресс os.docs: 100%"><span style="width: 100%"></span><strong>100%</strong></div> |
+| **os.mtls** | <span class="status-badge status-badge--development">в разработке / новое обновление</span> | <a class="status-link-button" href="https://github.com/opensophy-projects/mtls" target="_blank" rel="external">GitHub</a> | <div class="status-progress" aria-label="Прогресс os.mtls: 60%"><span style="width: 60%"></span><strong>60%</strong></div> |
+| **os.ui** | <span class="status-badge status-badge--release">релиз / пополняется контентом</span> | <a class="status-link-button" href="https://github.com/opensophy-projects/site/tree/main/apps/web/src/lib/components/ui-registry" target="_blank" rel="external">GitHub</a> | <div class="status-progress" aria-label="Прогресс os.ui: 100%"><span style="width: 100%"></span><strong>100%</strong></div> |
+| **os.port** | <span class="status-badge status-badge--development">в разработке</span> | <span class="status-link-empty">—</span> | <div class="status-progress" aria-label="Прогресс os.port: 50%"><span style="width: 50%"></span><strong>50%</strong></div> |
+| **os.net** | <span class="status-badge status-badge--frozen">в заморозке</span> | <span class="status-link-empty">—</span> | <div class="status-progress" aria-label="Прогресс os.net: 50%"><span style="width: 50%"></span><strong>50%</strong></div> |
+
+  </article>
+</main>
+
+<style>
+  .status-page {
+    min-height: 100dvh;
+    background: var(--background);
+    padding: 7rem 1rem 5rem;
+  }
+
+  .status-document {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
+
+  h1 {
+    margin: 0 0 2rem;
+    text-align: center;
+    color: var(--foreground);
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+  }
+
+  :global(.status-document table) {
+    width: 100%;
+  }
+
+  :global(.status-badge) {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  :global(.status-badge--release) {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+  }
+
+  :global(.status-badge--development) {
+    background: color-mix(in srgb, #f59e0b 16%, transparent);
+    color: #d97706;
+  }
+
+  :global(.status-badge--frozen) {
+    background: color-mix(in srgb, var(--foreground-muted) 12%, transparent);
+    color: var(--foreground-muted);
+  }
+
+  :global(.status-link-button) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.45rem;
+    background: var(--foreground);
+    padding: 0.42rem 0.7rem;
+    color: var(--background);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  :global(.status-link-empty) {
+    color: var(--foreground-muted);
+  }
+
+  :global(.status-progress) {
+    position: relative;
+    min-width: 8rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--background-muted);
+    height: 1.35rem;
+  }
+
+  :global(.status-progress span) {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+  }
+
+  :global(.status-progress strong) {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--foreground);
+    font-size: 0.72rem;
+  }
+</style>

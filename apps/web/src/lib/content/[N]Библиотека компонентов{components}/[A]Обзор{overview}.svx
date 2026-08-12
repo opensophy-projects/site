@@ -5,6 +5,8 @@ description: Готовые Svelte-компоненты для документ�
 
 # Библиотека компонентов
 
+[Открыть исходники UI Registry на GitHub](https://github.com/opensophy-projects/site/tree/main/apps/web/src/lib/components/ui-registry)
+
 Коллекция готовых компонентов, используемых в платформе opensophy. Каждая страница содержит интерактивное демо и полный исходный код с подсветкой синтаксиса.
 
 ## Стек
@@ -43,7 +45,6 @@ description: Готовые Svelte-компоненты для документ�
 
 <Cards>
 <Card eyebrow="12" title="Карточка проекта" href="/components/glow-card">Карточка с интерактивным mesh-gradient glow при наведении.</Card>
-<Card eyebrow="13" title="Секция карточек" href="/components/card-section">Секция из 6 карточек услуг с кастомными SVG-визуализациями.</Card>
 <Card eyebrow="14" title="Карточка" href="/components/card">Универсальная карточка с eyebrow, заголовком и поддержкой ссылок.</Card>
 <Card eyebrow="15" title="Отзыв" href="/components/testimonial">Карточка отзыва с аватаром, именем и текстом.</Card>
 <Card eyebrow="16" title="Подсвеченный блок" href="/components/highlight-box">Блок с подсветкой для акцентирования внимания.</Card>

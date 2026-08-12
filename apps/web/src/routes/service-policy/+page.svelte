@@ -106,16 +106,15 @@
 <main class="policy-page">
   <SiteMenu />
   <article class="policy-document">
-    <p class="overline">Политика оказания услуг</p>
-    <h1>Узнайте, как я работаю, перед тем как заказать услугу.</h1>
+    <h1>Политика оказания услуг</h1>
     {#each sections as section (section.title)}
       <section>
         <h2>{section.title}</h2>
-        {#if section.body}{#each section.body as paragraph}<p>
+        {#if section.body}{#each section.body as paragraph (paragraph)}<p>
               {paragraph}
             </p>{/each}{/if}
         {#if section.list}<ul>
-            {#each section.list as item}<li>{item}</li>{/each}
+            {#each section.list as item (item)}<li>{item}</li>{/each}
           </ul>{/if}
       </section>
     {/each}
@@ -136,14 +135,6 @@
   .policy-document {
     max-width: 52rem;
     margin: 0 auto;
-  }
-  .overline {
-    font-family: ui-monospace, monospace;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    color: var(--foreground-muted);
-    font-size: 0.75rem;
-    font-weight: 700;
   }
   h1 {
     margin: 0.75rem 0 2.5rem;

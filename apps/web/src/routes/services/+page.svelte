@@ -85,12 +85,7 @@
 <main class="services-page">
   <SiteMenu />
   <section class="services-hero">
-    <p class="overline">Услуги</p>
-    <h1>Практичная безопасность для сайтов, приложений и команд разработки.</h1>
-    <p>
-      Проверки, автоматизация, DevSecOps-процессы, triage находок и поиск утечек
-      — в понятном формате и с письменным согласованием работ.
-    </p>
+    <h1>услуги</h1>
   </section>
   <section class="services-grid" aria-label="Список услуг">
     {#each services as service, index (service.title)}
@@ -102,7 +97,7 @@
         <p>{service.text}</p>
         {#if service.details}
           <ul>
-            {#each service.details as detail}<li>{detail}</li>{/each}
+            {#each service.details as detail (detail)}<li>{detail}</li>{/each}
           </ul>
         {/if}
         {#if service.note}<p class="note">{service.note}</p>{/if}
@@ -121,8 +116,8 @@
   .services-hero {
     max-width: 64rem;
     margin: 0 auto 2rem;
+    text-align: center;
   }
-  .overline,
   .service-number {
     font-family: ui-monospace, monospace;
     text-transform: uppercase;
@@ -133,16 +128,11 @@
   }
   h1 {
     max-width: 54rem;
-    margin: 0.75rem 0 1rem;
+    margin: 0 auto;
     color: var(--foreground);
     font-size: clamp(2.25rem, 6vw, 4.5rem);
     line-height: 1.05;
     letter-spacing: -0.04em;
-  }
-  .services-hero p:last-child {
-    max-width: 44rem;
-    color: var(--foreground-muted);
-    line-height: 1.7;
   }
   .services-grid {
     max-width: 64rem;
