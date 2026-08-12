@@ -75,48 +75,46 @@
 			<div
 				class="inset-shadow relative overflow-hidden rounded-lg bg-background-inset p-1.5"
 			>
-				<article class="grid min-h-54 rounded-md bg-background p-4 card sm:min-h-72 sm:p-6">
-					<div class="flex items-start justify-start">
+				<article class="grid min-h-54 content-start gap-3 rounded-md bg-background p-4 card sm:min-h-72 sm:gap-4 sm:p-6">
+					<div class="flex items-center gap-3">
 						<div
-							class="inset-shadow grid size-12 place-items-center rounded-sm bg-background-inset text-accent"
+							class="inset-shadow grid size-9 shrink-0 place-items-center rounded-sm bg-background-inset text-accent"
 						>
 							{#if card.icon === 'contracts'}
-								<Idea size={32} />
+								<Idea size={20} />
 							{:else if card.icon === 'scheduling'}
-								<Time size={32} />
+								<Time size={20} />
 							{:else if card.icon === 'processing'}
-								<Layers size={32} />
+								<Layers size={20} />
 							{:else if card.icon === 'security'}
-								<Security size={32} />
+								<Security size={20} />
 							{:else if card.icon === 'cicd'}
-								<IbmCloudContinuousDelivery size={32} />
+								<IbmCloudContinuousDelivery size={20} />
 							{:else if card.icon === 'pipeline'}
-								<Flow size={32} />
+								<Flow size={20} />
 							{:else if card.icon === 'triage'}
-								<ChartEvaluation size={32} />
+								<ChartEvaluation size={20} />
 							{:else if card.icon === 'construction'}
-								<Construction size={32} />
+								<Construction size={20} />
 							{:else if card.icon === 'radar'}
-								<Radar size={32} />
+								<Radar size={20} />
 							{:else if card.icon === 'chat'}
-								<Chat size={32} />
+								<Chat size={20} />
 							{:else if card.icon === 'search'}
-								<SearchLocate size={32} />
+								<SearchLocate size={20} />
 							{:else if card.icon === 'document'}
-								<Document size={32} />
+								<Document size={20} />
 							{:else if card.icon === 'terminal'}
-								<Terminal size={32} />
+								<Terminal size={20} />
 							{:else}
-								<Information size={32} />
+								<Information size={20} />
 							{/if}
 						</div>
+						<h3 class="text-xl font-medium tracking-tight text-foreground sm:text-2xl">{card.title}</h3>
 					</div>
-					<div class="mt-auto grid gap-4">
-						<h3 class="text-xl font-medium tracking-tight text-foreground">{card.title}</h3>
-						<p class="text-base font-normal tracking-normal text-foreground-muted">
-							{card.description}
-						</p>
-					</div>
+					<p class="text-base font-normal tracking-normal text-foreground-muted sm:text-lg">
+						{card.description}
+					</p>
 				</article>
 			</div>
 		{/each}
