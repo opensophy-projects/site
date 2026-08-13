@@ -10,15 +10,15 @@ description: Статус проектов Opensophy.
 	import Progress from '$lib/components/ui-registry/Progress.svelte';
 </script>
 
-<main class="min-h-dvh bg-background text-foreground">
+<main class="status-page min-h-dvh bg-background text-foreground">
 	<SiteMenu />
-	<div class="mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-4 py-24 md:py-32">
+	<div class="status-shell mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-4 py-24 md:py-32">
 		<div class="space-y-3 text-center">
 			<p class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted">opensophy</p>
 			<h1 class="text-4xl font-medium tracking-tight text-foreground md:text-6xl">Статус проектов</h1>
 		</div>
 
-		<div class="w-full max-w-4xl">
+		<div class="status-table w-full max-w-4xl">
 
 | Название проекта | Статус | GitHub | Прогресс |
 | --- | --- | --- | --- |
@@ -30,3 +30,27 @@ description: Статус проектов Opensophy.
 		</div>
 	</div>
 </main>
+
+
+<style>
+	:global([data-doc-content]) {
+		margin-inline: auto;
+	}
+
+	.status-page :global(.markdown-body),
+	.status-page :global(.markdown-content) {
+		width: 100%;
+	}
+
+	.status-shell {
+		margin-inline: auto;
+	}
+
+	.status-table {
+		margin-inline: auto;
+	}
+
+	.status-table :global(table) {
+		margin-inline: auto;
+	}
+</style>
