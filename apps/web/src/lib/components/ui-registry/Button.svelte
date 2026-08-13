@@ -1,4 +1,5 @@
 <script lang="ts">
+  /* eslint-disable svelte/no-navigation-without-resolve */
   import { resolve } from "$app/paths";
   import { cn } from "$lib/utils/cn";
 
@@ -27,6 +28,8 @@
     onclick,
   }: Props = $props();
 
+  const resolvePath = resolve as unknown as (path: string) => string;
+
   const sizeClasses: Record<Size, string> = {
     sm: "h-7 px-2.5 text-xs",
     md: "h-9 px-4 text-sm",
@@ -40,7 +43,7 @@
         href.startsWith("mailto:") ||
         href.startsWith("#")
         ? href
-        : resolve(href as any)
+        : resolvePath(href)
       : undefined,
   );
   const externalRel = $derived(

@@ -143,7 +143,7 @@
   <section class="section-block w-full max-w-5xl px-4">
     <p class="section-overline">Что внутри</p>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {#each features as [title, text]}<Card {title}>{text}</Card>{/each}
+      {#each features as [title, text] (title)}<Card {title}>{text}</Card>{/each}
     </div>
   </section>
 
@@ -155,7 +155,7 @@
       >, в которую входит:
     </h2>
     <div class="grid gap-4 md:grid-cols-2">
-      {#each enterpriseFeatures as [title, text]}
+      {#each enterpriseFeatures as [title, text] (title)}
         <CardProject
           className="min-h-40"
           colors={["#f43f5e", "#f472b6", "#b2263e"]}

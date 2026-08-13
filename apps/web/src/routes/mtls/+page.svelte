@@ -147,7 +147,7 @@
   <section class="section-block w-full max-w-5xl px-4">
     <p class="section-overline">Почему это вообще нужно</p>
     <div class="grid gap-4 md:grid-cols-3">
-      {#each problems as [title, text]}<Card {title}>{text}</Card>{/each}
+      {#each problems as [title, text] (title)}<Card {title}>{text}</Card>{/each}
     </div>
   </section>
 
@@ -186,21 +186,21 @@
   <section class="section-block w-full max-w-5xl px-4">
     <p class="section-overline">Кому подойдёт</p>
     <div class="grid gap-4 md:grid-cols-2">
-      {#each audiences as [title, text]}<Card {title}>{text}</Card>{/each}
+      {#each audiences as [title, text] (title)}<Card {title}>{text}</Card>{/each}
     </div>
   </section>
 
   <section class="section-block w-full max-w-5xl px-4">
     <p class="section-overline">Что внутри</p>
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {#each features as [title, text]}<Card {title}>{text}</Card>{/each}
+      {#each features as [title, text] (title)}<Card {title}>{text}</Card>{/each}
     </div>
   </section>
 
   <section class="section-block w-full max-w-5xl px-4">
     <p class="section-overline">Требования</p>
     <div class="overflow-hidden rounded-lg border border-border">
-      {#each requirements as [name, text]}<div
+      {#each requirements as [name, text] (name)}<div
           class="grid grid-cols-[9rem_1fr] gap-4 border-b border-border p-4 last:border-b-0"
         >
           <strong>{name}</strong><span class="text-foreground-muted"

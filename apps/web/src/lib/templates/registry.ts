@@ -47,7 +47,7 @@ export function getTemplateEntries(): TemplateEntry[] {
 				slug,
 				title,
 				description,
-				component: templateModules[path]?.default
+				component: templateModules[path].default
 			};
 		})
 		.filter((template): template is TemplateEntry => Boolean(template.component))

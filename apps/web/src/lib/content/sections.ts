@@ -1,5 +1,5 @@
 import type { ContentItem, ContentSectionLink, ContentSectionConfig } from '$lib/config/navigation';
-import { parseNamedContentPath, type NamedContentKind } from '$lib/content/naming';
+import { parseNamedContentPath } from '$lib/content/naming';
 import { mergeSectionUiConfig, type SectionUiConfig } from '$lib/config/content-ui';
 import { parseContentSource } from '$lib/content/frontmatter';
 import { getCustomPage } from '$lib/content/custom-pages';
