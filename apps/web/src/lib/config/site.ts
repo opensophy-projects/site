@@ -78,6 +78,7 @@ export const siteConfig = {
 	/** External profile links used by docs actions and metadata. */
 	links: {
 		github: 'https://github.com/opensophy-projects',
+		telegram: 'https://t.me/opensophy',
 		email: 'opensophy@gmail.com'
 	},
 	/** Package metadata used in installation snippets and docs helpers. */

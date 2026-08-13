@@ -20,10 +20,6 @@
   import Tag from "carbon-icons-svelte/lib/Tag.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
 
-  const disabledLink = (e: MouseEvent) => {
-    e.preventDefault();
-  };
-
   const menuGroups = [
     {
       title: "Продукты",
@@ -38,9 +34,8 @@
           label: "os.port",
           description:
             "Платформа для управления серверами и деплоя приложений.",
-          href: "#",
+          href: "/port",
           icon: WebServicesContainer,
-          onclick: disabledLink,
         },
         {
           label: "os.mtls",
@@ -112,7 +107,7 @@
         },
         {
           label: "Контакты",
-          description: "Связаться через GitHub или email.",
+          description: "Связаться через GitHub, Telegram или email.",
           href: "#",
           icon: Email,
           onclick: (e: MouseEvent) => {
@@ -129,6 +124,11 @@
       label: "GitHub",
       href: siteConfig.links.github,
       icon: LogoGithub,
+    },
+    {
+      label: "@opensophy",
+      href: siteConfig.links.telegram,
+      icon: Email,
     },
     {
       label: siteConfig.links.email,

@@ -219,6 +219,12 @@
     <p class="section-overline">FAQ</p>
     <Faq items={faqItems} />
   </section>
+
+  <section class="bottom-gradient-section" aria-hidden="true">
+    <div class="bottom-gradient-card">
+      <div class="bottom-gradient-bg"></div>
+    </div>
+  </section>
 </main>
 
 <style>
@@ -250,7 +256,8 @@
       #fff1f2 100%
     );
   }
-  :global(.dark) .hero-bg {
+  :global(.dark) .hero-bg,
+  :global(.dark) .bottom-gradient-bg {
     opacity: 0.22;
   }
   .hero-heading {
@@ -299,5 +306,32 @@
   }
   .benefit :global(svg) {
     color: var(--color-accent);
+  }
+  .bottom-gradient-section {
+    position: relative;
+    min-height: clamp(12rem, 28vw, 22rem);
+    width: 100%;
+  }
+  .bottom-gradient-card {
+    position: absolute;
+    inset: 0;
+    max-width: 80rem;
+    margin: auto;
+    overflow: hidden;
+    border-bottom-left-radius: var(--radius-3xl, 3.3rem);
+    border-bottom-right-radius: var(--radius-3xl, 3.3rem);
+  }
+  .bottom-gradient-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      125% 125% at 50% 0%,
+      transparent 40%,
+      #f43f5e 68%,
+      #fda4af 86%,
+      #fff1f2 100%
+    );
+    opacity: 0.28;
   }
 </style>
