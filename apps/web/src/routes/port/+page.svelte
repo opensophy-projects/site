@@ -2,7 +2,6 @@
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
-  import Badge from "$lib/components/ui-registry/Badge.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
 
   const features = [
@@ -126,11 +125,6 @@
       <div class="flex flex-wrap justify-center gap-3">
         <Button variant="secondary">в разработке</Button>
       </div>
-      <div class="flex flex-wrap justify-center gap-2">
-        <Badge>Dokploy fork</Badge><Badge>Open Source</Badge><Badge
-          >Enterprise бесплатно</Badge
-        >
-      </div>
     </div>
   </section>
 
@@ -164,6 +158,7 @@
       {#each enterpriseFeatures as [title, text]}
         <CardProject
           className="min-h-40"
+          colors={["#f43f5e", "#f472b6", "#b2263e"]}
           glowColor="350 90 72"
           glowIntensity={1.15}
         >
