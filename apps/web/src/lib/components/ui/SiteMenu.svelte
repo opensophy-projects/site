@@ -46,9 +46,8 @@
           label: "os.mtls",
           description:
             "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.",
-          href: "#",
+          href: "/os.mtls",
           icon: Network_3,
-          onclick: disabledLink,
         },
         {
           label: "os.ui",
