@@ -129,7 +129,7 @@
   </section>
 
   <section class="section-block w-full max-w-5xl px-4">
-    <p class="section-overline">Что такое os.port?</p>
+    <p class="section-overline">Что такое os.dokploy?</p>
     <h2 class="section-heading">Платформа для деплоя почти чего угодно</h2>
     <p class="max-w-4xl text-lg leading-relaxed text-foreground-muted">
       Это форк проекта Dokploy, платформа для управления серверами и деплоя
