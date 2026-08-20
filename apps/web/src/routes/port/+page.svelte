@@ -95,7 +95,7 @@
   <title>os.dokploy — сервер уровня Enterprise</title>
   <meta
     name="description"
-    content="os.port — форк Dokploy для управления серверами, деплоя приложений и бесплатных enterprise-возможностей."
+    content="os.dokploy — форк Dokploy для управления серверами, деплоя приложений и бесплатных enterprise-возможностей."
   />
 </svelte:head>
 
