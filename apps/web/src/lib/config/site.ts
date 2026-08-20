@@ -61,7 +61,7 @@ export const siteConfig = {
 		'os.mtls',
 		'os.net',
 		'os.oasm',
-		'os.port',
+		'os.dokploy',
 		'os.forum',
 		'WAF',
 		'web application firewall',
