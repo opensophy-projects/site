@@ -92,7 +92,7 @@
 </script>
 
 <svelte:head>
-  <title>os.port — сервер уровня Enterprise</title>
+  <title>os.dokploy — сервер уровня Enterprise</title>
   <meta
     name="description"
     content="os.port — форк Dokploy для управления серверами, деплоя приложений и бесплатных enterprise-возможностей."
