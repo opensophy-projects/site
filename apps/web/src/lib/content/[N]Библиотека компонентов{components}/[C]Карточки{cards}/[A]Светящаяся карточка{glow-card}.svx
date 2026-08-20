@@ -57,7 +57,7 @@ description: Светящаяся карточка с интерактивным
 			borderRadius={12}
 		>
 			<div class="p-4">
-				<span class="text-sm font-bold font-mono text-foreground">os.port</span>
+				<span class="text-sm font-bold font-mono text-foreground">os.dokploy</span>
 				<p class="text-xs text-foreground-muted mt-1">Управление серверами</p>
 			</div>
 		</CardProject>
