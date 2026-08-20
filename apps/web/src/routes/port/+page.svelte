@@ -114,7 +114,7 @@
       <p
         class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted"
       >
-        OS.PORT
+        OS.DOKPLOY
       </p>
       <h1 class="hero-heading">Свой сервер уровня Enterprise</h1>
       <p class="max-w-3xl text-lg text-foreground-muted md:text-xl">
@@ -151,7 +151,7 @@
     <p class="section-overline">Enterprise без доплаты</p>
     <h2 class="section-heading">
       Наш <span class="text-accent"
-        >os.port бесплатно предоставляет Enterprise-версию</span
+        >os.dokploy бесплатно предоставляет Enterprise-версию</span
       >, в которую входит:
     </h2>
     <div class="grid gap-4 md:grid-cols-2">
