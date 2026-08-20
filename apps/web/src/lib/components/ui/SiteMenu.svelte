@@ -31,10 +31,10 @@
           icon: DocumentMultiple_01,
         },
         {
-          label: "os.port",
+          label: "os.dokploy",
           description:
             "Платформа для управления серверами и деплоя приложений.",
-          href: "/port",
+          href: "/dokploy",
           icon: WebServicesContainer,
         },
         {
