@@ -11,7 +11,6 @@
 	import { portal } from "../../utils/use-portal";
 
 	type MenuVariant = "default" | "muted";
-	type IconComponent = any;
 
 	interface MenuLink {
 		/**
@@ -22,7 +21,6 @@
 		 * The URL the link points to.
 		 */
 		href: string;
-		onclick?: (e: MouseEvent) => void;
 	}
 
 	interface MenuButton {
@@ -52,14 +50,6 @@
 		links: MenuLink[];
 	}
 
-	interface FooterLink {
-		label: string;
-		href: string;
-		icon?: IconComponent;
-		accent?: boolean;
-		onclick?: (e: MouseEvent) => void;
-	}
-
 	interface FloatingMenuClasses {
 		root?: ClassValue;
 		overlay?: ClassValue;
@@ -87,10 +77,6 @@
 		 */
 		menuGroups: MenuGroup[];
 		/**
-		 * Links shown at the bottom of the mobile category list (e.g. Home, Contacts).
-		 */
-		footerLinks?: FooterLink[];
-		/**
 		 * Snippet for the logo icon (and optional text).
 		 */
 		logo?: Snippet;
@@ -99,7 +85,7 @@
 		 */
 		actionsStart?: Snippet;
 		/**
-		 * Snippet for content placed at the end of the header (e.g. search button).
+		 * Snippet for content placed at the end of the header, before the toggle button (e.g. search button).
 		 */
 		actionsEnd?: Snippet;
 		/**
@@ -128,7 +114,6 @@
 
 	let {
 		menuGroups,
-		footerLinks,
 		logo,
 		actionsStart,
 		actionsEnd,
@@ -140,12 +125,12 @@
 	}: Props = $props();
 
 	let isOpen = $state(false);
-	// null = мобильный первый уровень (список категорий), иначе название открытой категории
-	let activeGroupTitle: string | null = $state(null);
 	let timeline: gsap.core.Timeline | null = null;
 
 	let containerRef: HTMLElement;
 	let menuWrapperRef: HTMLElement;
+	let line1Ref: HTMLElement;
+	let line2Ref: HTMLElement;
 	let overlayRef: HTMLElement;
 
 	const attachContainerRef = (node: HTMLElement) => {
@@ -154,6 +139,14 @@
 
 	const attachMenuWrapperRef = (node: HTMLElement) => {
 		menuWrapperRef = node;
+	};
+
+	const attachLine1Ref = (node: HTMLElement) => {
+		line1Ref = node;
+	};
+
+	const attachLine2Ref = (node: HTMLElement) => {
+		line2Ref = node;
 	};
 
 	const attachOverlayRef = (node: HTMLElement) => {
@@ -167,21 +160,8 @@
 			timeline.play();
 		} else {
 			timeline.reverse();
-			activeGroupTitle = null;
 		}
 	}
-
-	function openGroup(title: string) {
-		activeGroupTitle = title;
-	}
-
-	function backToCategories() {
-		activeGroupTitle = null;
-	}
-
-	let activeGroup = $derived(
-		menuGroups.find((g) => g.title === activeGroupTitle) ?? null,
-	);
 
 	onMount(() => {
 		registerPluginOnce(SplitText);
@@ -243,18 +223,19 @@
 							...(isMobile
 								? {
 										top: 0,
-										left: 0,
-										x: 0,
-										paddingTop: 0,
-										borderRadius: 0,
-										height: "100vh",
+										paddingTop: "0.5rem",
+										borderTopLeftRadius: 0,
+										borderTopRightRadius: 0,
 									}
 								: {}),
 						},
 						0,
 					)
 					.to(overlayRef, { autoAlpha: 1 }, 0)
-					.to(menuWrapperRef, { height: "auto", autoAlpha: 1 }, 0.2);
+					.to(menuWrapperRef, { height: "auto", autoAlpha: 1 }, 0.2)
+					.to([line1Ref, line2Ref], { y: 0, duration: 0.4 }, 0.2)
+					.to(line1Ref, { rotation: 45, duration: 0.4 }, 0.2)
+					.to(line2Ref, { rotation: -45, duration: 0.4 }, 0.2);
 
 				if (allLines.length) {
 					timeline.from(
@@ -312,7 +293,7 @@
 	{@attach attachContainerRef}
 	data-slot="root"
 	class={cn(
-		"fixed top-2 left-1/2 z-50 flex w-full max-w-[95vw] -translate-x-1/2 flex-col overflow-hidden rounded-md border border-border bg-background text-foreground shadow-md md:top-4 md:max-w-[70vw] lg:max-w-[50vw]",
+		"fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 rounded-md border border-border bg-background text-foreground shadow-md md:top-4 md:max-w-[70vw] lg:max-w-[50vw]",
 		className,
 		classes?.root,
 	)}
@@ -320,7 +301,7 @@
 	<div
 		data-slot="header"
 		class={cn(
-			"relative z-20 flex w-full shrink-0 items-center justify-between p-1",
+			"relative z-20 flex w-full items-center justify-between p-1",
 			classes?.header,
 		)}
 	>
@@ -328,22 +309,41 @@
 			{#if actionsStart}
 				{@render actionsStart()}
 			{/if}
-			<button
-				onclick={toggle}
-				data-slot="toggle-button"
-				class={cn(
-					"group relative flex h-10 items-center justify-center rounded-sm px-2 transition-[background-color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-accent/10",
-					classes?.toggleButton,
-				)}
-				aria-label="Toggle menu"
-				aria-expanded={isOpen}
-			>
+		<button
+			onclick={toggle}
+			data-slot="toggle-button"
+			class={cn(
+				"group relative flex h-10 items-center justify-center rounded-sm pr-2 transition-[background-color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-accent/10",
+				classes?.toggleButton,
+			)}
+			aria-label="Toggle menu"
+		>
+			<div class="relative flex h-10 w-10 items-center justify-center">
 				<span
-					class="text-sm font-medium text-foreground transition-[color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover:text-accent"
-				>
-					{isOpen ? "Закрыть" : "Меню"}
-				</span>
-			</button>
+					{@attach attachLine1Ref}
+					data-slot="toggle-line"
+					class={cn(
+						"absolute h-px w-6 bg-foreground transition-[background-color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover:bg-accent",
+						classes?.toggleLine,
+					)}
+					style="transform: translateY(4px)"
+				></span>
+				<span
+					{@attach attachLine2Ref}
+					data-slot="toggle-line"
+					class={cn(
+						"absolute h-px w-6 bg-foreground transition-[background-color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover:bg-accent",
+						classes?.toggleLine,
+					)}
+					style="transform: translateY(-4px)"
+				></span>
+			</div>
+			<span
+				class="ml-1 text-sm font-medium text-foreground transition-[color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover:text-accent"
+			>
+				Menu
+			</span>
+		</button>
 		</div>
 
 		<div
@@ -398,111 +398,14 @@
 		{@attach attachMenuWrapperRef}
 		data-slot="menu-wrapper"
 		class={cn(
-			"h-0 w-full flex-1 overflow-hidden border-t border-border opacity-0",
+			"h-0 w-full overflow-hidden border-t border-border opacity-0",
 			classes?.menuWrapper,
 		)}
 	>
-		<!-- ===================== MOBILE: двухуровневая навигация на весь экран ===================== -->
-		<div class="flex h-full flex-col md:hidden">
-			{#if !activeGroup}
-				<!-- Уровень 1: список категорий крупным текстом -->
-				<div class="flex flex-1 flex-col overflow-y-auto px-4 py-2">
-					{#each menuGroups as group (group.title)}
-						<button
-							type="button"
-							onclick={() => openGroup(group.title)}
-							class="group/cat flex items-center justify-between py-4 text-left text-2xl font-normal text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground"
-						>
-							<span>{group.title}</span>
-							<svg
-								class="size-5 shrink-0 text-foreground-muted/60 transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover/cat:text-foreground"
-								viewBox="0 0 16 16"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									d="M6 3l5 5-5 5"
-									stroke="currentColor"
-									stroke-width="1.5"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								/>
-							</svg>
-						</button>
-					{/each}
-				</div>
-
-				{#if footerLinks && footerLinks.length > 0}
-					<div class="flex shrink-0 flex-col gap-1 border-t border-border px-4 py-4">
-						{#each footerLinks as link (link.href + link.label)}
-							{@const Icon = link.icon}
-							<a
-								href={link.href}
-								onclick={link.onclick}
-								class={cn(
-									"flex items-center gap-2 rounded-sm px-1 py-2.5 text-sm font-medium transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)]",
-									link.accent
-										? "text-accent hover:text-accent/80"
-										: "text-foreground-muted hover:text-foreground",
-								)}
-							>
-								{#if Icon}
-									<Icon size={18} />
-								{/if}
-								<span>{link.label}</span>
-							</a>
-						{/each}
-					</div>
-				{/if}
-			{:else}
-				<!-- Уровень 2: содержимое выбранной категории -->
-				<div class="flex flex-1 flex-col overflow-y-auto px-4 py-2">
-					<button
-						type="button"
-						onclick={backToCategories}
-						class="mb-2 flex w-fit items-center gap-1 py-2 text-sm font-medium text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground"
-					>
-						<svg
-							class="size-4"
-							viewBox="0 0 16 16"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								d="M10 3L5 8l5 5"
-								stroke="currentColor"
-								stroke-width="1.5"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							/>
-						</svg>
-						<span>Назад</span>
-					</button>
-					<h3 class="mono pb-2 text-xs font-medium tracking-wider text-foreground-muted/50 uppercase">
-						{activeGroup.title}
-					</h3>
-					<div class="flex flex-col gap-2">
-						{#each activeGroup.links as link (link.href + link.label)}
-							<a
-								href={link.href}
-								onclick={link.onclick}
-								class="group/link relative block w-fit py-2 text-2xl font-normal text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground"
-							>
-								<span class="relative z-10 block leading-tight">
-									{link.label}
-								</span>
-							</a>
-						{/each}
-					</div>
-				</div>
-			{/if}
-		</div>
-
-		<!-- ===================== DESKTOP: обычная сетка колонок ===================== -->
 		<div
 			data-slot="grid"
 			class={cn(
-				"hidden max-h-[65vh] grid-cols-1 gap-4 overflow-y-auto overscroll-contain p-4 md:grid md:max-h-none md:grid-cols-3 md:overflow-visible",
+				"grid max-h-[65vh] grid-cols-1 gap-4 overflow-y-auto overscroll-contain p-4 md:max-h-none md:grid-cols-3 md:overflow-visible",
 				classes?.grid,
 			)}
 		>
@@ -528,10 +431,9 @@
 						{group.title}
 					</h3>
 					<div class="mt-4 flex flex-col gap-4">
-						{#each group.links as link (link.href + link.label)}
+						{#each group.links as link, i (link.href + link.label)}
 							<a
 								href={link.href}
-								onclick={link.onclick}
 								data-slot="link"
 								class={cn(
 									"group/link relative block w-fit text-2xl font-normal text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground",
@@ -557,33 +459,16 @@
 									)}
 								></span>
 							</a>
+							{#if i < group.links.length - 1}
+								<hr
+									data-slot="divider"
+									class={cn("border-border", classes?.divider)}
+								/>
+							{/if}
 						{/each}
 					</div>
 				</div>
 			{/each}
-
-			{#if footerLinks && footerLinks.length > 0}
-				<div class="col-span-3 flex items-center gap-6 border-t border-border p-4">
-					{#each footerLinks as link (link.href + link.label)}
-						{@const Icon = link.icon}
-						<a
-							href={link.href}
-							onclick={link.onclick}
-							class={cn(
-								"flex items-center gap-2 text-sm font-medium transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)]",
-								link.accent
-									? "text-accent hover:text-accent/80"
-									: "text-foreground-muted hover:text-foreground",
-							)}
-						>
-							{#if Icon}
-								<Icon size={16} />
-							{/if}
-							<span>{link.label}</span>
-						</a>
-					{/each}
-				</div>
-			{/if}
 		</div>
 	</div>
 </div>
