@@ -6,6 +6,7 @@
 	import AreaRangeSolid from "carbon-icons-svelte/lib/AreaRangeSolid.svelte";
 	import Close from "carbon-icons-svelte/lib/Close.svelte";
 	import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
+	import ChevronLeft from "carbon-icons-svelte/lib/ChevronLeft.svelte";
 
 	type IconComponent = typeof Close;
 
@@ -26,6 +27,8 @@
 
 	type MenuGroup = {
 		title: string;
+		/** Иконка, показывается в списке верхнего уровня */
+		icon?: IconComponent;
 		variant?: MenuVariant;
 		links: MenuLink[];
 	}
@@ -47,6 +50,9 @@
 		linkText?: ClassValue;
 		linkUnderline?: ClassValue;
 		divider?: ClassValue;
+		topLevelList?: ClassValue;
+		topLevelItem?: ClassValue;
+		backButton?: ClassValue;
 	}
 
 	type Props = {
@@ -72,9 +78,40 @@
 	}: Props = $props();
 
 	let isOpen = $state(false);
+	// null = показываем список верхнего уровня (3 слова)
+	// иначе - индекс открытой группы
+	let activeGroupIndex = $state<number | null>(null);
+
+	let activeGroup = $derived(
+		activeGroupIndex !== null ? menuGroups[activeGroupIndex] : null,
+	);
 
 	function toggle() {
 		isOpen = !isOpen;
+		if (!isOpen) {
+			// сброс на верхний уровень при закрытии, чтобы при следующем открытии
+			// снова показывались 3 слова
+			activeGroupIndex = null;
+		}
+	}
+
+	function openGroup(index: number) {
+		activeGroupIndex = index;
+	}
+
+	function goBack() {
+		activeGroupIndex = null;
+	}
+
+	function handleEscape(e: KeyboardEvent) {
+		if (e.key !== "Escape") return;
+		e.preventDefault();
+		if (activeGroupIndex !== null) {
+			// сначала возвращаемся на уровень выше, потом закрываем
+			goBack();
+		} else {
+			toggle();
+		}
 	}
 </script>
 
@@ -89,15 +126,10 @@
 			classes?.overlay,
 		)}
 		onclick={toggle}
-		onkeydown={(e) => {
-			if (e.key === "Escape") {
-				e.preventDefault();
-				toggle();
-			}
-		}}
+		onkeydown={handleEscape}
 		role="button"
 		tabindex="-1"
-		aria-label="Close menu"
+		aria-label="Закрыть меню"
 	></div>
 {/if}
 
@@ -201,34 +233,75 @@
 			classes?.menuWrapper,
 		)}
 	>
-		<div
-			data-slot="grid"
-			class={cn(
-				"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain md:max-h-none md:grid-cols-4 md:overflow-visible",
-				classes?.grid,
-			)}
-		>
-			{#each menuGroups as group (group.title)}
-				<div
-					data-slot="group"
+		{#if activeGroupIndex === null}
+			<!-- Верхний уровень: 3 (и более) слова-категории -->
+			<div
+				data-slot="top-level-list"
+				class={cn("flex flex-col p-2 md:p-3", classes?.topLevelList)}
+			>
+				{#each menuGroups as group, i (group.title)}
+					{@const Icon = group.icon}
+					<button
+						type="button"
+						onclick={() => openGroup(i)}
+						data-slot="top-level-item"
+						class={cn(
+							"top-level-link group/toplevel flex items-center gap-3 rounded-xl p-3.5 text-left text-foreground transition-colors duration-200 hover:bg-background-muted",
+							classes?.topLevelItem,
+						)}
+						style="--delay: {i * 40}ms"
+					>
+						{#if Icon}
+							<span
+								class="inset-shadow relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground group-hover/toplevel:text-accent"
+							>
+								<Icon size={20} />
+							</span>
+						{/if}
+						<span
+							class="flex-1 text-sm font-semibold tracking-wide text-foreground uppercase"
+						>
+							{group.title}
+						</span>
+						<ChevronRight
+							class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/toplevel:text-accent"
+							size={18}
+						/>
+					</button>
+				{/each}
+			</div>
+		{:else if activeGroup}
+			<!-- Второй уровень: содержимое выбранной категории -->
+			<div class="flex flex-col">
+				<button
+					type="button"
+					onclick={goBack}
+					data-slot="back-button"
 					class={cn(
-						"menu-column flex flex-col gap-5 p-5 transition-colors md:min-h-[24rem] md:border-l md:border-border/70 first:md:border-l-0",
-						group.variant === "muted" ? "bg-background-muted" : "bg-transparent",
-						classes?.group,
-						group.variant === "muted" && classes?.groupMuted,
+						"flex items-center gap-2 border-b border-border/70 px-4 py-3 text-left text-xs font-medium tracking-wider text-foreground-muted uppercase transition-colors duration-150 hover:text-foreground",
+						classes?.backButton,
 					)}
 				>
-					<h3
-						data-slot="group-title"
+					<ChevronLeft size={16} />
+					<span>{activeGroup.title}</span>
+				</button>
+				<div
+					data-slot="grid"
+					class={cn(
+						"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain",
+						classes?.grid,
+					)}
+				>
+					<div
+						data-slot="group"
 						class={cn(
-							"text-xs font-medium tracking-wider text-foreground-muted/50 uppercase",
-							classes?.groupTitle,
+							"menu-column flex flex-col gap-3 p-5 transition-colors",
+							activeGroup.variant === "muted" ? "bg-background-muted" : "bg-transparent",
+							classes?.group,
+							activeGroup.variant === "muted" && classes?.groupMuted,
 						)}
 					>
-						{group.title}
-					</h3>
-					<div class="mt-1 flex flex-col gap-3">
-						{#each group.links as link, i (link.href + link.label)}
+						{#each activeGroup.links as link, i (link.href + link.label)}
 							{@const Icon = link.icon}
 							<a
 								href={link.href}
@@ -263,8 +336,8 @@
 						{/each}
 					</div>
 				</div>
-			{/each}
-		</div>
+			</div>
+		{/if}
 	</div>
 </div>
 
@@ -311,6 +384,22 @@
 	.floating-menu-open .menu-wrapper {
 		max-height: 70vh;
 		opacity: 1;
+	}
+
+	/* Top-level (Продукты / Категории / Услуги) stagger */
+	.top-level-link {
+		opacity: 0;
+		transform: translateY(16px);
+		transition:
+			opacity 200ms ease-out,
+			transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+			background-color 150ms ease-out;
+		transition-delay: var(--delay, 0ms);
+	}
+
+	.floating-menu-open .top-level-link {
+		opacity: 1;
+		transform: translateY(0);
 	}
 
 	/* Menu links stagger */
