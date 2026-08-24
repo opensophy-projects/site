@@ -3,118 +3,40 @@
   import { brandingConfig, siteConfig } from "$lib";
   import FloatingMenu from "$lib/components/ui/FloatingMenu.svelte";
   import ThemeToggle from "$lib/components/ui/ThemeToggle.svelte";
-  import DockerLogo from "$lib/components/ui/DockerLogo.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
   import { searchState } from "$lib/stores/search.svelte";
-  import Categories from "carbon-icons-svelte/lib/Categories.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
-  import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
   import Email from "carbon-icons-svelte/lib/Email.svelte";
-  import Home from "carbon-icons-svelte/lib/Home.svelte";
   import LogoGithub from "carbon-icons-svelte/lib/LogoGithub.svelte";
-  import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
-  import Policy from "carbon-icons-svelte/lib/Policy.svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
-  import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
-  import Settings from "carbon-icons-svelte/lib/Settings.svelte";
-  import Tag from "carbon-icons-svelte/lib/Tag.svelte";
-  import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
 
+  // 3 категории — карточки с тёмной подложкой (variant: "muted"), как в референсе
   const menuGroups = [
     {
       title: "Продукты",
+      variant: "muted" as const,
       links: [
-        {
-          label: "os.docs",
-          description: "Платформа для документации и публикации контента.",
-          href: "/docs/opensophy-docs",
-          icon: DocumentMultiple_01,
-        },
-        {
-          label: "os.dokploy",
-          description:
-            "Платформа для управления серверами и деплоя приложений.",
-          href: "/dokploy",
-          icon: WebServicesContainer,
-        },
-        {
-          label: "os.mtls",
-          description:
-            "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.",
-          href: "/mtls",
-          icon: Network_3,
-        },
-        {
-          label: "os.ui",
-          description:
-            "Библиотека готовых UI-компонентов с живым превью и гибкими настройками.",
-          href: "/components/overview",
-          icon: QHintonPlot,
-        },
+        { label: "os.docs", href: "/docs/opensophy-docs" },
+        { label: "os.dokploy", href: "/dokploy" },
+        { label: "os.mtls", href: "/mtls" },
+        { label: "os.ui", href: "/components/overview" },
       ],
     },
     {
       title: "Ресурсы",
+      variant: "muted" as const,
       links: [
-        {
-          label: "База знаний",
-          description: "Понятные статьи и гайды по DevSecOps и не только.",
-          href: "/article/general",
-          icon: Categories,
-        },
-        {
-          label: "Статус",
-          description: "Информация о разработке и состояние проектов.",
-          href: "/status",
-          icon: Settings,
-        },
-        {
-          label: "Шаблоны Docker",
-          description:
-            "Наши готовые шаблоны для инструментов DevSecOps/AppSec.",
-          href: "/templates/docker/",
-          icon: DockerLogo,
-        },
+        { label: "База знаний", href: "/article/general" },
+        { label: "Статус", href: "/status" },
+        { label: "Шаблоны Docker", href: "/templates/docker/" },
       ],
     },
     {
       title: "Услуги",
+      variant: "muted" as const,
       links: [
-        {
-          label: "Политика оказания услуг",
-          description:
-            "Узнайте о том как мы работаем перед тем как заказать услугу.",
-          href: "/service-policy",
-          icon: Policy,
-        },
-        {
-          label: "Услуги",
-          description:
-            "Узнайте актуальные услуги которые мы сейчас готовы предоставить.",
-          href: "/services",
-          icon: Tag,
-        },
-      ],
-    },
-    {
-      title: "Прочие",
-      links: [
-        {
-          label: "Главная",
-          description: "Вернуться на главную страницу сайта.",
-          href: "/",
-          icon: Home,
-        },
-        {
-          label: "Контакты",
-          description: "Связаться через GitHub, Telegram или email.",
-          href: "#",
-          icon: Email,
-          onclick: (e: MouseEvent) => {
-            e.preventDefault();
-            contactsState.open();
-          },
-        },
+        { label: "Политика оказания услуг", href: "/service-policy" },
+        { label: "Услуги", href: "/services" },
       ],
     },
   ];
@@ -141,8 +63,11 @@
   }
 </script>
 
-<FloatingMenu {menuGroups}>
-  {#snippet centerContent()}
+<FloatingMenu
+  {menuGroups}
+  primaryButton={{ label: "Начать", href: "/" }}
+>
+  {#snippet logo()}
     <span class="font-medium lowercase tracking-tight text-foreground"
       >{brandingConfig.name}</span
     >
@@ -153,7 +78,7 @@
   {#snippet actionsEnd()}
     <button
       type="button"
-      class="group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
+      class="flex h-10 w-10 items-center justify-center rounded-sm text-foreground transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-background-muted"
       onclick={() => {
         searchState.open();
       }}
@@ -161,6 +86,15 @@
     >
       <span class="sr-only">Открыть поиск</span>
       <Search size={16} />
+    </button>
+    <button
+      type="button"
+      class="flex h-10 items-center justify-center rounded-sm px-3 text-sm font-medium text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-background-muted hover:text-foreground"
+      onclick={() => {
+        contactsState.open();
+      }}
+    >
+      Контакты
     </button>
   {/snippet}
 </FloatingMenu>
