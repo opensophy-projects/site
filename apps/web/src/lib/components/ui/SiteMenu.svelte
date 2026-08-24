@@ -20,12 +20,9 @@
   import Tag from "carbon-icons-svelte/lib/Tag.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
 
-  // Верхний уровень: 3 категории. Каждая раскрывается в свой список ссылок.
-  // "Главная" и "Контакты" пока не включены в это меню — добавим позже.
   const menuGroups = [
     {
       title: "Продукты",
-      icon: QHintonPlot,
       links: [
         {
           label: "os.docs",
@@ -57,8 +54,7 @@
       ],
     },
     {
-      title: "Категории",
-      icon: Categories,
+      title: "Ресурсы",
       links: [
         {
           label: "База знаний",
@@ -83,7 +79,6 @@
     },
     {
       title: "Услуги",
-      icon: Tag,
       links: [
         {
           label: "Политика оказания услуг",
@@ -101,30 +96,28 @@
         },
       ],
     },
+    {
+      title: "Прочие",
+      links: [
+        {
+          label: "Главная",
+          description: "Вернуться на главную страницу сайта.",
+          href: "/",
+          icon: Home,
+        },
+        {
+          label: "Контакты",
+          description: "Связаться через GitHub, Telegram или email.",
+          href: "#",
+          icon: Email,
+          onclick: (e: MouseEvent) => {
+            e.preventDefault();
+            contactsState.open();
+          },
+        },
+      ],
+    },
   ];
-
-  // TODO: позже добавим "Главная" и "Контакты" обратно в навигацию
-  // (например, как отдельная группа "Прочие" или как actionsEnd-кнопки).
-  // Оставляю ссылки на них закомментированными, чтобы не потерять код.
-  //
-  // const otherLinks = [
-  //   {
-  //     label: "Главная",
-  //     description: "Вернуться на главную страницу сайта.",
-  //     href: "/",
-  //     icon: Home,
-  //   },
-  //   {
-  //     label: "Контакты",
-  //     description: "Связаться через GitHub, Telegram или email.",
-  //     href: "#",
-  //     icon: Email,
-  //     onclick: (e: MouseEvent) => {
-  //       e.preventDefault();
-  //       contactsState.open();
-  //     },
-  //   },
-  // ];
 
   const contacts = [
     {
