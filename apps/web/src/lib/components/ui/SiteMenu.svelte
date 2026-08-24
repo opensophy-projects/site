@@ -20,6 +20,7 @@
   import Tag from "carbon-icons-svelte/lib/Tag.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
 
+  // 3 основные категории — они и показываются крупным текстом на мобильном первом уровне
   const menuGroups = [
     {
       title: "Продукты",
@@ -96,26 +97,24 @@
         },
       ],
     },
+  ];
+
+  // Нижний блок меню: Главная (обычная ссылка) и Контакты (акцентный цвет)
+  const footerLinks = [
     {
-      title: "Прочие",
-      links: [
-        {
-          label: "Главная",
-          description: "Вернуться на главную страницу сайта.",
-          href: "/",
-          icon: Home,
-        },
-        {
-          label: "Контакты",
-          description: "Связаться через GitHub, Telegram или email.",
-          href: "#",
-          icon: Email,
-          onclick: (e: MouseEvent) => {
-            e.preventDefault();
-            contactsState.open();
-          },
-        },
-      ],
+      label: "Главная",
+      href: "/",
+      icon: Home,
+    },
+    {
+      label: "Контакты",
+      href: "#",
+      icon: Email,
+      accent: true,
+      onclick: (e: MouseEvent) => {
+        e.preventDefault();
+        contactsState.open();
+      },
     },
   ];
 
@@ -141,7 +140,7 @@
   }
 </script>
 
-<FloatingMenu {menuGroups}>
+<FloatingMenu {menuGroups} {footerLinks}>
   {#snippet centerContent()}
     <span class="font-medium lowercase tracking-tight text-foreground"
       >{brandingConfig.name}</span
