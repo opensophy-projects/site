@@ -7,6 +7,8 @@
 	import Close from "carbon-icons-svelte/lib/Close.svelte";
 	import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
 	import ChevronLeft from "carbon-icons-svelte/lib/ChevronLeft.svelte";
+	import { fly, fade } from "svelte/transition";
+	import { cubicOut } from "svelte/easing";
 
 	type IconComponent = typeof Close;
 
@@ -229,7 +231,7 @@
 	<div
 		data-slot="menu-wrapper"
 		class={cn(
-			"menu-wrapper w-full overflow-hidden border-t border-border bg-background-inset/40",
+			"menu-wrapper w-full overflow-hidden bg-background-inset/40",
 			classes?.menuWrapper,
 		)}
 	>
