@@ -3,7 +3,6 @@
   import { brandingConfig, siteConfig } from "$lib";
   import FloatingMenu from "$lib/components/ui/FloatingMenu.svelte";
   import ThemeToggle from "$lib/components/ui/ThemeToggle.svelte";
-  import Button from "$lib/components/ui-registry/Button.svelte";
   import DockerLogo from "$lib/components/ui/DockerLogo.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
   import { searchState } from "$lib/stores/search.svelte";
@@ -16,14 +15,13 @@
   import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
   import Policy from "carbon-icons-svelte/lib/Policy.svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
-  import Send from "carbon-icons-svelte/lib/Send.svelte";
   import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
   import Settings from "carbon-icons-svelte/lib/Settings.svelte";
   import Tag from "carbon-icons-svelte/lib/Tag.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
 
   // Верхний уровень: 3 категории. Каждая раскрывается в свой список ссылок.
-  // "Главная" и "Контакты" вынесены в bottomActions (кнопки внизу мобильного меню).
+  // "Главная" и "Контакты" пока не включены в это меню — добавим позже.
   const menuGroups = [
     {
       title: "Продукты",
@@ -57,18 +55,9 @@
           icon: QHintonPlot,
         },
       ],
-      // Вторая колонка группы "Продукты" — статус проектов (перенесено из "Ресурсы")
-      statusLinks: [
-        {
-          label: "Статус",
-          description: "Информация о разработке и состояние проектов.",
-          href: "/status",
-          icon: Settings,
-        },
-      ],
     },
     {
-      title: "Ресурсы",
+      title: "Категории",
       icon: Categories,
       links: [
         {
@@ -76,6 +65,12 @@
           description: "Понятные статьи и гайды по DevSecOps и не только.",
           href: "/article/general",
           icon: Categories,
+        },
+        {
+          label: "Статус",
+          description: "Информация о разработке и состояние проектов.",
+          href: "/status",
+          icon: Settings,
         },
         {
           label: "Шаблоны Docker",
@@ -108,6 +103,29 @@
     },
   ];
 
+  // TODO: позже добавим "Главная" и "Контакты" обратно в навигацию
+  // (например, как отдельная группа "Прочие" или как actionsEnd-кнопки).
+  // Оставляю ссылки на них закомментированными, чтобы не потерять код.
+  //
+  // const otherLinks = [
+  //   {
+  //     label: "Главная",
+  //     description: "Вернуться на главную страницу сайта.",
+  //     href: "/",
+  //     icon: Home,
+  //   },
+  //   {
+  //     label: "Контакты",
+  //     description: "Связаться через GitHub, Telegram или email.",
+  //     href: "#",
+  //     icon: Email,
+  //     onclick: (e: MouseEvent) => {
+  //       e.preventDefault();
+  //       contactsState.open();
+  //     },
+  //   },
+  // ];
+
   const contacts = [
     {
       label: "GitHub",
@@ -117,7 +135,7 @@
     {
       label: "@opensophy",
       href: siteConfig.links.telegram,
-      icon: Send,
+      icon: Email,
     },
     {
       label: siteConfig.links.email,
@@ -151,21 +169,6 @@
       <span class="sr-only">Открыть поиск</span>
       <Search size={16} />
     </button>
-  {/snippet}
-  {#snippet bottomActions()}
-    <Button href="/" variant="secondary" size="lg" class="w-full">
-      Главная
-    </Button>
-    <Button
-      variant="primary"
-      size="lg"
-      class="w-full"
-      onclick={() => {
-        contactsState.open();
-      }}
-    >
-      Контакты
-    </Button>
   {/snippet}
 </FloatingMenu>
 {#if contactsState.isOpen}
