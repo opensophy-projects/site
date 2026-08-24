@@ -1,40 +1,72 @@
 <script lang="ts">
-	/* eslint-disable svelte/no-navigation-without-resolve */
-	import { type ClassValue } from "clsx";
-	import type { Snippet } from "svelte";
-	import { cn } from "../../utils/cn";
-	import AreaRangeSolid from "carbon-icons-svelte/lib/AreaRangeSolid.svelte";
-	import Close from "carbon-icons-svelte/lib/Close.svelte";
-	import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
+	import { untrack } from "svelte";
+	import { gsap } from "gsap";
+	import { SplitText } from "gsap/SplitText";
+	import { onMount } from "svelte";
+	import type { ClassValue } from "clsx";
 
-	type IconComponent = typeof Close;
+	import type { Snippet } from "svelte";
+	import { ensureMotionCoreEase, registerPluginOnce } from "../../helpers/gsap";
+	import { cn } from "../../utils/cn";
+	import { portal } from "../../utils/use-portal";
 
 	type MenuVariant = "default" | "muted";
+	type IconComponent = any;
 
-	type MenuLink = {
+	interface MenuLink {
+		/**
+		 * The text to display for the link.
+		 */
 		label: string;
+		/**
+		 * The URL the link points to.
+		 */
 		href: string;
-		description?: string;
-		icon?: IconComponent;
 		onclick?: (e: MouseEvent) => void;
 	}
 
-	type MenuButton = {
+	interface MenuButton {
+		/**
+		 * The text to display on the button.
+		 */
 		label: string;
+		/**
+		 * The URL the button links to.
+		 */
 		href: string;
 	}
 
-	type MenuGroup = {
+	interface MenuGroup {
+		/**
+		 * The title of the menu group, displayed above the links.
+		 */
 		title: string;
+		/**
+		 * The visual style variant of the group.
+		 * 'muted' adds a background color.
+		 */
 		variant?: MenuVariant;
+		/**
+		 * Array of links to display within this group.
+		 */
 		links: MenuLink[];
 	}
 
-	type FloatingMenuClasses = {
+	interface FooterLink {
+		label: string;
+		href: string;
+		icon?: IconComponent;
+		accent?: boolean;
+		onclick?: (e: MouseEvent) => void;
+	}
+
+	interface FloatingMenuClasses {
 		root?: ClassValue;
 		overlay?: ClassValue;
 		header?: ClassValue;
 		toggleButton?: ClassValue;
+		toggleLine?: ClassValue;
+		logo?: ClassValue;
 		actions?: ClassValue;
 		primaryButton?: ClassValue;
 		secondaryButton?: ClassValue;
@@ -49,64 +81,238 @@
 		divider?: ClassValue;
 	}
 
-	type Props = {
+	interface Props {
+		/**
+		 * Groups of links to display in the menu.
+		 */
 		menuGroups: MenuGroup[];
-		centerContent?: Snippet;
+		/**
+		 * Links shown at the bottom of the mobile category list (e.g. Home, Contacts).
+		 */
+		footerLinks?: FooterLink[];
+		/**
+		 * Snippet for the logo icon (and optional text).
+		 */
+		logo?: Snippet;
+		/**
+		 * Snippet for content placed at the start of the header (e.g. theme toggle).
+		 */
 		actionsStart?: Snippet;
+		/**
+		 * Snippet for content placed at the end of the header (e.g. search button).
+		 */
 		actionsEnd?: Snippet;
+		/**
+		 * Configuration for the primary button in the header.
+		 */
 		primaryButton?: MenuButton;
+		/**
+		 * Configuration for the secondary button in the header.
+		 */
 		secondaryButton?: MenuButton;
+		/**
+		 * Additional classes for the container.
+		 */
 		class?: string;
+		/**
+		 * Additional classes for specific menu slots.
+		 */
 		classes?: FloatingMenuClasses;
+		/**
+		 * The target element or selector to append the menu to.
+		 * Useful for containment in demos or specific containers.
+		 * @default "body"
+		 */
+		portalTarget?: HTMLElement | string;
 	}
 
 	let {
 		menuGroups,
-		centerContent,
+		footerLinks,
+		logo,
 		actionsStart,
 		actionsEnd,
 		primaryButton,
 		secondaryButton,
 		class: className,
 		classes,
+		portalTarget = "body",
 	}: Props = $props();
 
 	let isOpen = $state(false);
+	// null = мобильный первый уровень (список категорий), иначе название открытой категории
+	let activeGroupTitle: string | null = $state(null);
+	let timeline: gsap.core.Timeline | null = null;
+
+	let containerRef: HTMLElement;
+	let menuWrapperRef: HTMLElement;
+	let overlayRef: HTMLElement;
+
+	const attachContainerRef = (node: HTMLElement) => {
+		containerRef = node;
+	};
+
+	const attachMenuWrapperRef = (node: HTMLElement) => {
+		menuWrapperRef = node;
+	};
+
+	const attachOverlayRef = (node: HTMLElement) => {
+		overlayRef = node;
+	};
 
 	function toggle() {
+		if (!timeline) return;
 		isOpen = !isOpen;
+		if (isOpen) {
+			timeline.play();
+		} else {
+			timeline.reverse();
+			activeGroupTitle = null;
+		}
 	}
+
+	function openGroup(title: string) {
+		activeGroupTitle = title;
+	}
+
+	function backToCategories() {
+		activeGroupTitle = null;
+	}
+
+	let activeGroup = $derived(
+		menuGroups.find((g) => g.title === activeGroupTitle) ?? null,
+	);
+
+	onMount(() => {
+		registerPluginOnce(SplitText);
+		ensureMotionCoreEase();
+	});
+
+	$effect(() => {
+		if (!menuGroups.length) return;
+
+		let cancelled = false;
+		let splits: SplitText[] = [];
+		let ctx: gsap.Context | null = null;
+
+		const init = async () => {
+			await document.fonts.ready;
+			if (cancelled) return;
+
+			const width = window.innerWidth;
+			const isMobile = width < 768;
+			const isTablet = width >= 768 && width < 1024;
+
+			let maxWidthOpen = "75%";
+			let maxWidthInitial = "50%";
+
+			if (isMobile) {
+				maxWidthOpen = "100%";
+				maxWidthInitial = "95%";
+			} else if (isTablet) {
+				maxWidthOpen = "85%";
+				maxWidthInitial = "70%";
+			}
+
+			ctx?.revert();
+			ctx = gsap.context(() => {
+				gsap.set(overlayRef, { autoAlpha: 0 });
+				gsap.set(containerRef, { maxWidth: maxWidthInitial });
+				gsap.set(menuWrapperRef, { height: 0, autoAlpha: 0 });
+
+				const linkElements = gsap.utils.toArray(
+					`[data-slot="link-text"]`,
+					menuWrapperRef,
+				) as HTMLElement[];
+
+				splits = linkElements.map((el) =>
+					SplitText.create(el, { type: "lines", mask: "lines" }),
+				);
+				const allLines = splits.flatMap((s) => s.lines);
+
+				timeline = gsap.timeline({
+					paused: true,
+					defaults: { ease: "motion-core-ease", duration: 0.5 },
+				});
+
+				timeline
+					.to(
+						containerRef,
+						{
+							maxWidth: maxWidthOpen,
+							...(isMobile
+								? {
+										top: 0,
+										left: 0,
+										x: 0,
+										paddingTop: 0,
+										borderRadius: 0,
+										height: "100vh",
+									}
+								: {}),
+						},
+						0,
+					)
+					.to(overlayRef, { autoAlpha: 1 }, 0)
+					.to(menuWrapperRef, { height: "auto", autoAlpha: 1 }, 0.2);
+
+				if (allLines.length) {
+					timeline.from(
+						allLines,
+						{
+							yPercent: 100,
+							autoAlpha: 0,
+							stagger: 0.02,
+						},
+						0.3,
+					);
+				}
+			}, containerRef);
+
+			if (untrack(() => isOpen)) {
+				timeline?.progress(1);
+			}
+		};
+
+		init();
+
+		return () => {
+			cancelled = true;
+			ctx?.revert();
+			ctx = null;
+			timeline = null;
+			splits.forEach((s) => s.revert());
+		};
+	});
 </script>
 
-<svelte:body style:overflow={isOpen ? "hidden" : undefined} />
-
-<!-- Backdrop overlay -->
-{#if isOpen}
-	<div
-		data-slot="overlay"
-		class={cn(
-			"fixed inset-0 z-40 bg-background-inset/90",
-			classes?.overlay,
-		)}
-		onclick={toggle}
-		onkeydown={(e) => {
-			if (e.key === "Escape") {
-				e.preventDefault();
-				toggle();
-			}
-		}}
-		role="button"
-		tabindex="-1"
-		aria-label="Close menu"
-	></div>
-{/if}
-
-<!-- Floating nav container -->
 <div
+	use:portal={portalTarget}
+	{@attach attachOverlayRef}
+	data-slot="overlay"
+	class={cn(
+		"pointer-events-none fixed inset-0 z-40 bg-background-inset/80 opacity-0 data-[open=true]:pointer-events-auto",
+		classes?.overlay,
+	)}
+	data-open={isOpen}
+	onclick={toggle}
+	onkeydown={(e) => {
+		if (e.key === "Escape" && isOpen) {
+			e.preventDefault();
+			toggle();
+		}
+	}}
+	role="button"
+	tabindex="-1"
+	aria-label="Close menu"
+></div>
+
+<div
+	use:portal={portalTarget}
+	{@attach attachContainerRef}
 	data-slot="root"
 	class={cn(
-		"floating-menu fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 overflow-hidden rounded-lg border border-border bg-background text-foreground shadow-2xl md:top-4 md:max-w-[70vw] lg:max-w-[64rem]",
-		isOpen && "floating-menu-open",
+		"fixed top-2 left-1/2 z-50 flex w-full max-w-[95vw] -translate-x-1/2 flex-col overflow-hidden rounded-md border border-border bg-background text-foreground shadow-md md:top-4 md:max-w-[70vw] lg:max-w-[50vw]",
 		className,
 		classes?.root,
 	)}
@@ -114,30 +320,46 @@
 	<div
 		data-slot="header"
 		class={cn(
-			"relative z-20 flex w-full items-center justify-between px-1 py-1",
+			"relative z-20 flex w-full shrink-0 items-center justify-between p-1",
 			classes?.header,
 		)}
 	>
-		<!-- Left: custom actions (theme toggle on the site navigation) -->
-		<div data-slot="actions-start" class="flex items-center gap-1">
+		<div class="flex items-center gap-1">
 			{#if actionsStart}
 				{@render actionsStart()}
 			{/if}
+			<button
+				onclick={toggle}
+				data-slot="toggle-button"
+				class={cn(
+					"group relative flex h-10 items-center justify-center rounded-sm px-2 transition-[background-color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-accent/10",
+					classes?.toggleButton,
+				)}
+				aria-label="Toggle menu"
+				aria-expanded={isOpen}
+			>
+				<span
+					class="text-sm font-medium text-foreground transition-[color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover:text-accent"
+				>
+					{isOpen ? "Закрыть" : "Меню"}
+				</span>
+			</button>
 		</div>
 
-		<!-- Center: custom content -->
 		<div
 			class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform-gpu"
 			style="backface-visibility: hidden;"
 		>
-			{#if centerContent}
-				<div data-slot="center-content">
-					{@render centerContent()}
+			{#if logo}
+				<div
+					data-slot="logo"
+					class={cn("flex items-center gap-3", classes?.logo)}
+				>
+					{@render logo()}
 				</div>
 			{/if}
 		</div>
 
-		<!-- Right: actions, search and menu toggle -->
 		<div
 			data-slot="actions"
 			class={cn("flex items-center gap-1", classes?.actions)}
@@ -147,7 +369,7 @@
 					href={secondaryButton.href}
 					data-slot="secondary-button"
 					class={cn(
-						"inset-shadow transition-scale hidden h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95] md:flex",
+						"hidden h-10 items-center justify-center rounded-sm px-4 text-sm font-medium text-foreground transition-[background-color,color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-background-muted hover:text-foreground md:flex",
 						classes?.secondaryButton,
 					)}
 				>
@@ -159,52 +381,128 @@
 					href={primaryButton.href}
 					data-slot="primary-button"
 					class={cn(
-						"inset-shadow transition-scale flex h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95]",
+						"flex h-10 items-center justify-center rounded-sm bg-accent/10 px-4 text-sm font-medium text-accent transition-[background-color] duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:bg-accent/20",
 						classes?.primaryButton,
 					)}
 				>
 					{primaryButton.label}
 				</a>
 			{/if}
-
 			{#if actionsEnd}
 				{@render actionsEnd()}
 			{/if}
-			<button
-				type="button"
-				onclick={toggle}
-				data-slot="toggle-button"
-				data-open={isOpen}
-				class={cn(
-					"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]",
-					classes?.toggleButton,
-				)}
-				aria-expanded={isOpen}
-				aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
-			>
-				<span class="sr-only">{isOpen ? "Закрыть меню" : "Открыть меню"}</span>
-				<span class="menu-toggle-icon menu-toggle-open">
-					<AreaRangeSolid size={16} />
-				</span>
-				<span class="menu-toggle-icon menu-toggle-close">
-					<Close size={16} />
-				</span>
-			</button>
 		</div>
 	</div>
 
-	<!-- Dropdown menu -->
 	<div
+		{@attach attachMenuWrapperRef}
 		data-slot="menu-wrapper"
 		class={cn(
-			"menu-wrapper w-full overflow-hidden border-t border-border bg-background-inset/40",
+			"h-0 w-full flex-1 overflow-hidden border-t border-border opacity-0",
 			classes?.menuWrapper,
 		)}
 	>
+		<!-- ===================== MOBILE: двухуровневая навигация на весь экран ===================== -->
+		<div class="flex h-full flex-col md:hidden">
+			{#if !activeGroup}
+				<!-- Уровень 1: список категорий крупным текстом -->
+				<div class="flex flex-1 flex-col overflow-y-auto px-4 py-2">
+					{#each menuGroups as group (group.title)}
+						<button
+							type="button"
+							onclick={() => openGroup(group.title)}
+							class="group/cat flex items-center justify-between py-4 text-left text-2xl font-normal text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground"
+						>
+							<span>{group.title}</span>
+							<svg
+								class="size-5 shrink-0 text-foreground-muted/60 transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover/cat:text-foreground"
+								viewBox="0 0 16 16"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M6 3l5 5-5 5"
+									stroke="currentColor"
+									stroke-width="1.5"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								/>
+							</svg>
+						</button>
+					{/each}
+				</div>
+
+				{#if footerLinks && footerLinks.length > 0}
+					<div class="flex shrink-0 flex-col gap-1 border-t border-border px-4 py-4">
+						{#each footerLinks as link (link.href + link.label)}
+							{@const Icon = link.icon}
+							<a
+								href={link.href}
+								onclick={link.onclick}
+								class={cn(
+									"flex items-center gap-2 rounded-sm px-1 py-2.5 text-sm font-medium transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)]",
+									link.accent
+										? "text-accent hover:text-accent/80"
+										: "text-foreground-muted hover:text-foreground",
+								)}
+							>
+								{#if Icon}
+									<Icon size={18} />
+								{/if}
+								<span>{link.label}</span>
+							</a>
+						{/each}
+					</div>
+				{/if}
+			{:else}
+				<!-- Уровень 2: содержимое выбранной категории -->
+				<div class="flex flex-1 flex-col overflow-y-auto px-4 py-2">
+					<button
+						type="button"
+						onclick={backToCategories}
+						class="mb-2 flex w-fit items-center gap-1 py-2 text-sm font-medium text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground"
+					>
+						<svg
+							class="size-4"
+							viewBox="0 0 16 16"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M10 3L5 8l5 5"
+								stroke="currentColor"
+								stroke-width="1.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						<span>Назад</span>
+					</button>
+					<h3 class="mono pb-2 text-xs font-medium tracking-wider text-foreground-muted/50 uppercase">
+						{activeGroup.title}
+					</h3>
+					<div class="flex flex-col gap-2">
+						{#each activeGroup.links as link (link.href + link.label)}
+							<a
+								href={link.href}
+								onclick={link.onclick}
+								class="group/link relative block w-fit py-2 text-2xl font-normal text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground"
+							>
+								<span class="relative z-10 block leading-tight">
+									{link.label}
+								</span>
+							</a>
+						{/each}
+					</div>
+				</div>
+			{/if}
+		</div>
+
+		<!-- ===================== DESKTOP: обычная сетка колонок ===================== -->
 		<div
 			data-slot="grid"
 			class={cn(
-				"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain md:max-h-none md:grid-cols-4 md:overflow-visible",
+				"hidden max-h-[65vh] grid-cols-1 gap-4 overflow-y-auto overscroll-contain p-4 md:grid md:max-h-none md:grid-cols-3 md:overflow-visible",
 				classes?.grid,
 			)}
 		>
@@ -212,8 +510,10 @@
 				<div
 					data-slot="group"
 					class={cn(
-						"menu-column flex flex-col gap-5 p-5 transition-colors md:min-h-[24rem] md:border-l md:border-border/70 first:md:border-l-0",
-						group.variant === "muted" ? "bg-background-muted" : "bg-transparent",
+						"flex flex-col gap-4 rounded-sm p-4 transition-colors ease-[cubic-bezier(0.625,0.05,0,1)]",
+						group.variant === "muted"
+							? "bg-background-muted"
+							: "bg-transparent",
 						classes?.group,
 						group.variant === "muted" && classes?.groupMuted,
 					)}
@@ -221,130 +521,69 @@
 					<h3
 						data-slot="group-title"
 						class={cn(
-							"text-xs font-medium tracking-wider text-foreground-muted/50 uppercase",
+							"mono text-xs font-medium tracking-wider text-foreground-muted/50 uppercase",
 							classes?.groupTitle,
 						)}
 					>
 						{group.title}
 					</h3>
-					<div class="mt-1 flex flex-col gap-3">
-						{#each group.links as link, i (link.href + link.label)}
-							{@const Icon = link.icon}
+					<div class="mt-4 flex flex-col gap-4">
+						{#each group.links as link (link.href + link.label)}
 							<a
 								href={link.href}
 								onclick={link.onclick}
 								data-slot="link"
 								class={cn(
-									"menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200",
+									"group/link relative block w-fit text-2xl font-normal text-foreground-muted transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] hover:text-foreground",
 									classes?.link,
 								)}
-								style="--delay: {i * 40}ms"
 							>
-								<span class="menu-link-icon group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]">
-									{#if Icon}
-										<Icon size={20} />
-									{/if}
-								</span>
-								<span class="min-w-0 flex-1 leading-tight">
+								<span class="relative z-10 block leading-tight">
 									<span
 										data-slot="link-text"
-										class={cn("block text-sm font-medium text-foreground", classes?.linkText)}
+										class={cn(
+											"menu-link-text block whitespace-nowrap",
+											classes?.linkText,
+										)}
 									>
 										{link.label}
 									</span>
-									{#if link.description}
-										<span class="mt-1 block text-sm leading-snug text-foreground-muted">
-											{link.description}
-										</span>
-									{/if}
 								</span>
-								<ChevronRight class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/link:text-accent" size={16} />
+								<span
+									data-slot="link-underline"
+									class={cn(
+										"absolute -bottom-1 left-0 h-px w-full origin-right scale-x-0 bg-foreground transition-transform duration-400 ease-[cubic-bezier(0.625,0.05,0,1)] group-hover/link:origin-left group-hover/link:scale-x-100",
+										classes?.linkUnderline,
+									)}
+								></span>
 							</a>
 						{/each}
 					</div>
 				</div>
 			{/each}
+
+			{#if footerLinks && footerLinks.length > 0}
+				<div class="col-span-3 flex items-center gap-6 border-t border-border p-4">
+					{#each footerLinks as link (link.href + link.label)}
+						{@const Icon = link.icon}
+						<a
+							href={link.href}
+							onclick={link.onclick}
+							class={cn(
+								"flex items-center gap-2 text-sm font-medium transition-colors duration-400 ease-[cubic-bezier(0.625,0.05,0,1)]",
+								link.accent
+									? "text-accent hover:text-accent/80"
+									: "text-foreground-muted hover:text-foreground",
+							)}
+						>
+							{#if Icon}
+								<Icon size={16} />
+							{/if}
+							<span>{link.label}</span>
+						</a>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</div>
 </div>
-
-<style>
-	.menu-toggle-icon {
-		position: absolute;
-		opacity: 0;
-		filter: blur(4px);
-		scale: 0.25;
-		transition:
-			opacity 150ms ease-out,
-			filter 150ms ease-out,
-			scale 150ms ease-out;
-		will-change: opacity, filter, scale;
-	}
-
-	.menu-toggle-open {
-		opacity: 1;
-		filter: blur(0);
-		scale: 1;
-	}
-
-	[data-open="true"] .menu-toggle-open {
-		opacity: 0;
-		filter: blur(4px);
-		scale: 0.25;
-	}
-
-	[data-open="true"] .menu-toggle-close {
-		opacity: 1;
-		filter: blur(0);
-		scale: 1;
-	}
-
-	/* Menu wrapper */
-	.menu-wrapper {
-		max-height: 0;
-		opacity: 0;
-		transition:
-			max-height 400ms cubic-bezier(0.4, 0, 0.2, 1),
-			opacity 200ms ease-out;
-	}
-
-	.floating-menu-open .menu-wrapper {
-		max-height: 70vh;
-		opacity: 1;
-	}
-
-	/* Menu links stagger */
-	.menu-link {
-		opacity: 0;
-		transform: translateY(16px);
-		transition:
-			opacity 200ms ease-out,
-			transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
-			color 300ms ease-out;
-		transition-delay: var(--delay, 0ms);
-	}
-
-	.floating-menu-open .menu-link {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	/* Mobile adjustments */
-	@media (max-width: 767px) {
-		.floating-menu {
-			transition:
-				max-width 400ms cubic-bezier(0.4, 0, 0.2, 1),
-				top 400ms cubic-bezier(0.4, 0, 0.2, 1),
-				padding-top 400ms cubic-bezier(0.4, 0, 0.2, 1),
-				border-radius 400ms cubic-bezier(0.4, 0, 0.2, 1);
-		}
-
-		.floating-menu-open {
-			top: 0 !important;
-			max-width: 100% !important;
-			padding-top: 0.5rem;
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
-		}
-	}
-</style>
