@@ -110,12 +110,13 @@
 
 <svelte:body style:overflow={mobileOpen ? "hidden" : undefined} />
 
-<!-- Desktop hover-close overlay dims the page while a panel is open -->
+<!-- Desktop hover-close overlay dims the page while a panel is open.
+     pointer-events-none so it can never intercept the mouse and break hover tracking. -->
 {#if hoveredIndex !== null}
 	<div
 		data-slot="overlay"
 		class={cn(
-			"fixed inset-0 z-40 hidden bg-background-inset/70 backdrop-blur-[2px] transition-opacity duration-200 md:block",
+			"pointer-events-none fixed inset-0 z-30 hidden bg-background-inset/70 backdrop-blur-[2px] transition-opacity duration-200 md:block",
 			classes?.overlay,
 		)}
 		aria-hidden="true"
@@ -125,7 +126,7 @@
 <div
 	data-slot="root"
 	class={cn(
-		"floating-menu fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 overflow-visible rounded-lg border border-border bg-background text-foreground shadow-2xl md:top-4 md:max-w-[70vw] lg:max-w-[64rem]",
+		"floating-menu fixed top-2 left-1/2 z-[60] w-full max-w-[95vw] -translate-x-1/2 overflow-visible rounded-lg border border-border bg-background text-foreground shadow-2xl md:top-4 md:max-w-[70vw] lg:max-w-[64rem]",
 		mobileOpen && "floating-menu-mobile-open",
 		className,
 		classes?.root,
@@ -213,7 +214,7 @@
 			<div
 				data-slot="panel"
 				class={cn(
-					"desktop-panel absolute top-full left-1/2 z-30 hidden w-[min(90vw,48rem)] -translate-x-1/2 overflow-hidden rounded-lg border border-border bg-background shadow-2xl md:block",
+					"desktop-panel absolute top-full left-1/2 z-40 w-[min(90vw,48rem)] -translate-x-1/2 overflow-hidden rounded-lg border border-border bg-background shadow-2xl",
 					classes?.panel,
 				)}
 				onmouseenter={() => openOnHover(i)}
@@ -337,7 +338,7 @@
 	<!-- Mobile fullscreen menu -->
 	<div
 		data-slot="mobile-menu"
-		class="mobile-menu fixed inset-0 z-20 flex flex-col overflow-y-auto bg-background pt-16 md:hidden"
+		class="mobile-menu fixed inset-0 z-20 flex-col overflow-y-auto bg-background pt-16"
 	>
 		<div class="flex flex-col gap-1 px-4 py-4">
 			{#each categories as category, i (category.label)}
@@ -500,25 +501,33 @@
 		}
 	}
 
-	/* Mobile fullscreen menu */
+	/* Mobile fullscreen menu — display:none entirely on desktop so it can
+	   never paint over, block hover, or affect layout/scrollbars there. */
 	.mobile-menu {
-		opacity: 0;
-		visibility: hidden;
-		transform: translateY(-12px);
-		transition:
-			opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
-			transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
-			visibility 0ms linear 300ms;
+		display: none;
 	}
 
-	.floating-menu-mobile-open .mobile-menu {
-		opacity: 1;
-		visibility: visible;
-		transform: translateY(0);
-		transition:
-			opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
-			transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
-			visibility 0ms linear 0ms;
+	@media (max-width: 767px) {
+		.mobile-menu {
+			display: flex;
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY(-12px);
+			transition:
+				opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
+				transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+				visibility 0ms linear 300ms;
+		}
+
+		.floating-menu-mobile-open .mobile-menu {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY(0);
+			transition:
+				opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
+				transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+				visibility 0ms linear 0ms;
+		}
 	}
 
 	/* Mobile accordion panel */
