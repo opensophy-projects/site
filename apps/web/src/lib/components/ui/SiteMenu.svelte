@@ -1,119 +1,133 @@
 <script lang="ts">
   /* eslint-disable svelte/no-navigation-without-resolve */
-  import { brandingConfig, siteConfig } from "$lib";
+  import { siteConfig } from "$lib";
   import FloatingMenu from "$lib/components/ui/FloatingMenu.svelte";
   import ThemeToggle from "$lib/components/ui/ThemeToggle.svelte";
-  import DockerLogo from "$lib/components/ui/DockerLogo.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
   import { searchState } from "$lib/stores/search.svelte";
-  import Categories from "carbon-icons-svelte/lib/Categories.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
-  import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
   import Email from "carbon-icons-svelte/lib/Email.svelte";
-  import Home from "carbon-icons-svelte/lib/Home.svelte";
   import LogoGithub from "carbon-icons-svelte/lib/LogoGithub.svelte";
-  import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
-  import Policy from "carbon-icons-svelte/lib/Policy.svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
-  import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
-  import Settings from "carbon-icons-svelte/lib/Settings.svelte";
-  import Tag from "carbon-icons-svelte/lib/Tag.svelte";
-  import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
 
-  const menuGroups = [
+  // "Продукты": 3 columns — Платформа / Библиотеки / Инструменты, plus a "статус проектов" footer link
+  // "Услуги": single stacked list, plus "политика оказания услуг" footer link
+  // "Ресурсы": 2 columns — Информационное / Платформа, plus "Контакты" as its own entry
+  const menuCategories = [
     {
-      title: "Продукты",
-      links: [
+      label: "Продукты",
+      columns: [
         {
-          label: "os.docs",
-          description: "Платформа для документации и публикации контента.",
-          href: "/docs/opensophy-docs",
-          icon: DocumentMultiple_01,
+          title: "Платформа",
+          links: [
+            {
+              label: "os.docs",
+              description: "Платформа для документации и публикации контента.",
+              href: "/docs/opensophy-docs",
+            },
+            {
+              label: "os.dokploy",
+              description: "Платформа для управления серверами и деплоя приложений.",
+              href: "/dokploy",
+            },
+          ],
         },
         {
-          label: "os.dokploy",
-          description:
-            "Платформа для управления серверами и деплоя приложений.",
-          href: "/dokploy",
-          icon: WebServicesContainer,
+          title: "Библиотеки",
+          links: [
+            {
+              label: "os.compose",
+              description: "Наши готовые шаблоны для инструментов DevSecOps/AppSec.",
+              href: "/templates/docker/",
+            },
+            {
+              label: "os.ui",
+              description: "Библиотека готовых UI-компонентов с живым превью и гибкими настройками.",
+              href: "/components/overview",
+            },
+          ],
         },
         {
-          label: "os.mtls",
-          description:
-            "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.",
-          href: "/mtls",
-          icon: Network_3,
-        },
-        {
-          label: "os.ui",
-          description:
-            "Библиотека готовых UI-компонентов с живым превью и гибкими настройками.",
-          href: "/components/overview",
-          icon: QHintonPlot,
+          title: "Инструменты",
+          links: [
+            {
+              label: "os.mtls",
+              description: "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.",
+              href: "/mtls",
+            },
+          ],
         },
       ],
+      footer: {
+        label: "Статус проектов",
+        href: "/status",
+      },
     },
     {
-      title: "Ресурсы",
-      links: [
+      label: "Услуги",
+      flatLinks: [
         {
-          label: "База знаний",
-          description: "Понятные статьи и гайды по DevSecOps и не только.",
-          href: "/article/general",
-          icon: Categories,
+          label: "Автоматизация",
+          description: "Создаём автоматизацию любого уровня — от отдельных задач до сложных процессов.",
+          href: "/services#automation",
         },
         {
-          label: "Статус",
-          description: "Информация о разработке и состояние проектов.",
-          href: "/status",
-          icon: Settings,
+          label: "Инфраструктура",
+          description: "Настраиваем серверы, приложения и инструменты для стабильной работы проектов.",
+          href: "/services#infrastructure",
         },
         {
-          label: "Шаблоны Docker",
-          description:
-            "Наши готовые шаблоны для инструментов DevSecOps/AppSec.",
-          href: "/templates/docker/",
-          icon: DockerLogo,
+          label: "Безопасность",
+          description: "Встраиваем безопасность в разработку, тестирование и запуск ваших проектов.",
+          href: "/services#security",
         },
       ],
+      footer: {
+        label: "Политика оказания услуг",
+        href: "/service-policy",
+      },
     },
     {
-      title: "Услуги",
-      links: [
+      label: "Ресурсы",
+      columns: [
         {
-          label: "Политика оказания услуг",
-          description:
-            "Узнайте о том как мы работаем перед тем как заказать услугу.",
-          href: "/service-policy",
-          icon: Policy,
+          title: "Информационное",
+          links: [
+            {
+              label: "Новости",
+              description: "Последние новости и изменения в проекте.",
+              href: "/news",
+            },
+            {
+              label: "Блог",
+              description: "Статьи автора проекта.",
+              href: "/article/general",
+            },
+            {
+              label: "Кейсы",
+              description: "Примеры наших работ.",
+              href: "/cases",
+            },
+          ],
         },
         {
-          label: "Услуги",
-          description:
-            "Узнайте актуальные услуги которые мы сейчас готовы предоставить.",
-          href: "/services",
-          icon: Tag,
-        },
-      ],
-    },
-    {
-      title: "Прочие",
-      links: [
-        {
-          label: "Главная",
-          description: "Вернуться на главную страницу сайта.",
-          href: "/",
-          icon: Home,
-        },
-        {
-          label: "Контакты",
-          description: "Связаться через GitHub, Telegram или email.",
-          href: "#",
-          icon: Email,
-          onclick: (e: MouseEvent) => {
-            e.preventDefault();
-            contactsState.open();
-          },
+          title: "Платформа",
+          links: [
+            {
+              label: "Обучающий центр",
+              description: "Теория и практика для специалистов DevSecOps.",
+              href: "/learning-center",
+            },
+            {
+              label: "Контакты",
+              description: "Связаться через GitHub, Telegram или email.",
+              href: "#",
+              onclick: (e: MouseEvent) => {
+                e.preventDefault();
+                contactsState.open();
+              },
+            },
+          ],
         },
       ],
     },
@@ -136,19 +150,17 @@
       icon: Email,
     },
   ];
+
   function handleOverlayKeydown(e: KeyboardEvent) {
     if (e.key === "Escape") contactsState.close();
   }
 </script>
 
-<FloatingMenu {menuGroups}>
-  {#snippet centerContent()}
-    <span class="font-medium lowercase tracking-tight text-foreground"
-      >{brandingConfig.name}</span
-    >
-  {/snippet}
-  {#snippet actionsStart()}
-    <ThemeToggle />
+<FloatingMenu categories={menuCategories}>
+  {#snippet logo()}
+    <a href="/" class="flex items-center px-2" aria-label="На главную">
+      <img src="/logo.png" alt="Логотип" class="h-7 w-auto" />
+    </a>
   {/snippet}
   {#snippet actionsEnd()}
     <button
@@ -162,6 +174,7 @@
       <span class="sr-only">Открыть поиск</span>
       <Search size={16} />
     </button>
+    <ThemeToggle />
   {/snippet}
 </FloatingMenu>
 {#if contactsState.isOpen}
