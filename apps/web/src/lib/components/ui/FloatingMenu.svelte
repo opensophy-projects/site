@@ -236,13 +236,12 @@
 		)}
 	>
 		{#if activeGroupIndex === null}
-			<!-- Верхний уровень: крупные hero-style слова в ряд -->
+			<!-- Верхний уровень: крупные hero-style слова в одну строку -->
 			<div
 				data-slot="top-level-list"
-				class={cn(
-					"flex flex-col divide-y divide-border md:flex-row md:divide-x md:divide-y-0",
-					classes?.topLevelList,
-				)}
+				class={cn("flex flex-row items-stretch", classes?.topLevelList)}
+				in:fly={{ x: -24, duration: 320, easing: cubicOut }}
+				out:fade={{ duration: 120 }}
 			>
 				{#each menuGroups as group, i (group.title)}
 					<button
@@ -250,13 +249,13 @@
 						onclick={() => openGroup(i)}
 						data-slot="top-level-item"
 						class={cn(
-							"top-level-link group/toplevel flex flex-1 items-center justify-center px-6 py-10 text-center transition-colors duration-200 hover:bg-background-muted md:py-16",
+							"top-level-link group/toplevel flex flex-1 items-center justify-center px-2 py-10 text-center transition-colors duration-200 hover:bg-background-muted md:py-16",
 							classes?.topLevelItem,
 						)}
-						style="--delay: {i * 40}ms"
+						style="--delay: {i * 60}ms"
 					>
 						<span
-							class="text-2xl font-medium tracking-tight text-foreground-muted transition-colors duration-200 group-hover/toplevel:text-foreground md:text-3xl"
+							class="text-lg font-medium tracking-tight text-foreground-muted transition-colors duration-200 group-hover/toplevel:text-foreground sm:text-2xl md:text-3xl"
 						>
 							{group.title}
 						</span>
@@ -265,13 +264,17 @@
 			</div>
 		{:else if activeGroup}
 			<!-- Второй уровень: содержимое выбранной категории -->
-			<div class="flex flex-col">
+			<div
+				class="flex flex-col"
+				in:fly={{ x: 24, duration: 320, easing: cubicOut }}
+				out:fade={{ duration: 120 }}
+			>
 				<button
 					type="button"
 					onclick={goBack}
 					data-slot="back-button"
 					class={cn(
-						"flex items-center gap-2 border-b border-border/70 px-4 py-3 text-left text-xs font-medium tracking-wider text-foreground-muted uppercase transition-colors duration-150 hover:text-foreground",
+						"flex items-center gap-2 px-4 py-3 text-left text-xs font-medium tracking-wider text-foreground-muted uppercase transition-colors duration-150 hover:text-foreground",
 						classes?.backButton,
 					)}
 				>
