@@ -234,39 +234,30 @@
 		)}
 	>
 		{#if activeGroupIndex === null}
-			<!-- Верхний уровень: 3 (и более) слова-категории -->
+			<!-- Верхний уровень: крупные hero-style слова в ряд -->
 			<div
 				data-slot="top-level-list"
-				class={cn("flex flex-col p-2 md:p-3", classes?.topLevelList)}
+				class={cn(
+					"flex flex-col divide-y divide-border md:flex-row md:divide-x md:divide-y-0",
+					classes?.topLevelList,
+				)}
 			>
 				{#each menuGroups as group, i (group.title)}
-					{@const Icon = group.icon}
 					<button
 						type="button"
 						onclick={() => openGroup(i)}
 						data-slot="top-level-item"
 						class={cn(
-							"top-level-link group/toplevel flex items-center gap-3 rounded-xl p-3.5 text-left text-foreground transition-colors duration-200 hover:bg-background-muted",
+							"top-level-link group/toplevel flex flex-1 items-center justify-center px-6 py-10 text-center transition-colors duration-200 hover:bg-background-muted md:py-16",
 							classes?.topLevelItem,
 						)}
 						style="--delay: {i * 40}ms"
 					>
-						{#if Icon}
-							<span
-								class="inset-shadow relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground group-hover/toplevel:text-accent"
-							>
-								<Icon size={20} />
-							</span>
-						{/if}
 						<span
-							class="flex-1 text-sm font-semibold tracking-wide text-foreground uppercase"
+							class="text-2xl font-medium tracking-tight text-foreground-muted transition-colors duration-200 group-hover/toplevel:text-foreground md:text-3xl"
 						>
 							{group.title}
 						</span>
-						<ChevronRight
-							class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/toplevel:text-accent"
-							size={18}
-						/>
 					</button>
 				{/each}
 			</div>
