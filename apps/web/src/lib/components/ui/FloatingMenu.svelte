@@ -6,6 +6,7 @@
 	import AreaRangeSolid from "carbon-icons-svelte/lib/AreaRangeSolid.svelte";
 	import Close from "carbon-icons-svelte/lib/Close.svelte";
 	import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
+	import ChevronLeft from "carbon-icons-svelte/lib/ChevronLeft.svelte";
 
 	type IconComponent = typeof Close;
 
@@ -30,6 +31,14 @@
 		links: MenuLink[];
 	}
 
+	type FooterLink = {
+		label: string;
+		href: string;
+		icon?: IconComponent;
+		accent?: boolean;
+		onclick?: (e: MouseEvent) => void;
+	}
+
 	type FloatingMenuClasses = {
 		root?: ClassValue;
 		overlay?: ClassValue;
@@ -51,6 +60,7 @@
 
 	type Props = {
 		menuGroups: MenuGroup[];
+		footerLinks?: FooterLink[];
 		centerContent?: Snippet;
 		actionsStart?: Snippet;
 		actionsEnd?: Snippet;
@@ -62,6 +72,7 @@
 
 	let {
 		menuGroups,
+		footerLinks,
 		centerContent,
 		actionsStart,
 		actionsEnd,
@@ -72,9 +83,27 @@
 	}: Props = $props();
 
 	let isOpen = $state(false);
+	// null = показываем список категорий (мобильный первый уровень)
+	let activeGroupTitle: string | null = $state(null);
+
+	let activeGroup = $derived(
+		menuGroups.find((g) => g.title === activeGroupTitle) ?? null,
+	);
 
 	function toggle() {
 		isOpen = !isOpen;
+		if (!isOpen) {
+			// Сбрасываем выбранную категорию при закрытии меню
+			activeGroupTitle = null;
+		}
+	}
+
+	function openGroup(title: string) {
+		activeGroupTitle = title;
+	}
+
+	function backToCategories() {
+		activeGroupTitle = null;
 	}
 </script>
 
@@ -201,10 +230,103 @@
 			classes?.menuWrapper,
 		)}
 	>
+		<!-- ===================== MOBILE: двухуровневая навигация ===================== -->
+		<div class="mobile-nav md:hidden">
+			{#if !activeGroup}
+				<!-- Уровень 1: список категорий крупным текстом -->
+				<div class="flex flex-col px-2 py-2">
+					{#each menuGroups as group, i (group.title)}
+						<button
+							type="button"
+							onclick={() => openGroup(group.title)}
+							class="mobile-nav-item group/cat flex items-center justify-between border-b border-border/70 py-4 text-left last:border-b-0"
+							style="--delay: {i * 40}ms"
+						>
+							<span class="text-xl font-medium tracking-tight text-foreground">
+								{group.title}
+							</span>
+							<ChevronRight
+								class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/cat:text-accent"
+								size={18}
+							/>
+						</button>
+					{/each}
+				</div>
+
+				<!-- Футер: Главная + Контакты -->
+				{#if footerLinks && footerLinks.length > 0}
+					<div class="flex flex-col gap-2 border-t border-border px-2 py-4">
+						{#each footerLinks as link (link.href + link.label)}
+							{@const Icon = link.icon}
+							<a
+								href={link.href}
+								onclick={link.onclick}
+								class={cn(
+									"flex items-center gap-2 rounded-sm px-2 py-2.5 text-sm font-medium transition-colors duration-150",
+									link.accent
+										? "text-accent hover:text-accent/80"
+										: "text-foreground-muted hover:text-foreground",
+								)}
+							>
+								{#if Icon}
+									<Icon size={18} />
+								{/if}
+								<span>{link.label}</span>
+							</a>
+						{/each}
+					</div>
+				{/if}
+			{:else}
+				<!-- Уровень 2: содержимое выбранной категории -->
+				<div class="flex flex-col px-2 py-2">
+					<button
+						type="button"
+						onclick={backToCategories}
+						class="mb-2 flex items-center gap-1 rounded-sm px-2 py-2 text-sm font-medium text-foreground-muted transition-colors duration-150 hover:text-foreground"
+					>
+						<ChevronLeft size={16} />
+						<span>Назад</span>
+					</button>
+					<h3 class="px-2 pb-2 text-xs font-medium tracking-wider text-foreground-muted/50 uppercase">
+						{activeGroup.title}
+					</h3>
+					<div class="flex flex-col gap-2 px-1 pb-3">
+						{#each activeGroup.links as link, i (link.href + link.label)}
+							{@const Icon = link.icon}
+							<a
+								href={link.href}
+								onclick={link.onclick}
+								class="menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200"
+								style="--delay: {i * 40}ms"
+							>
+								<span class="menu-link-icon group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]">
+									{#if Icon}
+										<Icon size={20} />
+									{/if}
+								</span>
+								<span class="min-w-0 flex-1 leading-tight">
+									<span class="block text-sm font-medium text-foreground">
+										{link.label}
+									</span>
+									{#if link.description}
+										<span class="mt-1 block text-sm leading-snug text-foreground-muted">
+											{link.description}
+										</span>
+									{/if}
+								</span>
+								<ChevronRight class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/link:text-accent" size={16} />
+							</a>
+						{/each}
+					</div>
+				</div>
+			{/if}
+		</div>
+
+		<!-- ===================== DESKTOP: обычная сетка колонок ===================== -->
 		<div
 			data-slot="grid"
 			class={cn(
-				"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain md:max-h-none md:grid-cols-4 md:overflow-visible",
+				"hidden md:grid md:max-h-none md:grid-cols-4 md:overflow-visible",
 				classes?.grid,
 			)}
 		>
@@ -264,6 +386,30 @@
 					</div>
 				</div>
 			{/each}
+
+			<!-- Футер на десктопе, если передан (Главная / Контакты как последняя колонка не нужны — оставим внизу на всю ширину) -->
+			{#if footerLinks && footerLinks.length > 0}
+				<div class="col-span-4 flex items-center gap-6 border-t border-border/70 bg-transparent px-5 py-4">
+					{#each footerLinks as link (link.href + link.label)}
+						{@const Icon = link.icon}
+						<a
+							href={link.href}
+							onclick={link.onclick}
+							class={cn(
+								"flex items-center gap-2 text-sm font-medium transition-colors duration-150",
+								link.accent
+									? "text-accent hover:text-accent/80"
+									: "text-foreground-muted hover:text-foreground",
+							)}
+						>
+							{#if Icon}
+								<Icon size={16} />
+							{/if}
+							<span>{link.label}</span>
+						</a>
+					{/each}
+				</div>
+			{/if}
 		</div>
 	</div>
 </div>
@@ -306,11 +452,28 @@
 		transition:
 			max-height 400ms cubic-bezier(0.4, 0, 0.2, 1),
 			opacity 200ms ease-out;
+		overflow-y: auto;
+		overscroll-behavior: contain;
 	}
 
 	.floating-menu-open .menu-wrapper {
-		max-height: 70vh;
+		max-height: 80vh;
 		opacity: 1;
+	}
+
+	/* Mobile category list stagger */
+	.mobile-nav-item {
+		opacity: 0;
+		transform: translateY(16px);
+		transition:
+			opacity 200ms ease-out,
+			transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+		transition-delay: var(--delay, 0ms);
+	}
+
+	.floating-menu-open .mobile-nav-item {
+		opacity: 1;
+		transform: translateY(0);
 	}
 
 	/* Menu links stagger */
