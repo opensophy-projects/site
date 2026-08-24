@@ -463,6 +463,18 @@
 		transform-origin: top center;
 	}
 
+	/* Invisible bridge closes the mouseleave gap between the header and the
+	   panel (created by margin-top above) so hovering from the trigger button
+	   down into the panel doesn't register as leaving the menu. */
+	.desktop-panel::before {
+		content: "";
+		position: absolute;
+		top: -0.5rem;
+		left: 0;
+		right: 0;
+		height: 0.5rem;
+	}
+
 	@keyframes panel-in {
 		from {
 			opacity: 0;
