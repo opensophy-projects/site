@@ -6,116 +6,119 @@
   import DockerLogo from "$lib/components/ui/DockerLogo.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
   import { searchState } from "$lib/stores/search.svelte";
-  import Categories from "carbon-icons-svelte/lib/Categories.svelte";
+  import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
   import Email from "carbon-icons-svelte/lib/Email.svelte";
-  import Home from "carbon-icons-svelte/lib/Home.svelte";
   import LogoGithub from "carbon-icons-svelte/lib/LogoGithub.svelte";
   import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
   import Policy from "carbon-icons-svelte/lib/Policy.svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
   import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
-  import Settings from "carbon-icons-svelte/lib/Settings.svelte";
-  import Tag from "carbon-icons-svelte/lib/Tag.svelte";
+  import RuleDraft from "carbon-icons-svelte/lib/RuleDraft.svelte";
+  import SettingsAdjust from "carbon-icons-svelte/lib/SettingsAdjust.svelte";
+  import Security from "carbon-icons-svelte/lib/Security.svelte";
+  import Tools from "carbon-icons-svelte/lib/Tools.svelte";
+  import Newspaper from "carbon-icons-svelte/lib/Newspaper.svelte";
+  import PortfolioOutline from "carbon-icons-svelte/lib/PortfolioOutline.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
 
-  const menuGroups = [
+  // ---- Продукты: 3 колонки ----
+  const productColumns = [
     {
-      title: "Продукты",
+      title: "Платформы",
       links: [
+        {
+          label: "os.dokploy",
+          description: "Платформа для управления серверами и деплоя приложений.",
+          href: "/dokploy",
+          icon: WebServicesContainer,
+        },
         {
           label: "os.docs",
           description: "Платформа для документации и публикации контента.",
           href: "/docs/opensophy-docs",
           icon: DocumentMultiple_01,
         },
-        {
-          label: "os.dokploy",
-          description:
-            "Платформа для управления серверами и деплоя приложений.",
-          href: "/dokploy",
-          icon: WebServicesContainer,
-        },
-        {
-          label: "os.mtls",
-          description:
-            "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.",
-          href: "/mtls",
-          icon: Network_3,
-        },
-        {
-          label: "os.ui",
-          description:
-            "Библиотека готовых UI-компонентов с живым превью и гибкими настройками.",
-          href: "/components/overview",
-          icon: QHintonPlot,
-        },
       ],
     },
     {
-      title: "Ресурсы",
+      title: "Библиотеки",
       links: [
         {
-          label: "База знаний",
-          description: "Понятные статьи и гайды по DevSecOps и не только.",
-          href: "/article/general",
-          icon: Categories,
+          label: "os.ui",
+          description: "Библиотека готовых UI-компонентов с живым превью и гибкими настройками.",
+          href: "/components/overview",
+          icon: QHintonPlot,
         },
         {
-          label: "Статус",
-          description: "Информация о разработке и состояние проектов.",
-          href: "/status",
-          icon: Settings,
-        },
-        {
-          label: "Шаблоны Docker",
-          description:
-            "Наши готовые шаблоны для инструментов DevSecOps/AppSec.",
+          label: "os.compose",
+          description: "Наши готовые шаблоны для инструментов DevSecOps/AppSec.",
           href: "/templates/docker/",
           icon: DockerLogo,
         },
       ],
     },
     {
-      title: "Услуги",
+      title: "Инструменты",
       links: [
         {
-          label: "Политика оказания услуг",
-          description:
-            "Узнайте о том как мы работаем перед тем как заказать услугу.",
-          href: "/service-policy",
-          icon: Policy,
-        },
-        {
-          label: "Услуги",
-          description:
-            "Узнайте актуальные услуги которые мы сейчас готовы предоставить.",
-          href: "/services",
-          icon: Tag,
+          label: "os.mtls",
+          description: "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.",
+          href: "/mtls",
+          icon: Network_3,
         },
       ],
     },
+  ];
+
+  // ---- Решения: плоский ряд карточек ----
+  const solutionLinks = [
     {
-      title: "Прочие",
-      links: [
-        {
-          label: "Главная",
-          description: "Вернуться на главную страницу сайта.",
-          href: "/",
-          icon: Home,
-        },
-        {
-          label: "Контакты",
-          description: "Связаться через GitHub, Telegram или email.",
-          href: "#",
-          icon: Email,
-          onclick: (e: MouseEvent) => {
-            e.preventDefault();
-            contactsState.open();
-          },
-        },
-      ],
+      label: "Автоматизация",
+      description: "Создаю автоматизацию любого уровня — от простых задач до сложных процессов.",
+      href: "/solutions/automation",
+      icon: SettingsAdjust,
+    },
+    {
+      label: "Безопасность",
+      description: "Встраиваю безопасность в разработку, тестирование и запуск ваших проектов.",
+      href: "/solutions/security",
+      icon: Security,
+    },
+    {
+      label: "Инфраструктура",
+      description: "Настраиваю серверы, приложения и инструменты для стабильной работы проектов.",
+      href: "/solutions/infrastructure",
+      icon: Tools,
+    },
+    {
+      label: "Политика оказания услуг",
+      description: "Узнайте о том как мы работаем перед тем как заказать услугу.",
+      href: "/service-policy",
+      icon: Policy,
+    },
+  ];
+
+  // ---- Ресурсы: плоский ряд карточек ----
+  const resourceLinks = [
+    {
+      label: "Кейсы",
+      description: "Примеры моих работ.",
+      href: "/cases",
+      icon: PortfolioOutline,
+    },
+    {
+      label: "Новости",
+      description: "Последние новости и изменения в проекте.",
+      href: "/news",
+      icon: Newspaper,
+    },
+    {
+      label: "База знаний",
+      description: "Понятные статьи и гайды по DevSecOps и не только.",
+      href: "/article/general",
+      icon: RuleDraft,
     },
   ];
 
@@ -136,21 +139,148 @@
       icon: Email,
     },
   ];
+
   function handleOverlayKeydown(e: KeyboardEvent) {
     if (e.key === "Escape") contactsState.close();
   }
 </script>
 
-<FloatingMenu {menuGroups}>
-  {#snippet centerContent()}
+{#snippet productsPanel()}
+  <div data-slot="grid" class="grid grid-cols-1 md:grid-cols-3">
+    {#each productColumns as column (column.title)}
+      <div
+        data-slot="column"
+        class="flex flex-col gap-5 border-border/70 p-5 first:md:border-l-0 md:min-h-[16rem] md:border-l"
+      >
+        <h3
+          class="text-xs font-medium tracking-wider text-foreground-muted/50 uppercase"
+        >
+          {column.title}
+        </h3>
+        <div class="mt-1 flex flex-col gap-3">
+          {#each column.links as link (link.href)}
+            {@const Icon = link.icon}
+            <a
+              href={link.href}
+              class="menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200"
+            >
+              <span
+                class="group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-[#f472b6] group-active/link:scale-[0.95]"
+              >
+                <Icon size={20} />
+              </span>
+              <span class="min-w-0 flex-1 leading-tight">
+                <span class="block text-sm font-medium text-foreground">
+                  {link.label}
+                </span>
+                <span class="mt-1 block text-sm leading-snug text-foreground-muted">
+                  {link.description}
+                </span>
+              </span>
+              <ChevronRight
+                class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/link:text-[#f472b6]"
+                size={16}
+              />
+            </a>
+          {/each}
+        </div>
+      </div>
+    {/each}
+  </div>
+  <div data-slot="panel-footer" class="border-t border-border/70 px-5 py-3">
+    <a
+      href="/status"
+      class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
+    >
+      Статус
+      <ChevronRight size={14} />
+    </a>
+  </div>
+{/snippet}
+
+{#snippet solutionsPanel()}
+  <div
+    data-slot="row"
+    class="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 lg:grid-cols-4"
+  >
+    {#each solutionLinks as link (link.href)}
+      {@const Icon = link.icon}
+      <a
+        href={link.href}
+        class="menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200"
+      >
+        <span
+          class="group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-[#f472b6] group-active/link:scale-[0.95]"
+        >
+          <Icon size={20} />
+        </span>
+        <span class="min-w-0 flex-1 leading-tight">
+          <span class="block text-sm font-medium text-foreground">
+            {link.label}
+          </span>
+          <span class="mt-1 block text-sm leading-snug text-foreground-muted">
+            {link.description}
+          </span>
+        </span>
+      </a>
+    {/each}
+  </div>
+{/snippet}
+
+{#snippet resourcesPanel()}
+  <div
+    data-slot="row"
+    class="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3"
+  >
+    {#each resourceLinks as link (link.href)}
+      {@const Icon = link.icon}
+      <a
+        href={link.href}
+        class="menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200"
+      >
+        <span
+          class="group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-[#f472b6] group-active/link:scale-[0.95]"
+        >
+          <Icon size={20} />
+        </span>
+        <span class="min-w-0 flex-1 leading-tight">
+          <span class="block text-sm font-medium text-foreground">
+            {link.label}
+          </span>
+          <span class="mt-1 block text-sm leading-snug text-foreground-muted">
+            {link.description}
+          </span>
+        </span>
+      </a>
+    {/each}
+  </div>
+  <div data-slot="panel-footer" class="border-t border-border/70 px-5 py-3">
+    <button
+      type="button"
+      onclick={() => contactsState.open()}
+      class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
+    >
+      Контакты
+      <ChevronRight size={14} />
+    </button>
+  </div>
+{/snippet}
+
+<FloatingMenu
+  triggers={[
+    { id: "products", label: "Продукты", panel: productsPanel },
+    { id: "solutions", label: "Решения", panel: solutionsPanel },
+    { id: "resources", label: "Ресурсы", panel: resourcesPanel },
+  ]}
+>
+  {#snippet logo()}
+    <img src="/static/logo.png" alt={brandingConfig.name} class="size-7 shrink-0" />
     <span class="font-medium lowercase tracking-tight text-foreground"
       >{brandingConfig.name}</span
     >
   {/snippet}
-  {#snippet actionsStart()}
-    <ThemeToggle />
-  {/snippet}
   {#snippet actionsEnd()}
+    <ThemeToggle />
     <button
       type="button"
       class="group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
@@ -164,6 +294,7 @@
     </button>
   {/snippet}
 </FloatingMenu>
+
 {#if contactsState.isOpen}
   <div
     class="contacts-overlay fixed inset-0 z-[100] flex items-center justify-center bg-background-inset/80 backdrop-blur-sm"
@@ -176,7 +307,7 @@
     aria-label="Закрыть контакты"
   >
     <div
-      class="contacts-modal relative w-full max-w-sm rounded-lg border border-border bg-background p-6 shadow-2xl"
+      class="contacts-modal relative w-full max-w-sm rounded-lg border border-border bg-background p-6"
       onclick={(e) => {
         e.stopPropagation();
       }}
@@ -223,6 +354,12 @@
 {/if}
 
 <style>
+  .status-link {
+    color: #f472b6;
+  }
+  .status-link:hover {
+    color: #f9a8d4;
+  }
   .contacts-overlay {
     animation: fade-in 200ms ease-out;
   }
