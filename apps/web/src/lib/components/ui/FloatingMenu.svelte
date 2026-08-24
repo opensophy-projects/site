@@ -6,9 +6,6 @@
 	import AreaRangeSolid from "carbon-icons-svelte/lib/AreaRangeSolid.svelte";
 	import Close from "carbon-icons-svelte/lib/Close.svelte";
 	import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
-	import ChevronLeft from "carbon-icons-svelte/lib/ChevronLeft.svelte";
-	import { fly, fade } from "svelte/transition";
-	import { cubicOut } from "svelte/easing";
 
 	type IconComponent = typeof Close;
 
@@ -29,12 +26,8 @@
 
 	type MenuGroup = {
 		title: string;
-		/** Иконка, показывается в списке верхнего уровня */
-		icon?: IconComponent;
 		variant?: MenuVariant;
 		links: MenuLink[];
-		/** Дополнительная колонка (например "Статус проектов") */
-		statusLinks?: MenuLink[];
 	}
 
 	type FloatingMenuClasses = {
@@ -54,9 +47,6 @@
 		linkText?: ClassValue;
 		linkUnderline?: ClassValue;
 		divider?: ClassValue;
-		topLevelList?: ClassValue;
-		topLevelItem?: ClassValue;
-		backButton?: ClassValue;
 	}
 
 	type Props = {
@@ -64,7 +54,6 @@
 		centerContent?: Snippet;
 		actionsStart?: Snippet;
 		actionsEnd?: Snippet;
-		bottomActions?: Snippet;
 		primaryButton?: MenuButton;
 		secondaryButton?: MenuButton;
 		class?: string;
@@ -76,7 +65,6 @@
 		centerContent,
 		actionsStart,
 		actionsEnd,
-		bottomActions,
 		primaryButton,
 		secondaryButton,
 		class: className,
@@ -84,40 +72,9 @@
 	}: Props = $props();
 
 	let isOpen = $state(false);
-	// null = показываем список верхнего уровня (3 слова)
-	// иначе - индекс открытой группы
-	let activeGroupIndex = $state<number | null>(null);
-
-	let activeGroup = $derived(
-		activeGroupIndex !== null ? menuGroups[activeGroupIndex] : null,
-	);
 
 	function toggle() {
 		isOpen = !isOpen;
-		if (!isOpen) {
-			// сброс на верхний уровень при закрытии, чтобы при следующем открытии
-			// снова показывались 3 слова
-			activeGroupIndex = null;
-		}
-	}
-
-	function openGroup(index: number) {
-		activeGroupIndex = index;
-	}
-
-	function goBack() {
-		activeGroupIndex = null;
-	}
-
-	function handleEscape(e: KeyboardEvent) {
-		if (e.key !== "Escape") return;
-		e.preventDefault();
-		if (activeGroupIndex !== null) {
-			// сначала возвращаемся на уровень выше, потом закрываем
-			goBack();
-		} else {
-			toggle();
-		}
 	}
 </script>
 
@@ -132,10 +89,15 @@
 			classes?.overlay,
 		)}
 		onclick={toggle}
-		onkeydown={handleEscape}
+		onkeydown={(e) => {
+			if (e.key === "Escape") {
+				e.preventDefault();
+				toggle();
+			}
+		}}
 		role="button"
 		tabindex="-1"
-		aria-label="Закрыть меню"
+		aria-label="Close menu"
 	></div>
 {/if}
 
@@ -152,7 +114,7 @@
 	<div
 		data-slot="header"
 		class={cn(
-			"relative z-20 flex w-full shrink-0 items-center justify-between px-1 py-1",
+			"relative z-20 flex w-full items-center justify-between px-1 py-1",
 			classes?.header,
 		)}
 	>
@@ -235,77 +197,38 @@
 	<div
 		data-slot="menu-wrapper"
 		class={cn(
-			"menu-wrapper flex w-full flex-col overflow-hidden bg-background-inset/40",
+			"menu-wrapper w-full overflow-hidden border-t border-border bg-background-inset/40",
 			classes?.menuWrapper,
 		)}
 	>
-		<div class="menu-wrapper-scroll flex-1 overflow-y-auto overscroll-contain">
-		{#if activeGroupIndex === null}
-			<!-- Верхний уровень: крупные hero-style слова в одну строку -->
-			<div
-				data-slot="top-level-list"
-				class={cn("flex flex-row items-stretch", classes?.topLevelList)}
-				in:fly={{ x: -24, duration: 320, easing: cubicOut }}
-				out:fade={{ duration: 120 }}
-			>
-				{#each menuGroups as group, i (group.title)}
-					<button
-						type="button"
-						onclick={() => openGroup(i)}
-						data-slot="top-level-item"
-						class={cn(
-							"top-level-link group/toplevel flex flex-1 items-center justify-center px-2 py-12 text-center transition-colors duration-200 md:py-20",
-							classes?.topLevelItem,
-						)}
-						style="--delay: {i * 60}ms"
-					>
-						<span
-							class="text-2xl font-medium tracking-tight text-foreground-muted transition-colors duration-200 group-hover/toplevel:text-accent sm:text-3xl md:text-4xl"
-						>
-							{group.title}
-						</span>
-					</button>
-				{/each}
-			</div>
-		{:else if activeGroup}
-			<!-- Второй уровень: содержимое выбранной категории -->
-			<div
-				class="flex flex-col"
-				in:fly={{ x: 24, duration: 320, easing: cubicOut }}
-				out:fade={{ duration: 120 }}
-			>
-				<button
-					type="button"
-					onclick={goBack}
-					data-slot="back-button"
-					class={cn(
-						"flex items-center gap-2 px-4 py-3 text-left text-xs font-medium tracking-wider text-foreground-muted uppercase transition-colors duration-150 hover:text-accent",
-						classes?.backButton,
-					)}
-				>
-					<ChevronLeft size={16} />
-					<span>{activeGroup.title}</span>
-				</button>
+		<div
+			data-slot="grid"
+			class={cn(
+				"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain md:max-h-none md:grid-cols-4 md:overflow-visible",
+				classes?.grid,
+			)}
+		>
+			{#each menuGroups as group (group.title)}
 				<div
-					data-slot="grid"
+					data-slot="group"
 					class={cn(
-						"grid grid-cols-1 gap-0 md:grid-cols-[minmax(0,1fr)_16rem]",
-						activeGroup.statusLinks && activeGroup.statusLinks.length > 0
-							? "md:grid-cols-[minmax(0,1fr)_16rem]"
-							: "md:grid-cols-1",
-						classes?.grid,
+						"menu-column flex flex-col gap-5 p-5 transition-colors md:min-h-[24rem] md:border-l md:border-border/70 first:md:border-l-0",
+						group.variant === "muted" ? "bg-background-muted" : "bg-transparent",
+						classes?.group,
+						group.variant === "muted" && classes?.groupMuted,
 					)}
 				>
-					<div
-						data-slot="group"
+					<h3
+						data-slot="group-title"
 						class={cn(
-							"menu-column grid grid-cols-1 gap-3 p-5 transition-colors sm:grid-cols-2",
-							activeGroup.variant === "muted" ? "bg-background-muted" : "bg-transparent",
-							classes?.group,
-							activeGroup.variant === "muted" && classes?.groupMuted,
+							"text-xs font-medium tracking-wider text-foreground-muted/50 uppercase",
+							classes?.groupTitle,
 						)}
 					>
-						{#each activeGroup.links as link, i (link.href + link.label)}
+						{group.title}
+					</h3>
+					<div class="mt-1 flex flex-col gap-3">
+						{#each group.links as link, i (link.href + link.label)}
 							{@const Icon = link.icon}
 							<a
 								href={link.href}
@@ -339,59 +262,9 @@
 							</a>
 						{/each}
 					</div>
-
-					{#if activeGroup.statusLinks && activeGroup.statusLinks.length > 0}
-						<div
-							data-slot="status-group"
-							class="flex flex-col gap-1 border-t border-border/60 p-5 md:border-t-0 md:border-l"
-						>
-							<h3
-								class="mb-2 text-xs font-medium tracking-wider text-foreground-muted/60 uppercase"
-							>
-								Статус
-							</h3>
-							{#each activeGroup.statusLinks as link, i (link.href + link.label)}
-								{@const Icon = link.icon}
-								<a
-									href={link.href}
-									onclick={link.onclick}
-									data-slot="status-link"
-									class="menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200"
-									style="--delay: {(activeGroup.links.length + i) * 40}ms"
-								>
-									<span class="menu-link-icon group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]">
-										{#if Icon}
-											<Icon size={20} />
-										{/if}
-									</span>
-									<span class="min-w-0 flex-1 leading-tight">
-										<span class="block text-sm font-medium text-foreground">
-											{link.label}
-										</span>
-										{#if link.description}
-											<span class="mt-1 block text-sm leading-snug text-foreground-muted">
-												{link.description}
-											</span>
-										{/if}
-									</span>
-									<ChevronRight class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/link:text-accent" size={16} />
-								</a>
-							{/each}
-						</div>
-					{/if}
 				</div>
-			</div>
-		{/if}
+			{/each}
 		</div>
-
-		{#if bottomActions}
-			<div
-				data-slot="bottom-actions"
-				class="flex shrink-0 flex-col gap-2 border-t border-border/60 p-4 md:hidden"
-			>
-				{@render bottomActions()}
-			</div>
-		{/if}
 	</div>
 </div>
 
@@ -440,26 +313,6 @@
 		opacity: 1;
 	}
 
-	.menu-wrapper-scroll {
-		max-height: inherit;
-	}
-
-	/* Top-level (Продукты / Категории / Услуги) stagger */
-	.top-level-link {
-		opacity: 0;
-		transform: translateY(16px);
-		transition:
-			opacity 200ms ease-out,
-			transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
-			background-color 150ms ease-out;
-		transition-delay: var(--delay, 0ms);
-	}
-
-	.floating-menu-open .top-level-link {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
 	/* Menu links stagger */
 	.menu-link {
 		opacity: 0;
@@ -479,58 +332,19 @@
 	/* Mobile adjustments */
 	@media (max-width: 767px) {
 		.floating-menu {
-			display: flex;
-			flex-direction: column;
 			transition:
 				max-width 400ms cubic-bezier(0.4, 0, 0.2, 1),
 				top 400ms cubic-bezier(0.4, 0, 0.2, 1),
 				padding-top 400ms cubic-bezier(0.4, 0, 0.2, 1),
-				border-radius 400ms cubic-bezier(0.4, 0, 0.2, 1),
-				height 400ms cubic-bezier(0.4, 0, 0.2, 1);
+				border-radius 400ms cubic-bezier(0.4, 0, 0.2, 1);
 		}
 
 		.floating-menu-open {
 			top: 0 !important;
-			left: 0 !important;
-			right: 0;
-			transform: none !important;
 			max-width: 100% !important;
-			width: 100% !important;
-			height: 100dvh;
 			padding-top: 0.5rem;
-			border-radius: 0;
-		}
-
-		.floating-menu-open [data-slot="menu-wrapper"] {
-			flex: 1;
-			display: flex;
-			flex-direction: column;
-		}
-
-		.floating-menu-open .menu-wrapper {
-			max-height: none !important;
-			flex: 1;
-		}
-
-		.floating-menu-open .menu-wrapper-scroll {
-			max-height: none;
-			flex: 1;
-		}
-
-		/* Верхний уровень в столбик на мобильном, во всю ширину, разделители-линии */
-		.floating-menu-open [data-slot="top-level-list"] {
-			flex-direction: column;
-		}
-
-		.floating-menu-open [data-slot="top-level-item"] {
-			justify-content: flex-start;
-			text-align: left;
-			padding: 1.1rem 1.25rem;
-			border-bottom: 1px solid var(--border);
-		}
-
-		.floating-menu-open [data-slot="top-level-item"] span {
-			font-size: 1.5rem;
+			border-top-left-radius: 0;
+			border-top-right-radius: 0;
 		}
 	}
 </style>
