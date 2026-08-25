@@ -2,9 +2,9 @@
 	/* eslint-disable svelte/no-navigation-without-resolve */
 	import { type ClassValue } from "clsx";
 	import type { Snippet } from "svelte";
-	import { onMount } from "svelte";
 	import { cn } from "../../utils/cn";
 	import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
+	import Close from "carbon-icons-svelte/lib/Close.svelte";
 
 	type MenuButton = {
 		label: string;
@@ -44,8 +44,6 @@
 		secondaryButton?: MenuButton;
 		class?: string;
 		classes?: FloatingMenuClasses;
-		/** Mesh-glow colors, same idea as CardProject's `colors` prop. */
-		glowColors?: string[];
 	};
 
 	let {
@@ -57,165 +55,62 @@
 		secondaryButton,
 		class: className,
 		classes,
-		glowColors = ["var(--accent)", "var(--accent-secondary)", "var(--accent)"],
 	}: Props = $props();
 
+	// Desktop: which trigger is open via hover (or click, for keyboard/touch fallback).
 	let openId = $state<string | null>(null);
-	let isOpen = $derived(openId !== null);
+	let isDesktopOpen = $derived(openId !== null);
 
-	function toggle(id: string) {
-		openId = openId === id ? null : id;
+	// Mobile: the hamburger sheet, independent of the desktop hover state.
+	let isMobileOpen = $state(false);
+	// Mobile: which trigger's panel is expanded in the accordion (independent of desktop).
+	let mobileOpenId = $state<string | null>(null);
+
+	function openDesktop(id: string) {
+		openId = id;
 	}
 
-	function close() {
+	function closeDesktop() {
 		openId = null;
 	}
 
+	function toggleDesktopClick(id: string) {
+		openId = openId === id ? null : id;
+	}
+
+	function toggleMobile() {
+		isMobileOpen = !isMobileOpen;
+		if (!isMobileOpen) mobileOpenId = null;
+	}
+
+	function closeMobile() {
+		isMobileOpen = false;
+		mobileOpenId = null;
+	}
+
+	function toggleMobileAccordion(id: string) {
+		mobileOpenId = mobileOpenId === id ? null : id;
+	}
+
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === "Escape") {
-			e.preventDefault();
-			close();
-		}
+		if (e.key !== "Escape") return;
+		e.preventDefault();
+		if (isMobileOpen) closeMobile();
+		else closeDesktop();
 	}
 
-	// ---------------------------------------------------------------------
-	// Mesh-glow border, ported from CardProject.svelte. Desktop only
-	// (pointer-tracking doesn't make sense on touch): gated by a
-	// `matchMedia("(hover: hover) and (pointer: fine)")` check.
-	// ---------------------------------------------------------------------
-	const edgeSensitivity = 30;
-	const glowRadius = 40;
-	const glowIntensity = 1.0;
-	const coneSpread = 25;
-	const fillOpacity = 0.5;
-	const borderRadius = 12; // matches rounded-lg on the root
-
-	let rootEl: HTMLDivElement;
-	let isHovered = $state(false);
-	let cursorAngle = $state(45);
-	let edgeProximity = $state(0);
-	let ready = $state(false);
-	let canHover = $state(false);
-
-	onMount(() => {
-		canHover = window.matchMedia(
-			"(hover: hover) and (pointer: fine) and (min-width: 768px)",
-		).matches;
-		if (!canHover) return;
-		const start = () => {
-			ready = true;
-		};
-		if ("requestIdleCallback" in window) {
-			requestIdleCallback(start, { timeout: 300 });
-		} else {
-			setTimeout(start, 50);
-		}
-	});
-
-	function getCenterOfElement(el: HTMLElement): [number, number] {
-		const { width, height } = el.getBoundingClientRect();
-		return [width / 2, height / 2];
-	}
-
-	function getEdgeProximity(el: HTMLElement, x: number, y: number): number {
-		const [cx, cy] = getCenterOfElement(el);
-		const dx = x - cx;
-		const dy = y - cy;
-		let kx = Infinity;
-		let ky = Infinity;
-		if (dx !== 0) kx = cx / Math.abs(dx);
-		if (dy !== 0) ky = cy / Math.abs(dy);
-		return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
-	}
-
-	function getCursorAngle(el: HTMLElement, x: number, y: number): number {
-		const [cx, cy] = getCenterOfElement(el);
-		const dx = x - cx;
-		const dy = y - cy;
-		if (dx === 0 && dy === 0) return 0;
-		const radians = Math.atan2(dy, dx);
-		let degrees = radians * (180 / Math.PI) + 90;
-		if (degrees < 0) degrees += 360;
-		return degrees;
-	}
-
-	function handlePointerMove(e: PointerEvent) {
-		if (!canHover || !rootEl) return;
-		const rect = rootEl.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-		edgeProximity = getEdgeProximity(rootEl, x, y);
-		cursorAngle = getCursorAngle(rootEl, x, y);
-	}
-
-	function handlePointerEnter() {
-		if (!canHover) return;
-		isHovered = true;
-	}
-
-	function handlePointerLeave() {
-		if (!canHover) return;
-		isHovered = false;
-	}
-
-	const GRADIENT_POSITIONS = [
-		"80% 55%",
-		"69% 34%",
-		"8% 6%",
-		"41% 38%",
-		"86% 85%",
-		"82% 18%",
-		"51% 4%",
-	];
-	const COLOR_MAP = [0, 1, 2, 0, 1, 2, 1];
-
-	function buildMeshGradients(colorsArr: string[]): string[] {
-		const gradients: string[] = [];
-		for (let i = 0; i < 7; i++) {
-			const c = colorsArr[Math.min(COLOR_MAP[i], colorsArr.length - 1)];
-			gradients.push(
-				`radial-gradient(at ${GRADIENT_POSITIONS[i]}, ${c} 0px, transparent 50%)`,
-			);
-		}
-		return gradients;
-	}
-
-	let borderOpacity = $derived(
-		isHovered
-			? Math.max(
-					0,
-					(edgeProximity * 100 - (edgeSensitivity + 20)) / (100 - (edgeSensitivity + 20)),
-				)
-			: 0,
-	);
-	let glowOpacity = $derived(
-		isHovered
-			? Math.max(0, (edgeProximity * 100 - edgeSensitivity) / (100 - edgeSensitivity))
-			: 0,
-	);
-
-	let meshGradients = $derived(ready ? buildMeshGradients(glowColors) : []);
-	let angleDeg = $derived(`${cursorAngle.toFixed(3)}deg`);
-	let borderMaskImage = $derived(
-		`conic-gradient(from ${angleDeg} at center, black ${coneSpread}%, transparent ${coneSpread + 15}%, transparent ${100 - coneSpread - 15}%, black ${100 - coneSpread}%)`,
-	);
-	let glowMaskImage = $derived(
-		`conic-gradient(from ${angleDeg} at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%)`,
-	);
-	let transitionStyle = $derived(
-		isHovered ? "opacity 0.25s ease-out" : "opacity 0.75s ease-in-out",
-	);
+	let anyOpen = $derived(isDesktopOpen || isMobileOpen);
 </script>
 
-<svelte:body style:overflow={isOpen ? "hidden" : undefined} />
-<svelte:window onkeydown={isOpen ? handleKeydown : undefined} />
+<svelte:body style:overflow={isMobileOpen ? "hidden" : undefined} />
+<svelte:window onkeydown={anyOpen ? handleKeydown : undefined} />
 
-<!-- Backdrop overlay -->
-{#if isOpen}
+<!-- Backdrop overlay: desktop dropdown only (click-away to close). Mobile sheet is full-screen, no overlay needed. -->
+{#if isDesktopOpen && !isMobileOpen}
 	<div
 		data-slot="overlay"
-		class={cn("fixed inset-0 z-40 bg-background-inset/90", classes?.overlay)}
-		onclick={close}
+		class={cn("fixed inset-0 z-40 hidden bg-background-inset/80 md:block", classes?.overlay)}
+		onclick={closeDesktop}
 		onkeydown={handleKeydown}
 		role="button"
 		tabindex="-1"
@@ -223,241 +118,294 @@
 	></div>
 {/if}
 
-<!-- Floating nav container: inset-shadow wrapper + bordered inner, same treatment as Card.svelte -->
+<!-- Floating nav container -->
 <div
-	class="fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 md:top-4 md:max-w-[70vw] lg:max-w-[64rem]"
+	data-slot="root-positioner"
+	class={cn(
+		"fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 md:top-4 md:max-w-[70vw] lg:max-w-[64rem]",
+		isMobileOpen && "mobile-open",
+	)}
 >
-	<div class="inset-shadow rounded-xl bg-background-inset p-1.5">
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		data-slot="root"
+		class={cn(
+			"floating-menu relative flex max-h-[100dvh] w-full flex-col overflow-hidden rounded-lg border border-border bg-background text-foreground",
+			className,
+			classes?.root,
+		)}
+		onmouseleave={() => {
+			if (!isMobileOpen) closeDesktop();
+		}}
+	>
 		<div
-			bind:this={rootEl}
-			data-slot="root"
-			onpointermove={handlePointerMove}
-			onpointerenter={handlePointerEnter}
-			onpointerleave={handlePointerLeave}
+			data-slot="header"
 			class={cn(
-				"floating-menu relative isolate w-full overflow-hidden rounded-lg border border-border bg-background text-foreground transition-[border-color,transform] duration-150",
-				isOpen && "floating-menu-open",
-				className,
-				classes?.root,
+				"relative z-20 flex w-full shrink-0 items-center justify-between gap-4 border-b border-transparent bg-background px-3 py-1.5",
+				classes?.header,
 			)}
-			style="transform: translate3d(0, 0, 0.01px);"
 		>
-			<!-- mesh-glow border (desktop only) -->
-			{#if canHover && ready}
-				<div
-					class="pointer-events-none absolute inset-0 -z-[1]"
-					style="
-						border-radius: {borderRadius}px;
-						border: 1px solid transparent;
-						background: {[
-						'linear-gradient(var(--background) 0 100%) padding-box',
-						'linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box',
-						...meshGradients.map((g) => `${g} border-box`),
-					].join(', ')};
-						opacity: {borderOpacity};
-						mask-image: {borderMaskImage};
-						-webkit-mask-image: {borderMaskImage};
-						transition: {transitionStyle};
-					"
-				></div>
-				<div
-					class="pointer-events-none absolute inset-0 -z-[1] mix-blend-soft-light"
-					style="
-						border-radius: {borderRadius}px;
-						background: {meshGradients.map((g) => `${g} padding-box`).join(', ')};
-						opacity: {borderOpacity * fillOpacity};
-						transition: {transitionStyle};
-					"
-				></div>
-				<span
-					class="pointer-events-none absolute z-[1] mix-blend-screen"
-					style="
-						inset: {-glowRadius}px;
-						border-radius: {borderRadius + glowRadius}px;
-						mask-image: {glowMaskImage};
-						-webkit-mask-image: {glowMaskImage};
-						opacity: {glowOpacity};
-						transition: {transitionStyle};
-					"
-				>
-					<span
-						class="absolute"
-						style="
-							inset: {glowRadius}px;
-							border-radius: {borderRadius}px;
-							box-shadow: 0 0 40px 4px color-mix(in srgb, {glowColors[0]} {glowIntensity * 60}%, transparent);
-						"
-					></span>
-				</span>
-			{/if}
+			<!-- Left: logo + wordmark -->
+			<a href="/" data-slot="logo" class="flex shrink-0 items-center gap-2" onclick={closeMobile}>
+				{#if logo}
+					{@render logo()}
+				{/if}
+			</a>
 
-			<div
-				data-slot="header"
-				class={cn(
-					"relative z-20 flex w-full items-center justify-between gap-4 px-3 py-1.5",
-					classes?.header,
-				)}
+			<!-- Center: nav triggers (desktop only, opens on hover) -->
+			<nav
+				data-slot="triggers"
+				class="hidden flex-1 items-center justify-center gap-1 md:flex"
 			>
-				<!-- Left: logo + wordmark -->
-				<a
-					href="/"
-					data-slot="logo"
-					class="flex shrink-0 items-center gap-2"
-					onclick={close}
-				>
-					{#if logo}
-						{@render logo()}
-					{/if}
-				</a>
-
-				<!-- Center: nav triggers -->
-				<nav
-					data-slot="triggers"
-					class="hidden flex-1 items-center justify-center gap-1 md:flex"
-				>
-					{#if actionsStart}
-						<div class="mr-1 flex items-center">
-							{@render actionsStart()}
-						</div>
-					{/if}
-					{#each triggers as trigger (trigger.id)}
-						<button
-							type="button"
-							onclick={() => toggle(trigger.id)}
-							data-slot="trigger"
-							data-open={openId === trigger.id}
-							class={cn(
-								"group flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm font-medium text-foreground-muted transition-colors duration-150 hover:bg-background-inset hover:text-foreground",
-								openId === trigger.id && "bg-background-inset text-foreground",
-								classes?.trigger,
-							)}
-							aria-expanded={openId === trigger.id}
-						>
-							{trigger.label}
-							<ChevronRight
-								size={14}
-								class={cn(
-									"chevron-icon rotate-90 text-foreground-muted/70 transition-transform duration-200",
-									openId === trigger.id && "-rotate-90 text-foreground",
-								)}
-							/>
-						</button>
-					{/each}
-				</nav>
-
-				<!-- Right: actions, search, theme toggle -->
-				<div
-					data-slot="actions"
-					class={cn("flex shrink-0 items-center gap-1", classes?.actions)}
-				>
-					{#if secondaryButton}
-						<a
-							href={secondaryButton.href}
-							data-slot="secondary-button"
-							class={cn(
-								"inset-shadow transition-scale hidden h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95] md:flex",
-								classes?.secondaryButton,
-							)}
-						>
-							{secondaryButton.label}
-						</a>
-					{/if}
-					{#if primaryButton}
-						<a
-							href={primaryButton.href}
-							data-slot="primary-button"
-							class={cn(
-								"inset-shadow transition-scale flex h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95]",
-								classes?.primaryButton,
-							)}
-						>
-							{primaryButton.label}
-						</a>
-					{/if}
-
-					{#if actionsEnd}
-						{@render actionsEnd()}
-					{/if}
-
-					<!-- Mobile toggle: opens the first trigger's panel as a fallback menu -->
+				{#if actionsStart}
+					<div class="mr-1 flex items-center">
+						{@render actionsStart()}
+					</div>
+				{/if}
+				{#each triggers as trigger (trigger.id)}
 					<button
 						type="button"
-						onclick={() => toggle(openId ? "" : (triggers[0]?.id ?? ""))}
-						data-slot="toggle-button"
-						data-open={isOpen}
+						onmouseenter={() => openDesktop(trigger.id)}
+						onclick={() => toggleDesktopClick(trigger.id)}
+						data-slot="trigger"
+						data-open={openId === trigger.id}
 						class={cn(
-							"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95] md:hidden",
-							classes?.toggleButton,
+							"group flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm font-medium text-foreground-muted transition-colors duration-150 hover:bg-background-inset hover:text-foreground",
+							openId === trigger.id && "bg-background-inset text-foreground",
+							classes?.trigger,
 						)}
-						aria-expanded={isOpen}
-						aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
+						aria-expanded={openId === trigger.id}
 					>
-						<span class="sr-only">{isOpen ? "Закрыть меню" : "Открыть меню"}</span>
+						{trigger.label}
 						<ChevronRight
-							size={16}
-							class={cn("rotate-90 transition-transform duration-200", isOpen && "-rotate-90")}
+							size={14}
+							class={cn(
+								"chevron-icon rotate-90 text-foreground-muted/70 transition-transform duration-200",
+								openId === trigger.id && "-rotate-90 text-foreground",
+							)}
 						/>
 					</button>
-				</div>
-			</div>
+				{/each}
+			</nav>
 
-			<!-- Dropdown panel(s) -->
-			<div
-				data-slot="menu-wrapper"
-				class={cn(
-					"menu-wrapper relative z-20 w-full overflow-hidden border-t border-border bg-background-inset/40",
-					classes?.menuWrapper,
-				)}
-			>
-				{#each triggers as trigger (trigger.id)}
+			<!-- Right: actions, search, theme toggle -->
+			<div data-slot="actions" class={cn("flex shrink-0 items-center gap-1", classes?.actions)}>
+				{#if secondaryButton}
+					<a
+						href={secondaryButton.href}
+						data-slot="secondary-button"
+						class={cn(
+							"inset-shadow transition-scale hidden h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95] md:flex",
+							classes?.secondaryButton,
+						)}
+					>
+						{secondaryButton.label}
+					</a>
+				{/if}
+				{#if primaryButton}
+					<a
+						href={primaryButton.href}
+						data-slot="primary-button"
+						class={cn(
+							"inset-shadow transition-scale flex h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95]",
+							classes?.primaryButton,
+						)}
+					>
+						{primaryButton.label}
+					</a>
+				{/if}
+
+				{#if actionsEnd}
+					{@render actionsEnd()}
+				{/if}
+
+				<!-- Hamburger toggle: mobile only -->
+				<button
+					type="button"
+					onclick={toggleMobile}
+					data-slot="toggle-button"
+					data-open={isMobileOpen}
+					class={cn(
+						"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95] md:hidden",
+						classes?.toggleButton,
+					)}
+					aria-expanded={isMobileOpen}
+					aria-label={isMobileOpen ? "Закрыть меню" : "Открыть меню"}
+				>
+					<span class="sr-only">{isMobileOpen ? "Закрыть меню" : "Открыть меню"}</span>
+					<span class="menu-toggle-icon menu-toggle-open">
+						<ChevronRight size={16} class="rotate-90" />
+					</span>
+					<span class="menu-toggle-icon menu-toggle-close">
+						<Close size={16} />
+					</span>
+				</button>
+			</div>
+		</div>
+
+		<!-- Dropdown panel(s) -->
+		<div
+			data-slot="menu-wrapper"
+			class={cn(
+				"menu-wrapper relative z-10 w-full min-h-0 border-t border-border bg-background-inset/40",
+				classes?.menuWrapper,
+			)}
+		>
+			{#each triggers as trigger (trigger.id)}
+				<div data-slot="accordion-item" class="accordion-item">
+					<!-- Mobile-only accordion header -->
+					<button
+						type="button"
+						onclick={() => toggleMobileAccordion(trigger.id)}
+						data-slot="mobile-trigger"
+						data-open={mobileOpenId === trigger.id}
+						class="mobile-trigger flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-foreground md:hidden"
+						aria-expanded={mobileOpenId === trigger.id}
+					>
+						{trigger.label}
+						<ChevronRight
+							size={16}
+							class={cn(
+								"text-foreground-muted/70 transition-transform duration-200",
+								mobileOpenId === trigger.id && "rotate-90",
+							)}
+						/>
+					</button>
+
 					<div
 						data-slot="panel"
 						class={cn(
 							"panel-content",
-							openId === trigger.id ? "block" : "hidden",
+							openId === trigger.id && "panel-content-desktop-open",
+							mobileOpenId === trigger.id && "panel-content-mobile-open",
 							classes?.panel,
 						)}
 					>
 						{@render trigger.panel()}
 					</div>
-				{/each}
-			</div>
+				</div>
+			{/each}
 		</div>
 	</div>
 </div>
 
 <style>
-	/* Menu wrapper */
-	.menu-wrapper {
-		max-height: 0;
-		opacity: 0;
-		transition:
-			max-height 400ms cubic-bezier(0.4, 0, 0.2, 1),
-			opacity 200ms ease-out;
+	/* Panels are hidden by default; each context (desktop/mobile) opts in explicitly. */
+	.panel-content {
+		display: none;
 	}
 
-	.floating-menu-open .menu-wrapper {
-		max-height: 70vh;
-		opacity: 1;
-	}
-
-	/* Mobile adjustments */
-	@media (max-width: 767px) {
-		.floating-menu {
+	/* ---- Desktop dropdown behaviour ---- */
+	@media (min-width: 768px) {
+		.menu-wrapper {
+			max-height: 0;
+			opacity: 0;
+			overflow: hidden;
 			transition:
-				max-width 400ms cubic-bezier(0.4, 0, 0.2, 1),
-				top 400ms cubic-bezier(0.4, 0, 0.2, 1),
-				padding-top 400ms cubic-bezier(0.4, 0, 0.2, 1),
-				border-radius 400ms cubic-bezier(0.4, 0, 0.2, 1);
+				max-height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+				opacity 180ms ease-out;
 		}
 
-		.floating-menu-open {
-			top: 0 !important;
-			max-width: 100% !important;
-			padding-top: 0.5rem;
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
+		[data-slot="root"]:has(.panel-content-desktop-open) .menu-wrapper {
+			max-height: 70vh;
+			opacity: 1;
+			overflow-y: auto;
 		}
+
+		.panel-content-desktop-open {
+			display: block;
+		}
+
+		.mobile-trigger {
+			display: none;
+		}
+	}
+
+	/* ---- Mobile: accordion list inside a full-screen sheet ---- */
+	@media (max-width: 767px) {
+		[data-slot="root-positioner"] {
+			transition:
+				top 350ms cubic-bezier(0.4, 0, 0.2, 1),
+				max-width 350ms cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		[data-slot="root-positioner"].mobile-open {
+			top: 0 !important;
+			left: 0 !important;
+			transform: none !important;
+			max-width: 100% !important;
+			width: 100%;
+			height: 100dvh;
+		}
+
+		[data-slot="root-positioner"].mobile-open [data-slot="root"] {
+			height: 100dvh;
+			max-height: 100dvh;
+			border-radius: 0;
+			border-left: none;
+			border-right: none;
+			border-top: none;
+		}
+
+		[data-slot="root-positioner"]:not(.mobile-open) .menu-wrapper {
+			display: none;
+		}
+
+		[data-slot="root-positioner"].mobile-open .menu-wrapper {
+			flex: 1 1 auto;
+			overflow-y: auto;
+			-webkit-overflow-scrolling: touch;
+			overscroll-behavior: contain;
+		}
+
+		.accordion-item {
+			border-bottom: 1px solid var(--border);
+		}
+		.accordion-item:last-child {
+			border-bottom: none;
+		}
+
+		.panel-content-mobile-open {
+			display: block;
+			animation: accordion-open 200ms ease-out;
+		}
+
+		@keyframes accordion-open {
+			from {
+				opacity: 0;
+				transform: translateY(-4px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	}
+
+	/* Hamburger <-> close icon cross-fade */
+	.menu-toggle-icon {
+		position: absolute;
+		opacity: 0;
+		filter: blur(4px);
+		scale: 0.25;
+		transition:
+			opacity 150ms ease-out,
+			filter 150ms ease-out,
+			scale 150ms ease-out;
+		will-change: opacity, filter, scale;
+	}
+	.menu-toggle-open {
+		opacity: 1;
+		filter: blur(0);
+		scale: 1;
+	}
+	[data-open="true"] .menu-toggle-open {
+		opacity: 0;
+		filter: blur(4px);
+		scale: 0.25;
+	}
+	[data-open="true"] .menu-toggle-close {
+		opacity: 1;
+		filter: blur(0);
+		scale: 1;
 	}
 </style>
