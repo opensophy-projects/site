@@ -2,6 +2,7 @@
   /* eslint-disable svelte/no-navigation-without-resolve */
   import { brandingConfig, siteConfig } from "$lib";
   import FloatingMenu from "$lib/components/ui/FloatingMenu.svelte";
+  import Button from "$lib/components/ui-registry/Button.svelte";
   import ThemeToggle from "$lib/components/ui/ThemeToggle.svelte";
   import DockerLogo from "$lib/components/ui/DockerLogo.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
@@ -184,7 +185,7 @@
       </div>
     {/each}
   </div>
-  <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
+  <div data-slot="panel-footer" class="hidden border-t border-border px-4 py-2.5 md:block">
     <a
       href="/status"
       class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
@@ -251,7 +252,7 @@
       </a>
     {/each}
   </div>
-  <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
+  <div data-slot="panel-footer" class="hidden border-t border-border px-4 py-2.5 md:block">
     <button
       type="button"
       onclick={() => contactsState.open()}
@@ -289,6 +290,16 @@
       <span class="sr-only">Открыть поиск</span>
       <Search size={16} />
     </button>
+  {/snippet}
+  {#snippet mobileFooter()}
+    <div class="mobile-footer-btn w-full">
+      <Button variant="secondary" size="lg" href="/status">Статус</Button>
+    </div>
+    <div class="mobile-footer-btn w-full">
+      <Button variant="primary" size="lg" onclick={() => contactsState.open()}>
+        Контакты
+      </Button>
+    </div>
   {/snippet}
 </FloatingMenu>
 
@@ -351,6 +362,15 @@
 {/if}
 
 <style>
+  .mobile-footer-btn :global(span) {
+    display: flex;
+    width: 100%;
+  }
+  .mobile-footer-btn :global(a),
+  .mobile-footer-btn :global(button) {
+    flex: 1 1 auto;
+    width: 100%;
+  }
   .status-link {
     color: var(--accent);
   }
