@@ -20,6 +20,11 @@
   import Categories from "carbon-icons-svelte/lib/Categories.svelte";
   import Tag from "carbon-icons-svelte/lib/Tag.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
+  import IbmCloudGateKeeper from "carbon-icons-svelte/lib/IbmCloudGateKeeper.svelte";
+  import AddServer from "carbon-icons-svelte/lib/AddServer.svelte";
+  import UserFavoriteAltFilled from "carbon-icons-svelte/lib/UserFavoriteAltFilled.svelte";
+  import Book from "carbon-icons-svelte/lib/Book.svelte";
+  import LocationCurrent from "carbon-icons-svelte/lib/LocationCurrent.svelte";
 
   // ---- Продукты: 3 колонки ----
   const productColumns = [
@@ -82,13 +87,13 @@
       label: "Безопасность",
       description: "Встраиваю безопасность в разработку, тестирование и запуск ваших проектов.",
       href: "/solutions/security",
-      icon: Tag,
+      icon: IbmCloudGateKeeper,
     },
     {
       label: "Инфраструктура",
       description: "Настраиваю серверы, приложения и инструменты для стабильной работы проектов.",
       href: "/solutions/infrastructure",
-      icon: Network_3,
+      icon: AddServer,
     },
     {
       label: "Политика оказания услуг",
@@ -104,7 +109,7 @@
       label: "Кейсы",
       description: "Примеры моих работ.",
       href: "/cases",
-      icon: Categories,
+      icon: UserFavoriteAltFilled,
     },
     {
       label: "Новости",
@@ -116,7 +121,7 @@
       label: "База знаний",
       description: "Понятные статьи и гайды по DevSecOps и не только.",
       href: "/article/general",
-      icon: DocumentMultiple_01,
+      icon: Book,
     },
   ];
 
@@ -129,7 +134,7 @@
     {
       label: "@opensophy",
       href: siteConfig.links.telegram,
-      icon: Email,
+      icon: LocationCurrent,
     },
     {
       label: siteConfig.links.email,
