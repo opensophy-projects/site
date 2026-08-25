@@ -338,15 +338,15 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.05;
+    opacity: 0.14;
     mix-blend-mode: overlay;
     background-repeat: repeat;
-    background-size: 180px 180px;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" result="noise"/><feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0"/></filter><rect width="100%25" height="100%25" filter="url(%23n)"/></svg>');
+    background-size: 128px 128px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" stitchTiles="stitch" result="noise"/><feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/></filter><rect width="100%25" height="100%25" filter="url(%23n)"/></svg>');
   }
 
   :global(.dark) .hero-noise {
-    opacity: 0.06;
+    opacity: 0.16;
   }
 
   /* ─── Hero Typography ──────────────────────────────────────── */
