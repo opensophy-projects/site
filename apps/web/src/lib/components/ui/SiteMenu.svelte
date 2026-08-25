@@ -15,12 +15,9 @@
   import Policy from "carbon-icons-svelte/lib/Policy.svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
   import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
-  import RuleDraft from "carbon-icons-svelte/lib/RuleDraft.svelte";
-  import SettingsAdjust from "carbon-icons-svelte/lib/SettingsAdjust.svelte";
-  import Security from "carbon-icons-svelte/lib/Security.svelte";
-  import Tools from "carbon-icons-svelte/lib/Tools.svelte";
-  import Newspaper from "carbon-icons-svelte/lib/Newspaper.svelte";
-  import PortfolioOutline from "carbon-icons-svelte/lib/PortfolioOutline.svelte";
+  import Settings from "carbon-icons-svelte/lib/Settings.svelte";
+  import Categories from "carbon-icons-svelte/lib/Categories.svelte";
+  import Tag from "carbon-icons-svelte/lib/Tag.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
 
   // ---- Продукты: 3 колонки ----
@@ -78,19 +75,19 @@
       label: "Автоматизация",
       description: "Создаю автоматизацию любого уровня — от простых задач до сложных процессов.",
       href: "/solutions/automation",
-      icon: SettingsAdjust,
+      icon: Settings,
     },
     {
       label: "Безопасность",
       description: "Встраиваю безопасность в разработку, тестирование и запуск ваших проектов.",
       href: "/solutions/security",
-      icon: Security,
+      icon: Tag,
     },
     {
       label: "Инфраструктура",
       description: "Настраиваю серверы, приложения и инструменты для стабильной работы проектов.",
       href: "/solutions/infrastructure",
-      icon: Tools,
+      icon: Network_3,
     },
     {
       label: "Политика оказания услуг",
@@ -106,19 +103,19 @@
       label: "Кейсы",
       description: "Примеры моих работ.",
       href: "/cases",
-      icon: PortfolioOutline,
+      icon: Categories,
     },
     {
       label: "Новости",
       description: "Последние новости и изменения в проекте.",
       href: "/news",
-      icon: Newspaper,
+      icon: Email,
     },
     {
       label: "База знаний",
       description: "Понятные статьи и гайды по DevSecOps и не только.",
       href: "/article/general",
-      icon: RuleDraft,
+      icon: DocumentMultiple_01,
     },
   ];
 
