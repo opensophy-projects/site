@@ -112,6 +112,7 @@
   >
     <div class="hero-card" aria-hidden="true">
       <div class="hero-bg"></div>
+      <div class="hero-noise"></div>
     </div>
 
     <div
@@ -228,6 +229,7 @@
   >
     <div class="cta-card" aria-hidden="true">
       <div class="cta-bg"></div>
+      <div class="hero-noise"></div>
     </div>
 
     <div
@@ -328,6 +330,23 @@
 
   :global(.dark) .hero-bg {
     opacity: 0.22;
+  }
+
+  /* Шумовой слой, убирающий видимые ступени (banding) градиента.
+     Не меняет цвета/расположение — только маскирует резкие переходы. */
+  .hero-noise {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-repeat: repeat;
+    background-size: 180px 180px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch" result="noise"/><feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0"/></filter><rect width="100%25" height="100%25" filter="url(%23n)"/></svg>');
+  }
+
+  :global(.dark) .hero-noise {
+    opacity: 0.06;
   }
 
   /* ─── Hero Typography ──────────────────────────────────────── */
