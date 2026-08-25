@@ -111,8 +111,40 @@
     class="hero-section relative flex w-full items-center justify-center px-6 py-24 md:py-32"
   >
     <div class="hero-card" aria-hidden="true">
-      <div class="hero-bg"></div>
-      <div class="hero-noise"></div>
+      <svg
+        class="hero-bg-svg"
+        viewBox="0 0 800 600"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <radialGradient id="heroGlow" cx="50%" cy="0%" r="125%">
+            <stop offset="40%" stop-color="#f43f5e" stop-opacity="0" />
+            <stop offset="68%" stop-color="#f43f5e" stop-opacity="0.28" />
+            <stop offset="86%" stop-color="#fda4af" stop-opacity="0.28" />
+            <stop offset="100%" stop-color="#fff1f2" stop-opacity="0.28" />
+          </radialGradient>
+          <filter id="heroNoiseFilter" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.9"
+              numOctaves="2"
+              seed="7"
+              stitchTiles="stitch"
+              result="noise"
+            />
+            <feColorMatrix
+              in="noise"
+              type="matrix"
+              values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0"
+              result="alphaNoise"
+            />
+            <feComposite in="SourceGraphic" in2="alphaNoise" operator="arithmetic" k1="0" k2="1" k3="0" k4="0" result="dimmed" />
+            <feBlend in="SourceGraphic" in2="alphaNoise" mode="overlay" />
+          </filter>
+        </defs>
+        <rect width="800" height="600" fill="url(#heroGlow)" filter="url(#heroNoiseFilter)" />
+      </svg>
     </div>
 
     <div
@@ -228,8 +260,39 @@
     class="cta-section relative flex w-full items-center justify-center px-6 py-24 md:py-32"
   >
     <div class="cta-card" aria-hidden="true">
-      <div class="cta-bg"></div>
-      <div class="hero-noise"></div>
+      <svg
+        class="hero-bg-svg"
+        viewBox="0 0 800 600"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <radialGradient id="ctaGlow" cx="50%" cy="100%" r="125%">
+            <stop offset="40%" stop-color="#f43f5e" stop-opacity="0" />
+            <stop offset="68%" stop-color="#f43f5e" stop-opacity="0.28" />
+            <stop offset="86%" stop-color="#fda4af" stop-opacity="0.28" />
+            <stop offset="100%" stop-color="#fff1f2" stop-opacity="0.28" />
+          </radialGradient>
+          <filter id="ctaNoiseFilter" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.9"
+              numOctaves="2"
+              seed="11"
+              stitchTiles="stitch"
+              result="noise"
+            />
+            <feColorMatrix
+              in="noise"
+              type="matrix"
+              values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.05 0"
+              result="alphaNoise"
+            />
+            <feBlend in="SourceGraphic" in2="alphaNoise" mode="overlay" />
+          </filter>
+        </defs>
+        <rect width="800" height="600" fill="url(#ctaGlow)" filter="url(#ctaNoiseFilter)" />
+      </svg>
     </div>
 
     <div
@@ -314,39 +377,19 @@
     box-shadow: none;
   }
 
-  .hero-bg {
+  /* SVG-заливка с шумом, встроенным прямо в фильтр градиента (feTurbulence).
+     Это устраняет banding надёжнее, чем CSS background + DOM-слой с
+     mix-blend-mode, потому что шум смешивается на этапе рендеринга самого
+     градиента, а не композитится браузером отдельным слоем поверх (там
+     возможны артефакты масштабирования / GPU-слоёв, независимо от силы
+     блендинга). Цвета, стопы и расположение полностью совпадают со старым
+     CSS-градиентом — просто другой механизм отрисовки. */
+  .hero-bg-svg {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    background: radial-gradient(
-      125% 125% at 50% 0%,
-      transparent 40%,
-      #f43f5e 68%,
-      #fda4af 86%,
-      #fff1f2 100%
-    );
-    opacity: 0.28;
-  }
-
-  :global(.dark) .hero-bg {
-    opacity: 0.22;
-  }
-
-  /* Шумовой слой, убирающий видимые ступени (banding) градиента.
-     Не меняет цвета/расположение — только маскирует резкие переходы. */
-  .hero-noise {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.14;
-    mix-blend-mode: overlay;
-    background-repeat: repeat;
-    background-size: 128px 128px;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" stitchTiles="stitch" result="noise"/><feColorMatrix in="noise" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0"/></filter><rect width="100%25" height="100%25" filter="url(%23n)"/></svg>');
-  }
-
-  :global(.dark) .hero-noise {
-    opacity: 0.16;
   }
 
   /* ─── Hero Typography ──────────────────────────────────────── */
@@ -388,24 +431,8 @@
     box-shadow: none;
   }
 
-  /* Градиент сверху вниз (at 50% 0% → прозрачный внизу) */
-  .cta-bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      125% 125% at 50% 100%,
-      transparent 40%,
-      #f43f5e 68%,
-      #fda4af 86%,
-      #fff1f2 100%
-    );
-    opacity: 0.28;
-  }
-
-  :global(.dark) .cta-bg {
-    opacity: 0.22;
-  }
+  /* CTA использует ту же .hero-bg-svg разметку — градиент задан
+     через <radialGradient id="ctaGlow"> прямо в разметке секции. */
 
   /* CTA Typography */
   .cta-heading {
