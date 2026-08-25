@@ -313,13 +313,12 @@
   }
 
   /* Blur физически размывает резкие 8-битные ступени градиента в непрерывный
-     переход. Радиус увеличен до 60px — на таком крупном элементе меньший
-     блюр сглаживает только часть перехода. Слой сделан больше видимой
-     области (inset: -160px) и обрезается родительским overflow:hidden,
-     чтобы блюр не давал светлую кайму по краям. */
+     переход. inset остаётся 0, чтобы позиция градиента (в т.ч. белый край
+     у offset 100%) совпадала с видимой картой — родительский overflow:hidden
+     и так обрезает блюр-кайму по границе контейнера, расширять слой не нужно. */
   .hero-bg {
     position: absolute;
-    inset: -160px;
+    inset: 0;
     pointer-events: none;
     background: radial-gradient(
       125% 125% at 50% 0%,
@@ -328,7 +327,7 @@
       #fda4af 86%,
       #fff1f2 100%
     );
-    filter: blur(60px);
+    filter: blur(90px);
     opacity: 0.28;
   }
 
@@ -377,7 +376,7 @@
 
   .cta-bg {
     position: absolute;
-    inset: -160px;
+    inset: 0;
     pointer-events: none;
     background: radial-gradient(
       125% 125% at 50% 100%,
@@ -386,7 +385,7 @@
       #fda4af 86%,
       #fff1f2 100%
     );
-    filter: blur(60px);
+    filter: blur(90px);
     opacity: 0.28;
   }
 
