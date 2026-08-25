@@ -313,13 +313,13 @@
   }
 
   /* Blur физически размывает резкие 8-битные ступени градиента в непрерывный
-     переход — единственный способ, который убирает баннинг без артефактов
-     blend-режимов или SVG-фильтров. Слой сделан больше видимой области
-     (inset: -60px) и обрезается родительским overflow:hidden, чтобы блюр
-     не давал светлую кайму по краям. */
+     переход. Радиус увеличен до 60px — на таком крупном элементе меньший
+     блюр сглаживает только часть перехода. Слой сделан больше видимой
+     области (inset: -160px) и обрезается родительским overflow:hidden,
+     чтобы блюр не давал светлую кайму по краям. */
   .hero-bg {
     position: absolute;
-    inset: -60px;
+    inset: -160px;
     pointer-events: none;
     background: radial-gradient(
       125% 125% at 50% 0%,
@@ -328,7 +328,7 @@
       #fda4af 86%,
       #fff1f2 100%
     );
-    filter: blur(24px);
+    filter: blur(60px);
     opacity: 0.28;
   }
 
@@ -377,7 +377,7 @@
 
   .cta-bg {
     position: absolute;
-    inset: -60px;
+    inset: -160px;
     pointer-events: none;
     background: radial-gradient(
       125% 125% at 50% 100%,
@@ -386,7 +386,7 @@
       #fda4af 86%,
       #fff1f2 100%
     );
-    filter: blur(24px);
+    filter: blur(60px);
     opacity: 0.28;
   }
 
