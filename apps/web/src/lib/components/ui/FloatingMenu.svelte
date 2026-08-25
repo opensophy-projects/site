@@ -4,7 +4,7 @@
 	import type { Snippet } from "svelte";
 	import { onMount } from "svelte";
 	import { cn } from "../../utils/cn";
-	import ChevronDown from "carbon-icons-svelte/lib/ChevronDown.svelte";
+	import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
 
 	type MenuButton = {
 		label: string;
@@ -228,6 +228,7 @@
 	class="fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 md:top-4 md:max-w-[70vw] lg:max-w-[64rem]"
 >
 	<div class="inset-shadow rounded-xl bg-background-inset p-1.5">
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			bind:this={rootEl}
 			data-slot="root"
@@ -334,11 +335,11 @@
 							aria-expanded={openId === trigger.id}
 						>
 							{trigger.label}
-							<ChevronDown
+							<ChevronRight
 								size={14}
 								class={cn(
-									"chevron-icon text-foreground-muted/70 transition-transform duration-200",
-									openId === trigger.id && "rotate-180 text-foreground",
+									"chevron-icon rotate-90 text-foreground-muted/70 transition-transform duration-200",
+									openId === trigger.id && "-rotate-90 text-foreground",
 								)}
 							/>
 						</button>
@@ -393,9 +394,9 @@
 						aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
 					>
 						<span class="sr-only">{isOpen ? "Закрыть меню" : "Открыть меню"}</span>
-						<ChevronDown
+						<ChevronRight
 							size={16}
-							class={cn("transition-transform duration-200", isOpen && "rotate-180")}
+							class={cn("rotate-90 transition-transform duration-200", isOpen && "-rotate-90")}
 						/>
 					</button>
 				</div>
