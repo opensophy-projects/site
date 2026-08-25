@@ -399,39 +399,33 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image:
-      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.05"/></svg>'),
-      radial-gradient(
-        125% 125% at 50% 100%,
-        transparent 40%,
-        transparent 43%,
-        color-mix(in srgb, #f43f5e 12%, transparent) 46%,
-        color-mix(in srgb, #f43f5e 24%, transparent) 49%,
-        color-mix(in srgb, #f43f5e 38%, transparent) 52%,
-        color-mix(in srgb, #f43f5e 52%, transparent) 55%,
-        color-mix(in srgb, #f43f5e 66%, transparent) 58%,
-        color-mix(in srgb, #f43f5e 80%, transparent) 61%,
-        color-mix(in srgb, #f43f5e 92%, transparent) 65%,
-        #f43f5e 68%,
-        color-mix(in srgb, #f43f5e 85%, #fda4af 15%) 72%,
-        color-mix(in srgb, #f43f5e 65%, #fda4af 35%) 76%,
-        color-mix(in srgb, #f43f5e 45%, #fda4af 55%) 80%,
-        color-mix(in srgb, #f43f5e 25%, #fda4af 75%) 83%,
-        #fda4af 86%,
-        color-mix(in srgb, #fda4af 80%, #fff1f2 20%) 90%,
-        color-mix(in srgb, #fda4af 55%, #fff1f2 45%) 93%,
-        color-mix(in srgb, #fda4af 30%, #fff1f2 70%) 96%,
-        color-mix(in srgb, #fda4af 12%, #fff1f2 88%) 98%,
-        #fff1f2 100%
-      );
-    background-repeat: repeat, no-repeat;
-    background-size: 64px 64px, 100% 100%;
-    background-blend-mode: soft-light, normal;
-    opacity: 0.28;
+    background: radial-gradient(
+      125% 125% at 50% 100%,
+      rgba(244, 63, 94, 0) 40%,
+      rgba(244, 63, 94, 0.02) 43%,
+      rgba(244, 63, 94, 0.045) 46%,
+      rgba(244, 63, 94, 0.075) 49%,
+      rgba(244, 63, 94, 0.11) 52%,
+      rgba(244, 63, 94, 0.15) 55%,
+      rgba(244, 63, 94, 0.185) 58%,
+      rgba(244, 63, 94, 0.22) 61%,
+      rgba(244, 63, 94, 0.255) 65%,
+      rgba(244, 63, 94, 0.28) 68%,
+      rgba(248, 92, 116, 0.28) 72%,
+      rgba(251, 121, 138, 0.28) 76%,
+      rgba(253, 143, 156, 0.28) 80%,
+      rgba(253, 158, 169, 0.28) 83%,
+      rgba(253, 164, 175, 0.28) 86%,
+      rgba(254, 190, 197, 0.28) 90%,
+      rgba(254, 210, 214, 0.28) 93%,
+      rgba(255, 227, 230, 0.28) 96%,
+      rgba(255, 238, 240, 0.28) 98%,
+      rgba(255, 241, 242, 0.28) 100%
+    );
   }
 
   :global(.dark) .cta-bg {
-    opacity: 0.22;
+    opacity: 0.79;
   }
 
   /* CTA Typography */
