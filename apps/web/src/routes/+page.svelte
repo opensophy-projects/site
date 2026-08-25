@@ -312,37 +312,44 @@
     box-shadow: none;
   }
 
-  /* Много мелких стопов (шаг ~3%) вместо крупных скачков — так каждый
-     8-битный "уровень" градиента ближе к соседнему, и переход выглядит
-     непрерывным. Никакого blur/filter — они давали побочные тени по краям
-     скруглённого контейнера. Итоговые видимые цвета и позиция те же самые. */
+  /* Много мелких стопов (шаг ~3%) сглаживают крупные ступени градиента.
+     Поверх, в том же свойстве background (не отдельным DOM-слоем и не
+     filter — оба варианта давали артефакты/тени), добавлен очень лёгкий
+     шумовой слой через background-image + background-blend-mode. Он
+     рендерится в один проход с градиентом, поэтому не создаёт побочных
+     теней по скруглённым краям. Итоговые цвета/позиция не меняются. */
   .hero-bg {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(
-      125% 125% at 50% 0%,
-      transparent 40%,
-      transparent 43%,
-      color-mix(in srgb, #f43f5e 12%, transparent) 46%,
-      color-mix(in srgb, #f43f5e 24%, transparent) 49%,
-      color-mix(in srgb, #f43f5e 38%, transparent) 52%,
-      color-mix(in srgb, #f43f5e 52%, transparent) 55%,
-      color-mix(in srgb, #f43f5e 66%, transparent) 58%,
-      color-mix(in srgb, #f43f5e 80%, transparent) 61%,
-      color-mix(in srgb, #f43f5e 92%, transparent) 65%,
-      #f43f5e 68%,
-      color-mix(in srgb, #f43f5e 85%, #fda4af 15%) 72%,
-      color-mix(in srgb, #f43f5e 65%, #fda4af 35%) 76%,
-      color-mix(in srgb, #f43f5e 45%, #fda4af 55%) 80%,
-      color-mix(in srgb, #f43f5e 25%, #fda4af 75%) 83%,
-      #fda4af 86%,
-      color-mix(in srgb, #fda4af 80%, #fff1f2 20%) 90%,
-      color-mix(in srgb, #fda4af 55%, #fff1f2 45%) 93%,
-      color-mix(in srgb, #fda4af 30%, #fff1f2 70%) 96%,
-      color-mix(in srgb, #fda4af 12%, #fff1f2 88%) 98%,
-      #fff1f2 100%
-    );
+    background-image:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.05"/></svg>'),
+      radial-gradient(
+        125% 125% at 50% 0%,
+        transparent 40%,
+        transparent 43%,
+        color-mix(in srgb, #f43f5e 12%, transparent) 46%,
+        color-mix(in srgb, #f43f5e 24%, transparent) 49%,
+        color-mix(in srgb, #f43f5e 38%, transparent) 52%,
+        color-mix(in srgb, #f43f5e 52%, transparent) 55%,
+        color-mix(in srgb, #f43f5e 66%, transparent) 58%,
+        color-mix(in srgb, #f43f5e 80%, transparent) 61%,
+        color-mix(in srgb, #f43f5e 92%, transparent) 65%,
+        #f43f5e 68%,
+        color-mix(in srgb, #f43f5e 85%, #fda4af 15%) 72%,
+        color-mix(in srgb, #f43f5e 65%, #fda4af 35%) 76%,
+        color-mix(in srgb, #f43f5e 45%, #fda4af 55%) 80%,
+        color-mix(in srgb, #f43f5e 25%, #fda4af 75%) 83%,
+        #fda4af 86%,
+        color-mix(in srgb, #fda4af 80%, #fff1f2 20%) 90%,
+        color-mix(in srgb, #fda4af 55%, #fff1f2 45%) 93%,
+        color-mix(in srgb, #fda4af 30%, #fff1f2 70%) 96%,
+        color-mix(in srgb, #fda4af 12%, #fff1f2 88%) 98%,
+        #fff1f2 100%
+      );
+    background-repeat: repeat, no-repeat;
+    background-size: 64px 64px, 100% 100%;
+    background-blend-mode: soft-light, normal;
     opacity: 0.28;
   }
 
@@ -393,29 +400,34 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(
-      125% 125% at 50% 100%,
-      transparent 40%,
-      transparent 43%,
-      color-mix(in srgb, #f43f5e 12%, transparent) 46%,
-      color-mix(in srgb, #f43f5e 24%, transparent) 49%,
-      color-mix(in srgb, #f43f5e 38%, transparent) 52%,
-      color-mix(in srgb, #f43f5e 52%, transparent) 55%,
-      color-mix(in srgb, #f43f5e 66%, transparent) 58%,
-      color-mix(in srgb, #f43f5e 80%, transparent) 61%,
-      color-mix(in srgb, #f43f5e 92%, transparent) 65%,
-      #f43f5e 68%,
-      color-mix(in srgb, #f43f5e 85%, #fda4af 15%) 72%,
-      color-mix(in srgb, #f43f5e 65%, #fda4af 35%) 76%,
-      color-mix(in srgb, #f43f5e 45%, #fda4af 55%) 80%,
-      color-mix(in srgb, #f43f5e 25%, #fda4af 75%) 83%,
-      #fda4af 86%,
-      color-mix(in srgb, #fda4af 80%, #fff1f2 20%) 90%,
-      color-mix(in srgb, #fda4af 55%, #fff1f2 45%) 93%,
-      color-mix(in srgb, #fda4af 30%, #fff1f2 70%) 96%,
-      color-mix(in srgb, #fda4af 12%, #fff1f2 88%) 98%,
-      #fff1f2 100%
-    );
+    background-image:
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.05"/></svg>'),
+      radial-gradient(
+        125% 125% at 50% 100%,
+        transparent 40%,
+        transparent 43%,
+        color-mix(in srgb, #f43f5e 12%, transparent) 46%,
+        color-mix(in srgb, #f43f5e 24%, transparent) 49%,
+        color-mix(in srgb, #f43f5e 38%, transparent) 52%,
+        color-mix(in srgb, #f43f5e 52%, transparent) 55%,
+        color-mix(in srgb, #f43f5e 66%, transparent) 58%,
+        color-mix(in srgb, #f43f5e 80%, transparent) 61%,
+        color-mix(in srgb, #f43f5e 92%, transparent) 65%,
+        #f43f5e 68%,
+        color-mix(in srgb, #f43f5e 85%, #fda4af 15%) 72%,
+        color-mix(in srgb, #f43f5e 65%, #fda4af 35%) 76%,
+        color-mix(in srgb, #f43f5e 45%, #fda4af 55%) 80%,
+        color-mix(in srgb, #f43f5e 25%, #fda4af 75%) 83%,
+        #fda4af 86%,
+        color-mix(in srgb, #fda4af 80%, #fff1f2 20%) 90%,
+        color-mix(in srgb, #fda4af 55%, #fff1f2 45%) 93%,
+        color-mix(in srgb, #fda4af 30%, #fff1f2 70%) 96%,
+        color-mix(in srgb, #fda4af 12%, #fff1f2 88%) 98%,
+        #fff1f2 100%
+      );
+    background-repeat: repeat, no-repeat;
+    background-size: 64px 64px, 100% 100%;
+    background-blend-mode: soft-light, normal;
     opacity: 0.28;
   }
 
