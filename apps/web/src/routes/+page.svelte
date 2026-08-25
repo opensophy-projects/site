@@ -112,6 +112,7 @@
   >
     <div class="hero-card" aria-hidden="true">
       <div class="hero-bg"></div>
+      <div class="hero-glow-blob"></div>
     </div>
 
     <div
@@ -228,6 +229,7 @@
   >
     <div class="cta-card" aria-hidden="true">
       <div class="cta-bg"></div>
+      <div class="cta-glow-blob"></div>
     </div>
 
     <div
@@ -351,6 +353,32 @@
     opacity: 0.79;
   }
 
+  /* Компактное blurred-пятно поверх базового градиента (идея из другого
+     обсуждения): вместо растягивания blur на весь контейнер (это давало
+     тени по скруглённым углам в прошлых попытках), берём небольшой
+     эллипс строго внутри видимой области и сильно размываем именно его.
+     Он не касается краёв .hero-card, поэтому overflow:hidden не обрезает
+     размытую кромку — паразитных теней быть не должно. Даёт более
+     концентрированное и мягкое свечение в центре сверху, дополнительно
+     маскируя остаточный баннинг у базового градиента. */
+  .hero-glow-blob {
+    position: absolute;
+    left: 50%;
+    top: -10%;
+    width: 70%;
+    height: 60%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: #f43f5e;
+    filter: blur(90px);
+    opacity: 0.22;
+    pointer-events: none;
+  }
+
+  :global(.dark) .hero-glow-blob {
+    opacity: 0.16;
+  }
+
   /* ─── Hero Typography ──────────────────────────────────────── */
   .hero-name {
     font-size: clamp(3rem, 8vw, 5.5rem);
@@ -421,6 +449,24 @@
 
   :global(.dark) .cta-bg {
     opacity: 0.79;
+  }
+
+  .cta-glow-blob {
+    position: absolute;
+    left: 50%;
+    bottom: -10%;
+    width: 70%;
+    height: 60%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: #f43f5e;
+    filter: blur(90px);
+    opacity: 0.22;
+    pointer-events: none;
+  }
+
+  :global(.dark) .cta-glow-blob {
+    opacity: 0.16;
   }
 
   /* CTA Typography */
