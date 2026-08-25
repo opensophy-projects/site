@@ -20,7 +20,7 @@
 	type MenuTrigger = {
 		id: string;
 		label: string;
-		panel: Snippet;
+		panel: Snippet<[boolean]>;
 	};
 
 	type FloatingMenuClasses = {
@@ -294,12 +294,12 @@
 								onclick={() => toggleMobileAccordion(trigger.id)}
 								data-slot="mobile-trigger"
 								data-open={mobileOpenId === trigger.id}
-								class="flex w-full items-center justify-between px-4 py-5 text-left text-base font-medium text-foreground"
+								class="flex w-full items-center justify-between px-5 py-6 text-left text-lg font-medium text-foreground"
 								aria-expanded={mobileOpenId === trigger.id}
 							>
 								{trigger.label}
 								<ChevronRight
-									size={18}
+									size={20}
 									class={cn(
 										"text-foreground-muted/70 transition-transform duration-200",
 										mobileOpenId === trigger.id && "rotate-90",
@@ -309,7 +309,7 @@
 
 							{#if mobileOpenId === trigger.id}
 								<div data-slot="panel" class={cn("panel-content-mobile", classes?.panel)}>
-									{@render trigger.panel()}
+									{@render trigger.panel(true)}
 								</div>
 							{/if}
 						</div>
@@ -320,7 +320,7 @@
 				{#if mobileFooter}
 					<div
 						data-slot="mobile-footer"
-						class="relative z-10 flex shrink-0 flex-col gap-2 border-t border-border bg-background p-4"
+						class="relative z-10 flex shrink-0 flex-col gap-2 bg-background p-4"
 						style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));"
 					>
 						{@render mobileFooter()}
@@ -338,7 +338,7 @@
 				{#each triggers as trigger (trigger.id)}
 					{#if openId === trigger.id}
 						<div data-slot="panel" class={cn("panel-content-desktop", classes?.panel)}>
-							{@render trigger.panel()}
+							{@render trigger.panel(false)}
 						</div>
 					{/if}
 				{/each}
