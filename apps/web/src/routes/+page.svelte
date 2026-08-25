@@ -319,11 +319,24 @@
     background: radial-gradient(
       125% 125% at 50% 0%,
       transparent 40%,
+      color-mix(in oklch, #f43f5e 20%, transparent) 52%,
+      color-mix(in oklch, #f43f5e 55%, transparent) 62%,
       #f43f5e 68%,
       #fda4af 86%,
       #fff1f2 100%
     );
     opacity: 0.28;
+  }
+
+  /* Noise overlay to break up gradient banding on the glow */
+  .hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   :global(.dark) .hero-bg {
@@ -369,7 +382,7 @@
     box-shadow: none;
   }
 
-  /* Градиент сверху вниз (at 50% 0% → прозрачный внизу) */
+  /* Градиент сверху вниз (at 50% 100% → прозрачный внизу) */
   .cta-bg {
     position: absolute;
     inset: 0;
@@ -377,11 +390,24 @@
     background: radial-gradient(
       125% 125% at 50% 100%,
       transparent 40%,
+      color-mix(in oklch, #f43f5e 20%, transparent) 52%,
+      color-mix(in oklch, #f43f5e 55%, transparent) 62%,
       #f43f5e 68%,
       #fda4af 86%,
       #fff1f2 100%
     );
     opacity: 0.28;
+  }
+
+  /* Noise overlay to break up gradient banding on the glow */
+  .cta-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   :global(.dark) .cta-bg {
