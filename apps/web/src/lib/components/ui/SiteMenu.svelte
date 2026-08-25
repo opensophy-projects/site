@@ -143,7 +143,7 @@
   }
 </script>
 
-{#snippet productsPanel()}
+{#snippet productsPanel(isMobile)}
   <div data-slot="grid" class="grid grid-cols-1 md:grid-cols-3">
     {#each productColumns as column (column.title)}
       <div
@@ -185,18 +185,20 @@
       </div>
     {/each}
   </div>
-  <div data-slot="panel-footer" class="hidden border-t border-border px-4 py-2.5 md:block">
-    <a
-      href="/status"
-      class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
-    >
-      Статус
-      <ChevronRight size={14} />
-    </a>
-  </div>
+  {#if !isMobile}
+    <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
+      <a
+        href="/status"
+        class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
+      >
+        Статус
+        <ChevronRight size={14} />
+      </a>
+    </div>
+  {/if}
 {/snippet}
 
-{#snippet solutionsPanel()}
+{#snippet solutionsPanel(isMobile)}
   <div
     data-slot="row"
     class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-4"
@@ -225,7 +227,7 @@
   </div>
 {/snippet}
 
-{#snippet resourcesPanel()}
+{#snippet resourcesPanel(isMobile)}
   <div
     data-slot="row"
     class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3"
@@ -252,16 +254,18 @@
       </a>
     {/each}
   </div>
-  <div data-slot="panel-footer" class="hidden border-t border-border px-4 py-2.5 md:block">
-    <button
-      type="button"
-      onclick={() => contactsState.open()}
-      class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
-    >
-      Контакты
-      <ChevronRight size={14} />
-    </button>
-  </div>
+  {#if !isMobile}
+    <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
+      <button
+        type="button"
+        onclick={() => contactsState.open()}
+        class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
+      >
+        Контакты
+        <ChevronRight size={14} />
+      </button>
+    </div>
+  {/if}
 {/snippet}
 
 <FloatingMenu
