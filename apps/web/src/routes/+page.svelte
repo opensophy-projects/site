@@ -312,31 +312,23 @@
     box-shadow: none;
   }
 
-  /* Два наложенных градиента со сдвигом стопов + background-blend-mode.
-     Чистый CSS, без SVG-фильтров и DOM-слоёв с mix-blend-mode — именно они
-     давали лучевые артефакты на скриншотах. soft-light между двумя близкими,
-     но не идентичными градиентами размывает резкие границы переходов между
-     8-битными уровнями цвета, не меняя итоговый видимый цвет/расположение. */
+  /* Blur физически размывает резкие 8-битные ступени градиента в непрерывный
+     переход — единственный способ, который убирает баннинг без артефактов
+     blend-режимов или SVG-фильтров. Слой сделан больше видимой области
+     (inset: -60px) и обрезается родительским overflow:hidden, чтобы блюр
+     не давал светлую кайму по краям. */
   .hero-bg {
     position: absolute;
-    inset: 0;
+    inset: -60px;
     pointer-events: none;
-    background:
-      radial-gradient(
-        125% 125% at 50% 0%,
-        transparent 40%,
-        #f43f5e 68%,
-        #fda4af 86%,
-        #fff1f2 100%
-      ),
-      radial-gradient(
-        130% 130% at 48% 2%,
-        transparent 39%,
-        #f43f5e 67%,
-        #fda4af 85%,
-        #fff1f2 99%
-      );
-    background-blend-mode: soft-light;
+    background: radial-gradient(
+      125% 125% at 50% 0%,
+      transparent 40%,
+      #f43f5e 68%,
+      #fda4af 86%,
+      #fff1f2 100%
+    );
+    filter: blur(24px);
     opacity: 0.28;
   }
 
@@ -385,24 +377,16 @@
 
   .cta-bg {
     position: absolute;
-    inset: 0;
+    inset: -60px;
     pointer-events: none;
-    background:
-      radial-gradient(
-        125% 125% at 50% 100%,
-        transparent 40%,
-        #f43f5e 68%,
-        #fda4af 86%,
-        #fff1f2 100%
-      ),
-      radial-gradient(
-        130% 130% at 48% 98%,
-        transparent 39%,
-        #f43f5e 67%,
-        #fda4af 85%,
-        #fff1f2 99%
-      );
-    background-blend-mode: soft-light;
+    background: radial-gradient(
+      125% 125% at 50% 100%,
+      transparent 40%,
+      #f43f5e 68%,
+      #fda4af 86%,
+      #fff1f2 100%
+    );
+    filter: blur(24px);
     opacity: 0.28;
   }
 
