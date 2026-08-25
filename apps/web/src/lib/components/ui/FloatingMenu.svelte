@@ -2,33 +2,25 @@
 	/* eslint-disable svelte/no-navigation-without-resolve */
 	import { type ClassValue } from "clsx";
 	import type { Snippet } from "svelte";
+	import { onMount } from "svelte";
 	import { cn } from "../../utils/cn";
-	import AreaRangeSolid from "carbon-icons-svelte/lib/AreaRangeSolid.svelte";
-	import Close from "carbon-icons-svelte/lib/Close.svelte";
-	import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
-
-	type IconComponent = typeof Close;
-
-	type MenuVariant = "default" | "muted";
-
-	type MenuLink = {
-		label: string;
-		href: string;
-		description?: string;
-		icon?: IconComponent;
-		onclick?: (e: MouseEvent) => void;
-	}
+	import ChevronDown from "carbon-icons-svelte/lib/ChevronDown.svelte";
 
 	type MenuButton = {
 		label: string;
 		href: string;
-	}
+	};
 
-	type MenuGroup = {
-		title: string;
-		variant?: MenuVariant;
-		links: MenuLink[];
-	}
+	/**
+	 * A single top-level nav item that opens a dropdown panel.
+	 * `panel` is a snippet so each item can render its own layout
+	 * (multi-column product grid, flat link row, etc).
+	 */
+	type MenuTrigger = {
+		id: string;
+		label: string;
+		panel: Snippet;
+	};
 
 	type FloatingMenuClasses = {
 		root?: ClassValue;
@@ -39,266 +31,402 @@
 		primaryButton?: ClassValue;
 		secondaryButton?: ClassValue;
 		menuWrapper?: ClassValue;
-		grid?: ClassValue;
-		group?: ClassValue;
-		groupMuted?: ClassValue;
-		groupTitle?: ClassValue;
-		link?: ClassValue;
-		linkText?: ClassValue;
-		linkUnderline?: ClassValue;
-		divider?: ClassValue;
-	}
+		trigger?: ClassValue;
+		panel?: ClassValue;
+	};
 
 	type Props = {
-		menuGroups: MenuGroup[];
-		centerContent?: Snippet;
+		triggers: MenuTrigger[];
+		logo?: Snippet;
 		actionsStart?: Snippet;
 		actionsEnd?: Snippet;
 		primaryButton?: MenuButton;
 		secondaryButton?: MenuButton;
 		class?: string;
 		classes?: FloatingMenuClasses;
-	}
+		/** Mesh-glow colors, same idea as CardProject's `colors` prop. */
+		glowColors?: string[];
+	};
 
 	let {
-		menuGroups,
-		centerContent,
+		triggers,
+		logo,
 		actionsStart,
 		actionsEnd,
 		primaryButton,
 		secondaryButton,
 		class: className,
 		classes,
+		glowColors = ["var(--accent)", "var(--accent-secondary)", "var(--accent)"],
 	}: Props = $props();
 
-	let isOpen = $state(false);
+	let openId = $state<string | null>(null);
+	let isOpen = $derived(openId !== null);
 
-	function toggle() {
-		isOpen = !isOpen;
+	function toggle(id: string) {
+		openId = openId === id ? null : id;
 	}
+
+	function close() {
+		openId = null;
+	}
+
+	function handleKeydown(e: KeyboardEvent) {
+		if (e.key === "Escape") {
+			e.preventDefault();
+			close();
+		}
+	}
+
+	// ---------------------------------------------------------------------
+	// Mesh-glow border, ported from CardProject.svelte. Desktop only
+	// (pointer-tracking doesn't make sense on touch): gated by a
+	// `matchMedia("(hover: hover) and (pointer: fine)")` check.
+	// ---------------------------------------------------------------------
+	const edgeSensitivity = 30;
+	const glowRadius = 40;
+	const glowIntensity = 1.0;
+	const coneSpread = 25;
+	const fillOpacity = 0.5;
+	const borderRadius = 12; // matches rounded-lg on the root
+
+	let rootEl: HTMLDivElement;
+	let isHovered = $state(false);
+	let cursorAngle = $state(45);
+	let edgeProximity = $state(0);
+	let ready = $state(false);
+	let canHover = $state(false);
+
+	onMount(() => {
+		canHover = window.matchMedia(
+			"(hover: hover) and (pointer: fine) and (min-width: 768px)",
+		).matches;
+		if (!canHover) return;
+		const start = () => {
+			ready = true;
+		};
+		if ("requestIdleCallback" in window) {
+			requestIdleCallback(start, { timeout: 300 });
+		} else {
+			setTimeout(start, 50);
+		}
+	});
+
+	function getCenterOfElement(el: HTMLElement): [number, number] {
+		const { width, height } = el.getBoundingClientRect();
+		return [width / 2, height / 2];
+	}
+
+	function getEdgeProximity(el: HTMLElement, x: number, y: number): number {
+		const [cx, cy] = getCenterOfElement(el);
+		const dx = x - cx;
+		const dy = y - cy;
+		let kx = Infinity;
+		let ky = Infinity;
+		if (dx !== 0) kx = cx / Math.abs(dx);
+		if (dy !== 0) ky = cy / Math.abs(dy);
+		return Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+	}
+
+	function getCursorAngle(el: HTMLElement, x: number, y: number): number {
+		const [cx, cy] = getCenterOfElement(el);
+		const dx = x - cx;
+		const dy = y - cy;
+		if (dx === 0 && dy === 0) return 0;
+		const radians = Math.atan2(dy, dx);
+		let degrees = radians * (180 / Math.PI) + 90;
+		if (degrees < 0) degrees += 360;
+		return degrees;
+	}
+
+	function handlePointerMove(e: PointerEvent) {
+		if (!canHover || !rootEl) return;
+		const rect = rootEl.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+		edgeProximity = getEdgeProximity(rootEl, x, y);
+		cursorAngle = getCursorAngle(rootEl, x, y);
+	}
+
+	function handlePointerEnter() {
+		if (!canHover) return;
+		isHovered = true;
+	}
+
+	function handlePointerLeave() {
+		if (!canHover) return;
+		isHovered = false;
+	}
+
+	const GRADIENT_POSITIONS = [
+		"80% 55%",
+		"69% 34%",
+		"8% 6%",
+		"41% 38%",
+		"86% 85%",
+		"82% 18%",
+		"51% 4%",
+	];
+	const COLOR_MAP = [0, 1, 2, 0, 1, 2, 1];
+
+	function buildMeshGradients(colorsArr: string[]): string[] {
+		const gradients: string[] = [];
+		for (let i = 0; i < 7; i++) {
+			const c = colorsArr[Math.min(COLOR_MAP[i], colorsArr.length - 1)];
+			gradients.push(
+				`radial-gradient(at ${GRADIENT_POSITIONS[i]}, ${c} 0px, transparent 50%)`,
+			);
+		}
+		return gradients;
+	}
+
+	let borderOpacity = $derived(
+		isHovered
+			? Math.max(
+					0,
+					(edgeProximity * 100 - (edgeSensitivity + 20)) / (100 - (edgeSensitivity + 20)),
+				)
+			: 0,
+	);
+	let glowOpacity = $derived(
+		isHovered
+			? Math.max(0, (edgeProximity * 100 - edgeSensitivity) / (100 - edgeSensitivity))
+			: 0,
+	);
+
+	let meshGradients = $derived(ready ? buildMeshGradients(glowColors) : []);
+	let angleDeg = $derived(`${cursorAngle.toFixed(3)}deg`);
+	let borderMaskImage = $derived(
+		`conic-gradient(from ${angleDeg} at center, black ${coneSpread}%, transparent ${coneSpread + 15}%, transparent ${100 - coneSpread - 15}%, black ${100 - coneSpread}%)`,
+	);
+	let glowMaskImage = $derived(
+		`conic-gradient(from ${angleDeg} at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%)`,
+	);
+	let transitionStyle = $derived(
+		isHovered ? "opacity 0.25s ease-out" : "opacity 0.75s ease-in-out",
+	);
 </script>
 
 <svelte:body style:overflow={isOpen ? "hidden" : undefined} />
+<svelte:window onkeydown={isOpen ? handleKeydown : undefined} />
 
 <!-- Backdrop overlay -->
 {#if isOpen}
 	<div
 		data-slot="overlay"
-		class={cn(
-			"fixed inset-0 z-40 bg-background-inset/90",
-			classes?.overlay,
-		)}
-		onclick={toggle}
-		onkeydown={(e) => {
-			if (e.key === "Escape") {
-				e.preventDefault();
-				toggle();
-			}
-		}}
+		class={cn("fixed inset-0 z-40 bg-background-inset/90", classes?.overlay)}
+		onclick={close}
+		onkeydown={handleKeydown}
 		role="button"
 		tabindex="-1"
-		aria-label="Close menu"
+		aria-label="Закрыть меню"
 	></div>
 {/if}
 
-<!-- Floating nav container -->
+<!-- Floating nav container: inset-shadow wrapper + bordered inner, same treatment as Card.svelte -->
 <div
-	data-slot="root"
-	class={cn(
-		"floating-menu fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 overflow-hidden rounded-lg border border-border bg-background text-foreground shadow-2xl md:top-4 md:max-w-[70vw] lg:max-w-[64rem]",
-		isOpen && "floating-menu-open",
-		className,
-		classes?.root,
-	)}
+	class="fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 md:top-4 md:max-w-[70vw] lg:max-w-[64rem]"
 >
-	<div
-		data-slot="header"
-		class={cn(
-			"relative z-20 flex w-full items-center justify-between px-1 py-1",
-			classes?.header,
-		)}
-	>
-		<!-- Left: custom actions (theme toggle on the site navigation) -->
-		<div data-slot="actions-start" class="flex items-center gap-1">
-			{#if actionsStart}
-				{@render actionsStart()}
-			{/if}
-		</div>
-
-		<!-- Center: custom content -->
+	<div class="inset-shadow rounded-xl bg-background-inset p-1.5">
 		<div
-			class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform-gpu"
-			style="backface-visibility: hidden;"
-		>
-			{#if centerContent}
-				<div data-slot="center-content">
-					{@render centerContent()}
-				</div>
-			{/if}
-		</div>
-
-		<!-- Right: actions, search and menu toggle -->
-		<div
-			data-slot="actions"
-			class={cn("flex items-center gap-1", classes?.actions)}
-		>
-			{#if secondaryButton}
-				<a
-					href={secondaryButton.href}
-					data-slot="secondary-button"
-					class={cn(
-						"inset-shadow transition-scale hidden h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95] md:flex",
-						classes?.secondaryButton,
-					)}
-				>
-					{secondaryButton.label}
-				</a>
-			{/if}
-			{#if primaryButton}
-				<a
-					href={primaryButton.href}
-					data-slot="primary-button"
-					class={cn(
-						"inset-shadow transition-scale flex h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95]",
-						classes?.primaryButton,
-					)}
-				>
-					{primaryButton.label}
-				</a>
-			{/if}
-
-			{#if actionsEnd}
-				{@render actionsEnd()}
-			{/if}
-			<button
-				type="button"
-				onclick={toggle}
-				data-slot="toggle-button"
-				data-open={isOpen}
-				class={cn(
-					"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]",
-					classes?.toggleButton,
-				)}
-				aria-expanded={isOpen}
-				aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
-			>
-				<span class="sr-only">{isOpen ? "Закрыть меню" : "Открыть меню"}</span>
-				<span class="menu-toggle-icon menu-toggle-open">
-					<AreaRangeSolid size={16} />
-				</span>
-				<span class="menu-toggle-icon menu-toggle-close">
-					<Close size={16} />
-				</span>
-			</button>
-		</div>
-	</div>
-
-	<!-- Dropdown menu -->
-	<div
-		data-slot="menu-wrapper"
-		class={cn(
-			"menu-wrapper w-full overflow-hidden border-t border-border bg-background-inset/40",
-			classes?.menuWrapper,
-		)}
-	>
-		<div
-			data-slot="grid"
+			bind:this={rootEl}
+			data-slot="root"
+			onpointermove={handlePointerMove}
+			onpointerenter={handlePointerEnter}
+			onpointerleave={handlePointerLeave}
 			class={cn(
-				"grid max-h-[70vh] grid-cols-1 overflow-y-auto overscroll-contain md:max-h-none md:grid-cols-4 md:overflow-visible",
-				classes?.grid,
+				"floating-menu relative isolate w-full overflow-hidden rounded-lg border border-border bg-background text-foreground transition-[border-color,transform] duration-150",
+				isOpen && "floating-menu-open",
+				className,
+				classes?.root,
 			)}
+			style="transform: translate3d(0, 0, 0.01px);"
 		>
-			{#each menuGroups as group (group.title)}
+			<!-- mesh-glow border (desktop only) -->
+			{#if canHover && ready}
 				<div
-					data-slot="group"
-					class={cn(
-						"menu-column flex flex-col gap-5 p-5 transition-colors md:min-h-[24rem] md:border-l md:border-border/70 first:md:border-l-0",
-						group.variant === "muted" ? "bg-background-muted" : "bg-transparent",
-						classes?.group,
-						group.variant === "muted" && classes?.groupMuted,
-					)}
+					class="pointer-events-none absolute inset-0 -z-[1]"
+					style="
+						border-radius: {borderRadius}px;
+						border: 1px solid transparent;
+						background: {[
+						'linear-gradient(var(--background) 0 100%) padding-box',
+						'linear-gradient(rgb(255 255 255 / 0%) 0% 100%) border-box',
+						...meshGradients.map((g) => `${g} border-box`),
+					].join(', ')};
+						opacity: {borderOpacity};
+						mask-image: {borderMaskImage};
+						-webkit-mask-image: {borderMaskImage};
+						transition: {transitionStyle};
+					"
+				></div>
+				<div
+					class="pointer-events-none absolute inset-0 -z-[1] mix-blend-soft-light"
+					style="
+						border-radius: {borderRadius}px;
+						background: {meshGradients.map((g) => `${g} padding-box`).join(', ')};
+						opacity: {borderOpacity * fillOpacity};
+						transition: {transitionStyle};
+					"
+				></div>
+				<span
+					class="pointer-events-none absolute z-[1] mix-blend-screen"
+					style="
+						inset: {-glowRadius}px;
+						border-radius: {borderRadius + glowRadius}px;
+						mask-image: {glowMaskImage};
+						-webkit-mask-image: {glowMaskImage};
+						opacity: {glowOpacity};
+						transition: {transitionStyle};
+					"
 				>
-					<h3
-						data-slot="group-title"
+					<span
+						class="absolute"
+						style="
+							inset: {glowRadius}px;
+							border-radius: {borderRadius}px;
+							box-shadow: 0 0 40px 4px color-mix(in srgb, {glowColors[0]} {glowIntensity * 60}%, transparent);
+						"
+					></span>
+				</span>
+			{/if}
+
+			<div
+				data-slot="header"
+				class={cn(
+					"relative z-20 flex w-full items-center justify-between gap-4 px-3 py-1.5",
+					classes?.header,
+				)}
+			>
+				<!-- Left: logo + wordmark -->
+				<a
+					href="/"
+					data-slot="logo"
+					class="flex shrink-0 items-center gap-2"
+					onclick={close}
+				>
+					{#if logo}
+						{@render logo()}
+					{/if}
+				</a>
+
+				<!-- Center: nav triggers -->
+				<nav
+					data-slot="triggers"
+					class="hidden flex-1 items-center justify-center gap-1 md:flex"
+				>
+					{#if actionsStart}
+						<div class="mr-1 flex items-center">
+							{@render actionsStart()}
+						</div>
+					{/if}
+					{#each triggers as trigger (trigger.id)}
+						<button
+							type="button"
+							onclick={() => toggle(trigger.id)}
+							data-slot="trigger"
+							data-open={openId === trigger.id}
+							class={cn(
+								"group flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm font-medium text-foreground-muted transition-colors duration-150 hover:bg-background-inset hover:text-foreground",
+								openId === trigger.id && "bg-background-inset text-foreground",
+								classes?.trigger,
+							)}
+							aria-expanded={openId === trigger.id}
+						>
+							{trigger.label}
+							<ChevronDown
+								size={14}
+								class={cn(
+									"chevron-icon text-foreground-muted/70 transition-transform duration-200",
+									openId === trigger.id && "rotate-180 text-foreground",
+								)}
+							/>
+						</button>
+					{/each}
+				</nav>
+
+				<!-- Right: actions, search, theme toggle -->
+				<div
+					data-slot="actions"
+					class={cn("flex shrink-0 items-center gap-1", classes?.actions)}
+				>
+					{#if secondaryButton}
+						<a
+							href={secondaryButton.href}
+							data-slot="secondary-button"
+							class={cn(
+								"inset-shadow transition-scale hidden h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95] md:flex",
+								classes?.secondaryButton,
+							)}
+						>
+							{secondaryButton.label}
+						</a>
+					{/if}
+					{#if primaryButton}
+						<a
+							href={primaryButton.href}
+							data-slot="primary-button"
+							class={cn(
+								"inset-shadow transition-scale flex h-9 items-center justify-center rounded-sm bg-background-inset px-3 text-xs font-medium text-foreground duration-150 ease-out active:scale-[0.95]",
+								classes?.primaryButton,
+							)}
+						>
+							{primaryButton.label}
+						</a>
+					{/if}
+
+					{#if actionsEnd}
+						{@render actionsEnd()}
+					{/if}
+
+					<!-- Mobile toggle: opens the first trigger's panel as a fallback menu -->
+					<button
+						type="button"
+						onclick={() => toggle(openId ? "" : (triggers[0]?.id ?? ""))}
+						data-slot="toggle-button"
+						data-open={isOpen}
 						class={cn(
-							"text-xs font-medium tracking-wider text-foreground-muted/50 uppercase",
-							classes?.groupTitle,
+							"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95] md:hidden",
+							classes?.toggleButton,
+						)}
+						aria-expanded={isOpen}
+						aria-label={isOpen ? "Закрыть меню" : "Открыть меню"}
+					>
+						<span class="sr-only">{isOpen ? "Закрыть меню" : "Открыть меню"}</span>
+						<ChevronDown
+							size={16}
+							class={cn("transition-transform duration-200", isOpen && "rotate-180")}
+						/>
+					</button>
+				</div>
+			</div>
+
+			<!-- Dropdown panel(s) -->
+			<div
+				data-slot="menu-wrapper"
+				class={cn(
+					"menu-wrapper relative z-20 w-full overflow-hidden border-t border-border bg-background-inset/40",
+					classes?.menuWrapper,
+				)}
+			>
+				{#each triggers as trigger (trigger.id)}
+					<div
+						data-slot="panel"
+						class={cn(
+							"panel-content",
+							openId === trigger.id ? "block" : "hidden",
+							classes?.panel,
 						)}
 					>
-						{group.title}
-					</h3>
-					<div class="mt-1 flex flex-col gap-3">
-						{#each group.links as link, i (link.href + link.label)}
-							{@const Icon = link.icon}
-							<a
-								href={link.href}
-								onclick={link.onclick}
-								data-slot="link"
-								class={cn(
-									"menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200",
-									classes?.link,
-								)}
-								style="--delay: {i * 40}ms"
-							>
-								<span class="menu-link-icon group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]">
-									{#if Icon}
-										<Icon size={20} />
-									{/if}
-								</span>
-								<span class="min-w-0 flex-1 leading-tight">
-									<span
-										data-slot="link-text"
-										class={cn("block text-sm font-medium text-foreground", classes?.linkText)}
-									>
-										{link.label}
-									</span>
-									{#if link.description}
-										<span class="mt-1 block text-sm leading-snug text-foreground-muted">
-											{link.description}
-										</span>
-									{/if}
-								</span>
-								<ChevronRight class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/link:text-accent" size={16} />
-							</a>
-						{/each}
+						{@render trigger.panel()}
 					</div>
-				</div>
-			{/each}
+				{/each}
+			</div>
 		</div>
 	</div>
 </div>
 
 <style>
-	.menu-toggle-icon {
-		position: absolute;
-		opacity: 0;
-		filter: blur(4px);
-		scale: 0.25;
-		transition:
-			opacity 150ms ease-out,
-			filter 150ms ease-out,
-			scale 150ms ease-out;
-		will-change: opacity, filter, scale;
-	}
-
-	.menu-toggle-open {
-		opacity: 1;
-		filter: blur(0);
-		scale: 1;
-	}
-
-	[data-open="true"] .menu-toggle-open {
-		opacity: 0;
-		filter: blur(4px);
-		scale: 0.25;
-	}
-
-	[data-open="true"] .menu-toggle-close {
-		opacity: 1;
-		filter: blur(0);
-		scale: 1;
-	}
-
 	/* Menu wrapper */
 	.menu-wrapper {
 		max-height: 0;
@@ -311,22 +439,6 @@
 	.floating-menu-open .menu-wrapper {
 		max-height: 70vh;
 		opacity: 1;
-	}
-
-	/* Menu links stagger */
-	.menu-link {
-		opacity: 0;
-		transform: translateY(16px);
-		transition:
-			opacity 200ms ease-out,
-			transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
-			color 300ms ease-out;
-		transition-delay: var(--delay, 0ms);
-	}
-
-	.floating-menu-open .menu-link {
-		opacity: 1;
-		transform: translateY(0);
 	}
 
 	/* Mobile adjustments */
