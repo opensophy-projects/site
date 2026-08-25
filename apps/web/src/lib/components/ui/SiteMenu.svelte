@@ -147,7 +147,7 @@
     {#each productColumns as column (column.title)}
       <div
         data-slot="column"
-        class="flex flex-col gap-5 border-border/70 p-5 first:md:border-l-0 md:min-h-[16rem] md:border-l"
+        class="flex flex-col gap-3 border-border p-4 first:md:border-l-0 md:min-h-[14rem] md:border-l"
       >
         <h3
           class="text-xs font-medium tracking-wider text-foreground-muted/50 uppercase"
@@ -159,7 +159,7 @@
             {@const Icon = link.icon}
             <a
               href={link.href}
-              class="menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200"
+              class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
             >
               <span
                 class="group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]"
@@ -184,7 +184,7 @@
       </div>
     {/each}
   </div>
-  <div data-slot="panel-footer" class="border-t border-border/70 px-5 py-3">
+  <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
     <a
       href="/status"
       class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
@@ -198,13 +198,13 @@
 {#snippet solutionsPanel()}
   <div
     data-slot="row"
-    class="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 lg:grid-cols-4"
+    class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-4"
   >
     {#each solutionLinks as link (link.href)}
       {@const Icon = link.icon}
       <a
         href={link.href}
-        class="menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200"
+        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
       >
         <span
           class="group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]"
@@ -227,13 +227,13 @@
 {#snippet resourcesPanel()}
   <div
     data-slot="row"
-    class="grid grid-cols-1 gap-3 p-5 sm:grid-cols-2 lg:grid-cols-3"
+    class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3"
   >
     {#each resourceLinks as link (link.href)}
       {@const Icon = link.icon}
       <a
         href={link.href}
-        class="menu-link group/link relative flex items-center gap-3 rounded-xl p-2.5 pr-3 text-left text-foreground transition-colors duration-200"
+        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
       >
         <span
           class="group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]"
@@ -251,7 +251,7 @@
       </a>
     {/each}
   </div>
-  <div data-slot="panel-footer" class="border-t border-border/70 px-5 py-3">
+  <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
     <button
       type="button"
       onclick={() => contactsState.open()}
