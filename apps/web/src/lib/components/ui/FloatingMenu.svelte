@@ -43,6 +43,8 @@
 		actionsEnd?: Snippet;
 		primaryButton?: MenuButton;
 		secondaryButton?: MenuButton;
+		/** Rendered as a sticky footer inside the mobile full-screen sheet only. */
+		mobileFooter?: Snippet;
 		class?: string;
 		classes?: FloatingMenuClasses;
 		/** px width below which the mobile layout kicks in. Matches Tailwind's default `md` breakpoint. */
@@ -56,6 +58,7 @@
 		actionsEnd,
 		primaryButton,
 		secondaryButton,
+		mobileFooter,
 		class: className,
 		classes,
 		mobileBreakpoint = 768,
@@ -291,12 +294,12 @@
 								onclick={() => toggleMobileAccordion(trigger.id)}
 								data-slot="mobile-trigger"
 								data-open={mobileOpenId === trigger.id}
-								class="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-foreground"
+								class="flex w-full items-center justify-between px-4 py-5 text-left text-base font-medium text-foreground"
 								aria-expanded={mobileOpenId === trigger.id}
 							>
 								{trigger.label}
 								<ChevronRight
-									size={16}
+									size={18}
 									class={cn(
 										"text-foreground-muted/70 transition-transform duration-200",
 										mobileOpenId === trigger.id && "rotate-90",
@@ -312,6 +315,17 @@
 						</div>
 					{/each}
 				</div>
+
+				<!-- Sticky footer with action buttons, mobile sheet only -->
+				{#if mobileFooter}
+					<div
+						data-slot="mobile-footer"
+						class="relative z-10 flex shrink-0 flex-col gap-2 border-t border-border bg-background p-4"
+						style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));"
+					>
+						{@render mobileFooter()}
+					</div>
+				{/if}
 			{/if}
 		{:else if openId !== null}
 			<div
