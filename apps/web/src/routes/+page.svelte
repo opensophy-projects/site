@@ -112,7 +112,6 @@
   >
     <div class="hero-card" aria-hidden="true">
       <div class="hero-bg"></div>
-      <div class="hero-glow-blob"></div>
     </div>
 
     <div
@@ -229,7 +228,6 @@
   >
     <div class="cta-card" aria-hidden="true">
       <div class="cta-bg"></div>
-      <div class="cta-glow-blob"></div>
     </div>
 
     <div
@@ -314,69 +312,22 @@
     box-shadow: none;
   }
 
-  /* Форма — ellipse 125% 125%, как в исходной версии (визуально она
-     работала правильно; попытка заменить на circle сломала пропорции
-     свечения). Альфа задана прямо в стопах (rgba), а не через
-     element-level opacity — это убирает двойное квантование цвета,
-     которое давало часть видимых полос. Много мелких стопов (шаг ~3%)
-     дополнительно сглаживают переход. */
   .hero-bg {
     position: absolute;
     inset: 0;
     pointer-events: none;
     background: radial-gradient(
       125% 125% at 50% 0%,
-      rgba(244, 63, 94, 0) 40%,
-      rgba(244, 63, 94, 0.02) 43%,
-      rgba(244, 63, 94, 0.045) 46%,
-      rgba(244, 63, 94, 0.075) 49%,
-      rgba(244, 63, 94, 0.11) 52%,
-      rgba(244, 63, 94, 0.15) 55%,
-      rgba(244, 63, 94, 0.185) 58%,
-      rgba(244, 63, 94, 0.22) 61%,
-      rgba(244, 63, 94, 0.255) 65%,
-      rgba(244, 63, 94, 0.28) 68%,
-      rgba(248, 92, 116, 0.28) 72%,
-      rgba(251, 121, 138, 0.28) 76%,
-      rgba(253, 143, 156, 0.28) 80%,
-      rgba(253, 158, 169, 0.28) 83%,
-      rgba(253, 164, 175, 0.28) 86%,
-      rgba(254, 190, 197, 0.28) 90%,
-      rgba(254, 210, 214, 0.28) 93%,
-      rgba(255, 227, 230, 0.28) 96%,
-      rgba(255, 238, 240, 0.28) 98%,
-      rgba(255, 241, 242, 0.28) 100%
+      transparent 40%,
+      #f43f5e 68%,
+      #fda4af 86%,
+      #fff1f2 100%
     );
+    opacity: 0.28;
   }
 
   :global(.dark) .hero-bg {
-    opacity: 0.79;
-  }
-
-  /* Компактное blurred-пятно поверх базового градиента (идея из другого
-     обсуждения): вместо растягивания blur на весь контейнер (это давало
-     тени по скруглённым углам в прошлых попытках), берём небольшой
-     эллипс строго внутри видимой области и сильно размываем именно его.
-     Он не касается краёв .hero-card, поэтому overflow:hidden не обрезает
-     размытую кромку — паразитных теней быть не должно. Даёт более
-     концентрированное и мягкое свечение в центре сверху, дополнительно
-     маскируя остаточный баннинг у базового градиента. */
-  .hero-glow-blob {
-    position: absolute;
-    left: 50%;
-    top: -10%;
-    width: 70%;
-    height: 60%;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    background: #f43f5e;
-    filter: blur(90px);
     opacity: 0.22;
-    pointer-events: none;
-  }
-
-  :global(.dark) .hero-glow-blob {
-    opacity: 0.16;
   }
 
   /* ─── Hero Typography ──────────────────────────────────────── */
@@ -418,55 +369,23 @@
     box-shadow: none;
   }
 
+  /* Градиент сверху вниз (at 50% 0% → прозрачный внизу) */
   .cta-bg {
     position: absolute;
     inset: 0;
     pointer-events: none;
     background: radial-gradient(
       125% 125% at 50% 100%,
-      rgba(244, 63, 94, 0) 40%,
-      rgba(244, 63, 94, 0.02) 43%,
-      rgba(244, 63, 94, 0.045) 46%,
-      rgba(244, 63, 94, 0.075) 49%,
-      rgba(244, 63, 94, 0.11) 52%,
-      rgba(244, 63, 94, 0.15) 55%,
-      rgba(244, 63, 94, 0.185) 58%,
-      rgba(244, 63, 94, 0.22) 61%,
-      rgba(244, 63, 94, 0.255) 65%,
-      rgba(244, 63, 94, 0.28) 68%,
-      rgba(248, 92, 116, 0.28) 72%,
-      rgba(251, 121, 138, 0.28) 76%,
-      rgba(253, 143, 156, 0.28) 80%,
-      rgba(253, 158, 169, 0.28) 83%,
-      rgba(253, 164, 175, 0.28) 86%,
-      rgba(254, 190, 197, 0.28) 90%,
-      rgba(254, 210, 214, 0.28) 93%,
-      rgba(255, 227, 230, 0.28) 96%,
-      rgba(255, 238, 240, 0.28) 98%,
-      rgba(255, 241, 242, 0.28) 100%
+      transparent 40%,
+      #f43f5e 68%,
+      #fda4af 86%,
+      #fff1f2 100%
     );
+    opacity: 0.28;
   }
 
   :global(.dark) .cta-bg {
-    opacity: 0.79;
-  }
-
-  .cta-glow-blob {
-    position: absolute;
-    left: 50%;
-    bottom: -10%;
-    width: 70%;
-    height: 60%;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    background: #f43f5e;
-    filter: blur(90px);
     opacity: 0.22;
-    pointer-events: none;
-  }
-
-  :global(.dark) .cta-glow-blob {
-    opacity: 0.16;
   }
 
   /* CTA Typography */
