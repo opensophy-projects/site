@@ -271,7 +271,7 @@
   ]}
 >
   {#snippet logo()}
-    <img src="/static/logo.png" alt={brandingConfig.name} class="size-7 shrink-0" />
+    <img src="/logo.png" alt={brandingConfig.name} class="size-7 shrink-0" />
     <span class="font-medium lowercase tracking-tight text-foreground"
       >{brandingConfig.name}</span
     >
