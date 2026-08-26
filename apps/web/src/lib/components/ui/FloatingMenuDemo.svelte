@@ -69,6 +69,9 @@
 		portalTarget = "body",
 	}: Props = $props();
 
+	const isContained = $derived(portalTarget !== "body");
+	const positionClass = isContained ? "absolute" : "fixed";
+
 	let isOpen = $state(false);
 	let timeline: gsap.core.Timeline | null = null;
 
@@ -217,7 +220,8 @@
 	{@attach attachOverlayRef}
 	data-slot="overlay"
 	class={cn(
-		"pointer-events-none fixed inset-0 z-40 bg-background-inset/80 opacity-0 data-[open=true]:pointer-events-auto",
+		"pointer-events-none inset-0 z-40 bg-background-inset/80 opacity-0 data-[open=true]:pointer-events-auto",
+		positionClass,
 		classes?.overlay,
 	)}
 	data-open={isOpen}
@@ -238,7 +242,8 @@
 	{@attach attachContainerRef}
 	data-slot="root"
 	class={cn(
-		"fixed top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 rounded-md border border-border bg-background text-foreground shadow-md md:top-4 md:max-w-[70vw] lg:max-w-[50vw]",
+		"top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 rounded-md border border-border bg-background text-foreground shadow-md md:top-4 md:max-w-[70vw] lg:max-w-[50vw]",
+		positionClass,
 		className,
 		classes?.root,
 	)}
