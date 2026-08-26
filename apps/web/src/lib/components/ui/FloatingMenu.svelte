@@ -46,6 +46,7 @@
 		/** Rendered as a sticky footer inside the mobile full-screen sheet only. */
 		mobileFooter?: Snippet;
 		class?: string;
+		position?: "fixed" | "absolute";
 		classes?: FloatingMenuClasses;
 		/** px width below which the mobile layout kicks in. Matches Tailwind's default `md` breakpoint. */
 		mobileBreakpoint?: number;
@@ -60,6 +61,7 @@
 		secondaryButton,
 		mobileFooter,
 		class: className,
+		position = "fixed",
 		classes,
 		mobileBreakpoint = 768,
 	}: Props = $props();
@@ -138,7 +140,11 @@
 {#if isDesktopOpen}
 	<div
 		data-slot="overlay"
-		class={cn("fixed inset-0 z-40 bg-background-inset/80", classes?.overlay)}
+		class={cn(
+			position === "fixed" ? "fixed" : "absolute",
+			"inset-0 z-40 bg-background-inset/80",
+			classes?.overlay,
+		)}
 		onclick={closeDesktop}
 		onkeydown={handleKeydown}
 		role="button"
@@ -151,7 +157,8 @@
 <div
 	data-slot="root-positioner"
 	class={cn(
-		"fixed z-50",
+		position === "fixed" ? "fixed" : "absolute",
+		"z-50",
 		isMobileOpen
 			? "inset-0"
 			: "top-2 left-1/2 w-full max-w-[95vw] -translate-x-1/2 md:top-4 md:max-w-[70vw] lg:max-w-[64rem]",
