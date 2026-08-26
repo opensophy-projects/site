@@ -1,216 +1,154 @@
 ---
 title: Плавающее меню
-description: Адаптивная навигационная панель с раскрывающимися группами, мобильным полноэкранным режимом и слотами для брендинга и действий.
+description: Анимированная навигационная панель с раскрывающимися группами ссылок, плавным раскрытием на GSAP и слотами для брендинга и действий.
 ---
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import FloatingMenu from '$lib/components/ui/FloatingMenu.svelte';
-	import Button from '$lib/components/ui-registry/Button.svelte';
-	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
-	import floatingMenuSource from '$lib/components/ui/FloatingMenu.svelte?raw';
-	import ArrowRight from 'carbon-icons-svelte/lib/ArrowRight.svelte';
-	import Book from 'carbon-icons-svelte/lib/Book.svelte';
-	import Settings from 'carbon-icons-svelte/lib/Settings.svelte';
-	import Terminal from 'carbon-icons-svelte/lib/Terminal.svelte';
+	import FloatingMenuDemo from '$lib/components/ui/FloatingMenuDemo.svelte';
+	import floatingMenuDemoSource from '$lib/components/ui/FloatingMenuDemo.svelte?raw';
+	import { brandingConfig } from '$lib/config/branding';
 
-	const menuLinkClass =
-		'group flex items-center gap-3 rounded-lg p-2 text-left text-foreground transition-colors duration-200 hover:bg-background-inset';
+	let previewContainer: HTMLElement;
 
-	const products = [
-		{ label: 'Документация', description: 'Гайды и справочные материалы', href: '/docs', icon: Book },
-		{ label: 'Компоненты', description: 'Готовые блоки интерфейса', href: '/components', icon: Settings },
-		{ label: 'Шаблоны', description: 'Docker Compose для DevSecOps', href: '/templates', icon: Terminal }
+	const menuGroups = [
+		{
+			title: 'Продукты',
+			links: [
+				{ label: 'Документация', href: '/docs' },
+				{ label: 'Компоненты', href: '/components' },
+				{ label: 'Шаблоны', href: '/templates' }
+			]
+		},
+		{
+			title: 'Услуги',
+			variant: 'muted' as const,
+			links: [
+				{ label: 'Безопасность', href: '/services' },
+				{ label: 'Автоматизация', href: '/services' },
+				{ label: 'Инфраструктура', href: '/services' }
+			]
+		},
+		{
+			title: 'Ресурсы',
+			links: [
+				{ label: 'База знаний', href: '/article/general' },
+				{ label: 'Статус проектов', href: '/status' },
+				{ label: 'Как я работаю', href: '/service-policy' }
+			]
+		}
 	];
 </script>
 
 # Плавающее меню
 
-`FloatingMenu` — готовая оболочка адаптивной навигации. На широком экране группы открываются наведением или нажатием, а на мобильном меню превращается в полноэкранную панель с аккордеоном.
+`FloatingMenuDemo` — анимированная навигационная панель. Нажмите кнопку «Menu» слева, чтобы раскрыть сетку групп ссылок с плавной анимацией на GSAP: контейнер расширяется, затемнение появляется, а строки ссылок выезжают по очереди.
 
 ## Интерактивное превью
 
-Наведите курсор на пункты «Продукты», «Решения» или «Ресурсы», чтобы открыть соответствующую панель. На мобильной ширине нажмите кнопку меню, затем раскройте нужную группу.
-
-{#snippet productsPanel(isMobile)}
-	<div class="grid gap-2 p-4 md:grid-cols-3">
-		{#each products as product (product.href)}
-			{@const Icon = product.icon}
-			<a href={product.href} class={menuLinkClass}>
-				<span class="flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-accent">
-					<Icon size={18} />
-				</span>
-				<span class="min-w-0 flex-1">
-					<span class="block text-sm font-medium text-foreground">{product.label}</span>
-					<span class="mt-1 block text-xs text-foreground-muted">{product.description}</span>
-				</span>
-				<ArrowRight size={15} class="shrink-0 text-foreground-muted/60" />
-			</a>
-		{/each}
-	</div>
-	{#if !isMobile}
-		<div class="border-t border-border px-4 py-3 text-sm text-foreground-muted">
-			Все продукты собраны в одном каталоге.
-		</div>
-	{/if}
-{/snippet}
-
-{#snippet solutionsPanel(isMobile)}
-	<div class="grid gap-2 p-4 sm:grid-cols-2 lg:grid-cols-4">
-		<a href="/services" class={menuLinkClass}>
-			<span class="min-w-0"><span class="block text-sm font-medium text-foreground">Безопасность</span><span class="mt-1 block text-xs text-foreground-muted">Аудит, DevSecOps и защита инфраструктуры.</span></span>
-		</a>
-		<a href="/services" class={menuLinkClass}>
-			<span class="min-w-0"><span class="block text-sm font-medium text-foreground">Автоматизация</span><span class="mt-1 block text-xs text-foreground-muted">От bash-скриптов до сложных процессов.</span></span>
-		</a>
-		<a href="/services" class={menuLinkClass}>
-			<span class="min-w-0"><span class="block text-sm font-medium text-foreground">Инфраструктура</span><span class="mt-1 block text-xs text-foreground-muted">Стабильные серверы и понятные деплои.</span></span>
-		</a>
-		<a href="/service-policy" class={menuLinkClass}>
-			<span class="min-w-0"><span class="block text-sm font-medium text-foreground">Как я работаю</span><span class="mt-1 block text-xs text-foreground-muted">Периметр, разрешения и отчётность.</span></span>
-		</a>
-	</div>
-	{#if !isMobile}
-		<div class="border-t border-border px-4 py-3 text-right">
-			<a href="/services" class="text-sm font-medium text-accent hover:text-foreground">Все услуги</a>
-		</div>
-	{/if}
-{/snippet}
-
-{#snippet resourcesPanel(isMobile)}
-	<div class="grid gap-2 p-4 sm:grid-cols-3">
-		<a href="/article/general" class={menuLinkClass}>
-			<span class="min-w-0"><span class="block text-sm font-medium text-foreground">База знаний</span><span class="mt-1 block text-xs text-foreground-muted">Понятные статьи и практические гайды.</span></span>
-		</a>
-		<a href="/components/overview" class={menuLinkClass}>
-			<span class="min-w-0"><span class="block text-sm font-medium text-foreground">Библиотека UI</span><span class="mt-1 block text-xs text-foreground-muted">Живые примеры компонентов и исходный код.</span></span>
-		</a>
-		<a href="/status" class={menuLinkClass}>
-			<span class="min-w-0"><span class="block text-sm font-medium text-foreground">Статус проектов</span><span class="mt-1 block text-xs text-foreground-muted">Текущий прогресс и релизы.</span></span>
-		</a>
-	</div>
-	{#if !isMobile}
-		<div class="border-t border-border px-4 py-3 text-right">
-			<a href="/status" class="text-sm font-medium text-accent hover:text-foreground">Открыть статус</a>
-		</div>
-	{/if}
-{/snippet}
+Нажмите «Menu», чтобы открыть панель. Нажмите ещё раз, нажмите на затемнённую область или клавишу `Escape`, чтобы закрыть.
 
 <ComponentPreview
-	sources={[{ name: 'FloatingMenu.svelte', code: floatingMenuSource, language: 'svelte' }]}
-	class="min-h-96"
+	sources={[{ name: 'FloatingMenuDemo.svelte', code: floatingMenuDemoSource, language: 'svelte' }]}
+	class="min-h-[30rem]"
 >
-	<div class="relative h-[28rem] w-full overflow-hidden rounded-lg bg-background-inset" style="transform: translateZ(0);">
-		<FloatingMenu
-			position="absolute"
-			triggers={[
-				{ id: 'products', label: 'Продукты', panel: productsPanel },
-				{ id: 'solutions', label: 'Решения', panel: solutionsPanel },
-				{ id: 'resources', label: 'Ресурсы', panel: resourcesPanel }
-			]}
-			mobileBreakpoint={768}
-			classes={{ root: 'shadow-2xl', panel: 'bg-background' }}
+	<div
+		class="relative h-[30rem] w-full overflow-hidden rounded-lg bg-background-inset"
+		style="transform: translateZ(0);"
+		bind:this={previewContainer}
+	>
+		<FloatingMenuDemo
+			menuGroups={menuGroups}
+			portalTarget={previewContainer}
+			primaryButton={{ label: 'Начать', href: '/docs' }}
+			secondaryButton={{ label: 'Услуги', href: '/services' }}
 		>
 			{#snippet logo()}
-				<span class="flex size-7 items-center justify-center rounded-sm bg-accent text-sm font-semibold text-background">
-					O
-				</span>
-				<span class="font-medium tracking-tight text-foreground">opensophy</span>
+				<img
+					src={brandingConfig.logo}
+					alt={brandingConfig.name}
+					class="h-6 w-auto"
+				/>
+				<span class="font-medium tracking-tight text-foreground">{brandingConfig.name}</span>
 			{/snippet}
-
-			{#snippet actionsEnd()}
-				<ThemeToggle />
-			{/snippet}
-
-			{#snippet mobileFooter()}
-				<Button href="/docs" variant="secondary" size="lg">Открыть документацию</Button>
-				<Button href="/services" size="lg">Посмотреть услуги</Button>
-			{/snippet}
-		</FloatingMenu>
+		</FloatingMenuDemo>
 	</div>
 </ComponentPreview>
 
 ## Как устроено
 
-- `triggers` задаёт верхний уровень меню. Каждый пункт получает уникальный `id`, подпись и `panel` — сниппет содержимого.
-- `logo` добавляет брендинг слева в шапке.
-- `actionsStart` и `actionsEnd` предназначены для дополнительных элементов до или после навигации.
+- `menuGroups` задаёт группы ссылок. Каждая группа содержит `title`, массив `links` и опциональный `variant: "muted"` для группы с фоном.
+- `logo` — сниппет брендинга по центру шапки.
 - `primaryButton` и `secondaryButton` добавляют кнопки-ссылки в правую часть шапки.
-- `mobileFooter` показывает закреплённые действия внизу мобильной панели.
-- `classes` позволяет переопределить стили отдельных областей без изменения самого компонента.
-- `mobileBreakpoint` задаёт ширину, ниже которой включается мобильный режим. По умолчанию — 768 пикселей.
-- `position` управляет типом позиционирования: `fixed` (по умолчанию) для меню в шапке сайта или `absolute` для встраивания в ограниченный контейнер, как в превью на этой странице.
+- `classes` позволяет переопределить стили отдельных областей без изменения компонента.
+- `portalTarget` указывает, куда переносится меню через портал. По умолчанию — `"body"`; для встраивания в ограниченный контейнер передайте элемент напрямую.
 
 ## Использование
 
 ```svelte
 <script lang="ts">
-	import FloatingMenu from '$lib/components/ui/FloatingMenu.svelte';
+	import FloatingMenuDemo from '$lib/components/ui/FloatingMenuDemo.svelte';
 
-	const links = [
-		{ label: 'Документация', href: '/docs' },
-		{ label: 'Компоненты', href: '/components' }
+	const menuGroups = [
+		{
+			title: 'Продукты',
+			links: [
+				{ label: 'Документация', href: '/docs' },
+				{ label: 'Компоненты', href: '/components' }
+			]
+		},
+		{
+			title: 'Ресурсы',
+			variant: 'muted',
+			links: [
+				{ label: 'База знаний', href: '/article' },
+				{ label: 'Статус', href: '/status' }
+			]
+		}
 	];
 </script>
 
-{#snippet productsPanel(isMobile)}
-	<div class="grid gap-2 p-4 md:grid-cols-2">
-		{#each links as link (link.href)}
-			<a href={link.href} class="rounded-lg p-3 hover:bg-background-inset">
-				{link.label}
-			</a>
-		{/each}
-	</div>
-	{#if !isMobile}
-		<div class="border-t border-border px-4 py-3 text-sm text-foreground-muted">
-			Ещё больше материалов в документации
-		</div>
-	{/if}
-{/snippet}
-
-<FloatingMenu
-	triggers={[{ id: 'products', label: 'Продукты', panel: productsPanel }]}
+<FloatingMenuDemo
+	menuGroups={menuGroups}
 	primaryButton={{ label: 'Начать', href: '/docs' }}
 >
 	{#snippet logo()}
 		<span>Мой проект</span>
 	{/snippet}
-</FloatingMenu>
+</FloatingMenuDemo>
 ```
 
 ## Пропсы
 
 | Пропс | Тип | Описание |
 | --- | --- | --- |
-| `triggers` | `MenuTrigger[]` | Верхние пункты меню и их панели |
-| `logo` | `Snippet` | Брендинг в левой части шапки |
-| `actionsStart` | `Snippet` | Действия перед пунктами навигации |
-| `actionsEnd` | `Snippet` | Действия после пунктов навигации |
-| `primaryButton` | `MenuButton` | Основная кнопка-ссылка |
-| `secondaryButton` | `MenuButton` | Вторая кнопка-ссылка |
-| `mobileFooter` | `Snippet` | Закреплённые действия в мобильном режиме |
+| `menuGroups` | `MenuGroup[]` | Группы ссылок для отображения в меню |
+| `logo` | `Snippet` | Брендинг по центру шапки |
+| `primaryButton` | `MenuButton` | Основная кнопка-ссылка (акцентный цвет) |
+| `secondaryButton` | `MenuButton` | Вторая кнопка-ссылка (скрыта на мобильном) |
 | `classes` | `FloatingMenuClasses` | Классы для отдельных областей меню |
-| `mobileBreakpoint` | `number` | Порог мобильного режима в пикселях |
-| `position` | `'fixed' | 'absolute'` | Тип позиционирования меню (`fixed` по умолчанию) |
+| `portalTarget` | `HTMLElement \| string` | Куда переносится меню через портал (по умолчанию `"body"`) |
 | `class` | `string` | Дополнительный класс корневого элемента |
 
-## Структура `MenuTrigger`
+## Структура `MenuGroup`
 
 ```typescript
-type MenuTrigger = {
-	id: string;
-	label: string;
-	panel: Snippet<[boolean]>;
+type MenuGroup = {
+	title: string;
+	variant?: "default" | "muted";
+	links: { label: string; href: string }[];
 };
 ```
 
-Параметр `isMobile` внутри `panel` позволяет менять содержимое панели для мобильного режима — например, скрывать второстепенный подвал или использовать одноколоночную раскладку.
+`variant: "muted"` добавляет группе фоновый цвет, чтобы визуально выделить её среди остальных.
+
+## Анимация
+
+Меню использует GSAP для анимации раскрытия: контейнер плавно расширяется, появляется затемнение, линии гамбургера превращаются в крестик, а строки ссылок выезжают снизу с поэтапной задержкой. Анимация реверсируется при закрытии — все шаги проигрываются в обратном порядке.
 
 ## Поведение и доступность
 
-- На десктопе панель открывается наведением и нажатием.
-- Нажатие `Escape` закрывает открытую панель или мобильное меню.
-- На мобильном меню блокирует прокрутку страницы, пока открыто.
-- Переход через контрольную ширину автоматически закрывает открытые состояния.
-- Внешняя область закрывает десктопную панель нажатием.
+- Меню открывается и закрывается нажатием на кнопку «Menu».
+- Нажатие `Escape` или клик по затемнённой области закрывает меню.
+- Адаптивная раскладка: на мобильном меню раскрывается на всю ширину, на планшете и десктопе — по центру с ограничением ширины.
 - Все интерактивные элементы доступны с клавиатуры.
