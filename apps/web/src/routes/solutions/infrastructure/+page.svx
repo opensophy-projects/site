@@ -466,7 +466,6 @@ description: Услуги инфраструктуры — серверы, пр�
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		filter: drop-shadow(0 8px 18px color-mix(in srgb, var(--accent, #f43f5e) 8%, transparent));
 	}
 
 	.star-visual::before {
@@ -488,9 +487,6 @@ description: Услуги инфраструктуры — серверы, пр�
 		border: 1px solid color-mix(in srgb, var(--accent, #f43f5e) 55%, transparent);
 		border-radius: 0.65rem;
 		background: linear-gradient(145deg, color-mix(in srgb, var(--accent, #f43f5e) 28%, var(--background)), var(--background-inset));
-		box-shadow:
-			0 0 0 4px color-mix(in srgb, var(--accent, #f43f5e) 8%, transparent),
-			0 0 18px color-mix(in srgb, var(--accent, #f43f5e) 22%, transparent);
 	}
 
 	.star-center-core {
@@ -498,7 +494,6 @@ description: Услуги инфраструктуры — серверы, пр�
 		height: 0.55rem;
 		border-radius: 50%;
 		background: var(--accent, #f43f5e);
-		box-shadow: 0 0 10px var(--accent, #f43f5e);
 	}
 
 	.star-center-label {
@@ -531,19 +526,7 @@ description: Услуги инфраструктуры — серверы, пр�
 		top: 50%;
 		width: 1.85rem;
 		height: 1px;
-		background: linear-gradient(90deg, color-mix(in srgb, var(--accent, #f43f5e) 60%, transparent), color-mix(in srgb, var(--foreground) 12%, transparent));
-	}
-
-	.ray-line::after {
-		content: '';
-		position: absolute;
-		right: 0;
-		top: -2px;
-		width: 5px;
-		height: 5px;
-		border-radius: 50%;
-		background: var(--accent, #f43f5e);
-		box-shadow: 0 0 6px color-mix(in srgb, var(--accent, #f43f5e) 55%, transparent);
+		background: color-mix(in srgb, var(--foreground) 15%, transparent);
 	}
 
 	.ray-node {
