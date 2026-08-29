@@ -83,13 +83,13 @@
       href: "/solutions/automation",
       icon: Settings,
     },
-    // TODO: create /solutions/security page
-    // {
-    //   label: "Безопасность",
-    //   description: "Встраиваю безопасность в разработку, тестирование и запуск ваших проектов.",
-    //   href: "/solutions/security",
-    //   icon: IbmCloudGateKeeper,
-    // },
+    {
+      label: "Безопасность",
+      description:
+        "Встраиваю безопасность в разработку, тестирование и запуск ваших проектов.",
+      href: "/solutions/security",
+      icon: IbmCloudGateKeeper,
+    },
     // TODO: create /solutions/infrastructure page
     // {
     //   label: "Инфраструктура",
