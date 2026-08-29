@@ -97,7 +97,10 @@ description: Услуги инфраструктуры — серверы, пр�
 				<div class="card-inner">
 					<div class="visual-area">
 						<div class="star-visual" aria-hidden="true">
-							<div class="star-center"></div>
+							<div class="star-center">
+								<span class="star-center-core"></span>
+								<span class="star-center-label">proxy</span>
+							</div>
 							{#each proxyRays as ray, i (ray)}
 								<span class="star-ray" style="--ray-angle: {i * 90}deg">
 									<span class="ray-line"></span>
@@ -458,53 +461,106 @@ description: Услуги инфраструктуры — серверы, пр�
 	/* ─── Card 2: Proxy Star ───────────────────────────────────── */
 	.star-visual {
 		position: relative;
-		width: 7rem;
-		height: 7rem;
+		width: 8.5rem;
+		height: 7.5rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		filter: drop-shadow(0 8px 18px color-mix(in srgb, var(--accent, #f43f5e) 8%, transparent));
+	}
+
+	.star-visual::before {
+		content: '';
+		position: absolute;
+		inset: 0.65rem 0.8rem;
+		border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
+		border-radius: 50%;
 	}
 
 	.star-center {
-		width: 1.5rem;
-		height: 1.5rem;
+		position: relative;
+		z-index: 3;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.35rem;
+		height: 2.35rem;
+		border: 1px solid color-mix(in srgb, var(--accent, #f43f5e) 55%, transparent);
+		border-radius: 0.65rem;
+		background: linear-gradient(145deg, color-mix(in srgb, var(--accent, #f43f5e) 28%, var(--background)), var(--background-inset));
+		box-shadow:
+			0 0 0 4px color-mix(in srgb, var(--accent, #f43f5e) 8%, transparent),
+			0 0 18px color-mix(in srgb, var(--accent, #f43f5e) 22%, transparent);
+	}
+
+	.star-center-core {
+		width: 0.55rem;
+		height: 0.55rem;
 		border-radius: 50%;
 		background: var(--accent, #f43f5e);
-		box-shadow: 0 0 8px color-mix(in srgb, var(--accent, #f43f5e) 40%, transparent);
-		z-index: 2;
+		box-shadow: 0 0 10px var(--accent, #f43f5e);
+	}
+
+	.star-center-label {
+		position: absolute;
+		bottom: -1.05rem;
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.48rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--foreground-muted);
 	}
 
 	.star-ray {
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		transform: rotate(var(--ray-angle)) translateX(2.2rem);
-		transform-origin: 0 0;
+		width: 3.15rem;
+		height: 1.5rem;
+		transform: rotate(var(--ray-angle)) translateX(2.15rem);
+		transform-origin: 0 50%;
 		display: flex;
 		align-items: center;
-		gap: 0.2rem;
+		justify-content: flex-end;
 	}
 
 	.ray-line {
 		position: absolute;
-		right: 100%;
+		right: 0.25rem;
 		top: 50%;
-		width: 2.2rem;
+		width: 2.4rem;
 		height: 1px;
-		background: color-mix(in srgb, var(--foreground) 15%, transparent);
+		background: linear-gradient(90deg, color-mix(in srgb, var(--accent, #f43f5e) 60%, transparent), color-mix(in srgb, var(--foreground) 12%, transparent));
+	}
+
+	.ray-line::after {
+		content: '';
+		position: absolute;
+		right: 0;
+		top: -2px;
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: var(--accent, #f43f5e);
+		box-shadow: 0 0 6px color-mix(in srgb, var(--accent, #f43f5e) 55%, transparent);
 	}
 
 	.ray-node {
+		position: relative;
+		z-index: 2;
 		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-		font-size: 0.5rem;
+		font-size: 0.48rem;
 		font-weight: 700;
+		letter-spacing: 0.03em;
 		color: var(--foreground-muted);
 		white-space: nowrap;
-		padding: 0.15rem 0.35rem;
-		border-radius: 0.25rem;
-		border: 1px solid var(--border);
-		background: var(--background);
-		white-space: nowrap;
+		padding: 0.28rem 0.38rem;
+		border-radius: 0.3rem;
+		border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
+		background: color-mix(in srgb, var(--background) 92%, transparent);
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+		transform: rotate(calc(var(--ray-angle) * -1));
 	}
 
 	/* ─── Card 3: Container Grid ───────────────────────────────── */
