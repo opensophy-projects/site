@@ -206,6 +206,12 @@ description: Услуги автоматизации — CI/CD, DevSecOps, ин�
 
 <style>
 	/* ─── Page Layout (same pattern as service-policy) ─────────── */
+	:global([data-doc-content]) {
+		max-width: none !important;
+		width: 100% !important;
+		margin-inline: auto;
+	}
+
 	.automation-page {
 		min-height: 100dvh;
 		background: var(--background);

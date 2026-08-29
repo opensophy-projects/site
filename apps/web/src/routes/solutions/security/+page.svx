@@ -276,6 +276,12 @@ description: Услуги безопасности — автоматическ�
 
 <style>
 	/* ─── Page Layout (same pattern as service-policy) ─────────── */
+	:global([data-doc-content]) {
+		max-width: none !important;
+		width: 100% !important;
+		margin-inline: auto;
+	}
+
 	.security-page {
 		min-height: 100dvh;
 		background: var(--background);
