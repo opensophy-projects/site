@@ -25,9 +25,9 @@ description: Услуги автоматизации — CI/CD, DevSecOps, ин�
 	const iacTools = [
 		{ label: 'n8n', accent: true },
 		{ label: 'Terraform', accent: true },
-		{ label: 'Ansible', accent: false },
+		{ label: 'Ansible', accent: true },
 		{ label: 'Bash', accent: true },
-		{ label: 'Python', accent: false },
+		{ label: 'Python', accent: true },
 		{ label: 'Docker', accent: true },
 	];
 
@@ -44,7 +44,7 @@ description: Услуги автоматизации — CI/CD, DevSecOps, ин�
 <main class="automation-page min-h-dvh bg-background text-foreground">
 	<SiteMenu />
 
-	<div class="automation-shell mx-auto w-full max-w-5xl px-4 py-24 md:py-32">
+	<div class="automation-shell mx-auto flex w-full max-w-5xl flex-col items-center px-4 py-24 md:py-32">
 		<div class="space-y-3 text-center mb-12">
 			<p class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted">решения</p>
 			<h1 class="text-4xl font-medium tracking-tight text-foreground md:text-6xl">Автоматизация</h1>
@@ -215,6 +215,8 @@ description: Услуги автоматизации — CI/CD, DevSecOps, ин�
 		grid-template-columns: 1fr 1fr;
 		gap: 0.75rem;
 		width: 100%;
+		max-width: 48rem;
+		margin-inline: auto;
 		box-sizing: border-box;
 	}
 
