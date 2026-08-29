@@ -461,8 +461,8 @@ description: Услуги инфраструктуры — серверы, пр�
 	/* ─── Card 2: Proxy Star ───────────────────────────────────── */
 	.star-visual {
 		position: relative;
-		width: 8.5rem;
-		height: 7.5rem;
+		width: 7.2rem;
+		height: 6.2rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -472,7 +472,7 @@ description: Услуги инфраструктуры — серверы, пр�
 	.star-visual::before {
 		content: '';
 		position: absolute;
-		inset: 0.65rem 0.8rem;
+		inset: 0.45rem 0.55rem;
 		border: 1px solid color-mix(in srgb, var(--foreground) 8%, transparent);
 		border-radius: 50%;
 	}
@@ -483,8 +483,8 @@ description: Услуги инфраструктуры — серверы, пр�
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 2.35rem;
-		height: 2.35rem;
+		width: 1.95rem;
+		height: 1.95rem;
 		border: 1px solid color-mix(in srgb, var(--accent, #f43f5e) 55%, transparent);
 		border-radius: 0.65rem;
 		background: linear-gradient(145deg, color-mix(in srgb, var(--accent, #f43f5e) 28%, var(--background)), var(--background-inset));
@@ -503,7 +503,7 @@ description: Услуги инфраструктуры — серверы, пр�
 
 	.star-center-label {
 		position: absolute;
-		bottom: -1.05rem;
+		bottom: -0.9rem;
 		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
 		font-size: 0.48rem;
 		font-weight: 700;
@@ -516,9 +516,9 @@ description: Услуги инфраструктуры — серверы, пр�
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		width: 3.15rem;
-		height: 1.5rem;
-		transform: rotate(var(--ray-angle)) translateX(2.15rem);
+		width: 2.5rem;
+		height: 1.25rem;
+		transform: rotate(var(--ray-angle)) translateX(1.75rem);
 		transform-origin: 0 50%;
 		display: flex;
 		align-items: center;
@@ -529,7 +529,7 @@ description: Услуги инфраструктуры — серверы, пр�
 		position: absolute;
 		right: 0.25rem;
 		top: 50%;
-		width: 2.4rem;
+		width: 1.85rem;
 		height: 1px;
 		background: linear-gradient(90deg, color-mix(in srgb, var(--accent, #f43f5e) 60%, transparent), color-mix(in srgb, var(--foreground) 12%, transparent));
 	}
@@ -555,7 +555,7 @@ description: Услуги инфраструктуры — серверы, пр�
 		letter-spacing: 0.03em;
 		color: var(--foreground-muted);
 		white-space: nowrap;
-		padding: 0.28rem 0.38rem;
+		padding: 0.22rem 0.3rem;
 		border-radius: 0.3rem;
 		border: 1px solid color-mix(in srgb, var(--foreground) 14%, transparent);
 		background: color-mix(in srgb, var(--background) 92%, transparent);
