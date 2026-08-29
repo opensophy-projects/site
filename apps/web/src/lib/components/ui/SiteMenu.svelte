@@ -90,13 +90,13 @@
       href: "/solutions/security",
       icon: IbmCloudGateKeeper,
     },
-    // TODO: create /solutions/infrastructure page
-    // {
-    //   label: "Инфраструктура",
-    //   description: "Настраиваю серверы, приложения и инструменты для стабильной работы проектов.",
-    //   href: "/solutions/infrastructure",
-    //   icon: AddServer,
-    // },
+    {
+      label: "Инфраструктура",
+      description:
+        "Настраиваю серверы, приложения и инструменты для стабильной работы проектов.",
+      href: "/solutions/infrastructure",
+      icon: AddServer,
+    },
     {
       label: "Политика оказания услуг",
       description: "Узнайте о том как я работаю перед тем как заказать услугу.",

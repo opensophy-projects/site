@@ -1,0 +1,718 @@
+---
+title: Инфраструктура
+description: Услуги инфраструктуры — серверы, прокси и балансировка, контейнеризация, моделирование угроз, отказоустойчивость и мониторинг.
+---
+
+<script lang="ts">
+	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
+	import { siteConfig } from '$lib/config/site';
+	import Email from 'carbon-icons-svelte/lib/Email.svelte';
+	import LocationCurrent from 'carbon-icons-svelte/lib/LocationCurrent.svelte';
+
+	const telegramUrl = siteConfig.links.telegram;
+	const telegramHandle = '@opensophy';
+	const emailUrl = `mailto:${siteConfig.links.email}`;
+	const emailLabel = siteConfig.links.email;
+
+	// Card 1 — server topology blocks
+	const servers = [
+		{ label: 'web-01', accent: false },
+		{ label: 'web-02', accent: true },
+		{ label: 'db-01', accent: false },
+		{ label: 'cache', accent: false },
+	];
+
+	// Card 2 — proxy star: central node + rays
+	const proxyRays = ['NGINX', 'Traefik', 'Envoy', 'NPM'];
+
+	// Card 3 — container grid
+	const containers = [
+		{ accent: false }, { accent: false }, { accent: true },
+		{ accent: false }, { accent: true }, { accent: false },
+		{ accent: false }, { accent: false }, { accent: false },
+	];
+
+	// Card 4 — threat model assets
+	const threatAssets = [
+		{ label: 'srv', x: 20, y: 30 },
+		{ label: 'db', x: 75, y: 25 },
+		{ label: 'user', x: 15, y: 75 },
+		{ label: 'api', x: 80, y: 70 },
+	];
+
+	// Card 5 — failover: primary + standby
+	// (visual only, rendered as two blocks + dashed line)
+
+	// Card 6 — health bars
+	const healthBars = [
+		{ label: 'CPU', width: '62%' },
+		{ label: 'RAM', width: '78%' },
+		{ label: 'Disk', width: '41%' },
+	];
+</script>
+
+<main class="infra-page">
+	<SiteMenu />
+
+	<div class="infra-shell">
+		<div class="page-header">
+			<p class="eyebrow">решения</p>
+			<h1>Инфраструктура</h1>
+			<p class="page-subtitle">
+				Проектирую и настраиваю инфраструктуру — от одиночного сервера до
+				распределённых систем с резервированием и мониторингом.
+			</p>
+		</div>
+
+		<section class="cards-grid">
+			<!-- Card 1: Server Design & Deployment -->
+			<div class="card-shell">
+				<div class="card-inner">
+					<div class="visual-area">
+						<div class="topology-visual" aria-hidden="true">
+							{#each servers as srv, i (srv.label)}
+								<div class="topo-block" class:topo-block-accent={srv.accent}>
+									<span class="topo-icon"></span>
+									<span class="topo-label">{srv.label}</span>
+								</div>
+								{#if i < servers.length - 1}
+									<span class="topo-line"></span>
+								{/if}
+							{/each}
+						</div>
+					</div>
+					<div class="card-body">
+						<p class="card-badge">Услуга</p>
+						<h3 class="card-title">Проектирование и развёртывание серверов</h3>
+						<p class="card-desc">
+							Настройка и администрирование Linux-серверов под задачу, от
+							одиночного VPS до распределённой инфраструктуры.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Card 2: Proxy & Load Balancing -->
+			<div class="card-shell">
+				<div class="card-inner">
+					<div class="visual-area">
+						<div class="star-visual" aria-hidden="true">
+							<div class="star-center"></div>
+							{#each proxyRays as ray, i (ray)}
+								<span class="star-ray" style="--ray-angle: {i * 90}deg">
+									<span class="ray-line"></span>
+									<span class="ray-node">{ray}</span>
+								</span>
+							{/each}
+						</div>
+					</div>
+					<div class="card-body">
+						<p class="card-badge">Услуга</p>
+						<h3 class="card-title">Прокси и балансировка нагрузки</h3>
+						<p class="card-desc">
+							NGINX, NGINX Proxy Manager, Traefik, Envoy — маршрутизация
+							трафика и балансировка нагрузки.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Card 3: Containerization -->
+			<div class="card-shell">
+				<div class="card-inner">
+					<div class="visual-area">
+						<div class="container-grid" aria-hidden="true">
+							{#each containers as c, i (i)}
+								<div class="container-cell" class:container-cell-accent={c.accent}></div>
+							{/each}
+						</div>
+					</div>
+					<div class="card-body">
+						<p class="card-badge">Услуга</p>
+						<h3 class="card-title">Контейнеризация</h3>
+						<p class="card-desc">
+							Упаковка и изоляция приложений в Docker, подготовка
+							к масштабированию.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Card 4: Threat Modeling & Architecture Audit -->
+			<div class="card-shell">
+				<div class="card-inner">
+					<div class="visual-area">
+						<svg class="threat-svg" viewBox="0 0 200 140" fill="none" aria-hidden="true">
+							<!-- connection lines -->
+							<line x1="40" y1="42" x2="150" y2="35" stroke="var(--foreground)" stroke-opacity="0.12" stroke-width="1.5" />
+							<line x1="40" y1="42" x2="30" y2="105" stroke="var(--foreground)" stroke-opacity="0.12" stroke-width="1.5" />
+							<line x1="150" y1="35" x2="160" y2="98" stroke="var(--accent, #f43f5e)" stroke-width="2" />
+							<line x1="30" y1="105" x2="160" y2="98" stroke="var(--foreground)" stroke-opacity="0.12" stroke-width="1.5" />
+							<!-- nodes -->
+							<circle cx="40" cy="42" r="6" fill="var(--foreground)" fill-opacity="0.2" stroke="var(--foreground)" stroke-opacity="0.3" stroke-width="1.5" />
+							<circle cx="150" cy="35" r="6" fill="var(--accent, #f43f5e)" fill-opacity="0.3" stroke="var(--accent, #f43f5e)" stroke-width="1.5" />
+							<circle cx="30" cy="105" r="6" fill="var(--foreground)" fill-opacity="0.2" stroke="var(--foreground)" stroke-opacity="0.3" stroke-width="1.5" />
+							<circle cx="160" cy="98" r="6" fill="var(--accent, #f43f5e)" fill-opacity="0.3" stroke="var(--accent, #f43f5e)" stroke-width="1.5" />
+						</svg>
+					</div>
+					<div class="card-body">
+						<p class="card-badge">Услуга</p>
+						<h3 class="card-title">Моделирование угроз и архитектурный аудит</h3>
+						<p class="card-desc">
+							Построение модели угроз (Threat Modeling) для инфраструктуры:
+							выявление слабых точек архитектуры, векторов атаки и
+							приоритизация мер защиты до того, как систему атаковали.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Card 5: Failover Architecture -->
+			<div class="card-shell">
+				<div class="card-inner">
+					<div class="visual-area">
+						<div class="failover-visual" aria-hidden="true">
+							<div class="fo-block fo-block-primary">
+								<span class="fo-dot"></span>
+								<span class="fo-label">primary</span>
+							</div>
+							<div class="fo-dashed"></div>
+							<div class="fo-block fo-block-standby">
+								<span class="fo-dot"></span>
+								<span class="fo-label">standby</span>
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<p class="card-badge">Услуга</p>
+						<h3 class="card-title">Проектирование отказоустойчивой архитектуры</h3>
+						<p class="card-desc">
+							Планирование резервирования, отказоустойчивости и disaster
+							recovery на уровне инфраструктуры.
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Card 6: Infrastructure Monitoring -->
+			<div class="card-shell">
+				<div class="card-inner">
+					<div class="visual-area">
+						<div class="health-visual" aria-hidden="true">
+							{#each healthBars as bar (bar.label)}
+								<div class="health-row">
+									<span class="health-label">{bar.label}</span>
+									<span class="health-track">
+										<span class="health-fill" style="width: {bar.width}"></span>
+									</span>
+								</div>
+							{/each}
+						</div>
+					</div>
+					<div class="card-body">
+						<p class="card-badge">Услуга</p>
+						<h3 class="card-title">Мониторинг состояния инфраструктуры</h3>
+						<p class="card-desc">
+							Настройка health-checks и наблюдения за состоянием серверов
+							и БД (PostgreSQL).
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<hr class="divider" />
+
+		<div class="contacts-section">
+			<h2 class="contacts-heading">Заказать услугу</h2>
+			<p class="contacts-text">
+				Напишите через удобный вам канал — отвечу в течение двух рабочих дней,
+				обсудим задачу и сроки. Цена обсуждается индивидуально в зависимости
+				от объёма работ и сложности.
+			</p>
+			<div class="contacts-links">
+				<a class="contact-card" href={telegramUrl} target="_blank" rel="noreferrer">
+					<span class="contact-icon"><LocationCurrent size={20} /></span>
+					<span class="contact-info">
+						<span class="contact-label">Telegram</span>
+						<span class="contact-value">{telegramHandle}</span>
+					</span>
+				</a>
+				<a class="contact-card" href={emailUrl}>
+					<span class="contact-icon"><Email size={20} /></span>
+					<span class="contact-info">
+						<span class="contact-label">Email</span>
+						<span class="contact-value">{emailLabel}</span>
+					</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</main>
+
+<style>
+	:global([data-doc-content]) {
+		max-width: none !important;
+		width: 100% !important;
+		margin-inline: auto;
+	}
+
+	.infra-page {
+		min-height: 100dvh;
+		background: var(--background);
+		color: var(--foreground);
+		padding: 7rem 1rem 5rem;
+	}
+
+	.infra-shell {
+		max-width: 52rem;
+		margin: 0 auto;
+	}
+
+	/* ─── Page Header ───────────────────────────────────────────── */
+	.page-header {
+		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	.eyebrow {
+		font-size: 0.8rem;
+		font-weight: 500;
+		text-transform: uppercase;
+		letter-spacing: 0.18em;
+		color: var(--foreground-muted);
+		margin: 0 0 0.75rem;
+	}
+
+	.page-header h1 {
+		font-size: clamp(2.25rem, 6vw, 4rem);
+		font-weight: 500;
+		line-height: 1.08;
+		letter-spacing: -0.04em;
+		color: var(--foreground);
+		margin: 0 0 1rem;
+	}
+
+	.page-subtitle {
+		max-width: 32rem;
+		margin: 0 auto;
+		font-size: 1.05rem;
+		line-height: 1.6;
+		color: var(--foreground-muted);
+	}
+
+	/* ─── Cards Grid ───────────────────────────────────────────── */
+	.cards-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.75rem;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	@media (max-width: 600px) {
+		.cards-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* ─── Card Shell ───────────────────────────────────────────── */
+	.card-shell {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		border-radius: 0.75rem;
+		background: var(--background-inset);
+		padding: 0.375rem;
+		box-shadow:
+			inset 0px 1px 1px -0.5px rgba(0, 0, 0, 0.06),
+			inset 0px 3px 3px -1.5px rgba(0, 0, 0, 0.06),
+			inset 0px 6px 6px -3px rgba(0, 0, 0, 0.06),
+			inset 0 -0.5px rgba(255, 255, 255, 0.08),
+			inset 0 0 0 0.5px oklch(from var(--highlight) l c h / 8%);
+	}
+
+	.card-inner {
+		position: relative;
+		border-radius: 0.5rem;
+		border: 1px solid var(--border);
+		background: var(--background);
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		min-height: 18rem;
+		box-shadow:
+			0 -0.5px rgba(255, 255, 255, 0.08),
+			0 4px 8px rgba(0, 0, 0, 0.06),
+			0 0 0 0.5px oklch(from var(--highlight) l c h / 8%),
+			0 1px 6px -4px #000;
+	}
+
+	.visual-area {
+		position: relative;
+		height: 9rem;
+		overflow: hidden;
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 1rem;
+	}
+
+	.card-body {
+		padding: 1rem 1.25rem 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		flex: 1;
+	}
+
+	.card-badge {
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.6rem;
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--foreground-muted);
+		margin-bottom: 0.25rem;
+	}
+
+	.card-title {
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.3;
+		color: var(--foreground);
+		margin: 0;
+	}
+
+	.card-desc {
+		font-size: 0.82rem;
+		line-height: 1.6;
+		color: var(--foreground-muted);
+		margin: 0;
+		flex: 1;
+	}
+
+	@media (min-width: 768px) {
+		.card-title {
+			font-size: 1.125rem;
+		}
+		.card-desc {
+			font-size: 0.9rem;
+		}
+		.card-badge {
+			font-size: 0.65rem;
+		}
+	}
+
+	/* ─── Card 1: Server Topology ──────────────────────────────── */
+	.topology-visual {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 0.25rem;
+		width: 100%;
+	}
+
+	.topo-block {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.2rem;
+		padding: 0.35rem 0.5rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--border);
+		background: var(--background);
+	}
+
+	.topo-block-accent {
+		border-color: color-mix(in srgb, var(--accent, #f43f5e) 40%, transparent);
+		background: color-mix(in srgb, var(--accent, #f43f5e) 8%, transparent);
+	}
+
+	.topo-icon {
+		width: 1rem;
+		height: 1rem;
+		border-radius: 2px;
+		background: color-mix(in srgb, var(--foreground) 15%, transparent);
+	}
+
+	.topo-block-accent .topo-icon {
+		background: var(--accent, #f43f5e);
+	}
+
+	.topo-label {
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.5rem;
+		font-weight: 700;
+		color: var(--foreground-muted);
+	}
+
+	.topo-line {
+		width: 0.75rem;
+		height: 1px;
+		background: color-mix(in srgb, var(--foreground) 15%, transparent);
+	}
+
+	/* ─── Card 2: Proxy Star ───────────────────────────────────── */
+	.star-visual {
+		position: relative;
+		width: 7rem;
+		height: 7rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.star-center {
+		width: 1.5rem;
+		height: 1.5rem;
+		border-radius: 50%;
+		background: var(--accent, #f43f5e);
+		box-shadow: 0 0 8px color-mix(in srgb, var(--accent, #f43f5e) 40%, transparent);
+		z-index: 2;
+	}
+
+	.star-ray {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: rotate(var(--ray-angle)) translateX(2.2rem);
+		transform-origin: 0 0;
+		display: flex;
+		align-items: center;
+		gap: 0.2rem;
+	}
+
+	.ray-line {
+		position: absolute;
+		right: 100%;
+		top: 50%;
+		width: 2.2rem;
+		height: 1px;
+		background: color-mix(in srgb, var(--foreground) 15%, transparent);
+	}
+
+	.ray-node {
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.5rem;
+		font-weight: 700;
+		color: var(--foreground-muted);
+		white-space: nowrap;
+		padding: 0.15rem 0.35rem;
+		border-radius: 0.25rem;
+		border: 1px solid var(--border);
+		background: var(--background);
+		white-space: nowrap;
+	}
+
+	/* ─── Card 3: Container Grid ───────────────────────────────── */
+	.container-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.4rem;
+		width: 5rem;
+	}
+
+	.container-cell {
+		aspect-ratio: 1;
+		border-radius: 0.25rem;
+		border: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+		background: color-mix(in srgb, var(--foreground) 4%, transparent);
+	}
+
+	.container-cell-accent {
+		border-color: color-mix(in srgb, var(--accent, #f43f5e) 40%, transparent);
+		background: color-mix(in srgb, var(--accent, #f43f5e) 15%, transparent);
+	}
+
+	/* ─── Card 4: Threat Model SVG ─────────────────────────────── */
+	.threat-svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	/* ─── Card 5: Failover ─────────────────────────────────────── */
+	.failover-visual {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0;
+		width: 100%;
+	}
+
+	.fo-block {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.5rem 0.65rem;
+		border-radius: 0.4rem;
+		border: 1px solid var(--border);
+		background: var(--background);
+	}
+
+	.fo-block-primary .fo-dot {
+		background: var(--accent, #f43f5e);
+	}
+
+	.fo-block-standby .fo-dot {
+		background: color-mix(in srgb, var(--foreground) 20%, transparent);
+	}
+
+	.fo-dot {
+		width: 0.75rem;
+		height: 0.75rem;
+		border-radius: 50%;
+	}
+
+	.fo-label {
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.5rem;
+		font-weight: 700;
+		color: var(--foreground-muted);
+	}
+
+	.fo-dashed {
+		width: 1.5rem;
+		height: 1px;
+		border-top: 1px dashed color-mix(in srgb, var(--foreground) 25%, transparent);
+	}
+
+	/* ─── Card 6: Health Bars ──────────────────────────────────── */
+	.health-visual {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 0.65rem;
+		width: 100%;
+		padding: 0 0.5rem;
+	}
+
+	.health-row {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.health-label {
+		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+		font-size: 0.55rem;
+		font-weight: 700;
+		color: var(--foreground-muted);
+		width: 2rem;
+		flex-shrink: 0;
+	}
+
+	.health-track {
+		flex: 1;
+		height: 0.5rem;
+		border-radius: 2px;
+		background: color-mix(in srgb, var(--foreground) 10%, transparent);
+		overflow: hidden;
+	}
+
+	.health-fill {
+		display: block;
+		height: 100%;
+		border-radius: 2px;
+		background: color-mix(in srgb, var(--accent, #f43f5e) 60%, transparent);
+	}
+
+	/* ─── Divider ──────────────────────────────────────────────── */
+	.divider {
+		width: 100%;
+		max-width: 36rem;
+		margin: 3rem auto;
+		border: none;
+		border-top: 1px solid var(--border);
+	}
+
+	/* ─── Contacts Section ─────────────────────────────────────── */
+	.contacts-section {
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.contacts-heading {
+		font-size: 1.75rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--foreground);
+		margin: 0;
+	}
+
+	.contacts-text {
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--foreground-muted);
+		margin: 0;
+		max-width: 32rem;
+	}
+
+	.contacts-links {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+		margin-top: 0.5rem;
+	}
+
+	.contact-card {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.75rem 1.25rem;
+		border-radius: var(--radius-sm, 0.55rem);
+		border: 1px solid var(--border);
+		background: var(--background-inset);
+		text-decoration: none;
+		transition:
+			border-color 150ms ease-out,
+			background 150ms ease-out,
+			transform 150ms ease-out;
+	}
+
+	.contact-card:hover {
+		border-color: color-mix(in srgb, var(--accent, #f43f5e) 40%, transparent);
+		background: var(--background-muted);
+		transform: translateY(-1px);
+	}
+
+	.contact-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 0.4rem;
+		background: var(--background);
+		border: 1px solid var(--border);
+		color: var(--accent, #f43f5e);
+	}
+
+	.contact-info {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		line-height: 1.3;
+	}
+
+	.contact-label {
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--foreground-muted);
+	}
+
+	.contact-value {
+		font-size: 0.9rem;
+		font-weight: 500;
+		color: var(--foreground);
+	}
+</style>
