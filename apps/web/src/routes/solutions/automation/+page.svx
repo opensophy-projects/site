@@ -206,7 +206,14 @@ description: Услуги автоматизации — CI/CD, DevSecOps, ин�
 
 <style>
 	/* ─── Page Layout ──────────────────────────────────────────── */
+	.automation-page {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
 	.automation-shell {
+		align-self: center;
 		margin-inline: auto;
 	}
 

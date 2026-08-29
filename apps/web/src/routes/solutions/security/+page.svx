@@ -277,7 +277,14 @@ description: Услуги безопасности — автоматическ�
 
 <style>
 	/* ─── Page Layout ──────────────────────────────────────────── */
+	.security-page {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
 	.security-shell {
+		align-self: center;
 		margin-inline: auto;
 	}
 
