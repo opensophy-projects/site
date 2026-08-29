@@ -154,10 +154,7 @@
     </div>
     <CardSection />
     <div class="services-actions">
-      <a class="services-action services-action-primary" href="/services"
-        >Посмотреть все услуги</a
-      >
-      <a class="services-action" href="/service-policy"
+      <a class="services-action services-action-primary" href="/service-policy"
         >Политика оказания услуг</a
       >
     </div>

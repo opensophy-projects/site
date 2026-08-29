@@ -1,0 +1,57 @@
+---
+title: Новости
+description: Новости и обновления проекта Opensophy.
+---
+
+<script lang="ts">
+	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
+	import Badge from '$lib/components/ui-registry/Badge.svelte';
+</script>
+
+<main class="news-page min-h-dvh bg-background text-foreground">
+	<SiteMenu />
+	<div class="news-shell mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-4 py-24 md:py-32">
+		<div class="space-y-3 text-center">
+			<p class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted">opensophy</p>
+			<h1 class="text-4xl font-medium tracking-tight text-foreground md:text-6xl">Новости</h1>
+		</div>
+
+		<div class="news-content w-full max-w-4xl">
+
+## Обновление от 12 сентября
+
+<Badge variant="accent">дизайн</Badge>
+<Badge variant="success">логотип</Badge>
+
+Мы немного обновили дизайн сайта — сделали его чище и аккуратнее, не меняя общую концепцию. Заодно обновили логотип, оставив его полностью каноничным.
+
+### Концепция логотипа
+
+Логотип OpenSophy — стилизованный силуэт дракона, в котором зашифрованы буквы OS (OpenSophy). Форма дракона построена как единая непрерывная линия, напоминающая символ бесконечности — отсылка к непрерывности разработки, автоматизации и DevSecOps, где разработка, безопасность и эксплуатация объединены в один цикл.
+
+Дракон символизирует силу, технологичность и защиту — ключевые идеи проекта. Скрытая форма OS добавляет второй уровень смысла: сначала видишь дракона, потом замечаешь аббревиатуру.
+
+Получается несколько смыслов сразу: OS → OpenSophy → DevSecOps → Open Source. Дракон здесь не декорация, а воплощение философии проекта: открытые технологии, автоматизация, безопасность и непрерывное развитие.
+
+		</div>
+	</div>
+</main>
+
+<style>
+	:global([data-doc-content]) {
+		margin-inline: auto;
+	}
+
+	.news-page :global(.markdown-body),
+	.news-page :global(.markdown-content) {
+		width: 100%;
+	}
+
+	.news-shell {
+		margin-inline: auto;
+	}
+
+	.news-content {
+		margin-inline: auto;
+	}
+</style>

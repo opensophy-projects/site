@@ -22,9 +22,9 @@ description: Анимированная навигационная панель 
 			title: 'Услуги',
 			variant: 'muted' as const,
 			links: [
-				{ label: 'Безопасность', href: '/services' },
-				{ label: 'Автоматизация', href: '/services' },
-				{ label: 'Инфраструктура', href: '/services' }
+				{ label: 'Безопасность', href: '/service-policy' },
+				{ label: 'Автоматизация', href: '/mtls' },
+				{ label: 'Инфраструктура', href: '/dokploy' }
 			]
 		},
 		{
@@ -59,7 +59,7 @@ description: Анимированная навигационная панель 
 			menuGroups={menuGroups}
 			portalTarget="#floating-menu-demo-preview"
 			primaryButton={{ label: 'Начать', href: '/docs' }}
-			secondaryButton={{ label: 'Услуги', href: '/services' }}
+			secondaryButton={{ label: 'Услуги', href: '/service-policy' }}
 		>
 			{#snippet logo()}
 				<img
