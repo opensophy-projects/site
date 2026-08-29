@@ -44,7 +44,7 @@ description: Услуги автоматизации — CI/CD, DevSecOps, ин�
 <main class="automation-page min-h-dvh bg-background text-foreground">
 	<SiteMenu />
 
-	<div class="automation-shell mx-auto flex w-full max-w-5xl flex-col items-center px-4 py-24 md:py-32">
+	<div class="automation-shell mx-auto w-full max-w-5xl px-4 py-24 md:py-32">
 		<div class="space-y-3 text-center mb-12">
 			<p class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted">решения</p>
 			<h1 class="text-4xl font-medium tracking-tight text-foreground md:text-6xl">Автоматизация</h1>
@@ -181,7 +181,8 @@ description: Услуги автоматизации — CI/CD, DevSecOps, ин�
 			<h2 class="contacts-heading">Заказать услугу</h2>
 			<p class="contacts-text">
 				Напишите через удобный вам канал — отвечу в течение двух рабочих дней,
-				обсудим задачу и сроки.
+				обсудим задачу и сроки. Цена обсуждается индивидуально в зависимости
+				от объёма работ и сложности.
 			</p>
 			<div class="contacts-links">
 				<a class="contact-card" href={telegramUrl} target="_blank" rel="noreferrer">

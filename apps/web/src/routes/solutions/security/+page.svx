@@ -53,7 +53,7 @@ description: Услуги безопасности — автоматическ�
 <main class="security-page min-h-dvh bg-background text-foreground">
 	<SiteMenu />
 
-	<div class="security-shell mx-auto flex w-full max-w-5xl flex-col items-center px-4 py-24 md:py-32">
+	<div class="security-shell mx-auto w-full max-w-5xl px-4 py-24 md:py-32">
 		<div class="space-y-3 text-center mb-12">
 			<p class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted">решения</p>
 			<h1 class="text-4xl font-medium tracking-tight text-foreground md:text-6xl">Безопасность</h1>
@@ -134,10 +134,7 @@ description: Услуги безопасности — автоматическ�
 									</span>
 								</div>
 							{/each}
-							<div class="leak-tools">
-								<span class="leak-tool-chip">Gitleaks</span>
-								<span class="leak-tool-chip">TruffleHog</span>
-							</div>
+
 						</div>
 					</div>
 					<div class="card-body">
@@ -255,7 +252,8 @@ description: Услуги безопасности — автоматическ�
 			<h2 class="contacts-heading">Заказать услугу</h2>
 			<p class="contacts-text">
 				Напишите через удобный вам канал — отвечу в течение двух рабочих дней,
-				обсудим задачу и сроки.
+				обсудим задачу и сроки. Цена обсуждается индивидуально в зависимости
+				от объёма работ и сложности.
 			</p>
 			<div class="contacts-links">
 				<a class="contact-card" href={telegramUrl} target="_blank" rel="noreferrer">
@@ -348,10 +346,6 @@ description: Услуги безопасности — автоматическ�
 		height: 9rem;
 		overflow: hidden;
 		flex-shrink: 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 1rem;
 	}
 
 	.card-body {
@@ -549,29 +543,7 @@ description: Услуги безопасности — автоматическ�
 		border-radius: 2px;
 	}
 
-	.leak-tools {
-		display: flex;
-		gap: 0.4rem;
-		margin-top: 0.6rem;
-	}
-
-	.leak-tool-chip {
-		display: inline-flex;
-		align-items: center;
-		height: 1.4rem;
-		padding: 0 0.5rem;
-		border-radius: 0.35rem;
-		background: var(--background-inset);
-		border: 1px solid var(--border);
-		font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-		font-size: 0.6rem;
-		font-weight: 700;
-		letter-spacing: 0.03em;
-		color: var(--accent, #f43f5e);
-		border-color: color-mix(in srgb, var(--accent, #f43f5e) 30%, transparent);
-	}
-
-	/* ─── Card 4: Triage queue ─────────────────────────────────── */
+/* ─── Card 4: Triage queue ─────────────────────────────────── */
 	.triage-visual {
 		display: flex;
 		flex-direction: column;
