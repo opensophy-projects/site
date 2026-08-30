@@ -70,7 +70,7 @@ description: Открытые и доступные кейсы проекта Op
 		</div>
 
 
-		<div class="cases-list flex w-full max-w-4xl flex-col gap-16">
+		<div class="cases-list flex w-full max-w-4xl flex-col gap-24">
 			{#each cases as item, i (item.name)}
 				<article class="case-row" class:reverse={i % 2 === 1}>
 					<div class="case-logo-wrapper">
@@ -108,10 +108,19 @@ description: Открытые и доступные кейсы проекта Op
 		margin-inline: auto;
 	}
 
+	.cases-list {
+		row-gap: 6rem;
+	}
+
+	.case-row + .case-row {
+		margin-top: 6rem;
+	}
+
 	.case-row {
 		display: flex;
 		align-items: center;
 		gap: 2.5rem;
+		margin-bottom: 6rem;
 	}
 
 	.case-row.reverse {
@@ -123,17 +132,18 @@ description: Открытые и доступные кейсы проекта Op
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 12rem;
-		min-height: 7rem;
+		width: 16rem;
+		min-height: 9rem;
 	}
 
 	.case-logo {
-		max-width: 12rem;
-		max-height: 6rem;
-		width: auto;
-		height: auto;
+		max-width: 16rem;
+		max-height: 8rem;
+		width: 16rem;
+		height: 8rem;
 		object-fit: contain;
-		transition: opacity 0.2s ease;
+		transform: scale(2.2);
+		transition: opacity 0.2s ease, transform 0.2s ease;
 	}
 
 	.case-logo-link {
@@ -144,6 +154,7 @@ description: Открытые и доступные кейсы проекта Op
 
 	.case-logo-link:hover .case-logo {
 		opacity: 0.7;
+		transform: scale(2.3);
 	}
 
 	.case-logo-text {
