@@ -5,14 +5,15 @@
 
 	interface VariantConfig {
 		axis: 'x' | 'y';
+		enterPct: number;
 		restPct: number;
 	}
 
 	const VARIANTS: Record<GlowHorizonVariant, VariantConfig> = {
-		top: { axis: 'y', restPct: -50 },
-		bottom: { axis: 'y', restPct: 50 },
-		left: { axis: 'x', restPct: 50 },
-		right: { axis: 'x', restPct: -50 }
+		top: { axis: 'y', enterPct: -100, restPct: -50 },
+		bottom: { axis: 'y', enterPct: 100, restPct: 50 },
+		left: { axis: 'x', enterPct: 100, restPct: 50 },
+		right: { axis: 'x', enterPct: -100, restPct: -50 }
 	};
 
 	interface ArcSpec {
@@ -21,6 +22,8 @@
 		blur: number;
 		boxShadow?: string;
 		delay: number;
+		// offset applied to the arc's own start position, like the original initialOffset
+		hasOffset?: boolean;
 	}
 
 	let { className = '', variant = 'top' }: { className?: string; variant?: GlowHorizonVariant } =
@@ -31,49 +34,42 @@
 
 	const config = $derived(VARIANTS[variant]);
 	const axisProp = $derived(config.axis);
+	const enterVal = $derived(config.enterPct);
 	const restVal = $derived(config.restPct);
+	const sign = $derived(config.enterPct < 0 ? -1 : 1);
 
 	let mounted = $state(false);
 	onMount(() => {
 		requestAnimationFrame(() => {
-			mounted = true;
+			requestAnimationFrame(() => {
+				mounted = true;
+			});
 		});
 	});
 
 	const arcs: ArcSpec[] = [
-		{ color: '#FFFFFF', size: 132, boxShadow: '0px -4px 23px 0px #ffffffb5', delay: 1.2 },
-		{ color: '#A558FB', size: 120, blur: 31, delay: 0.6 },
-		{ color: '#4922E5', size: 124, blur: 21, delay: 0 },
-		{ color: 'transparent', size: 120, blur: 51, delay: 0 }
+		{ color: '#FFFFFF', size: 132, blur: 0, boxShadow: '0px -4px 23px 0px #ffffffb5', delay: 1.2 },
+		{ color: '#A558FB', size: 120, blur: 31, delay: 0.6, hasOffset: true },
+		{ color: '#4922E5', size: 124, blur: 21, delay: 0, hasOffset: true },
+		{ color: '#000000', size: 120, blur: 51, delay: 0, hasOffset: true }
 	];
 
-	const gradientFor = (v: GlowHorizonVariant): string => {
-		switch (v) {
-			case 'bottom':
-				return 'radial-gradient(ellipse 85% 65% at 50% 100%, #ffffff 0%, #a558fb 22%, #4922e5 42%, transparent 72%)';
-			case 'left':
-				return 'radial-gradient(ellipse 65% 85% at 0% 50%, #ffffff 0%, #a558fb 22%, #4922e5 42%, transparent 72%)';
-			case 'right':
-				return 'radial-gradient(ellipse 65% 85% at 100% 50%, #ffffff 0%, #a558fb 22%, #4922e5 42%, transparent 72%)';
-			default:
-				return 'radial-gradient(ellipse 85% 65% at 50% 0%, #ffffff 0%, #a558fb 22%, #4922e5 42%, transparent 72%)';
-		}
-	};
+	// mirrors original: startPct = sign * |offset - 50|, with offset fixed at 10%
+	const arcStartOffset = $derived(sign * Math.abs(10 - 50));
 </script>
 
 <div
 	class={'glow-horizon-root ' + className}
 	class:axis-x={axisProp === 'x'}
 	class:axis-y={axisProp === 'y'}
-	class:side-top={variant === 'top'}
-	class:side-bottom={variant === 'bottom'}
-	class:side-left={variant === 'left'}
-	class:side-right={variant === 'right'}
 	style="
 		--duration: {DURATION}ms;
 		--ease: {EASE};
-		--rest-pct: {restVal}%;
-		--gradient: {gradientFor(variant)};
+		--enter-pct: {enterVal}%;
+		--rest-pct: {mounted ? restVal : enterVal}%;
+		--scale: {mounted ? 1 : 1.5};
+		--opacity: {mounted ? 1 : 0};
+		--blur: {mounted ? 0 : 15}px;
 	"
 >
 	{#each arcs as arc}
@@ -82,6 +78,7 @@
 			class="glow-arc"
 			class:axis-x={axisProp === 'x'}
 			class:axis-y={axisProp === 'y'}
+			class:has-offset={arc.hasOffset}
 			class:settled={mounted}
 			style="
 				--arc-scale: {arc.size / 100};
@@ -91,6 +88,8 @@
 				--arc-delay: {arc.delay}s;
 				--arc-duration: {DURATION}ms;
 				--arc-ease: {EASE};
+				--arc-start: {arcStartOffset}%;
+				--arc-end: 0%;
 			"
 		></div>
 	{/each}
@@ -99,13 +98,25 @@
 <style>
 	.glow-horizon-root {
 		position: absolute;
-		z-index: 1;
+		width: 100%;
+		height: 100%;
 		inset: 0;
-		display: block;
 		overflow: hidden;
 		isolation: isolate;
-		opacity: 1;
-		background: var(--gradient);
+		opacity: var(--opacity);
+		filter: blur(var(--blur));
+		transition:
+			transform var(--duration) var(--ease),
+			opacity var(--duration) var(--ease),
+			filter var(--duration) var(--ease);
+	}
+
+	.glow-horizon-root.axis-y {
+		transform: translateY(var(--rest-pct)) scaleY(var(--scale));
+	}
+
+	.glow-horizon-root.axis-x {
+		transform: translateX(var(--rest-pct)) scaleX(var(--scale));
 	}
 
 	.glow-arc {
@@ -119,11 +130,17 @@
 		transition: transform var(--arc-duration) var(--arc-ease) var(--arc-delay);
 	}
 
-	.glow-arc.axis-y.settled {
-		transform: scale(var(--arc-scale)) translateY(var(--rest-pct));
+	.glow-arc.has-offset.axis-y {
+		transform: scale(var(--arc-scale)) translateY(var(--arc-start));
+	}
+	.glow-arc.has-offset.axis-y.settled {
+		transform: scale(var(--arc-scale)) translateY(var(--arc-end));
 	}
 
-	.glow-arc.axis-x.settled {
-		transform: scale(var(--arc-scale)) translateX(var(--rest-pct));
+	.glow-arc.has-offset.axis-x {
+		transform: scale(var(--arc-scale)) translateX(var(--arc-start));
+	}
+	.glow-arc.has-offset.axis-x.settled {
+		transform: scale(var(--arc-scale)) translateX(var(--arc-end));
 	}
 </style>
