@@ -1,0 +1,216 @@
+---
+title: Дрейфующая стена
+description: Бесконечная стена изображений с параллаксом, 3D-наклоном и потоком колонок.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import DriftWall from '$lib/components/ui-registry/driftwall.svelte';
+	import { DriftWallSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+	import type { DriftWallItem } from '$lib/components/ui-registry/driftwall.svelte';
+
+	const items: DriftWallItem[] = [
+		{ image: 'https://habrastorage.org/r/w1560/getpro/habr/upload_files/a29/091/152/a2909115275f79c8875cf6cff7883390.png', title: 'Image 1' },
+		{ image: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/3ec/0cf/dd2/3ec0cfdd29d3d793f9d00bf0e08be589.jpg', title: 'Image 2' },
+		{ image: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/6f2/748/9f8/6f27489f8cce5207d5c32afde5ca41de.jpeg', title: 'Image 3' },
+		{ image: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/ad8/e34/e2b/ad8e34e2bd9be3570741b3eae9881711.jpeg', title: 'Image 4' },
+	];
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'columns',
+			label: 'Колонки',
+			defaultValue: 5,
+			min: 2,
+			max: 9,
+			step: 1
+		},
+		{
+			type: 'number',
+			name: 'tileWidth',
+			label: 'Ширина плитки (px)',
+			defaultValue: 200,
+			min: 120,
+			max: 320,
+			step: 10
+		},
+		{
+			type: 'number',
+			name: 'tileHeight',
+			label: 'Высота плитки (px)',
+			defaultValue: 132,
+			min: 80,
+			max: 240,
+			step: 8
+		},
+		{
+			type: 'number',
+			name: 'gap',
+			label: 'Отступ (px)',
+			defaultValue: 18,
+			min: 0,
+			max: 40,
+			step: 2
+		},
+		{
+			type: 'number',
+			name: 'speed',
+			label: 'Скорость',
+			defaultValue: 42,
+			min: 10,
+			max: 120,
+			step: 4
+		},
+		{
+			type: 'select',
+			name: 'direction',
+			label: 'Направление',
+			defaultValue: 'up',
+			options: [
+				{ label: 'Вверх', value: 'up' },
+				{ label: 'Вниз', value: 'down' }
+			]
+		}
+	];
+</script>
+
+# Дрейфующая стена
+
+Бесконечная анимированная стена из плиток с изображениями. Колонки дрейфуют с разной скоростью и направлением, плоскость наклоняется в 3D за указателем, а плитки приподнимаются и подсвечиваются при наведении.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'driftwall.svelte', code: DriftWallSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="h-[520px] w-full rounded-lg bg-background-inset">
+			<DriftWall
+				items={items}
+				columns={values.columns as number}
+				tileWidth={values.tileWidth as number}
+				tileHeight={values.tileHeight as number}
+				gap={values.gap as number}
+				speed={values.speed as number}
+				direction={values.direction as 'up' | 'down'}
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовый пример
+
+```svelte
+<script>
+	import DriftWall from '$lib/components/ui-registry/driftwall.svelte';
+
+	const items = [
+		{ image: '/photo1.jpg', title: 'Photo 1' },
+		{ image: '/photo2.jpg', title: 'Photo 2' },
+		{ image: '/photo3.jpg', title: 'Photo 3' },
+		{ image: '/photo4.jpg', title: 'Photo 4' }
+	];
+</script>
+
+<div class="h-[500px] w-full">
+	<DriftWall items={items} />
+</div>
+```
+
+### С ссылками
+
+```svelte
+<script>
+	const items = [
+		{ image: '/photo1.jpg', title: 'Документация', href: '/docs' },
+		{ image: '/photo2.jpg', title: 'Статьи', href: '/article' },
+		{ image: '/photo3.jpg', title: 'Компоненты', href: '/components' }
+	];
+</script>
+
+<div class="h-[500px] w-full">
+	<DriftWall items={items} columns={4} />
+</div>
+```
+
+### Настройка потока и внешнего вида
+
+```svelte
+<DriftWall
+	items={items}
+	columns={6}
+	tileWidth={180}
+	tileHeight={120}
+	gap={12}
+	speed={60}
+	direction="down"
+	tilt={20}
+	turn={-10}
+	fade={0.5}
+	dim={0.5}
+	grayscale={false}
+	pauseOnHover={true}
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `items` | `DriftWallItem[]` | `[...]` | Массив плиток |
+| `columns` | `number` | `5` | Количество колонок |
+| `tileWidth` | `number` | `200` | Ширина плитки (px) |
+| `tileHeight` | `number` | `132` | Высота плитки (px) |
+| `gap` | `number` | `18` | Отступ между плитками (px) |
+| `radius` | `number` | `14` | Скругление углов (px) |
+| `tilt` | `number` | `16` | Наклон плоскости по X (град) |
+| `turn` | `number` | `-14` | Поворот плоскости по Y (град) |
+| `roll` | `number` | `0` | Поворот плоскости по Z (град) |
+| `perspective` | `number` | `1200` | Перспектива 3D-сцены (px) |
+| `depth` | `number` | `120` | Смещение плоскости по Z (px) |
+| `speed` | `number` | `42` | Базовая скорость дрейфа (px/с) |
+| `direction` | `'up' \| 'down'` | `'up'` | Направление потока |
+| `variance` | `number` | `0.45` | Разброс скоростей колонок |
+| `parallax` | `number` | `0.6` | Сила наклона за указателем |
+| `pauseOnHover` | `boolean` | `false` | Пауза дрейфа при наведении |
+| `lift` | `number` | `64` | Приподъём активной плитки по Z (px) |
+| `fade` | `number` | `0.6` | Маска затухания краёв (0–1) |
+| `dim` | `number` | `0.55` | Затемнение неактивных плиток (0–1) |
+| `grayscale` | `boolean` | `false` | Обесцвечивание неактивных плиток |
+| `overlayColor` | `string` | `'#060010'` | Цвет слоя затемнения |
+| `className` | `string` | `''` | Дополнительные классы |
+
+### DriftWallItem
+
+```typescript
+interface DriftWallItem {
+	image: string;
+	title?: string;
+	href?: string;
+}
+```
+
+`image` принимает локальный путь или внешний URL. Если задан `href`, плитка становится ссылкой, открывающейся в новой вкладке.
+
+## Взаимодействие
+
+- **Дрейф колонок** — бесконечная прокрутка с разной скоростью и направлением
+- **Параллакс** — плоскость наклоняется вслед за указателем мыши
+- **Наведение** — плитка приподнимается, подсвечивается и показывает оригинальный цвет
+- `pauseOnHover` — останавливает дрейф колонки под указателем
+- **Клавиатура** — плитки доступны для фокуса через Tab
+- **Touch** — работает на сенсорных устройствах
+
+## Доступность
+
+- Контейнер имеет роль `group` с `aria-label`
+- Плитки-ссылки используют семантический тег `<a>`
+- Плитки без ссылки получают `role="button"` и `tabindex="0"`
+- Поддержка `prefers-reduced-motion` — анимация дрейфа отключается
+- Изображения используют `title` как `alt`
+- Видимый `focus-visible` с подсветкой контура

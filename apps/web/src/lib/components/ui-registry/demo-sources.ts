@@ -17,6 +17,7 @@ import FeatureCardsSource from './FeatureCards.svelte?raw';
 import TexturePanelSource from './TexturePanel.svelte?raw';
 import DepthCarouselSource from './depth-carousel.svelte?raw';
 import AccordionGallerySource from './accordiongallery.svelte?raw';
+import DriftWallSource from './driftwall.svelte?raw';
 
 export {
 	ButtonSource,
@@ -37,5 +38,6 @@ export {
 	FeatureCardsSource,
 	TexturePanelSource,
 	DepthCarouselSource,
-	AccordionGallerySource
+	AccordionGallerySource,
+	DriftWallSource
 };
