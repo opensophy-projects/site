@@ -32,7 +32,7 @@ export const load: PageLoad = ({ params }) => {
 	if (!slug) {
 		const manifest = getContentSectionManifest(sectionId);
 		const first = manifest[0];
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		 
 		if (first) {
 			redirect(302, `/${sectionId}/${first.slug}`);
 		}

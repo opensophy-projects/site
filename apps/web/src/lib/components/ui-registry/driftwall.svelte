@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount, onDestroy, tick } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
 
-  export interface DriftWallItem {
+  export type DriftWallItem = {
     image: string;
     title?: string;
     href?: string;
@@ -14,7 +14,7 @@
       image: `https://picsum.photos/id/${ids[i % ids.length]}/600/400`,
       title: `Tile ${i + 1}`,
       href: undefined
-    } as DriftWallItem;
+    };
   });
   export let columns = 5;
   export let tileWidth = 200;
@@ -48,10 +48,6 @@
     return 1 + varianceVal * pseudo;
   };
 
-  interface ColumnMeta {
-    copyHeight: number;
-    copies: number;
-  }
 
   // ----- refs -----
   let containerEl: HTMLDivElement;
@@ -86,7 +82,7 @@
     return columnItems.map(col => {
       const copyHeight = Math.max(unit, col.length * unit);
       const copies = Math.max(2, Math.ceil((containerHeight * 1.6) / copyHeight) + 1);
-      return { copyHeight, copies } as ColumnMeta;
+      return { copyHeight, copies };
     });
   })();
 
@@ -180,7 +176,7 @@
       };
     }
     const hit = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
-    const tile = hit && hit.closest ? (hit.closest('[data-tile-id]') as HTMLElement | null) : null;
+    const tile = hit?.closest?.('[data-tile-id]') as HTMLElement | null;
     if (!tile) return;
     const id = tile.dataset.tileId ?? null;
     if (id === activeIdMutable) return;
@@ -264,7 +260,7 @@
                   class:is-active={isActive}
                   data-tile-id={id}
                   data-col={c}
-                  on:focus={() => activate(id, c)}
+                  on:focus={() => { activate(id, c); }}
                   on:blur={release}
                 >
                   <span class="drift-wall-inner">
@@ -288,7 +284,7 @@
                   class:is-active={isActive}
                   data-tile-id={id}
                   data-col={c}
-                  on:focus={() => activate(id, c)}
+                  on:focus={() => { activate(id, c); }}
                   on:blur={release}
                 >
                   <span class="drift-wall-inner">

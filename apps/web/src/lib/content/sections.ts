@@ -335,7 +335,7 @@ export function getContentSectionConfig(sectionId: ContentSectionId) {
 
 export function getContentSectionUiConfig(sectionId: ContentSectionId): SectionUiConfig {
 	const section = contentSectionsById[sectionId];
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+	 
 	return mergeSectionUiConfig(section?.ui);
 }
 
@@ -343,10 +343,10 @@ export function getContentSectionLinks(order: ContentSectionId[] = contentSectio
 	return order.map((sectionId): ContentSectionLink => {
 		const section = contentSectionsById[sectionId];
 		return {
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			 
 			label: section?.label ?? sectionId,
 			href: basePathFor(sectionId),
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+			 
 			description: section?.description
 		};
 	});
@@ -376,7 +376,7 @@ export function getContentSectionMetadata(
 	}
 
 	const navItem = getItemBySlug(contentManifests[sectionId] ?? [], slug);
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		 
 	const fallbackTitle = slugToTitle(slug) ?? section?.label ?? sectionId;
 	let title = navItem?.name ?? fallbackTitle;
 	let description: string | undefined;

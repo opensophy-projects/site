@@ -1,5 +1,4 @@
 <script lang="ts">
-  /* eslint-disable svelte/no-navigation-without-resolve */
   import { brandingConfig, siteConfig } from "$lib";
   import FloatingMenu from "$lib/components/ui/FloatingMenu.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
@@ -17,8 +16,6 @@
   import Search from "carbon-icons-svelte/lib/Search.svelte";
   import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
   import Settings from "carbon-icons-svelte/lib/Settings.svelte";
-  import Categories from "carbon-icons-svelte/lib/Categories.svelte";
-  import Tag from "carbon-icons-svelte/lib/Tag.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
   import IbmCloudGateKeeper from "carbon-icons-svelte/lib/IbmCloudGateKeeper.svelte";
   import AddServer from "carbon-icons-svelte/lib/AddServer.svelte";
@@ -205,7 +202,7 @@
   {/if}
 {/snippet}
 
-{#snippet solutionsPanel(isMobile)}
+{#snippet solutionsPanel(_isMobile)}
   <div
     data-slot="row"
     class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-4"
@@ -265,7 +262,7 @@
     <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
       <button
         type="button"
-        onclick={() => contactsState.open()}
+        onclick={() => { contactsState.open(); }}
         class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
       >
         Контакты
@@ -307,7 +304,7 @@
       <Button variant="secondary" size="lg" href="/status">Статус</Button>
     </div>
     <div class="mobile-footer-btn w-full">
-      <Button variant="primary" size="lg" onclick={() => contactsState.open()}>
+      <Button variant="primary" size="lg" onclick={() => { contactsState.open(); }}>
         Контакты
       </Button>
     </div>

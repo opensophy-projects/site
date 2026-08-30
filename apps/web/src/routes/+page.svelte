@@ -1,5 +1,4 @@
 <script lang="ts">
-  /* eslint-disable svelte/no-navigation-without-resolve */
   import { brandingConfig } from "$lib";
   import CardSection from "$lib/components/ui/CardSection.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";

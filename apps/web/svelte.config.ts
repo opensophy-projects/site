@@ -124,7 +124,7 @@ const markdownFeatureFormatter = () => {
 						const checked = match[1].toLowerCase() === 'x';
 						el.properties = {
 							...el.properties,
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+					 
 							class: `${String(el.properties?.class ?? '')} task-list-item`.trim(),
 							...(checked ? { 'data-checked': true } : {})
 						};
