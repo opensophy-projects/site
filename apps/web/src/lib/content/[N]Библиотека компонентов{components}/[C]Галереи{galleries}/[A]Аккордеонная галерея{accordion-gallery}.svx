@@ -1,0 +1,215 @@
+---
+title: Аккордеонная галерея
+description: Интерактивная галерея с раскрывающимися панелями, параллаксом и подписями.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import AccordionGallery from '$lib/components/ui-registry/accordiongallery.svelte';
+	import { AccordionGallerySource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+	import type { AccordionGalleryItem } from '$lib/components/ui-registry/accordiongallery.svelte';
+
+	const items: AccordionGalleryItem[] = [
+		{ image: 'https://habrastorage.org/r/w1560/getpro/habr/upload_files/a29/091/152/a2909115275f79c8875cf6cff7883390.png', label: 'Image 1', alt: 'Image 1' },
+		{ image: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/3ec/0cf/dd2/3ec0cfdd29d3d793f9d00bf0e08be589.jpg', label: 'Image 2', alt: 'Image 2' },
+		{ image: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/6f2/748/9f8/6f27489f8cce5207d5c32afde5ca41de.jpeg', label: 'Image 3', alt: 'Image 3' },
+		{ image: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/ad8/e34/e2b/ad8e34e2bd9be3570741b3eae9881711.jpeg', label: 'Image 4', alt: 'Image 4' }
+	];
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'height',
+			label: 'Высота (px)',
+			defaultValue: 460,
+			min: 260,
+			max: 700,
+			step: 20
+		},
+		{
+			type: 'number',
+			name: 'gap',
+			label: 'Отступ (px)',
+			defaultValue: 10,
+			min: 0,
+			max: 32,
+			step: 2
+		},
+		{
+			type: 'number',
+			name: 'expandRatio',
+			label: 'Раскрытие',
+			defaultValue: 0.52,
+			min: 0.2,
+			max: 0.8,
+			step: 0.04
+		},
+		{
+			type: 'number',
+			name: 'tilt',
+			label: 'Наклон (град.)',
+			defaultValue: 8,
+			min: 0,
+			max: 18,
+			step: 1
+		},
+		{
+			type: 'select',
+			name: 'trigger',
+			label: 'Активация',
+			defaultValue: 'hover',
+			options: [
+				{ label: 'Наведение', value: 'hover' },
+				{ label: 'Клик', value: 'click' }
+			]
+		},
+		{
+			type: 'select',
+			name: 'orientation',
+			label: 'Ориентация',
+			defaultValue: 'horizontal',
+			options: [
+				{ label: 'Горизонтальная', value: 'horizontal' },
+				{ label: 'Вертикальная', value: 'vertical' }
+			]
+		}
+	];
+</script>
+
+# Аккордеонная галерея
+
+Интерактивная галерея, в которой панели раскрываются при наведении или клике. Компонент поддерживает параллакс изображений, наклон в перспективе, подписи, чёрно-белый режим и горизонтальную или вертикальную ориентацию.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'accordiongallery.svelte', code: AccordionGallerySource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="min-h-[560px] w-full rounded-lg bg-background-inset p-4">
+			<AccordionGallery
+				items={items}
+				height={values.height as number}
+				gap={values.gap as number}
+				expandRatio={values.expandRatio as number}
+				tilt={values.tilt as number}
+				trigger={values.trigger as 'hover' | 'click'}
+				orientation={values.orientation as 'horizontal' | 'vertical'}
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовый пример
+
+```svelte
+<script>
+	import AccordionGallery from '$lib/components/ui-registry/accordiongallery.svelte';
+
+	const items = [
+		{ image: '/photo1.jpg', label: 'Canyon', alt: 'Canyon' },
+		{ image: '/photo2.jpg', label: 'Ridgeline', alt: 'Ridgeline' },
+		{ image: '/photo3.jpg', label: 'Falls', alt: 'Falls' }
+	];
+</script>
+
+<div class="w-full">
+	<AccordionGallery items={items} />
+</div>
+```
+
+### С переходами по ссылкам
+
+```svelte
+<script>
+	const items = [
+		{ image: '/photo1.jpg', label: 'Документация', link: '/docs' },
+		{ image: '/photo2.jpg', label: 'Статьи', link: '/article' },
+		{ image: '/photo3.jpg', label: 'Компоненты', link: '/components' }
+	];
+</script>
+
+<AccordionGallery items={items} trigger="click" />
+```
+
+### Вертикальная ориентация
+
+```svelte
+<AccordionGallery
+	items={items}
+	orientation="vertical"
+	height={520}
+	gap={12}
+/>
+```
+
+### Настройка внешнего вида
+
+```svelte
+<AccordionGallery
+	items={items}
+	accentColor="#ffffff"
+	overlayColor="#060010"
+	textColor="#ffffff"
+	radius={20}
+	showLabels={true}
+	grayscale={true}
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `items` | `AccordionGalleryItem[]` | `[...]` | Массив изображений и метаданных |
+| `defaultIndex` | `number` | `2` | Индекс панели, открытой по умолчанию |
+| `accentColor` | `string` | `'#ffffff'` | Цвет акцентной полосы |
+| `overlayColor` | `string` | `'#060010'` | Цвет затемняющего слоя |
+| `textColor` | `string` | `'#ffffff'` | Цвет подписей |
+| `height` | `number` | `460` | Высота горизонтальной галереи (px) |
+| `gap` | `number` | `10` | Расстояние между панелями (px) |
+| `radius` | `number` | `16` | Скругление углов (px) |
+| `expandRatio` | `number` | `0.52` | Доля ширины активной панели |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Направление раскладки |
+| `duration` | `number` | `0.6` | Длительность анимации (с) |
+| `ease` | `string` | `'power3.out'` | Функция плавности GSAP |
+| `parallax` | `number` | `0.5` | Сила параллакс-смещения |
+| `tilt` | `number` | `8` | Угол наклона неактивных панелей |
+| `stagger` | `number` | `0.06` | Задержка появления частей подписи (с) |
+| `trigger` | `'hover' \| 'click'` | `'hover'` | Способ активации панели |
+| `showLabels` | `boolean` | `true` | Показывать подписи |
+| `grayscale` | `boolean` | `true` | Обесцвечивать неактивные панели |
+| `className` | `string` | `''` | Дополнительные классы |
+
+### AccordionGalleryItem
+
+```typescript
+interface AccordionGalleryItem {
+	image: string;
+	label?: string;
+	link?: string;
+	alt?: string;
+}
+```
+
+`image` принимает локальный путь или внешний URL. Если передан `link`, панель становится ссылкой и открывает указанный адрес после активации.
+
+## Взаимодействие
+
+- **Наведение** — раскрывает панель при `trigger="hover"`
+- **Клик** — активирует панель и, если задан `link`, переходит по ссылке
+- **Клавиатура** — стрелки переключают активную панель
+- **Tab** — позволяет перейти к любой панели
+- **Touch** — на узких экранах панели автоматически переходят в вертикальный режим
+
+## Доступность
+
+- Галерея размечена ролью `list`
+- Панели размечены ролью `listitem`
+- Активная панель получает `aria-current="true"`
+- Поддерживаются фокус с клавиатуры и видимый `focus-visible`
+- Изображения используют переданный `alt`

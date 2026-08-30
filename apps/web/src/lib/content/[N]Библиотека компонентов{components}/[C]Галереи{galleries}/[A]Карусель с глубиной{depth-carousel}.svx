@@ -87,7 +87,7 @@ description: 3D-карусель с эффектом глубины, инерц�
 	sources={[{ name: 'depth-carousel.svelte', code: DepthCarouselSource, language: 'svelte' }]}
 >
 	{#snippet children(values)}
-		<div class="h-[440px] w-full overflow-hidden rounded-lg bg-background-inset">
+		<div class="min-h-[560px] w-full rounded-lg bg-background-inset">
 			<DepthCarousel
 				items={items}
 				cardWidth={values.cardWidth as number}

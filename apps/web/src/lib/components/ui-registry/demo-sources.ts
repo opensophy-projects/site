@@ -16,6 +16,7 @@ import InfinitePhysicsGallerySource from './InfinitePhysicsGallery.svelte?raw';
 import FeatureCardsSource from './FeatureCards.svelte?raw';
 import TexturePanelSource from './TexturePanel.svelte?raw';
 import DepthCarouselSource from './depth-carousel.svelte?raw';
+import AccordionGallerySource from './accordiongallery.svelte?raw';
 
 export {
 	ButtonSource,
@@ -35,5 +36,6 @@ export {
 	InfinitePhysicsGallerySource,
 	FeatureCardsSource,
 	TexturePanelSource,
-	DepthCarouselSource
+	DepthCarouselSource,
+	AccordionGallerySource
 };
