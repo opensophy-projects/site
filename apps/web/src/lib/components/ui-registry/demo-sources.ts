@@ -15,6 +15,7 @@ import WeightWaveSource from './WeightWave.svelte?raw';
 import InfinitePhysicsGallerySource from './InfinitePhysicsGallery.svelte?raw';
 import FeatureCardsSource from './FeatureCards.svelte?raw';
 import TexturePanelSource from './TexturePanel.svelte?raw';
+import DepthCarouselSource from './depth-carousel.svelte?raw';
 
 export {
 	ButtonSource,
@@ -33,5 +34,6 @@ export {
 	WeightWaveSource,
 	InfinitePhysicsGallerySource,
 	FeatureCardsSource,
-	TexturePanelSource
+	TexturePanelSource,
+	DepthCarouselSource
 };
