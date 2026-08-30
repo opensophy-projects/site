@@ -4,21 +4,30 @@
 	type Props = {
 		class?: string;
 		variant?: GlowHorizonVariant;
+		opacity?: number;
 	};
 
-	let { class: className = '', variant = 'top' }: Props = $props();
+	let {
+		class: className = '',
+		variant = 'top',
+		opacity = 0.28
+	}: Props = $props();
 
 	const gradients: Record<GlowHorizonVariant, string> = {
-		top: 'radial-gradient(ellipse 90% 70% at 50% 0%, #ffffff 0%, #a558fb 18%, #4922e5 38%, transparent 70%)',
+		top: 'radial-gradient(125% 125% at 50% 0%, transparent 40%, #f43f5e 68%, #fda4af 86%, #fff1f2 100%)',
 		bottom:
-			'radial-gradient(ellipse 90% 70% at 50% 100%, #ffffff 0%, #a558fb 18%, #4922e5 38%, transparent 70%)',
-		left: 'radial-gradient(ellipse 70% 90% at 0% 50%, #ffffff 0%, #a558fb 18%, #4922e5 38%, transparent 70%)',
+			'radial-gradient(125% 125% at 50% 100%, transparent 40%, #f43f5e 68%, #fda4af 86%, #fff1f2 100%)',
+		left: 'radial-gradient(125% 125% at 0% 50%, transparent 40%, #f43f5e 68%, #fda4af 86%, #fff1f2 100%)',
 		right:
-			'radial-gradient(ellipse 70% 90% at 100% 50%, #ffffff 0%, #a558fb 18%, #4922e5 38%, transparent 70%)'
+			'radial-gradient(125% 125% at 100% 50%, transparent 40%, #f43f5e 68%, #fda4af 86%, #fff1f2 100%)'
 	};
 </script>
 
-<div class="glow-horizon {className}" style="background: {gradients[variant]}"></div>
+<div
+	class="glow-horizon {className}"
+	style="background: {gradients[variant]}; opacity: {opacity};"
+	aria-hidden="true"
+></div>
 
 <style>
 	.glow-horizon {
@@ -26,5 +35,9 @@
 		inset: 0;
 		z-index: 0;
 		pointer-events: none;
+	}
+
+	:global(.dark) .glow-horizon {
+		opacity: calc(var(--glow-opacity, 0.28) * 0.79);
 	}
 </style>
