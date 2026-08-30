@@ -1,5 +1,4 @@
 <script lang="ts">
-	/* eslint-disable svelte/no-navigation-without-resolve */
 	import { type ClassValue } from "clsx";
 	import type { Snippet } from "svelte";
 	import { onMount } from "svelte";
@@ -83,7 +82,7 @@
 			mobileOpenId = null;
 		};
 		mq.addEventListener("change", onChange);
-		return () => mq.removeEventListener("change", onChange);
+		return () => { mq.removeEventListener("change", onChange); };
 	});
 
 	// Desktop: which trigger is open via hover (or click, for keyboard fallback).
@@ -201,8 +200,8 @@
 					{#each triggers as trigger (trigger.id)}
 						<button
 							type="button"
-							onmouseenter={() => openDesktop(trigger.id)}
-							onclick={() => toggleDesktopClick(trigger.id)}
+							onmouseenter={() => { openDesktop(trigger.id); }}
+							onclick={() => { toggleDesktopClick(trigger.id); }}
 							data-slot="trigger"
 							data-open={openId === trigger.id}
 							class={cn(
@@ -298,7 +297,7 @@
 						<div data-slot="accordion-item" class="accordion-item">
 							<button
 								type="button"
-								onclick={() => toggleMobileAccordion(trigger.id)}
+								onclick={() => { toggleMobileAccordion(trigger.id); }}
 								data-slot="mobile-trigger"
 								data-open={mobileOpenId === trigger.id}
 								class="flex w-full items-center justify-between px-5 py-6 text-left text-lg font-medium text-foreground"

@@ -12,23 +12,23 @@
 
 	type MenuVariant = "default" | "muted";
 
-	interface MenuLink {
+	type MenuLink = {
 		label: string;
 		href: string;
 	}
 
-	interface MenuButton {
+	type MenuButton = {
 		label: string;
 		href: string;
 	}
 
-	interface MenuGroup {
+	type MenuGroup = {
 		title: string;
 		variant?: MenuVariant;
 		links: MenuLink[];
 	}
 
-	interface FloatingMenuClasses {
+	type FloatingMenuClasses = {
 		root?: ClassValue;
 		overlay?: ClassValue;
 		header?: ClassValue;
@@ -49,7 +49,7 @@
 		divider?: ClassValue;
 	}
 
-	interface Props {
+	type Props = {
 		menuGroups: MenuGroup[];
 		logo?: Snippet;
 		primaryButton?: MenuButton;
@@ -151,7 +151,7 @@
 				const linkElements = gsap.utils.toArray(
 					`[data-slot="link-text"]`,
 					menuWrapperRef,
-				) as HTMLElement[];
+				);
 
 				splits = linkElements.map((el) =>
 					SplitText.create(el, { type: "lines", mask: "lines" }),
@@ -203,14 +203,14 @@
 			}
 		};
 
-		init();
+		void init();
 
 		return () => {
 			cancelled = true;
 			ctx?.revert();
 			ctx = null;
 			timeline = null;
-			splits.forEach((s) => s.revert());
+			splits.forEach((s) => { s.revert(); });
 		};
 	});
 </script>

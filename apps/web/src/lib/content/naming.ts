@@ -14,7 +14,7 @@ export function parseNamedContentPath(name: string): ParsedNamedContent | null {
 	return {
 		kind: prefixes[match[1]],
 		title: match[2].trim(),
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		 
 		slug: match[3] ?? slugify(match[2].trim())
 	};
 }

@@ -18,7 +18,7 @@
 	}: Props = $props();
 
 	const initials = $derived(
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- name is typed as required, but callers outside this codebase's type-checking (JS, dynamic props, unchecked SSR data) can still pass undefined at runtime.
+		 
 		(name ?? '')
 			.split(' ')
 			.map((n) => n[0])

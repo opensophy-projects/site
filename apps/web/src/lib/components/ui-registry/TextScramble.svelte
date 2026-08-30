@@ -61,7 +61,7 @@
 		const stepCount = Math.max(1, Math.floor(cycles));
 		const stepDuration = totalDuration / stepCount;
 		nodes.forEach((node, index) => {
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- dataset values are typed as string by this project's DOM lib config, but are genuinely undefined until set below, so the fallback chain is required at runtime.
+			 
 			const finalChar = node.dataset.originalChar ?? node.textContent ?? "";
 			const charTimeline = gsap.timeline();
 			if (finalChar.trim().length === 0) {
@@ -103,7 +103,7 @@
 			const charNodes = split.chars as HTMLElement[];
 			charNodes.forEach((charNode) => {
 				charNode.style.display = "inline-block";
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- fallback keeps the assigned type as string; dataset values must not be null.
+				 
 				charNode.dataset.originalChar = charNode.textContent ?? "";
 				if (!charNode.textContent.trim()) {
 					charNode.style.whiteSpace = "pre";

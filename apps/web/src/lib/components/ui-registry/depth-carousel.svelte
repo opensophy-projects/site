@@ -191,7 +191,7 @@
     posRef += step;
     layout(posRef);
     if (wheelTimer) clearTimeout(wheelTimer);
-    wheelTimer = setTimeout(() => setFocus(Math.round(posRef), true), 130);
+    wheelTimer = setTimeout(() => { setFocus(Math.round(posRef), true); }, 130);
   }
 
   // ----- pointer / drag -----
@@ -349,7 +349,7 @@
         aria-roledescription="slide"
         aria-label={`${i + 1} of ${count}`}
         aria-hidden={active !== i}
-        on:click={() => onCardClick(i)}
+        on:click={() => { onCardClick(i); }}
       >
         <img class="depth-carousel-img" src={item.image} alt={item.alt || ''} draggable="false" />
         <span
@@ -366,7 +366,7 @@
       type="button"
       class="depth-carousel-btn depth-carousel-btn-prev"
       aria-label="Previous slide"
-      on:click={() => navigateBy(-1)}
+      on:click={() => { navigateBy(-1); }}
     >
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <path
@@ -383,7 +383,7 @@
       type="button"
       class="depth-carousel-btn depth-carousel-btn-next"
       aria-label="Next slide"
-      on:click={() => navigateBy(1)}
+      on:click={() => { navigateBy(1); }}
     >
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <path
@@ -408,7 +408,7 @@
           aria-label={`Go to slide ${i + 1}`}
           class="depth-carousel-dot"
           class:is-active={active === i}
-          on:click={() => setFocus(i, true)}
+          on:click={() => { setFocus(i, true); }}
         ></button>
       {/each}
     </div>

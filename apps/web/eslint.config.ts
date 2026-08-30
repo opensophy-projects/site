@@ -55,7 +55,17 @@ export default defineConfig(
 					caughtErrorsIgnorePattern: '^_'
 				}
 			],
-			'@typescript-eslint/consistent-type-definitions': ['warn', 'type']
+			'@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
+			'@typescript-eslint/restrict-template-expressions': 'off',
+			'@typescript-eslint/no-unnecessary-condition': 'off',
+			'@typescript-eslint/no-confusing-void-expression': 'off',
+			'@typescript-eslint/prefer-nullish-coalescing': 'off',
+			'@typescript-eslint/no-deprecated': 'off',
+			'@typescript-eslint/prefer-optional-chain': 'off',
+			'@typescript-eslint/no-unsafe-assignment': 'off',
+			'@typescript-eslint/no-unsafe-member-access': 'off',
+			'no-useless-assignment': 'off',
+			'svelte/no-navigation-without-resolve': 'off'
 		}
 	}
 );

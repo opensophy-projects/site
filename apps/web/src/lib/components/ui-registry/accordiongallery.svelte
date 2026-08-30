@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import gsap from 'gsap';
 
-  export interface AccordionGalleryItem {
+  export type AccordionGalleryItem = {
     image: string;
     label?: string;
     link?: string;
@@ -199,10 +199,10 @@
       class="accordion-gallery-panel"
       style={`border-radius:${radius}px;`}
       href={item.link || undefined}
-      on:click={(e: MouseEvent) => handleClick(i, e)}
-      on:mouseenter={() => handleEnter(i)}
-      on:focus={() => handleFocus(i)}
-      on:keydown={(e: KeyboardEvent) => handleKeyDown(i, e)}
+      on:click={(e: MouseEvent) => { handleClick(i, e); }}
+      on:mouseenter={() => { handleEnter(i); }}
+      on:focus={() => { handleFocus(i); }}
+      on:keydown={(e: KeyboardEvent) => { handleKeyDown(i, e); }}
       role="listitem"
       tabindex={0}
       aria-current={isActive ? 'true' : undefined}

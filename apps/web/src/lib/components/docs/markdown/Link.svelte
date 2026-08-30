@@ -1,5 +1,4 @@
 <script lang="ts">
-	/* eslint-disable svelte/no-navigation-without-resolve */
 	import type { Snippet } from 'svelte';
 	import { cn } from '$lib/utils/cn';
 
