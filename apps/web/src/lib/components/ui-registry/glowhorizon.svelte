@@ -53,7 +53,7 @@
     { color: "#FFFFFF", size: "132%", boxShadow: "0px -4px 23px 0px #ffffffb5", delay: 1.2 },
     { color: "#A558FB", size: "120%", initialOffset: "10%", blur: 31, delay: 0.6 },
     { color: "#4922E5", size: "124%", initialOffset: "10%", blur: 21, delay: 0 },
-    { color: "#000",    size: "120%", initialOffset: "10%", blur: 51, delay: 0 },
+    { color: "transparent", size: "120%", initialOffset: "10%", blur: 51, delay: 0 },
   ] as ArcSpec[];
 
   function arcStartOffset(initialOffset: string | undefined): number | undefined {
@@ -67,14 +67,18 @@
   class={"glow-horizon-root " + className}
   class:axis-x={axisProp === "x"}
   class:axis-y={axisProp === "y"}
+  class:side-top={variant === "top"}
+  class:side-bottom={variant === "bottom"}
+  class:side-left={variant === "left"}
+  class:side-right={variant === "right"}
   style="
     --duration: {DURATION}ms;
     --ease: {EASE};
     --enter-pct: {enterVal}%;
-    --rest-pct: {mounted ? restVal : enterVal}%;
-    --scale: {mounted ? 1 : 1.5};
-    --opacity: {mounted ? 1 : 0};
-    --blur: {mounted ? 0 : 15}px;
+    --rest-pct: {restVal}%;
+    --scale: 1;
+    --opacity: 1;
+    --blur: 0px;
   "
 >
   {#each arcs as arc}
@@ -104,11 +108,13 @@
 <style>
   .glow-horizon-root {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    z-index: 1;
+    inset: 0;
+    display: block;
     isolation: isolate;
-    filter: blur(var(--blur));
-    opacity: var(--opacity);
+    opacity: 1;
+    background: radial-gradient(ellipse 85% 65% at 50% 0%, #ffffff 0%, #a558fb 22%, #4922e5 42%, transparent 72%);
+    filter: none;
     transform-origin: center;
     transition:
       transform var(--duration) var(--ease),
@@ -116,20 +122,29 @@
       filter var(--duration) var(--ease);
   }
 
-  .glow-horizon-root.axis-y {
-    transform: translateY(var(--rest-pct)) scaleY(var(--scale));
+  .glow-horizon-root.axis-y,
+  .glow-horizon-root.axis-x {
+    transform: none;
   }
 
-  .glow-horizon-root.axis-x {
-    transform: translateX(var(--rest-pct)) scaleX(var(--scale));
+  .glow-horizon-root.side-bottom {
+    background: radial-gradient(ellipse 85% 65% at 50% 100%, #ffffff 0%, #a558fb 22%, #4922e5 42%, transparent 72%);
+  }
+
+  .glow-horizon-root.side-left {
+    background: radial-gradient(ellipse 65% 85% at 0% 50%, #ffffff 0%, #a558fb 22%, #4922e5 42%, transparent 72%);
+  }
+
+  .glow-horizon-root.side-right {
+    background: radial-gradient(ellipse 65% 85% at 100% 50%, #ffffff 0%, #a558fb 22%, #4922e5 42%, transparent 72%);
   }
 
   .glow-arc {
     position: absolute;
     inset: 0;
     border-radius: 100%;
-    background: var(--arc-color);
-    filter: blur(var(--arc-blur));
+    background: var(--arc-color, #ffffff);
+    filter: blur(var(--arc-blur, 0px));
     box-shadow: var(--arc-box-shadow);
     transform: scale(var(--arc-scale)) translate(0, 0);
     transition: transform var(--arc-duration) var(--arc-ease) var(--arc-delay);
