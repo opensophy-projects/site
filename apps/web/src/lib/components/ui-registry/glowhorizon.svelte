@@ -101,7 +101,6 @@
 		width: 100%;
 		height: 100%;
 		inset: 0;
-		overflow: hidden;
 		isolation: isolate;
 		opacity: var(--opacity);
 		filter: blur(var(--blur));
