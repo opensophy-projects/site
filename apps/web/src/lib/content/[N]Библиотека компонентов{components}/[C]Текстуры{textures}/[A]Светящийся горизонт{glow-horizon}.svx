@@ -1,0 +1,130 @@
+---
+title: Светящийся горизонт
+description: Анимированное свечение горизонта с разноцветными дугами и плавным появлением с любой стороны.
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import GlowHorizon from '$lib/components/ui-registry/glowhorizon.svelte';
+	import { GlowHorizonSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'variant',
+			label: 'Сторона',
+			defaultValue: 'top',
+			options: [
+				{ label: 'Сверху', value: 'top' },
+				{ label: 'Снизу', value: 'bottom' },
+				{ label: 'Слева', value: 'left' },
+				{ label: 'Справа', value: 'right' }
+			]
+		}
+	];
+</script>
+
+# Светящийся горизонт
+
+Декоративное анимированное свечение, имитирующее восход горизонта. Несколько разноцветных дуг с размытием плавно появляются и замирают у выбранного края контейнера. Используется как фоновый акцент для hero-секций, баннеров и декоративных панелей.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'glowhorizon.svelte', code: GlowHorizonSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="relative h-[420px] w-full overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon variant={values.variant as 'top' | 'bottom' | 'left' | 'right'} />
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Все варианты
+
+<ComponentPreview
+	sources={[{ name: 'glowhorizon.svelte', code: GlowHorizonSource, language: 'svelte' }]}
+>
+	<div class="grid w-full grid-cols-2 gap-3 p-4">
+		<div class="relative h-40 overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon variant="top" />
+			<div class="absolute bottom-2 left-2 text-xs text-foreground-muted">top</div>
+		</div>
+		<div class="relative h-40 overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon variant="bottom" />
+			<div class="absolute top-2 left-2 text-xs text-foreground-muted">bottom</div>
+		</div>
+		<div class="relative h-40 overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon variant="left" />
+			<div class="absolute right-2 top-2 text-xs text-foreground-muted">left</div>
+		</div>
+		<div class="relative h-40 overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon variant="right" />
+			<div class="absolute left-2 top-2 text-xs text-foreground-muted">right</div>
+		</div>
+	</div>
+</ComponentPreview>
+
+## Особенности
+
+- 4 стороны появления: `top`, `bottom`, `left`, `right`
+- Многослойные дуги с разным цветом, размытием и задержкой
+- Плавное появление с масштабированием и затуханием через CSS-переходы
+- Абсолютное позиционирование — размещается внутри относительного контейнера
+- Подходит для hero-секций, баннеров и декоративных панелей
+
+## Использование
+
+### Базовый пример
+
+```svelte
+<script>
+	import GlowHorizon from '$lib/components/ui-registry/glowhorizon.svelte';
+</script>
+
+<div class="relative h-[400px] w-full overflow-hidden rounded-lg bg-background-inset">
+	<GlowHorizon variant="top" />
+</div>
+```
+
+### Стороны появления
+
+```svelte
+<GlowHorizon variant="bottom" />
+<GlowHorizon variant="left" />
+<GlowHorizon variant="right" />
+```
+
+### Hero-секция со свечением
+
+```svelte
+<section class="relative overflow-hidden rounded-lg bg-background-inset">
+	<GlowHorizon variant="top" />
+	<div class="relative z-10 px-8 py-16 text-center">
+		<h1>Заголовок секции</h1>
+		<p>Описание поверх светящегося горизонта</p>
+	</div>
+</section>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `variant` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Сторона появления свечения |
+| `className` | `string` | `''` | Дополнительные CSS-классы |
+
+## Взаимодействие
+
+- **Появление** — дуги появляются с выбранной стороны и плавно замирают у края
+- **Многослойность** — четыре дуги с разным цветом и задержкой создают объёмное свечение
+- **Анимация** — CSS-переходы с функцией плавности `cubic-bezier(0.16, 1, 0.3, 1)`
+- **Контейнер** — компонент абсолютно позиционирован, нужен относительный родитель с `overflow: hidden`
+
+## Доступность
+
+- Дуги размечены `aria-hidden="true"` — чисто декоративный элемент
+- Не перехватывает фокус и не мешает навигации с клавиатуры
+- Не влияет на читаемость контента при правильном позиционировании

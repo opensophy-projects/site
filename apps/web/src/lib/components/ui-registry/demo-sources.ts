@@ -18,6 +18,7 @@ import TexturePanelSource from './TexturePanel.svelte?raw';
 import DepthCarouselSource from './depth-carousel.svelte?raw';
 import AccordionGallerySource from './accordiongallery.svelte?raw';
 import DriftWallSource from './driftwall.svelte?raw';
+import GlowHorizonSource from './glowhorizon.svelte?raw';
 
 export {
 	ButtonSource,
@@ -39,5 +40,6 @@ export {
 	TexturePanelSource,
 	DepthCarouselSource,
 	AccordionGallerySource,
-	DriftWallSource
+	DriftWallSource,
+	GlowHorizonSource
 };
