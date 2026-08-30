@@ -96,7 +96,7 @@ description: Бесконечная стена изображений с пар�
 				gap={values.gap as number}
 				speed={values.speed as number}
 				direction={values.direction as 'up' | 'down'}
-				overlayColor="#f43f5e"
+				overlayColor="transparent"
 			/>
 		</div>
 	{/snippet}

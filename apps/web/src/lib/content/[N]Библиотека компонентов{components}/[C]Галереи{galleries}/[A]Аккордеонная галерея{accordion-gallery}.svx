@@ -97,8 +97,8 @@ description: Интерактивная галерея с раскрывающи
 				tilt={values.tilt as number}
 				trigger={values.trigger as 'hover' | 'click'}
 				orientation={values.orientation as 'horizontal' | 'vertical'}
-				accentColor="#f43f5e"
-				overlayColor="#f43f5e"
+				accentColor="#ffffff"
+				overlayColor="transparent"
 			/>
 		</div>
 	{/snippet}
