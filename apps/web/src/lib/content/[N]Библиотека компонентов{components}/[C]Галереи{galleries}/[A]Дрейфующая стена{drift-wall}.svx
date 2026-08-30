@@ -87,7 +87,7 @@ description: Бесконечная стена изображений с пар�
 	sources={[{ name: 'driftwall.svelte', code: DriftWallSource, language: 'svelte' }]}
 >
 	{#snippet children(values)}
-		<div class="h-[520px] w-full rounded-lg bg-background-inset">
+		<div class="h-[640px] w-full rounded-lg bg-background-inset">
 			<DriftWall
 				items={items}
 				columns={values.columns as number}
@@ -96,6 +96,7 @@ description: Бесконечная стена изображений с пар�
 				gap={values.gap as number}
 				speed={values.speed as number}
 				direction={values.direction as 'up' | 'down'}
+				overlayColor="#f43f5e"
 			/>
 		</div>
 	{/snippet}

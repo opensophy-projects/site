@@ -321,16 +321,6 @@
     width: 100%;
     overflow: hidden;
   }
-  .drift-wall-root::after {
-    content: '';
-    pointer-events: none;
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    -webkit-mask-image: linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
-    mask-image: linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
-    background: var(--dw-overlay);
-  }
 
   .drift-wall-plane {
     position: absolute;
