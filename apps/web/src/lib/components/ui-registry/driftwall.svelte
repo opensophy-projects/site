@@ -199,10 +199,6 @@
     release();
   }
 
-  const maskStyle =
-    'radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%), ' +
-    'linear-gradient(to top, #000 var(--dw-edge), transparent 100%)';
-
   $: cssVarsStyle = [
     `--dw-tile-w: ${tileWidth}px`,
     `--dw-tile-h: ${tileHeight}px`,
@@ -214,11 +210,7 @@
     `--dw-overlay: ${overlayColor}`,
     `--dw-edge: ${Math.max(0, (1 - fade) * 100)}%`,
     `perspective: ${perspective}px`,
-    `perspective-origin: 50% 50%`,
-    `-webkit-mask-image: ${maskStyle}`,
-    `mask-image: ${maskStyle}`,
-    `-webkit-mask-composite: source-in`,
-    `mask-composite: intersect`
+    `perspective-origin: 50% 50%`
   ].join('; ');
 
   onMount(() => {
@@ -323,13 +315,26 @@
 <style>
   .drift-wall-root {
     position: relative;
+    display: block;
     height: 100%;
+    min-height: 320px;
     width: 100%;
     overflow: hidden;
+  }
+  .drift-wall-root::after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    -webkit-mask-image: linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+    mask-image: linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+    background: var(--dw-overlay);
   }
 
   .drift-wall-plane {
     position: absolute;
+    z-index: 1;
     left: 50%;
     top: 50%;
     display: flex;
