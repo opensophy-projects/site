@@ -1,0 +1,201 @@
+---
+title: Кейсы
+description: Открытые и доступные кейсы проекта Opensophy.
+---
+
+<script lang="ts">
+	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
+
+	const cases = [
+		{
+			name: 'ООО Кондор',
+			logo: null,
+			logoAlt: 'ООО Кондор',
+			url: 'https://kondor19.ru/',
+			title: 'Сайт-лендинг для клиентов компании',
+			text: 'Обслуживание и разработка сайта: сопровождение, доработки, поддержание стабильной работы.'
+		},
+		{
+			name: 'n8n',
+			logo: '/n8n-logo.png',
+			logoAlt: 'n8n',
+			url: 'https://n8n.io/',
+			title: 'Платформа для автоматизации и интеграции сервисов',
+			text: 'Bug Bounty: обнаружение уязвимости в open-source проекте, репорт разработчикам. Дополнительно помогал новым пользователям с развёртыванием сервиса.'
+		},
+		{
+			name: 'Dokploy',
+			logo: '/dokploy-logo.png',
+			logoAlt: 'Dokploy',
+			url: 'https://dokploy.com/',
+			title: 'Open-source платформа (PaaS) для самостоятельного хостинга (self-hosting)',
+			text: 'Полная оценка безопасности проекта в формате whitebox (с доступом к коду). Обнаружена критическая уязвимость и ряд проблем безопасности, информация передана разработчику для устранения.'
+		},
+		{
+			name: 'Bolt.new',
+			logo: '/bolt-logo.png',
+			logoAlt: 'Bolt.new',
+			url: 'https://bolt.new/',
+			title: 'ИИ-сервис для full-stack веб-разработки',
+			text: 'Проверка в формате graybox: обнаружена логическая уязвимость в механизме ограничения использования ресурсов (rate limiting), позволявшая обойти установленный лимит. Уязвимость передана команде проекта.'
+		},
+		{
+			name: 'Цинт',
+			logo: '/cint19-logo.png',
+			logoAlt: 'Цинт',
+			url: 'https://cint19.ru/',
+			title: 'Центр информатизации и новых технологий Республики Хакасия',
+			text: 'Полная проверка сайта в формате blackbox (без доступа к коду и внутренней информации). Обнаружены утечки данных и несколько уязвимостей, переданы специалисту для устранения.'
+		},
+		{
+			name: 'RUVDS',
+			logo: '/ruvds-logo.png',
+			logoAlt: 'RUVDS',
+			url: 'https://ruvds.com/ru-rub',
+			title: 'Российский хостинг-провайдер и международный облачный сервис',
+			text: 'Сотрудничество по подготовке образовательных и технических материалов для DevSecOps-специалистов и смежных направлений.'
+		}
+	];
+</script>
+
+<main class="cases-page min-h-dvh bg-background text-foreground">
+	<SiteMenu />
+	<div class="cases-shell mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-4 py-24 md:py-32">
+		<div class="space-y-3 text-center">
+			<p class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted">opensophy</p>
+			<h1 class="text-4xl font-medium tracking-tight text-foreground md:text-6xl">Кейсы</h1>
+			<p class="mx-auto max-w-2xl text-base text-foreground-muted md:text-lg">
+				Открытые и доступные кейсы, которые я могу показать.
+			</p>
+		</div>
+
+		<hr class="cases-divider w-full max-w-4xl border-0 border-t border-foreground/10" />
+
+		<div class="cases-list w-full max-w-4xl flex flex-col gap-10">
+			{#each cases as item, i (item.name)}
+				<article class="case-row" class:reverse={i % 2 === 1}>
+					<div class="case-logo-wrapper">
+						{#if item.logo}
+							<a href={item.url} target="_blank" rel="noreferrer" class="case-logo-link" aria-label={item.name}>
+								<img src={item.logo} alt={item.logoAlt} class="case-logo" />
+							</a>
+						{:else}
+							<a href={item.url} target="_blank" rel="noreferrer" class="case-logo-text" aria-label={item.name}>
+								{item.name}
+							</a>
+						{/if}
+					</div>
+					<div class="case-content">
+						<h2 class="case-title">{item.title}</h2>
+						<p class="case-text">{item.text}</p>
+					</div>
+				</article>
+			{/each}
+		</div>
+	</div>
+</main>
+
+<style>
+	:global([data-doc-content]) {
+		margin-inline: auto;
+	}
+
+	.cases-page :global(.markdown-body),
+	.cases-page :global(.markdown-content) {
+		width: 100%;
+	}
+
+	.cases-shell {
+		margin-inline: auto;
+	}
+
+	.cases-divider {
+		margin-inline: auto;
+	}
+
+	.case-row {
+		display: flex;
+		align-items: center;
+		gap: 2.5rem;
+	}
+
+	.case-row.reverse {
+		flex-direction: row-reverse;
+	}
+
+	.case-logo-wrapper {
+		flex-shrink: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 8rem;
+		min-height: 5rem;
+	}
+
+	.case-logo {
+		max-width: 8rem;
+		max-height: 4rem;
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		transition: opacity 0.2s ease;
+	}
+
+	.case-logo-link {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.case-logo-link:hover .case-logo {
+		opacity: 0.7;
+	}
+
+	.case-logo-text {
+		font-size: 1.5rem;
+		font-weight: 600;
+		color: var(--foreground);
+		text-decoration: none;
+		transition: opacity 0.2s ease;
+	}
+
+	.case-logo-text:hover {
+		opacity: 0.7;
+	}
+
+	.case-content {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.case-title {
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: var(--foreground);
+		margin-bottom: 0.5rem;
+	}
+
+	.case-text {
+		font-size: 0.95rem;
+		line-height: 1.6;
+		color: var(--foreground-muted);
+	}
+
+	/* White logos: invert to black in light theme, keep white in dark theme */
+	:global(:root:not(.dark)) .case-logo {
+		filter: invert(1);
+	}
+
+	@media (max-width: 768px) {
+		.case-row,
+		.case-row.reverse {
+			flex-direction: column;
+			gap: 1.5rem;
+			text-align: center;
+		}
+
+		.case-logo-wrapper {
+			width: 100%;
+		}
+	}
+</style>

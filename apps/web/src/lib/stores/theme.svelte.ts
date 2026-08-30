@@ -39,22 +39,6 @@ function createThemeStore() {
 
 	if (browser) {
 		applyTheme(initialTheme);
-
-		const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-		const handlePreferredThemeChange = () => {
-			const savedTheme = localStorage.getItem(storageKey);
-			if (isTheme(savedTheme)) {
-				return;
-			}
-
-			const preferredTheme = mediaQuery.matches ? 'dark' : 'light';
-			if (current !== preferredTheme) {
-				current = preferredTheme;
-				applyTheme(preferredTheme);
-			}
-		};
-
-		mediaQuery.addEventListener('change', handlePreferredThemeChange);
 	}
 
 	const set = (theme: Theme) => {

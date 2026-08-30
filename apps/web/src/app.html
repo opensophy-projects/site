@@ -49,9 +49,7 @@
 				// Восстановление темы из localStorage или системных настроек
 				const storageKey = 'docs-theme';
 				const storedTheme = localStorage.getItem(storageKey);
-				const isDark =
-					storedTheme === 'dark' ||
-					(storedTheme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+				const isDark = storedTheme === 'dark';
 				document.documentElement.classList.toggle('dark', isDark);
 				document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
 

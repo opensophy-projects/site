@@ -180,7 +180,7 @@ export const contentUiDefaults: ContentUiConfig = {
 	},
 	theme: {
 		storageKey: 'docs-theme',
-		defaultMode: 'system'
+		defaultMode: 'light'
 	}
 };
 
