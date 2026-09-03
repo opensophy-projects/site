@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import Faq from "$lib/components/docs/markdown/Faq.svelte";
@@ -101,13 +102,7 @@
   ];
 </script>
 
-<svelte:head>
-  <title>os.mtls — mTLS-сертификаты для Traefik</title>
-  <meta
-    name="description"
-    content="Bash-скрипт для выпуска, продления и мгновенного отзыва клиентских mTLS-сертификатов Traefik."
-  />
-</svelte:head>
+<PageSeo title="os.mtls — mTLS-сертификаты для Traefik" description="Bash-скрипт для выпуска, продления и мгновенного отзыва клиентских mTLS-сертификатов Traefik." type="website" />
 
 <main
   class="relative flex min-h-dvh w-full flex-col items-center bg-background pt-20 text-foreground"

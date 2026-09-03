@@ -19,6 +19,7 @@ export type ContentMetadata = {
 	slug: string;
 	title: string;
 	description?: string;
+	keywords?: string;
 	sourceType: 'svx' | 'svelte';
 };
 
@@ -380,6 +381,7 @@ export function getContentSectionMetadata(
 	const fallbackTitle = slugToTitle(slug) ?? section?.label ?? sectionId;
 	let title = navItem?.name ?? fallbackTitle;
 	let description: string | undefined;
+	let keywords: string | undefined;
 	const sourceType: ContentMetadata['sourceType'] = svxKey ? 'svx' : 'svelte';
 
 	if (svxKey) {
@@ -388,6 +390,7 @@ export function getContentSectionMetadata(
 			const { metadata } = parseContentSource(rawSource);
 			title = metadata.title ?? metadata.name ?? title;
 			description = metadata.description;
+			keywords = metadata.keywords;
 		}
 	} else if (customPage) {
 		title = customPage.title ?? title;
@@ -406,6 +409,7 @@ export function getContentSectionMetadata(
 		slug,
 		title,
 		description,
+		keywords,
 		sourceType
 	};
 }

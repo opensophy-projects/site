@@ -1,6 +1,7 @@
 ---
 title: Текстуры фона
 description: Декоративные панели с CSS-текстурами — штриховка, сетка, точки и линии на основе токена border.
+keywords: 'Opensophy, Текстуры фона, DevSecOps, open-source'
 ---
 
 <script lang="ts">

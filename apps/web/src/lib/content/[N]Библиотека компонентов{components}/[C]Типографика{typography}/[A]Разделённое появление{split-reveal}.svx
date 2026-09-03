@@ -1,6 +1,7 @@
 ---
 title: Разделённое появление
 description: Анимация появления текста с разбивкой на строки, слова или символы.
+keywords: 'Opensophy, Разделённое появление, DevSecOps, open-source'
 ---
 
 <script lang="ts">

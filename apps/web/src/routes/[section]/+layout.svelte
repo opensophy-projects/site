@@ -60,6 +60,7 @@
 
 	const docTitle = $derived(metadata?.title ?? currentDoc?.name ?? siteConfig.name);
 	const docDescription = $derived(metadata?.description ?? siteConfig.fallbackDescription);
+	const docKeywords = $derived(metadata?.keywords ?? siteConfig.keywords.join(', '));
 
 	const docStructuredData = $derived.by(() => {
 		if (!canonicalUrl) return null;
@@ -150,6 +151,7 @@
 <svelte:head>
 	<title>{docTitle} - {siteConfig.name}</title>
 	<meta name="description" content={docDescription} />
+	<meta name="keywords" content={docKeywords} />
 
 	{#if metadata}
 		<link rel="canonical" href={canonicalUrl} />

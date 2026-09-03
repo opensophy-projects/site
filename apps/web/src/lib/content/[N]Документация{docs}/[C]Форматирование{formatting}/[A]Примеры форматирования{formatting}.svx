@@ -1,5 +1,6 @@
 ---
 title: Примеры форматирования Markdown
+keywords: 'Opensophy, Примеры форматирования Markdown, DevSecOps, open-source'
 ---
 
 <script lang="ts">

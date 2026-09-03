@@ -1,6 +1,7 @@
 ---
 title: Переключатель
 description: Кнопка-переключатель с двумя состояниями для управления логическими настройками.
+keywords: 'Opensophy, Переключатель, DevSecOps, open-source'
 ---
 
 <script lang="ts">

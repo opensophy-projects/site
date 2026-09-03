@@ -1,6 +1,7 @@
 ---
 title: Свечение
 description: Мягкое розовое свечение — радиальный градиент как в hero-секции главной страницы. Выбор стороны: сверху, снизу, слева, справа.
+keywords: 'Opensophy, Свечение, DevSecOps, open-source'
 ---
 
 <script lang="ts">

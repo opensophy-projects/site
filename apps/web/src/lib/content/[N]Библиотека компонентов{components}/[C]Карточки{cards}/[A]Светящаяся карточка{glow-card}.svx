@@ -1,6 +1,7 @@
 ---
 title: Светящаяся карточка
 description: Светящаяся карточка с интерактивным mesh-gradient glow-эффектом при наведении.
+keywords: 'Opensophy, Светящаяся карточка, DevSecOps, open-source'
 ---
 
 <script lang="ts">

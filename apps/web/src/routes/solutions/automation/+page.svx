@@ -1,9 +1,11 @@
 ---
 title: Автоматизация
 description: Услуги автоматизации — CI/CD, DevSecOps, инфраструктура, мониторинг и кастомные инструменты.
+keywords: 'Opensophy, Автоматизация, DevSecOps, open-source'
 ---
 
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import { siteConfig } from '$lib/config/site';
 	import Email from 'carbon-icons-svelte/lib/Email.svelte';
@@ -41,10 +43,7 @@ description: Услуги автоматизации — CI/CD, DevSecOps, ин�
 	];
 </script>
 
-<svelte:head>
-	<title>Автоматизация — opensophy</title>
-	<meta name="description" content="Услуги автоматизации — CI/CD, DevSecOps, инфраструктура, мониторинг и кастомные инструменты." />
-</svelte:head>
+<PageSeo title="Автоматизация — opensophy" description="Услуги автоматизации — CI/CD, DevSecOps, инфраструктура, мониторинг и кастомные инструменты." type="website" />
 
 <main class="automation-page">
 	<SiteMenu />

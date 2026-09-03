@@ -1,6 +1,7 @@
 ---
 title: Графики
 description: Визуализация данных через синтаксис :::chart — line, bar, pie, radar, scatter и другие.
+keywords: 'Opensophy, Графики, DevSecOps, open-source'
 ---
 
 <script lang="ts">

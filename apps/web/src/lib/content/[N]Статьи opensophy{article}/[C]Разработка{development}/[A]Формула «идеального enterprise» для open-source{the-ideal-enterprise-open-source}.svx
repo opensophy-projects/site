@@ -1,6 +1,7 @@
 ---
 title: Формула «идеального enterprise» для open-source
 description: Как отделить платные enterprise-функции от open-source кода так, чтобы их нельзя было взломать с помощью ИИ — показываю на примерах Dokploy и Pangolin.
+keywords: 'Opensophy, Формула «идеального enterprise» для open-source, DevSecOps, open-source'
 ---
 
 ## Введение

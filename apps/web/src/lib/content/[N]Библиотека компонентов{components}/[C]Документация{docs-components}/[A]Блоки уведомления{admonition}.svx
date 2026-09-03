@@ -1,6 +1,7 @@
 ---
 title: Блоки уведомления
 description: Пять вариантов callout-блоков для выделения важной информации в документации.
+keywords: 'Opensophy, Блоки уведомления, DevSecOps, open-source'
 ---
 
 <script lang="ts">

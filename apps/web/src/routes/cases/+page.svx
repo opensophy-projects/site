@@ -1,9 +1,11 @@
 ---
 title: Кейсы
 description: Открытые и доступные кейсы проекта Opensophy.
+keywords: 'Opensophy, Кейсы, DevSecOps, open-source'
 ---
 
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 
 	const cases = [
@@ -58,10 +60,7 @@ description: Открытые и доступные кейсы проекта Op
 	];
 </script>
 
-<svelte:head>
-	<title>Кейсы — opensophy</title>
-	<meta name="description" content="Открытые и доступные кейсы проекта Opensophy." />
-</svelte:head>
+<PageSeo title="Кейсы — opensophy" description="Открытые и доступные кейсы проекта Opensophy." type="website" />
 
 <main class="cases-page min-h-dvh bg-background text-foreground">
 	<SiteMenu />

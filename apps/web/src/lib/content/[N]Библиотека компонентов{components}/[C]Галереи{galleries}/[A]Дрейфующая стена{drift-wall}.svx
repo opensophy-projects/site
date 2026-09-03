@@ -1,6 +1,7 @@
 ---
 title: Дрейфующая стена
 description: Бесконечная стена изображений с параллаксом, 3D-наклоном и потоком колонок.
+keywords: 'Opensophy, Дрейфующая стена, DevSecOps, open-source'
 ---
 
 <script lang="ts">

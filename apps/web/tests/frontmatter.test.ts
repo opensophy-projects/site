@@ -17,6 +17,15 @@ description: Описание страницы
 		expect(result.body).toBe('# Контент');
 	});
 
+	it('парсит keywords из frontmatter', () => {
+		const raw = `---
+keywords: 'Opensophy, DevSecOps, безопасность'
+---
+Контент`;
+
+		expect(parseContentSource(raw).metadata.keywords).toBe('Opensophy, DevSecOps, безопасность');
+	});
+
 	it('парсит frontmatter с name', () => {
 		const raw = `---
 name: Альтернативное имя

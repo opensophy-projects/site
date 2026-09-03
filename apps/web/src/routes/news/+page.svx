@@ -1,17 +1,16 @@
 ---
 title: Новости
 description: Новости и обновления проекта Opensophy.
+keywords: 'Opensophy, Новости, DevSecOps, open-source'
 ---
 
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import Badge from '$lib/components/ui-registry/Badge.svelte';
 </script>
 
-<svelte:head>
-	<title>Новости — opensophy</title>
-	<meta name="description" content="Новости и обновления проекта Opensophy." />
-</svelte:head>
+<PageSeo title="Новости — opensophy" description="Новости и обновления проекта Opensophy." type="website" />
 
 <main class="news-page min-h-dvh bg-background text-foreground">
 	<SiteMenu />

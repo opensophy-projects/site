@@ -1,19 +1,18 @@
 ---
 title: Статус
 description: Статус проектов Opensophy.
+keywords: 'Opensophy, Статус, DevSecOps, open-source'
 ---
 
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import Badge from '$lib/components/ui-registry/Badge.svelte';
 	import Button from '$lib/components/ui-registry/Button.svelte';
 	import Progress from '$lib/components/ui-registry/Progress.svelte';
 </script>
 
-<svelte:head>
-	<title>Статус — opensophy</title>
-	<meta name="description" content="Статус проектов Opensophy." />
-</svelte:head>
+<PageSeo title="Статус — opensophy" description="Статус проектов Opensophy." type="website" />
 
 <main class="status-page min-h-dvh bg-background text-foreground">
 	<SiteMenu />

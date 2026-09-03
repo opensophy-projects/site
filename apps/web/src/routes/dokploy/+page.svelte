@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
@@ -91,13 +92,7 @@
   ];
 </script>
 
-<svelte:head>
-  <title>os.dokploy — сервер уровня Enterprise</title>
-  <meta
-    name="description"
-    content="os.dokploy — форк Dokploy для управления серверами, деплоя приложений и бесплатных enterprise-возможностей."
-  />
-</svelte:head>
+<PageSeo title="os.dokploy — сервер уровня Enterprise" description="os.dokploy — форк Dokploy для управления серверами, деплоя приложений и бесплатных enterprise-возможностей." type="website" />
 
 <main
   class="relative flex min-h-dvh w-full flex-col items-center bg-background pt-20 text-foreground"

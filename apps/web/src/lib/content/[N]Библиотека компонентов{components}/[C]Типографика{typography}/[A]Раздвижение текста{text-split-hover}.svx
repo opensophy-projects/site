@@ -1,6 +1,7 @@
 ---
 title: Раздвижение текста
 description: Эффект раздвигания текста при наведении с анимацией символов.
+keywords: 'Opensophy, Раздвижение текста, DevSecOps, open-source'
 ---
 
 <script lang="ts">
