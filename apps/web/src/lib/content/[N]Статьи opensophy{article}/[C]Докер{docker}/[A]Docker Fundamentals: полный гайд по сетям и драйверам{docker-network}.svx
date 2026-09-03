@@ -1,6 +1,7 @@
 ---
 title: Docker Fundamentals: полный гайд по сетям и драйверам
 description: Разбираем сетевые драйверы Docker — bridge, host, overlay, macvlan, ipvlan — DNS, порты и плагины: от основ до продвинутых сценариев.
+keywords: 'Opensophy, Docker Fundamentals: полный гайд по сетям и драйверам, DevSecOps, open-source'
 ---
 
 ## Введение

@@ -1,6 +1,7 @@
 ---
 title: Карточка
 description: Универсальная карточка контента с заголовком, eyebrow и поддержкой ссылок.
+keywords: 'Opensophy, Карточка, DevSecOps, open-source'
 ---
 
 <script lang="ts">

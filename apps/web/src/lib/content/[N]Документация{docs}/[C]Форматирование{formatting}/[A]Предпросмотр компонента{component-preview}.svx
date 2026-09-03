@@ -1,6 +1,7 @@
 ---
 title: Предпросмотр компонента
 description: Как использовать ComponentPreview для живого предпросмотра компонентов прямо в документации — с кодом и интерактивным демо.
+keywords: 'Opensophy, Предпросмотр компонента, DevSecOps, open-source'
 ---
 
 <script lang="ts">

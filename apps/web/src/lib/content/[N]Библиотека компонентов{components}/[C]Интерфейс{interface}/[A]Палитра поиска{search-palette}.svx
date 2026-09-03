@@ -1,6 +1,7 @@
 ---
 title: Палитра поиска
 description: Модальное окно командной палитры с поиском по контенту и навигацией клавиатурой.
+keywords: 'Opensophy, Палитра поиска, DevSecOps, open-source'
 ---
 
 <script lang="ts">

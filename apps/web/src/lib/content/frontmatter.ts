@@ -2,6 +2,7 @@ export type ContentFrontmatter = {
 	title?: string;
 	name?: string;
 	description?: string;
+	keywords?: string;
 	priority?: number;
 };
 
@@ -50,6 +51,7 @@ export function parseContentSource(rawSource: string): {
 			title: parsed.title,
 			name: parsed.name,
 			description: parsed.description,
+			keywords: parsed.keywords,
 			priority: 'priority' in parsed ? Number(parsed.priority) : undefined
 		},
 		body: rawSource.slice(match[0].length)

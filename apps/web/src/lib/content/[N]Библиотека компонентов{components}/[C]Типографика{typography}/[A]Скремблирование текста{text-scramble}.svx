@@ -1,6 +1,7 @@
 ---
 title: Скремблирование текста
 description: Эффект "перебора" символов при наведении курсора.
+keywords: 'Opensophy, Скремблирование текста, DevSecOps, open-source'
 ---
 
 <script lang="ts">

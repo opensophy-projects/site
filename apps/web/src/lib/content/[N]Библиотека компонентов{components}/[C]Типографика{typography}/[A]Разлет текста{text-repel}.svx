@@ -1,6 +1,7 @@
 ---
 title: Разлёт текста
 description: Эффект "разбегания" текста от курсора мыши.
+keywords: 'Opensophy, Разлёт текста, DevSecOps, open-source'
 ---
 
 <script lang="ts">

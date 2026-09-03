@@ -1,6 +1,7 @@
 ---
 title: Opensophy Docs v2
 description: Документация по шаблону Opensophy Docs — SvelteKit-based платформе для создания технической документации.
+keywords: 'Opensophy, Opensophy Docs v2, DevSecOps, open-source'
 ---
 
 # Opensophy Docs

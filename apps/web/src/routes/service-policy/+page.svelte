@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
 
   const sections = [
@@ -103,10 +104,7 @@
   ];
 </script>
 
-<svelte:head>
-	<title>Политика оказания услуг — opensophy</title>
-	<meta name="description" content="Политика оказания услуг Opensophy: порядок взаимодействия, границы работ по информационной безопасности и гарантии исполнителя." />
-</svelte:head>
+<PageSeo title="Политика оказания услуг — opensophy" description="Политика оказания услуг Opensophy: порядок взаимодействия, границы работ по информационной безопасности и гарантии исполнителя." type="website" />
 
 <main class="policy-page">
   <SiteMenu />

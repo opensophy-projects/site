@@ -1,6 +1,7 @@
 ---
 title: Раздел Examples и кастомные .svelte страницы
 description: Как работает автодискавери контента и пример кастомной .svelte страницы.
+keywords: 'Opensophy, Раздел Examples и кастомные .svelte страницы, DevSecOps, open-source'
 ---
 
 # Автодискавери контента

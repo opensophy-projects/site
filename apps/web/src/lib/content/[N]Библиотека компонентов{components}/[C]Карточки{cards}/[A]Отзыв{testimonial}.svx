@@ -1,6 +1,7 @@
 ---
 title: Отзыв
 description: Карточка отзыва с аватаром, именем, ролью и текстом. Автоматически генерирует инициалы при отсутствии аватара.
+keywords: 'Opensophy, Отзыв, DevSecOps, open-source'
 ---
 
 <script lang="ts">

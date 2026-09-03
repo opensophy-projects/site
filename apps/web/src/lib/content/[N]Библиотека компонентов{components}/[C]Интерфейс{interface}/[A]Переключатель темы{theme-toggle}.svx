@@ -1,6 +1,7 @@
 ---
 title: Переключатель темы
 description: Кнопка переключения между светлой и тёмной темой с плавной анимацией иконок.
+keywords: 'Opensophy, Переключатель темы, DevSecOps, open-source'
 ---
 
 <script lang="ts">

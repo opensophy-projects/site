@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import type { PageData } from './$types';
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import Card from '$lib/components/docs/markdown/Card.svelte';
@@ -6,26 +7,26 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 
-	let { data }: { data: PageData } = $props();
+	let {
+		data,
+		title: customTitle,
+		description: customDescription
+	}: { data: PageData; title?: string; description?: string } = $props();
 	const templates = $derived(data.templates);
 	const isDockerRegistry = $derived(page.url.pathname === '/templates/docker');
 	const title = $derived(
-		isDockerRegistry ? 'Docker Compose шаблоны — opensophy' : 'Шаблоны Docker Compose — opensophy'
+		customTitle ??
+			(isDockerRegistry ? 'Docker Compose шаблоны — opensophy' : 'Шаблоны Docker Compose — opensophy')
 	);
 	const description = $derived(
-		isDockerRegistry
-			? 'Готовые Docker Compose шаблоны Opensophy для DevSecOps, безопасности веб-приложений и автоматизации инфраструктуры.'
-			: 'Реестр шаблонов Docker Compose для DevSecOps, безопасности инфраструктуры и автоматизации.'
+		customDescription ??
+			(isDockerRegistry
+				? 'Готовые Docker Compose шаблоны Opensophy для DevSecOps, безопасности веб-приложений и автоматизации инфраструктуры.'
+				: 'Реестр шаблонов Docker Compose для DevSecOps, безопасности инфраструктуры и автоматизации.')
 	);
 </script>
 
-<svelte:head>
-	<title>{title}</title>
-	<meta name="description" content={description} />
-	<meta property="og:title" content={title} />
-	<meta property="og:description" content="Готовые Docker Compose шаблоны для безопасности и автоматизации." />
-	<meta property="og:type" content="website" />
-</svelte:head>
+<PageSeo {title} {description} type="website" />
 
 <main class="relative flex min-h-dvh w-full flex-col items-center bg-background pt-20">
 	<SiteMenu />

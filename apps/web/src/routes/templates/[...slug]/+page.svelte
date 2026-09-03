@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import type { PageData } from './$types';
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import { siteConfig } from '$lib/config/site';
@@ -12,15 +13,7 @@
 	const description = $derived(template.description || siteConfig.fallbackDescription);
 </script>
 
-<svelte:head>
-	<title>{title}</title>
-	<meta name="description" content={description} />
-	<meta property="og:title" content={title} />
-	<meta property="og:description" content={description} />
-	<meta property="og:type" content="article" />
-	<meta name="twitter:title" content={title} />
-	<meta name="twitter:description" content={description} />
-</svelte:head>
+<PageSeo {title} {description} type="article" />
 
 <main class="relative min-h-dvh bg-background pt-20">
 	<SiteMenu />

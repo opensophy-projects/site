@@ -1,6 +1,7 @@
 ---
 title: Бесконечная физическая галерея
 description: Галерея с физикой инерции и бесконечной прокруткой.
+keywords: 'Opensophy, Бесконечная физическая галерея, DevSecOps, open-source'
 ---
 
 <script lang="ts">

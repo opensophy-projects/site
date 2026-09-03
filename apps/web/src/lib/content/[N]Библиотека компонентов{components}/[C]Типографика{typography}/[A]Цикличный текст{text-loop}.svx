@@ -1,6 +1,7 @@
 ---
 title: Цикличный текст
 description: Анимированный компонент для цикличного переключения текста с использованием GSAP.
+keywords: 'Opensophy, Цикличный текст, DevSecOps, open-source'
 ---
 
 <script lang="ts">

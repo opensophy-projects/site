@@ -1,9 +1,11 @@
 ---
 title: Безопасность
 description: Услуги безопасности — автоматическая проверка (SAST/DAST/SCA), пентесты, поиск утечек и секретов, триаж уязвимостей.
+keywords: 'Opensophy, Безопасность, DevSecOps, open-source'
 ---
 
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import { siteConfig } from '$lib/config/site';
 	import Email from 'carbon-icons-svelte/lib/Email.svelte';
@@ -50,10 +52,7 @@ description: Услуги безопасности — автоматическ�
 	];
 </script>
 
-<svelte:head>
-	<title>Безопасность — opensophy</title>
-	<meta name="description" content="Услуги безопасности — автоматическая проверка (SAST/DAST/SCA), пентесты, поиск утечек и секретов, триаж уязвимостей." />
-</svelte:head>
+<PageSeo title="Безопасность — opensophy" description="Услуги безопасности — автоматическая проверка (SAST/DAST/SCA), пентесты, поиск утечек и секретов, триаж уязвимостей." type="website" />
 
 <main class="security-page">
 	<SiteMenu />

@@ -1,9 +1,11 @@
 ---
 title: Инфраструктура
 description: Услуги инфраструктуры — серверы, прокси и балансировка, контейнеризация, моделирование угроз, отказоустойчивость и мониторинг.
+keywords: 'Opensophy, Инфраструктура, DevSecOps, open-source'
 ---
 
 <script lang="ts">
+	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import { siteConfig } from '$lib/config/site';
 	import Email from 'carbon-icons-svelte/lib/Email.svelte';
@@ -51,10 +53,7 @@ description: Услуги инфраструктуры — серверы, пр�
 	];
 </script>
 
-<svelte:head>
-	<title>Инфраструктура — opensophy</title>
-	<meta name="description" content="Услуги инфраструктуры — серверы, прокси и балансировка, контейнеризация, моделирование угроз, отказоустойчивость и мониторинг." />
-</svelte:head>
+<PageSeo title="Инфраструктура — opensophy" description="Услуги инфраструктуры — серверы, прокси и балансировка, контейнеризация, моделирование угроз, отказоустойчивость и мониторинг." type="website" />
 
 <main class="infra-page">
 	<SiteMenu />

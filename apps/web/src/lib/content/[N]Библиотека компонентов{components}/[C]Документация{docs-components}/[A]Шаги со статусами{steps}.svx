@@ -1,6 +1,7 @@
 ---
 title: Шаги со статусами
 description: Нумерованный список шагов с визуальными статусами: todo, active, done, warning.
+keywords: 'Opensophy, Шаги со статусами, DevSecOps, open-source'
 ---
 
 <script lang="ts">

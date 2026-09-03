@@ -1,6 +1,7 @@
 ---
 title: Видеоплеер
 description: Кастомизированный видеоплеер с анимированными контролами и полноэкранным режимом.
+keywords: 'Opensophy, Видеоплеер, DevSecOps, open-source'
 ---
 
 <script lang="ts">
