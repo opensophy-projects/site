@@ -1,7 +1,7 @@
 ---
 title: Карусель с глубиной
 description: 3D-карусель с эффектом глубины, инерцией и автопрокруткой.
-keywords: 'Opensophy, Карусель с глубиной, DevSecOps, open-source'
+keywords: 'Opensophy, Карусель с глубиной, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

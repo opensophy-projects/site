@@ -1,7 +1,7 @@
 ---
 title: Волна веса
 description: Интерактивное изменение насыщенности шрифта при движении курсора.
-keywords: 'Opensophy, Волна веса, DevSecOps, open-source'
+keywords: 'Opensophy, Волна веса, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

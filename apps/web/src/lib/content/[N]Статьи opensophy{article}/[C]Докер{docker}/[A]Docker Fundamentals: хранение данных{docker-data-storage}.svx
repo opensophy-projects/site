@@ -2,7 +2,7 @@
 title: Docker Fundamentals: хранение данных в Docker
 description: Вторая часть серии статей по Docker. Разбираем все способы хранения данных в Docker: тома, bind mount и tmpfs — чем отличаются, как использовать, а также драйверы хранения, бэкап томов и работа с Compose.
 priority: 2
-keywords: 'Opensophy, Docker Fundamentals: хранение данных в Docker, DevSecOps, open-source'
+keywords: 'Opensophy, Docker Fundamentals: хранение данных в Docker, docker, статьи, open-source'
 ---
 
 ## Введение
