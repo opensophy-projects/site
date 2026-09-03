@@ -50,6 +50,11 @@ description: Услуги безопасности — автоматическ�
 	];
 </script>
 
+<svelte:head>
+	<title>Безопасность — opensophy</title>
+	<meta name="description" content="Услуги безопасности — автоматическая проверка (SAST/DAST/SCA), пентесты, поиск утечек и секретов, триаж уязвимостей." />
+</svelte:head>
+
 <main class="security-page">
 	<SiteMenu />
 

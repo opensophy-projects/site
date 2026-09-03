@@ -5,17 +5,18 @@
 	import SearchTrigger from '$lib/components/content/search/SearchTrigger.svelte';
 	import { resolve } from '$app/paths';
 
-	const { data }: { data: PageData } = $props();
+	let {
+		data,
+		title = 'Шаблоны Docker Compose — opensophy',
+		description = 'Реестр шаблонов Docker Compose для DevSecOps, безопасности инфраструктуры и автоматизации.'
+	}: { data: PageData; title?: string; description?: string } = $props();
 	const templates = $derived(data.templates);
 </script>
 
 <svelte:head>
-	<title>Шаблоны Docker Compose — opensophy</title>
-	<meta
-		name="description"
-		content="Реестр шаблонов Docker Compose для DevSecOps, безопасности инфраструктуры и автоматизации."
-	/>
-	<meta property="og:title" content="Шаблоны Docker Compose — opensophy" />
+	<title>{title}</title>
+	<meta name="description" content={description} />
+	<meta property="og:title" content={title} />
 	<meta property="og:description" content="Готовые Docker Compose шаблоны для безопасности и автоматизации." />
 	<meta property="og:type" content="website" />
 </svelte:head>
