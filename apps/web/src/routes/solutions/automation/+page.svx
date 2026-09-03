@@ -41,6 +41,11 @@ description: Услуги автоматизации — CI/CD, DevSecOps, ин�
 	];
 </script>
 
+<svelte:head>
+	<title>Автоматизация — opensophy</title>
+	<meta name="description" content="Услуги автоматизации — CI/CD, DevSecOps, инфраструктура, мониторинг и кастомные инструменты." />
+</svelte:head>
+
 <main class="automation-page">
 	<SiteMenu />
 
