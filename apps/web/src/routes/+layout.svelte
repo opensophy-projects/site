@@ -67,6 +67,19 @@
 			contactType: 'customer service'
 		}
 	});
+
+	const siteNavigationStructuredData = JSON.stringify({
+		'@context': 'https://schema.org',
+		'@type': 'ItemList',
+		itemListElement: [
+			{ '@type': 'SiteNavigationElement', position: 1, name: 'Новости', url: `${siteOrigin}/news` },
+			{ '@type': 'SiteNavigationElement', position: 2, name: 'База Знаний', url: `${siteOrigin}/article/general` },
+			{ '@type': 'SiteNavigationElement', position: 3, name: 'os.dokploy', url: `${siteOrigin}/dokploy` },
+			{ '@type': 'SiteNavigationElement', position: 4, name: 'os.ui', url: `${siteOrigin}/components/overview` },
+			{ '@type': 'SiteNavigationElement', position: 5, name: 'Политика оказания услуг', url: `${siteOrigin}/service-policy` },
+			{ '@type': 'SiteNavigationElement', position: 6, name: 'Статус', url: `${siteOrigin}/status` }
+		]
+	});
 </script>
 
 <svelte:head>
@@ -111,18 +124,9 @@
 		<svelte:element this={'script'} type="application/ld+json">
 			{organizationStructuredData}
 		</svelte:element>
-	{:else if !currentSection}
-		<title>{siteName} — DevSecOps и open-source</title>
-		<meta name="description" content={siteConfig.fallbackDescription} />
-		<link rel="canonical" href={canonicalUrl} />
-		<meta property="og:title" content="{siteName} — DevSecOps и open-source" />
-		<meta property="og:description" content={siteConfig.fallbackDescription} />
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content={canonicalUrl} />
-		<meta property="og:image" content={sharedOgImage} />
-		<meta name="twitter:title" content="{siteName} — DevSecOps и open-source" />
-		<meta name="twitter:description" content={homeDescription} />
-		<meta name="twitter:image" content={sharedOgImage} />
+		<svelte:element this={'script'} type="application/ld+json">
+			{siteNavigationStructuredData}
+		</svelte:element>
 	{/if}
 </svelte:head>
 

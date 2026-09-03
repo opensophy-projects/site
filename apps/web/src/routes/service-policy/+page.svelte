@@ -103,6 +103,11 @@
   ];
 </script>
 
+<svelte:head>
+	<title>Политика оказания услуг — opensophy</title>
+	<meta name="description" content="Политика оказания услуг Opensophy: порядок взаимодействия, границы работ по информационной безопасности и гарантии исполнителя." />
+</svelte:head>
+
 <main class="policy-page">
   <SiteMenu />
   <article class="policy-document">

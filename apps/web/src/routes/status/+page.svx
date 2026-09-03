@@ -10,6 +10,11 @@ description: Статус проектов Opensophy.
 	import Progress from '$lib/components/ui-registry/Progress.svelte';
 </script>
 
+<svelte:head>
+	<title>Статус — opensophy</title>
+	<meta name="description" content="Статус проектов Opensophy." />
+</svelte:head>
+
 <main class="status-page min-h-dvh bg-background text-foreground">
 	<SiteMenu />
 	<div class="status-shell mx-auto flex w-full max-w-5xl flex-col items-center gap-8 px-4 py-24 md:py-32">

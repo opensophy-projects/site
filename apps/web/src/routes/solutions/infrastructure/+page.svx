@@ -51,6 +51,11 @@ description: Услуги инфраструктуры — серверы, пр�
 	];
 </script>
 
+<svelte:head>
+	<title>Инфраструктура — opensophy</title>
+	<meta name="description" content="Услуги инфраструктуры — серверы, прокси и балансировка, контейнеризация, моделирование угроз, отказоустойчивость и мониторинг." />
+</svelte:head>
+
 <main class="infra-page">
 	<SiteMenu />
 
