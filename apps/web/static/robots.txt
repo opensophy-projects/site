@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /article/raw/
-Disallow: /components/raw/
-Disallow: /docs/raw/
-Sitemap: https://opensophy.com/sitemap.xml

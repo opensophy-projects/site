@@ -1,6 +1,6 @@
 ---
 title: Система имён и кастомные страницы
-keywords: 'Opensophy, Система имён и кастомные страницы, DevSecOps, open-source'
+keywords: 'Opensophy, Система имён и кастомные страницы, os.docs, документация, open-source'
 ---
 
 # Система имён `[N]`, `[C]`, `[A]`

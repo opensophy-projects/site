@@ -1,7 +1,7 @@
 ---
 title: Бейдж
 description: Компактный бейдж для меток и статусов с шестью вариантами оформления.
-keywords: 'Opensophy, Бейдж, DevSecOps, open-source'
+keywords: 'Opensophy, Бейдж, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

@@ -1,7 +1,7 @@
 ---
 title: Бегущая строка
 description: Анимированная бегущая строка с поддержкой скорости прокрутки и направления.
-keywords: 'Opensophy, Бегущая строка, DevSecOps, open-source'
+keywords: 'Opensophy, Бегущая строка, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

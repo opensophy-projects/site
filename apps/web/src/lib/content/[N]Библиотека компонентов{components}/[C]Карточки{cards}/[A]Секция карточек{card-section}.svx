@@ -1,7 +1,7 @@
 ---
 title: Секция карточек
 description: Секция из 6 карточек услуг с уникальными SVG-визуализациями для каждой карточки.
-keywords: 'Opensophy, Секция карточек, DevSecOps, open-source'
+keywords: 'Opensophy, Секция карточек, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

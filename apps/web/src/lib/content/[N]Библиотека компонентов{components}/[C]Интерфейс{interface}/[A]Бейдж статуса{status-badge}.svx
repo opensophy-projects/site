@@ -1,7 +1,7 @@
 ---
 title: Бейдж статуса
 description: Анимированный бейдж статуса с пульсирующей точкой и настраиваемым цветом.
-keywords: 'Opensophy, Бейдж статуса, DevSecOps, open-source'
+keywords: 'Opensophy, Бейдж статуса, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

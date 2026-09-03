@@ -1,7 +1,7 @@
 ---
 title: Боковая панель
 description: Навигационная панель с древовидной структурой, hover-индикаторами и активной позицией.
-keywords: 'Opensophy, Боковая панель, DevSecOps, open-source'
+keywords: 'Opensophy, Боковая панель, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

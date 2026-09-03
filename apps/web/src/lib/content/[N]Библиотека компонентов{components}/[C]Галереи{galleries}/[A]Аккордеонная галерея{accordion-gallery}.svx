@@ -1,7 +1,7 @@
 ---
 title: Аккордеонная галерея
 description: Интерактивная галерея с раскрывающимися панелями, параллаксом и подписями.
-keywords: 'Opensophy, Аккордеонная галерея, DevSecOps, open-source'
+keywords: 'Opensophy, Аккордеонная галерея, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

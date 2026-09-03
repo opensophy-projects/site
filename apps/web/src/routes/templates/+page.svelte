@@ -7,22 +7,16 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 
-	let {
-		data,
-		title: customTitle,
-		description: customDescription
-	}: { data: PageData; title?: string; description?: string } = $props();
+	let { data }: { data: PageData } = $props();
 	const templates = $derived(data.templates);
 	const isDockerRegistry = $derived(page.url.pathname === '/templates/docker');
 	const title = $derived(
-		customTitle ??
-			(isDockerRegistry ? 'Docker Compose шаблоны — opensophy' : 'Шаблоны Docker Compose — opensophy')
+		isDockerRegistry ? 'Docker Compose шаблоны — opensophy' : 'Шаблоны Docker Compose — opensophy'
 	);
 	const description = $derived(
-		customDescription ??
-			(isDockerRegistry
-				? 'Готовые Docker Compose шаблоны Opensophy для DevSecOps, безопасности веб-приложений и автоматизации инфраструктуры.'
-				: 'Реестр шаблонов Docker Compose для DevSecOps, безопасности инфраструктуры и автоматизации.')
+		isDockerRegistry
+			? 'Готовые Docker Compose шаблоны Opensophy для DevSecOps, безопасности веб-приложений и автоматизации инфраструктуры.'
+			: 'Реестр шаблонов Docker Compose для DevSecOps, безопасности инфраструктуры и автоматизации.'
 	);
 </script>
 

@@ -1,7 +1,7 @@
 ---
 title: Безопасность
 description: Услуги безопасности — автоматическая проверка (SAST/DAST/SCA), пентесты, поиск утечек и секретов, триаж уязвимостей.
-keywords: 'Opensophy, Безопасность, DevSecOps, open-source'
+keywords: 'Opensophy, Безопасность, кибербезопасность, аудит безопасности, pentest'
 ---
 
 <script lang="ts">

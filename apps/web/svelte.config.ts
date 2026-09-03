@@ -331,6 +331,7 @@ const config: Config = {
 			strict: true
 		}),
 		prerender: {
+			entries: ['*', '/robots.txt'],
 			handleMissingId: 'ignore'
 		},
 		typescript: {
