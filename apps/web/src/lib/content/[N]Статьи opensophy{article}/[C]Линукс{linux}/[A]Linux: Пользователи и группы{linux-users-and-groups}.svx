@@ -2,7 +2,7 @@
 title: Linux: Пользователи и группы
 description: "Вторая часть серии о Linux для DevOps и DevSecOps — разбираем, как устроены пользователи и группы, UID/GID, /etc/passwd и shadow, sudo, безопасность и реальные сценарии администрирования."
 priority: 2
-keywords: 'Opensophy, Linux: Пользователи и группы, DevSecOps, open-source'
+keywords: 'Opensophy, Linux: Пользователи и группы, linux, статьи, open-source'
 ---
 
 

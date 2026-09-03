@@ -1,7 +1,7 @@
 ---
 title: Подсвеченный блок
 description: Контейнер с подсветкой для акцентирования внимания на важном контенте.
-keywords: 'Opensophy, Подсвеченный блок, DevSecOps, open-source'
+keywords: 'Opensophy, Подсвеченный блок, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

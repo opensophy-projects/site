@@ -1,7 +1,7 @@
 ---
 title: Блок кода
 description: Кодовые блоки с подсветкой синтаксиса Shiki, копированием и встроенным поиском.
-keywords: 'Opensophy, Блок кода, DevSecOps, open-source'
+keywords: 'Opensophy, Блок кода, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

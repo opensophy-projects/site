@@ -1,7 +1,7 @@
 ---
 title: Автоматизация
 description: Услуги автоматизации — CI/CD, DevSecOps, инфраструктура, мониторинг и кастомные инструменты.
-keywords: 'Opensophy, Автоматизация, DevSecOps, open-source'
+keywords: 'Opensophy, Автоматизация, CI/CD, DevSecOps, инфраструктура'
 ---
 
 <script lang="ts">

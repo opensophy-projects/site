@@ -5,8 +5,4 @@
 	const { data }: { data: PageData } = $props();
 </script>
 
-<TemplatesPage
-	{data}
-	title="Docker Compose шаблоны — opensophy"
-	description="Готовые Docker Compose шаблоны Opensophy для DevSecOps, безопасности веб-приложений и автоматизации инфраструктуры."
-/>
+<TemplatesPage {data} />

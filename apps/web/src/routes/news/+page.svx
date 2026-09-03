@@ -1,7 +1,7 @@
 ---
 title: Новости
 description: Новости и обновления проекта Opensophy.
-keywords: 'Opensophy, Новости, DevSecOps, open-source'
+keywords: 'Opensophy, Новости, opensophy news, open-source, IT'
 ---
 
 <script lang="ts">

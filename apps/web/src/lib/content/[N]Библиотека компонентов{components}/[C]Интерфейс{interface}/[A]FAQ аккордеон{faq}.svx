@@ -1,7 +1,7 @@
 ---
 title: FAQ аккордеон
 description: Аккордеон часто задаваемых вопросов с плавным раскрытием и поддержкой кастомных вопросов.
-keywords: 'Opensophy, FAQ аккордеон, DevSecOps, open-source'
+keywords: 'Opensophy, FAQ аккордеон, UI, UI components, библиотека компонентов, open-source'
 ---
 
 <script lang="ts">

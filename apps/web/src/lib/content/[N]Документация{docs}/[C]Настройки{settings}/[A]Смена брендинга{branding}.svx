@@ -1,7 +1,7 @@
 ---
 title: Смена брендинга
 description: Как заменить логотип, название, цвета и SEO-метаданные под свой проект.
-keywords: 'Opensophy, Смена брендинга, DevSecOps, open-source'
+keywords: 'Opensophy, Смена брендинга, os.docs, документация, open-source'
 ---
 
 # Смена брендинга

@@ -1,7 +1,7 @@
 ---
 title: Кейсы
 description: Открытые и доступные кейсы проекта Opensophy.
-keywords: 'Opensophy, Кейсы, DevSecOps, open-source'
+keywords: 'Opensophy, Кейсы, кейсы DevSecOps, кибербезопасность, автоматизация'
 ---
 
 <script lang="ts">
