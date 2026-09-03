@@ -3,6 +3,7 @@
 	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
 	import Card from '$lib/components/docs/markdown/Card.svelte';
 	import SearchTrigger from '$lib/components/content/search/SearchTrigger.svelte';
+	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 
 	let {
@@ -11,6 +12,15 @@
 		description = 'Реестр шаблонов Docker Compose для DevSecOps, безопасности инфраструктуры и автоматизации.'
 	}: { data: PageData; title?: string; description?: string } = $props();
 	const templates = $derived(data.templates);
+	const isDockerRegistry = $derived(page.url.pathname === '/templates/docker');
+	const title = $derived(
+		isDockerRegistry ? 'Docker Compose шаблоны — opensophy' : 'Шаблоны Docker Compose — opensophy'
+	);
+	const description = $derived(
+		isDockerRegistry
+			? 'Готовые Docker Compose шаблоны Opensophy для DevSecOps, безопасности веб-приложений и автоматизации инфраструктуры.'
+			: 'Реестр шаблонов Docker Compose для DevSecOps, безопасности инфраструктуры и автоматизации.'
+	);
 </script>
 
 <svelte:head>
