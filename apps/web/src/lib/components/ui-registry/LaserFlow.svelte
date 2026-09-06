@@ -1,3 +1,8 @@
+<!--
+	Three.js does not ship TypeScript declarations in this project. The WebGL setup is intentionally
+	imperative, so the type-aware and Svelte DOM rules cannot inspect these library calls safely.
+-->
+<!-- eslint-disable @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, svelte/no-dom-manipulating -->
 <script module lang="ts">
 	const VERT = `
 precision highp float;
@@ -192,7 +197,7 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 
 	function hexToRGB(hex: string) {
 		let c = hex.trim();
-		if (c[0] === '#') c = c.slice(1);
+		if (c.startsWith('#')) c = c.slice(1);
 		if (c.length === 3)
 			c = c
 				.split('')
