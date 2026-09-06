@@ -46,21 +46,29 @@
 	}: Props = $props();
 
 	let host: HTMLDivElement;
+	let canvasEl: HTMLCanvasElement | undefined = $state(undefined);
+
+	const calcScale = (el: HTMLElement): number => {
+		const r = el.getBoundingClientRect();
+		const current = Math.min(Math.max(1, r.width), Math.max(1, r.height));
+		return Math.max(0.5, Math.min(2.0, current / 600));
+	};
 
 	$effect(() => {
 		const parent = host?.parentElement;
-		if (!host || !parent) return;
+		if (!host || !parent || !canvasEl) return;
 		let active = true;
 
 		const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-		const pixelBudget = targetPixels ?? (isTouch ? 0.9e6 : 1.3e6);
-		const fadeDelay = fadeDelayMs ?? (isTouch ? 500 : 1000);
-		const fadeDuration = fadeDurationMs ?? (isTouch ? 1000 : 1500);
+		const pixelBudget: number = targetPixels ?? (isTouch ? 0.9e6 : 1.3e6);
+		const fadeDelay: number = fadeDelayMs ?? (isTouch ? 500 : 1000);
+		const fadeDuration: number = fadeDurationMs ?? (isTouch ? 1000 : 1500);
 
 		const prevParentPos = parent.style.position;
 		if (!prevParentPos || prevParentPos === 'static') parent.style.position = 'relative';
 
-		const renderer = new THREE.WebGLRenderer({
+		const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
+			canvas: canvasEl,
 			antialias: !isTouch,
 			alpha: true,
 			depth: false,
@@ -70,23 +78,25 @@
 			preserveDrawingBuffer: false
 		});
 		renderer.setClearColor(0x000000, 0);
-		renderer.domElement.style.pointerEvents = 'none';
-		if (mixBlendMode) renderer.domElement.style.mixBlendMode = String(mixBlendMode);
-		renderer.domElement.style.display = 'block';
-		renderer.domElement.style.width = '100%';
-		renderer.domElement.style.height = '100%';
-		renderer.domElement.style.background = 'transparent';
-		host.appendChild(renderer.domElement);
+		canvasEl.style.pointerEvents = 'none';
+		if (mixBlendMode) canvasEl.style.mixBlendMode = String(mixBlendMode);
+		canvasEl.style.display = 'block';
+		canvasEl.style.width = '100%';
+		canvasEl.style.height = '100%';
+		canvasEl.style.background = 'transparent';
 
-		const scene = new THREE.Scene();
-		const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-		const geom = new THREE.PlaneGeometry(2, 2);
+		const scene: THREE.Scene = new THREE.Scene();
+		const camera: THREE.OrthographicCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+		const geom: THREE.PlaneGeometry = new THREE.PlaneGeometry(2, 2);
 
 		const maxTrail = Math.max(1, Math.floor(trailLength));
-		const trailBuf = Array.from({ length: maxTrail }, () => new THREE.Vector2(0.5, 0.5));
+		const trailBuf: THREE.Vector2[] = Array.from(
+			{ length: maxTrail },
+			() => new THREE.Vector2(0.5, 0.5)
+		);
 		let head = 0;
 
-		const baseColor = new THREE.Color(color);
+		const baseColor: THREE.Color = new THREE.Color(color);
 
 		const baseVertex = `varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,1.0);}`;
 		const fragment = `
@@ -137,7 +147,7 @@
 				gl_FragColor=vec4(colorAcc,outAlpha);
 			}`;
 
-		const material = new THREE.ShaderMaterial({
+		const material: THREE.ShaderMaterial = new THREE.ShaderMaterial({
 			defines: { MAX_TRAIL_LENGTH: maxTrail },
 			uniforms: {
 				iTime: { value: 0 },
@@ -156,12 +166,12 @@
 			depthTest: false,
 			depthWrite: false
 		});
-		const mesh = new THREE.Mesh(geom, material);
+		const mesh: THREE.Mesh = new THREE.Mesh(geom, material);
 		scene.add(mesh);
 
-		const composer = new EffectComposer(renderer);
+		const composer: EffectComposer = new EffectComposer(renderer);
 		composer.addPass(new RenderPass(scene, camera));
-		const bloomPass = new UnrealBloomPass(
+		const bloomPass: UnrealBloomPass = new UnrealBloomPass(
 			new THREE.Vector2(1, 1),
 			bloomStrength,
 			bloomRadius,
@@ -169,7 +179,7 @@
 		);
 		composer.addPass(bloomPass);
 
-		const filmPass = new ShaderPass({
+		const filmPass: ShaderPass = new ShaderPass({
 			uniforms: {
 				tDiffuse: { value: null },
 				iTime: { value: 0 },
@@ -180,21 +190,15 @@
 		});
 		composer.addPass(filmPass);
 
-		const unpremultiplyPass = new ShaderPass({
+		const unpremultiplyPass: ShaderPass = new ShaderPass({
 			uniforms: { tDiffuse: { value: null } },
 			vertexShader: `varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
 			fragmentShader: `uniform sampler2D tDiffuse;varying vec2 vUv;void main(){vec4 c=texture2D(tDiffuse,vUv);float a=max(c.a,1e-5);vec3 s=c.rgb/a;gl_FragColor=vec4(clamp(s,0.,1.),c.a);}`
 		});
 		composer.addPass(unpremultiplyPass);
 
-		const calcScale = (el: HTMLElement) => {
-			const r = el.getBoundingClientRect();
-			const current = Math.min(Math.max(1, r.width), Math.max(1, r.height));
-			return Math.max(0.5, Math.min(2.0, current / 600));
-		};
-
 		let hasValidSize = false;
-		const resize = () => {
+		const resize = (): void => {
 			if (!active) return;
 			const rect = host.getBoundingClientRect();
 			const cssW = Math.floor(rect.width);
@@ -212,7 +216,7 @@
 			const pr = dpr * scl;
 			renderer.setPixelRatio(pr);
 			renderer.setSize(cssW, cssH, false);
-			composer.setPixelRatio?.(pr);
+			composer.setPixelRatio(pr);
 			composer.setSize(cssW, cssH);
 			const wpx = Math.max(1, Math.floor(cssW * pr));
 			const hpx = Math.max(1, Math.floor(cssH * pr));
@@ -227,15 +231,15 @@
 		ro.observe(host);
 
 		const start = performance.now();
-		const currentMouse = new THREE.Vector2(0.5, 0.5);
-		const velocity = new THREE.Vector2(0, 0);
+		const currentMouse: THREE.Vector2 = new THREE.Vector2(0.5, 0.5);
+		const velocity: THREE.Vector2 = new THREE.Vector2(0, 0);
 		let fadeOpacity = 1;
 		let lastMoveTime = performance.now();
 		let pointerActive = false;
 		let running = false;
 		let raf: number | null = null;
 
-		const animate = () => {
+		const animate = (): void => {
 			if (!active) return;
 			if (!hasValidSize) {
 				raf = requestAnimationFrame(animate);
@@ -262,7 +266,7 @@
 			const N = trailBuf.length;
 			head = (head + 1) % N;
 			trailBuf[head].copy(material.uniforms.iMouse.value);
-			const arr = material.uniforms.iPrevMouse.value as THREE.Vector2[];
+			const arr: THREE.Vector2[] = material.uniforms.iPrevMouse.value;
 			for (let i = 0; i < N; i++) {
 				const srcIdx = (head - i + N) % N;
 				arr[i].copy(trailBuf[srcIdx]);
@@ -278,14 +282,14 @@
 			}
 			raf = requestAnimationFrame(animate);
 		};
-		const ensureLoop = () => {
+		const ensureLoop = (): void => {
 			if (!running) {
 				running = true;
 				raf = requestAnimationFrame(animate);
 			}
 		};
 
-		const onMove = (e: PointerEvent) => {
+		const onMove = (e: PointerEvent): void => {
 			const rect = parent.getBoundingClientRect();
 			const x = THREE.MathUtils.clamp((e.clientX - rect.left) / Math.max(1, rect.width), 0, 1);
 			const y = THREE.MathUtils.clamp(
@@ -298,11 +302,11 @@
 			lastMoveTime = performance.now();
 			ensureLoop();
 		};
-		const onEnter = () => {
+		const onEnter = (): void => {
 			pointerActive = true;
 			ensureLoop();
 		};
-		const onLeave = () => {
+		const onLeave = (): void => {
 			pointerActive = false;
 			lastMoveTime = performance.now();
 			ensureLoop();
@@ -325,15 +329,11 @@
 			composer.dispose();
 			renderer.dispose();
 			renderer.forceContextLoss();
-			if (renderer.domElement.parentElement)
-				renderer.domElement.parentElement.removeChild(renderer.domElement);
 			if (!prevParentPos || prevParentPos === 'static') parent.style.position = prevParentPos;
 		};
 	});
 </script>
 
-<div
-	bind:this={host}
-	class="pointer-events-none absolute inset-0 {className}"
-	style="z-index:{zIndex};{style}"
-></div>
+<div bind:this={host} class="pointer-events-none absolute inset-0 {className}" style="z-index:{zIndex};{style}">
+	<canvas bind:this={canvasEl}></canvas>
+</div>
