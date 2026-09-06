@@ -328,7 +328,6 @@
 			material.dispose();
 			composer.dispose();
 			renderer.dispose();
-			renderer.forceContextLoss();
 			if (!prevParentPos || prevParentPos === 'static') parent.style.position = prevParentPos;
 		};
 	});
