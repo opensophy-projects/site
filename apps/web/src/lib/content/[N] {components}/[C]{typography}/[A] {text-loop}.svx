@@ -1,0 +1,75 @@
+---
+title: Цикличный текст
+description: Анимированный компонент для цикличного переключения текста с использованием GSAP.
+keywords: 'Opensophy, Цикличный текст, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import TextLoop from '$lib/components/ui/TextLoop.svelte';
+	import textLoopSource from '$lib/components/ui/TextLoop.svelte?raw';
+</script>
+
+# Цикличный текст
+
+Компонент для плавной анимированной смены текста. Идеально для hero-секций, заголовков и акцентных элементов. Использует GSAP: эффект blur + вертикальное смещение с плавным transition ширины контейнера.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'TextLoop.svelte', code: textLoopSource, language: 'svelte' }
+	]}
+>
+	<div class="text-2xl font-medium text-foreground">
+		Проект про <TextLoop texts={['знания', 'open-source', 'безопасность', 'разработку']} interval={1800} class="text-accent" />
+	</div>
+</ComponentPreview>
+
+Текст автоматически меняется каждые 1.8 секунды с плавной анимацией.
+
+## Особенности
+
+- Анимация через GSAP (blur + вертикальное смещение)
+- Плавное изменение ширины контейнера при смене слова
+- Пауза при скрытой вкладке браузера (`document.hidden`)
+- Управляемый интервал смены текста
+- Поддержка произвольных CSS-классов (цвет, размер)
+
+## Использование
+
+```svelte
+<script>
+	import TextLoop from '$lib/components/ui/TextLoop.svelte';
+</script>
+
+<p>
+	Мы создаём <TextLoop texts={['сайты', 'приложения', 'инструменты']} class="text-accent" />
+</p>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `texts` | `string[]` | — | Массив строк (обязательный) |
+| `interval` | `number` | `2000` | Интервал смены текста в мс |
+| `class` | `string` | `''` | Дополнительные CSS-классы |
+
+## Пример с настройками
+
+```svelte
+<TextLoop
+	texts={['Быстро', 'Качественно', 'Надёжно']}
+	interval={1500}
+	class="text-2xl font-bold text-accent"
+/>
+```
+
+## Зависимости
+
+Требует установленный GSAP:
+
+```bash
+npm install gsap
+```

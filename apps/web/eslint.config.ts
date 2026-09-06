@@ -45,6 +45,20 @@ export default defineConfig(
 			}
 		}
 	},
+	// These visual effects use Three.js WebGL APIs, whose example modules do not resolve types here.
+	// Canvas creation and disposal are deliberately imperative and contained within the Svelte effect.
+	{
+		files: [
+			'src/lib/components/ui-registry/GhostCursor.svelte',
+			'src/lib/components/ui-registry/LaserFlow.svelte'
+		],
+		rules: {
+			'@typescript-eslint/no-unsafe-argument': 'off',
+			'@typescript-eslint/no-unsafe-call': 'off',
+			'@typescript-eslint/no-unsafe-return': 'off',
+			'svelte/no-dom-manipulating': 'off'
+		}
+	},
 	{
 		rules: {
 			'@typescript-eslint/no-unused-vars': [

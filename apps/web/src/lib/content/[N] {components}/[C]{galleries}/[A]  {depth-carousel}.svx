@@ -1,0 +1,227 @@
+---
+title: Карусель с глубиной
+description: 3D-карусель с эффектом глубины, инерцией и автопрокруткой.
+keywords: 'Opensophy, Карусель с глубиной, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import DepthCarousel from '$lib/components/ui-registry/depth-carousel.svelte';
+	import { DepthCarouselSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+	import type { DepthCarouselItem } from '$lib/components/ui-registry/depth-carousel.svelte';
+
+	const items: DepthCarouselItem[] = [
+		{ image: 'https://habrastorage.org/r/w1560/getpro/habr/upload_files/a29/091/152/a2909115275f79c8875cf6cff7883390.png', alt: 'Image 1' },
+		{ image: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/3ec/0cf/dd2/3ec0cfdd29d3d793f9d00bf0e08be589.jpg', alt: 'Image 2' },
+		{ image: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/6f2/748/9f8/6f27489f8cce5207d5c32afde5ca41de.jpeg', alt: 'Image 3' },
+		{ image: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/ad8/e34/e2b/ad8e34e2bd9be3570741b3eae9881711.jpeg', alt: 'Image 4' },
+	];
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'cardWidth',
+			label: 'Ширина (px)',
+			defaultValue: 300,
+			min: 150,
+			max: 450,
+			step: 25
+		},
+		{
+			type: 'number',
+			name: 'cardHeight',
+			label: 'Высота (px)',
+			defaultValue: 380,
+			min: 200,
+			max: 550,
+			step: 25
+		},
+		{
+			type: 'number',
+			name: 'depth',
+			label: 'Глубина (px)',
+			defaultValue: 220,
+			min: 80,
+			max: 400,
+			step: 20
+		},
+		{
+			type: 'number',
+			name: 'spread',
+			label: 'Разнос (px)',
+			defaultValue: 90,
+			min: 0,
+			max: 200,
+			step: 10
+		},
+		{
+			type: 'number',
+			name: 'visibleCards',
+			label: 'Видимых карт',
+			defaultValue: 4,
+			min: 1,
+			max: 8,
+			step: 1
+		},
+		{
+			type: 'select',
+			name: 'tiltDirection',
+			label: 'Наклон',
+			defaultValue: 'right',
+			options: [
+				{ label: 'Вправо', value: 'right' },
+				{ label: 'Влево', value: 'left' }
+			]
+		}
+	];
+</script>
+
+# Карусель с глубиной
+
+3D-карусель с эффектом глубины: карты расходятся по оси Z с перспективой, затуханием яркости и размытием дальних слоёв. Поддерживает drag-прокрутку с инерцией, колесо мыши, клавиатуру и автопрокрутку.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'depth-carousel.svelte', code: DepthCarouselSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="min-h-[560px] w-full rounded-lg bg-background-inset">
+			<DepthCarousel
+				items={items}
+				cardWidth={values.cardWidth as number}
+				cardHeight={values.cardHeight as number}
+				depth={values.depth as number}
+				spread={values.spread as number}
+				visibleCards={values.visibleCards as number}
+				tiltDirection={values.tiltDirection as 'left' | 'right'}
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовый пример
+
+```svelte
+<script>
+	import DepthCarousel from '$lib/components/ui-registry/depth-carousel.svelte';
+
+	const items = [
+		{ image: '/photo1.jpg', alt: 'Photo 1' },
+		{ image: '/photo2.jpg', alt: 'Photo 2' },
+		{ image: '/photo3.jpg', alt: 'Photo 3' }
+	];
+</script>
+
+<div class="h-[400px] w-full">
+	<DepthCarousel items={items} />
+</div>
+```
+
+### С внешними ссылками
+
+```svelte
+<script>
+	import DepthCarousel from '$lib/components/ui-registry/depth-carousel.svelte';
+
+	const items = [
+		{ image: 'ссылка1', alt: 'Image 1' },
+		{ image: 'ссылка2', alt: 'Image 2' },
+		{ image: 'ссылка3', alt: 'Image 3' }
+	];
+</script>
+
+<div class="h-[400px] w-full">
+	<DepthCarousel items={items} cardWidth={300} cardHeight={380} />
+</div>
+```
+
+### Простые строки
+
+```svelte
+<script>
+	import DepthCarousel from '$lib/components/ui-registry/depth-carousel.svelte';
+
+	const items = [
+		'ссылка1',
+		'ссылка2',
+		'ссылка3'
+	];
+</script>
+
+<DepthCarousel items={items} />
+```
+
+### С автопрокруткой
+
+```svelte
+<DepthCarousel
+	items={items}
+	autoplay={true}
+	autoplayDelay={3000}
+	loop={true}
+	showControls={true}
+	showIndicators={true}
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `items` | `DepthCarouselItem[]` | `[...]` | Массив элементов карусели |
+| `cardWidth` | `number` | `300` | Ширина карты (px) |
+| `cardHeight` | `number` | `380` | Высота карты (px) |
+| `radius` | `number` | `18` | Скругление углов карты (px) |
+| `tint` | `string` | `'#05060a'` | Цвет затемнения дальних карт |
+| `depth` | `number` | `220` | Смещение по оси Z на шаг (px) |
+| `spread` | `number` | `90` | Горизонтальный разнос карт (px) |
+| `tilt` | `number` | `22` | Угол наклона карты по Y (град) |
+| `tiltDirection` | `'left' \| 'right'` | `'right'` | Направление наклона |
+| `perspective` | `number` | `1400` | Перспектива 3D-сцены (px) |
+| `visibleCards` | `number` | `4` | Кол-во видимых карт по сторонам |
+| `falloff` | `number` | `0.2` | Коэффициент затухания яркости |
+| `blur` | `number` | `6` | Макс. размытие дальних карт (px) |
+| `duration` | `number` | `700` | Длительность анимации (мс) |
+| `ease` | `string` | `'power3.out'` | Функция плавности GSAP |
+| `autoplay` | `boolean` | `false` | Автопрокрутка |
+| `autoplayDelay` | `number` | `3200` | Интервал автопрокрутки (мс) |
+| `loop` | `boolean` | `true` | Бесконечная прокрутка |
+| `showControls` | `boolean` | `true` | Показывать стрелки навигации |
+| `showIndicators` | `boolean` | `true` | Показывать точки-индикаторы |
+| `className` | `string` | `''` | Дополнительные классы |
+
+### DepthCarouselItem
+
+```typescript
+type DepthCarouselItem = string | { image: string; alt?: string };
+```
+
+Элемент может быть строкой (только URL изображения) или объектом с полями `image` и необязательным `alt`.
+
+### События
+
+| Событие | Тип | Описание |
+| --- | --- | --- |
+| `change` | `{ index: number; item: { image: string; alt?: string } }` | Срабатывает при смене активной карты |
+
+## Взаимодействие
+
+- **Drag & Drop** — перетаскивание для прокрутки с инерцией
+- **Колёсико мыши** — прокрутка с плавной анимацией
+- **Клавиатура** — стрелки влево/вправо для навигации
+- **Click** — клик по карте переводит её в центр
+- **Touch** — поддержка сенсорных устройств
+- **Autoplay** — автопрокрутка с паузой при наведении
+
+## Доступность
+
+- Роль `group` с `aria-roledescription="carousel"`
+- Карты имеют `aria-roledescription="slide"` и `aria-hidden` для неактивных
+- Кнопки навигации с `aria-label`
+- Индикаторы с `role="tablist"` и `role="tab"`
+- Поддержка `prefers-reduced-motion`

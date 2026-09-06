@@ -1,0 +1,104 @@
+---
+title: Скремблирование текста
+description: Эффект "перебора" символов при наведении курсора.
+keywords: 'Opensophy, Скремблирование текста, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import TextScramble from '$lib/components/ui-registry/TextScramble.svelte';
+	import { TextScrambleSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'cycles',
+			label: 'Циклы',
+			defaultValue: 12,
+			min: 4,
+			max: 24,
+			step: 1
+		},
+		{
+			type: 'number',
+			name: 'scrambleDuration',
+			label: 'Длительность (с)',
+			defaultValue: 0.6,
+			min: 0.2,
+			max: 1.5,
+			step: 0.1
+		}
+	];
+</script>
+
+# Скремблирование текста
+
+При наведении текст "скремблируется" — символы проходят через случайные значения, прежде чем вернуться к исходному тексту.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'TextScramble.svelte', code: TextScrambleSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="flex flex-col items-start gap-4">
+			<TextScramble
+				cycles={values.cycles as number}
+				scrambleDuration={values.scrambleDuration as number}
+			>
+				<span class="text-2xl font-bold text-foreground">Наведите курсор</span>
+			</TextScramble>
+			<TextScramble
+				cycles={values.cycles as number}
+				scrambleDuration={values.scrambleDuration as number}
+			>
+				<span class="text-lg text-foreground-muted">Эффект матрицы</span>
+			</TextScramble>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовое использование
+
+```svelte
+<TextScramble>
+	<span class="text-xl font-bold">Наведите на меня</span>
+</TextScramble>
+```
+
+### С кастомными символами
+
+```svelte
+<TextScramble characters="01">
+	<span>Бинарный текст</span>
+</TextScramble>
+```
+
+### С внешним триггером
+
+```svelte
+<script>
+	let triggerEl: HTMLElement;
+</script>
+
+<button bind:this={triggerEl} class="btn">
+	<TextScramble hoverTarget={triggerEl}>
+		<span>Кнопка</span>
+	</TextScramble>
+</button>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `scrambleDuration` | `number` | `0.6` | Общая длительность анимации (с) |
+| `stagger` | `number` | `0.03` | Задержка между символами |
+| `cycles` | `number` | `12` | Кол-во смен символов |
+| `characters` | `string` | `"A-Z0-9!@#$"` | Символы для подстановки |
+| `hoverTarget` | `HTMLElement \| null` | `null` | Внешний элемент-триггер |
+| `class` | `string` | — | Дополнительные классы |
