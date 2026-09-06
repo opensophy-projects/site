@@ -15,7 +15,7 @@
 	import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte';
 	import { getHref } from '$lib/content/manifest';
 	import type { ContentItem, ContentSectionLink } from '$lib/config/navigation';
-	import { resolve } from '$app/paths';
+	import { base, resolve } from '$app/paths';
 
 	const {
 		navigation,
@@ -511,8 +511,7 @@
 		{@const href = contentHref(item.slug)}
 		{@const isActive = currentPath === href}
 		<a
-			// @ts-expect-error arg cannot be cast as `resolve`s expected type
-			href={resolve(href)}
+			href={`${base}${href}`}
 			onmouseenter={(e) => { showHoverIndicator(e.currentTarget); }}
 			onfocus={(e) => { showHoverIndicator(e.currentTarget); }}
 			use:registerActiveChild={isActive}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { cn } from '$lib/utils/cn';
 	import ChevronSort from 'carbon-icons-svelte/lib/ChevronSort.svelte';
-	import { resolve } from '$app/paths';
+	import { base } from '$app/paths';
 	import { type Component } from 'svelte';
 
 	export type DropdownItem<T = string> = {
@@ -198,8 +198,7 @@
 				{#if item.href}
 					<a
 						bind:this={itemRefEls[i]}
-						// @ts-expect-error
-						href={resolve(item.href)}
+						href={`${base}${item.href}`}
 						role="option"
 						aria-selected={item.active}
 						tabindex={focusedIndex === i ? 0 : -1}

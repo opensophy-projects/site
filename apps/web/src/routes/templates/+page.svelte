@@ -5,7 +5,7 @@
 	import Card from '$lib/components/docs/markdown/Card.svelte';
 	import SearchTrigger from '$lib/components/content/search/SearchTrigger.svelte';
 	import { page } from '$app/state';
-	import { resolve } from '$app/paths';
+	import { base } from '$app/paths';
 
 	let { data }: { data: PageData } = $props();
 	const templates = $derived(data.templates);
@@ -40,7 +40,7 @@
 	<section class="section-block w-full max-w-5xl px-4">
 		<div class="templates-grid">
 			{#each templates as template (template.slug)}
-				<a href={resolve(`/templates/${template.slug}`)} class="block h-full">
+				<a href={`${base}/templates/${template.slug}`} class="block h-full">
 					<Card title={template.title} class="h-full">
 						{template.description || 'Docker Compose шаблон'}
 					</Card>

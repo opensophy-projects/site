@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import { base } from '$app/paths';
 	import { cn } from '$lib/utils/cn';
 
 	type ComponentProps = {
@@ -27,8 +27,7 @@
 	)}
 >
 	<a
-		// @ts-expect-error arg cannot be cast as `resolve`s expected type
-		href={resolve(href)}
+		href={`${base}${href}`}
 		class={cn(
 			'group relative flex flex-col rounded-md bg-background px-4 py-3 card transition-[background-color] duration-150 ease-out hover:bg-background-muted'
 		)}

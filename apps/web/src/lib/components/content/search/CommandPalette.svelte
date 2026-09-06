@@ -8,7 +8,7 @@
   import { scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { goto, onNavigate } from "$app/navigation";
-  import { resolve } from "$app/paths";
+  import { base } from "$app/paths";
   import { cn } from "$lib/utils/cn";
   import ScrollArea from "$lib/components/ui/ScrollArea.svelte";
   import Overlay from "$lib/components/ui/Overlay.svelte";
@@ -213,8 +213,7 @@
 
   function selectResult(result: ReturnType<typeof searchContent>[number]) {
     const href = `${result.slug}${result.anchor ?? ""}`;
-    // @ts-expect-error arg cannot be cast as `resolve`'s expected type
-    void goto(resolve(href));
+    void goto(`${base}${href}`);
     close();
   }
 
