@@ -1,0 +1,96 @@
+---
+title: Лазерный поток
+description: Интерактивный WebGL-фон с лазерными лучами, туманом и световыми нитями.
+keywords: 'Opensophy, LaserFlow, WebGL, shader, laser, UI components, библиотека компонентов'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import LaserFlow from '$lib/components/ui-registry/LaserFlow.svelte';
+	import { LaserFlowSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'color', name: 'color', label: 'Цвет', defaultValue: '#FF8A4C' },
+		{ type: 'number', name: 'flowSpeed', label: 'Скорость потока', defaultValue: 0.35, min: 0, max: 2, step: 0.05 },
+		{ type: 'number', name: 'fogIntensity', label: 'Интенсивность тумана', defaultValue: 0.45, min: 0, max: 1.5, step: 0.05 },
+		{ type: 'number', name: 'wispDensity', label: 'Плотность нитей', defaultValue: 1, min: 0, max: 2, step: 0.1 },
+		{ type: 'number', name: 'mouseTiltStrength', label: 'Реакция на курсор', defaultValue: 0.01, min: 0, max: 0.1, step: 0.005 }
+	];
+</script>
+
+# Лазерный поток
+
+`LaserFlow` — полноразмерный WebGL-фон с движущимся лазерным крестом, туманом и вертикальными световыми нитями. Эффект реагирует на положение указателя и подходит для hero-секций, карточек и декоративных панелей. Компонент является декоративным и скрыт от скринридеров.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'LaserFlow.svelte', code: LaserFlowSource, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<div class="h-[420px] w-full overflow-hidden rounded-lg">
+			<LaserFlow
+				color={values.color as string}
+				flowSpeed={values.flowSpeed as number}
+				fogIntensity={values.fogIntensity as number}
+				wispDensity={values.wispDensity as number}
+				mouseTiltStrength={values.mouseTiltStrength as number}
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Установка
+
+```bash
+npm install three
+```
+
+### Базовый пример
+
+```svelte
+<script>
+	import LaserFlow from '$lib/components/ui-registry/LaserFlow.svelte';
+</script>
+
+<div class="h-[420px] overflow-hidden rounded-lg">
+	<LaserFlow color="#FF8A4C" flowSpeed={0.35} fogIntensity={0.45} wispDensity={1} />
+</div>
+```
+
+Поместите компонент в контейнер с заданной высотой: `LaserFlow` занимает всю ширину и высоту родителя. Для читаемого текста располагайте контент поверх эффекта с `relative z-10`.
+
+## Особенности
+
+- WebGL-отрисовка через canvas без DOM-анимаций
+- Плавная реакция луча на движение указателя
+- Настройка цвета, скорости потока, тумана и световых нитей
+- Подстраивается под размер контейнера через `ResizeObserver`
+- Ограничивает DPR до `2` для предсказуемой производительности
+- Корректно освобождает WebGL-ресурсы, observers и animation frame при размонтировании
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `color` | `string` | `'#FF79C6'` | Цвет лазерного света в формате HEX |
+| `flowSpeed` | `number` | `0.35` | Скорость движения потока |
+| `fogIntensity` | `number` | `0.45` | Интенсивность шума-тумана |
+| `wispDensity` | `number` | `1` | Плотность вертикальных световых нитей (0–2) |
+| `wispSpeed` | `number` | `15` | Скорость движения нитей |
+| `wispIntensity` | `number` | `5` | Яркость нитей |
+| `mouseTiltStrength` | `number` | `0.01` | Сила смещения от курсора |
+| `mouseSmoothTime` | `number` | `0` | Время сглаживания курсора в секундах |
+| `horizontalBeamOffset` | `number` | `0.1` | Горизонтальное смещение луча |
+| `verticalBeamOffset` | `number` | `0` | Вертикальное смещение луча |
+| `verticalSizing` | `number` | `2` | Длина вертикального луча |
+| `horizontalSizing` | `number` | `0.5` | Ширина вертикального луча |
+| `flowStrength` | `number` | `0.25` | Контраст пульсации потока |
+| `fogScale` | `number` | `0.3` | Масштаб шума тумана |
+| `fogFallSpeed` | `number` | `0.6` | Скорость движения тумана |
+| `falloffStart` | `number` | `1.2` | Яркость и затухание луча |
+| `decay` | `number` | `1.1` | Зарезервировано для управления затуханием |
+| `dpr` | `number` | `window.devicePixelRatio` (до 2) | Плотность пикселей canvas |
+| `class` | `string` | `''` | Дополнительные CSS-классы контейнера |
+| `style` | `string` | `''` | Inline-стили контейнера |

@@ -1,0 +1,119 @@
+---
+title: Видеоплеер
+description: Кастомизированный видеоплеер с анимированными контролами и полноэкранным режимом.
+keywords: 'Opensophy, Видеоплеер, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import VideoPlayer from '$lib/components/ui-registry/VideoPlayer.svelte';
+	import { VideoPlayerSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'boolean',
+			name: 'muted',
+			label: 'Без звука',
+			defaultValue: true
+		},
+		{
+			type: 'boolean',
+			name: 'loop',
+			label: 'Зацикливание',
+			defaultValue: false
+		}
+	];
+</script>
+
+# Видеоплеер
+
+Кастомизированный видеоплеер с анимированными контролами, морфингом иконок и поддержкой полноэкранного режима. Построен на GSAP с плавными переходами.
+
+## Демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'VideoPlayer.svelte', code: VideoPlayerSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<iframe
+			src="https://www.youtube.com/embed/RiUvtWyNpXo"
+			title="Video Player Demo"
+			frameborder="0"
+			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+			referrerpolicy="strict-origin-when-cross-origin"
+			allowfullscreen
+			class="aspect-video w-full rounded-lg"
+		></iframe>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовый плеер
+
+```svelte
+<VideoPlayer
+	src="/video.mp4"
+	poster="/poster.jpg"
+/>
+```
+
+### YouTube embed
+
+Для встраивания видео с YouTube используйте `iframe` внутри сниппета `children`. Это даёт больше контроля над оформлением и позволяет использовать внешние источники:
+
+```svelte
+<VideoPlayer>
+	{#snippet children()}
+		<iframe
+			src="https://www.youtube.com/embed/VIDEO_ID"
+			title="Video"
+			frameborder="0"
+			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+			allowfullscreen
+			class="aspect-video w-full"
+		></iframe>
+	{/snippet}
+</VideoPlayer>
+```
+
+### Автовоспроизведение
+
+```svelte
+<VideoPlayer
+	src="/video.mp4"
+	autoplay={true}
+	muted={true}
+/>
+```
+
+### Скрытие контролов
+
+```svelte
+<VideoPlayer
+	src="/video.mp4"
+	hideControls={true}
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `src` | `string` | — | URL видеофайла (обязательный) |
+| `poster` | `string` | — | URL постера |
+| `autoplay` | `boolean` | `false` | Автовоспроизведение |
+| `muted` | `boolean` | `true` | Отключение звука |
+| `loop` | `boolean` | `false` | Зацикливание |
+| `hideControls` | `boolean` | `false` | Скрыть контролы |
+| `class` | `string` | — | Дополнительные классы |
+
+## Возможности
+
+- Плавные анимации GSAP для всех элементов управления
+- Морфинг иконок (play/pause, mute/unmute, fullscreen)
+- Полноэкранный режим с анимацией
+- Прогресс-бар с предпросмотром времени
+- Управление с клавиатуры (стрелки, Page Up/Down, Home/End)
