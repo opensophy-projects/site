@@ -19,6 +19,8 @@ import DepthCarouselSource from './depth-carousel.svelte?raw';
 import AccordionGallerySource from './accordiongallery.svelte?raw';
 import DriftWallSource from './driftwall.svelte?raw';
 import GlowHorizonSource from './glowhorizon.svelte?raw';
+import LaserFlowSource from './LaserFlow.svelte?raw';
+import GhostCursorSource from './GhostCursor.svelte?raw';
 
 export {
 	ButtonSource,
@@ -41,5 +43,7 @@ export {
 	DepthCarouselSource,
 	AccordionGallerySource,
 	DriftWallSource,
-	GlowHorizonSource
+	GlowHorizonSource,
+	LaserFlowSource,
+	GhostCursorSource,
 };
