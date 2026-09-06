@@ -11,7 +11,7 @@ keywords: 'Opensophy, LaserFlow, WebGL, shader, laser, UI components, библи
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [
-		{ type: 'color', name: 'color', label: 'Цвет', defaultValue: '#FF8A4C' },
+		{ type: 'color', name: 'color', label: 'Цвет', defaultValue: '#f43f5e' },
 		{ type: 'number', name: 'flowSpeed', label: 'Скорость потока', defaultValue: 0.35, min: 0, max: 2, step: 0.05 },
 		{ type: 'number', name: 'fogIntensity', label: 'Интенсивность тумана', defaultValue: 0.45, min: 0, max: 1.5, step: 0.05 },
 		{ type: 'number', name: 'wispDensity', label: 'Плотность нитей', defaultValue: 1, min: 0, max: 2, step: 0.1 },
@@ -55,7 +55,7 @@ npm install three
 </script>
 
 <div class="h-[420px] overflow-hidden rounded-lg">
-	<LaserFlow color="#FF8A4C" flowSpeed={0.35} fogIntensity={0.45} wispDensity={1} />
+	<LaserFlow color="#f43f5e" flowSpeed={0.35} fogIntensity={0.45} wispDensity={1} />
 </div>
 ```
 
@@ -85,12 +85,12 @@ npm install three
 | `horizontalBeamOffset` | `number` | `0.1` | Горизонтальное смещение луча |
 | `verticalBeamOffset` | `number` | `0` | Вертикальное смещение луча |
 | `verticalSizing` | `number` | `2` | Длина вертикального луча |
-| `horizontalSizing` | `number` | `0.5` | Ширина вертикального луча |
+| `horizontalSizing` | `number` | `0.5` | Длина горизонтального луча |
 | `flowStrength` | `number` | `0.25` | Контраст пульсации потока |
 | `fogScale` | `number` | `0.3` | Масштаб шума тумана |
 | `fogFallSpeed` | `number` | `0.6` | Скорость движения тумана |
 | `falloffStart` | `number` | `1.2` | Яркость и затухание луча |
-| `decay` | `number` | `1.1` | Зарезервировано для управления затуханием |
+| `decay` | `number` | `1.1` | Длина видимого участка лазерного луча |
 | `dpr` | `number` | `window.devicePixelRatio` (до 2) | Плотность пикселей canvas |
 | `class` | `string` | `''` | Дополнительные CSS-классы контейнера |
 | `style` | `string` | `''` | Inline-стили контейнера |
