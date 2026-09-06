@@ -192,7 +192,7 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 
 	function hexToRGB(hex: string): { r: number; g: number; b: number } {
 		let c = hex.trim();
-		if (c[0] === '#') c = c.slice(1);
+		if (c.startsWith('#')) c = c.slice(1);
 		if (c.length === 3)
 			c = c
 				.split('')
@@ -257,8 +257,9 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 
 	$effect(() => {
 		if (!mount || !canvasEl) return;
+		const canvas: HTMLCanvasElement = canvasEl;
 		const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
-			canvas: canvasEl,
+			canvas,
 			antialias: false,
 			alpha: false,
 			depth: false,
@@ -271,9 +272,9 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 		renderer.setPixelRatio(curDpr);
 		renderer.outputColorSpace = THREE.SRGBColorSpace;
 		renderer.setClearColor(0x000000, 1);
-		canvasEl.style.width = '100%';
-		canvasEl.style.height = '100%';
-		canvasEl.style.display = 'block';
+		canvas.style.width = '100%';
+		canvas.style.height = '100%';
+		canvas.style.display = 'block';
 
 		const scene: THREE.Scene = new THREE.Scene();
 		const camera: THREE.OrthographicCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -335,7 +336,7 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 			renderer.setPixelRatio(curDpr);
 			renderer.setSize(w, h, false);
 			uniforms.iResolution.value.set(w * curDpr, h * curDpr, curDpr);
-			rect = canvasEl!.getBoundingClientRect();
+			rect = canvas.getBoundingClientRect();
 		};
 		setSize();
 		const ro = new ResizeObserver(setSize);
@@ -349,8 +350,8 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 			mouseTarget.set(x * curDpr, hb - y * curDpr);
 		};
 		const onLeave = (): void => mouseTarget.set(0, 0);
-		canvasEl.addEventListener('pointermove', onMove);
-		canvasEl.addEventListener('pointerleave', onLeave);
+		canvas.addEventListener('pointermove', onMove);
+		canvas.addEventListener('pointerleave', onLeave);
 
 		let raf = 0;
 		const animate = (): void => {
@@ -375,8 +376,8 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 		return () => {
 			cancelAnimationFrame(raf);
 			ro.disconnect();
-			canvasEl?.removeEventListener('pointermove', onMove);
-			canvasEl?.removeEventListener('pointerleave', onLeave);
+			canvas.removeEventListener('pointermove', onMove);
+			canvas.removeEventListener('pointerleave', onLeave);
 			scene.clear();
 			geometry.dispose();
 			material.dispose();
