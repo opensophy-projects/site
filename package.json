@@ -21,6 +21,7 @@
     "prettier-plugin-tailwindcss": "^0.7.2"
   },
   "dependencies": {
-    "carbon-icons-svelte": "^13.13.0"
+    "carbon-icons-svelte": "^13.13.0",
+    "three": "^0.185.1"
   }
 }
