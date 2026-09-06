@@ -326,6 +326,8 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 
 		const timer: THREE.Timer = new THREE.Timer();
 		timer.connect(document);
+		const getElapsed = (): number => timer.getElapsed();
+		const getDelta = (): number => timer.getDelta();
 		let fade = 0;
 		let rect: DOMRect | null = null;
 		const mouseTarget: THREE.Vector2 = new THREE.Vector2(0, 0);
@@ -358,8 +360,8 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 		const animate = (timestamp: number): void => {
 			if (!active) return;
 			timer.update(timestamp);
-			const t = timer.getElapsed();
-			const dt = Math.max(0, timer.getDelta());
+			const t = getElapsed();
+			const dt = Math.max(0, getDelta());
 			uniforms.iTime.value = t;
 			const cdt = Math.min(0.033, Math.max(0.001, dt));
 			uniforms.uFlowTime.value += cdt;
