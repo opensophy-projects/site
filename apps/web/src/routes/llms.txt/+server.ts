@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
 import { siteConfig } from '$lib';
+import { getTemplateEntries } from '$lib/templates/registry';
 
 export const prerender = true;
 import { contentSections } from '$lib/content/sections';
@@ -8,7 +9,7 @@ import {
 	getContentSectionManifest,
 	getContentSectionMetadata,
 	getContentSectionRawHref,
-	type ContentSectionId
+	type ContentSectionId,
 } from '$lib/content/sections';
 
 type ContentEntry = {
@@ -63,21 +64,113 @@ const overviewParagraphs = [
 	'',
 	'Открыт к предложениям — ищет компанию или команду в роли DevSecOps-инженера.',
 	'',
+	'Контакты: Telegram @opensophy, email opensophy@gmail.com, GitHub https://github.com/opensophy-projects.',
+	'',
 	'## LLM guidance',
 	'',
-	'LLM-friendly Markdown for every page is available at `/<section>/raw/<slug>`; this is the source content without navigation chrome.',
-	'Use `/sitemap.xml` for URL discovery and `/robots.txt` for crawl guidance.'
+	'This file is the complete, curated index of public Opensophy pages. Prefer the canonical page URL when referring users to a page.',
+	'For documentation, articles, and component-library entries, each item also includes a Raw Markdown link. Raw Markdown contains the source content without site navigation or interactive UI.',
+	'Use `/sitemap.xml` for machine-readable URL discovery and `/robots.txt` for crawl guidance.',
+];
+
+type StaticPage = {
+	title: string;
+	path: string;
+	description: string;
+};
+
+const staticPages: StaticPage[] = [
+	{
+		title: 'Главная',
+		path: '/',
+		description:
+			'Обзор Opensophy, его услуг и open-source проектов: os.docs, os.ui, os.mtls и os.dokploy.',
+	},
+	{
+		title: 'Безопасность',
+		path: '/solutions/security',
+		description:
+			'Услуги безопасности: SAST, DAST, SCA, пентесты, поиск утечек и триаж уязвимостей.',
+	},
+	{
+		title: 'Автоматизация',
+		path: '/solutions/automation',
+		description:
+			'Услуги автоматизации: CI/CD, DevSecOps, инфраструктура, мониторинг и кастомные инструменты.',
+	},
+	{
+		title: 'Инфраструктура',
+		path: '/solutions/infrastructure',
+		description:
+			'Услуги инфраструктуры: серверы, прокси, контейнеризация, моделирование угроз и мониторинг.',
+	},
+	{
+		title: 'os.mtls',
+		path: '/mtls',
+		description:
+			'Инструмент для создания и управления mTLS-сертификатами для Traefik.',
+	},
+	{
+		title: 'os.dokploy',
+		path: '/dokploy',
+		description:
+			'Страница проекта — форка Dokploy с управлением серверами, деплоями и mTLS.',
+	},
+	{
+		title: 'Шаблоны Docker Compose',
+		path: '/templates',
+		description:
+			'Реестр готовых шаблонов Docker Compose для DevSecOps, безопасности и автоматизации.',
+	},
+	{
+		title: 'Шаблоны Docker Compose: Docker',
+		path: '/templates/docker',
+		description: 'Тот же реестр, доступный по тематическому Docker URL.',
+	},
+	{
+		title: 'Новости',
+		path: '/news',
+		description: 'Новости, обновления и материалы об Opensophy.',
+	},
+	{
+		title: 'Кейсы',
+		path: '/cases',
+		description: 'Примеры задач, решений и результатов работы Opensophy.',
+	},
+	{
+		title: 'Статус проектов',
+		path: '/status',
+		description: 'Текущий статус и прогресс проектов Opensophy.',
+	},
+	{
+		title: 'Политика сервиса',
+		path: '/service-policy',
+		description: 'Условия и политика предоставления сервисов Opensophy.',
+	},
 ];
 
 const buildContentEntry = (origin: string, entry: ContentEntry) => {
 	const pagePath = getContentSectionHref(entry.sectionId, entry.slug);
 	const metadata = getContentSectionMetadata(entry.sectionId, pagePath);
 	const title = metadata?.title ?? entry.fallbackTitle;
-	const description = metadata?.description ?? `${entry.sectionLabel} page for ${title}.`;
+	const description =
+		metadata?.description ?? `${entry.sectionLabel} page for ${title}.`;
 	const rawPath = getContentSectionRawHref(entry.sectionId, entry.slug);
-	const link = new URL(rawPath, origin).href;
-	return `- [${title}](${link}): ${description}`;
+	const pageLink = new URL(pagePath, origin).href;
+	const rawLink = new URL(rawPath, origin).href;
+	return `- [${title}](${pageLink}): ${description} [Raw Markdown](${rawLink})`;
 };
+
+const buildStaticPageEntry = (origin: string, page: StaticPage) =>
+	`- [${page.title}](${new URL(page.path, origin).href}): ${page.description}`;
+
+const buildTemplateEntry = (
+	origin: string,
+	template: ReturnType<typeof getTemplateEntries>[number]
+) =>
+	`- [${template.title}](${new URL(`/templates/${template.slug}`, origin).href}): ${
+		template.description || 'Docker Compose шаблон.'
+	}`;
 
 const dedupeEntries = (entries: ContentEntry[]) => {
 	const map = new Map<string, ContentEntry>();
@@ -99,7 +192,11 @@ export const GET: RequestHandler = () => {
 	const canonicalOrigin = new URL(siteConfig.url).origin;
 	const optionalLinks = [
 		`- [GitHub](${siteConfig.links.github}): Source code, issues, and discussions.`,
-		`- [Package](https://www.npmjs.com/package/${siteConfig.package.name}): Installation and release metadata.`
+		`- [Telegram](${siteConfig.links.telegram}): Project updates and direct contact.`,
+		`- [Email](mailto:${siteConfig.links.email}): Direct contact with Opensophy.`,
+		`- [Package](https://www.npmjs.com/package/${siteConfig.package.name}): Installation and release metadata.`,
+		`- [Sitemap](${new URL('/sitemap.xml', canonicalOrigin).href}): Machine-readable list of public URLs.`,
+		`- [Robots](${new URL('/robots.txt', canonicalOrigin).href}): Crawling guidance.`,
 	];
 
 	const sectionBlocks = contentSections.flatMap((section) => {
@@ -108,13 +205,18 @@ export const GET: RequestHandler = () => {
 				sectionId: section.id,
 				sectionLabel: section.label,
 				slug: item.slug,
-				fallbackTitle: item.name
+				fallbackTitle: item.name,
 			}))
 		);
 
 		return buildSection(
 			section.label,
-			entries.map((entry) => buildContentEntry(canonicalOrigin, entry))
+			[
+				`- [${section.label}](${new URL(`/${section.id}`, canonicalOrigin).href}): ${
+					section.description ?? `${section.label} section index.`
+				}`,
+				...entries.map((entry) => buildContentEntry(canonicalOrigin, entry))
+			]
 		);
 	});
 
@@ -125,10 +227,22 @@ export const GET: RequestHandler = () => {
 		'',
 		...overviewParagraphs,
 		'',
+		...buildSection(
+			'Основные страницы',
+			staticPages.map((page) => buildStaticPageEntry(canonicalOrigin, page))
+		),
+		'',
+		...buildSection(
+			'Шаблоны Docker Compose',
+			getTemplateEntries().map((template) =>
+				buildTemplateEntry(canonicalOrigin, template)
+			)
+		),
+		'',
 		...sectionBlocks,
 		'',
 		...buildSection('Optional', optionalLinks),
-		''
+		'',
 	];
 
 	const body =
@@ -140,7 +254,7 @@ export const GET: RequestHandler = () => {
 	return new Response(body, {
 		headers: {
 			'content-type': 'text/plain; charset=utf-8',
-			'cache-control': 'public, max-age=3600'
-		}
+			'cache-control': 'public, max-age=3600',
+		},
 	});
 };
