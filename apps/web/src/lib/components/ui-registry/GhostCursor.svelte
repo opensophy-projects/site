@@ -79,7 +79,7 @@
 		});
 		renderer.setClearColor(0x000000, 0);
 		canvasEl.style.pointerEvents = 'none';
-		if (mixBlendMode) canvasEl.style.mixBlendMode = String(mixBlendMode);
+		if (mixBlendMode) canvasEl.style.mixBlendMode = mixBlendMode;
 		canvasEl.style.display = 'block';
 		canvasEl.style.width = '100%';
 		canvasEl.style.height = '100%';
