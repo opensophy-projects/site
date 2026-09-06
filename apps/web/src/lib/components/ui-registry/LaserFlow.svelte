@@ -257,6 +257,7 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 
 	$effect(() => {
 		if (!mount || !canvasEl) return;
+		let active = true;
 		const canvas: HTMLCanvasElement = canvasEl;
 		const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
 			canvas,
@@ -323,8 +324,10 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 		mesh.frustumCulled = false;
 		scene.add(mesh);
 
-		const clock: THREE.Clock = new THREE.Clock();
-		let prevTime = 0;
+		const timer: THREE.Timer = new THREE.Timer();
+		timer.connect(document);
+		const getElapsed = (): number => timer.getElapsed();
+		const getDelta = (): number => timer.getDelta();
 		let fade = 0;
 		let rect: DOMRect | null = null;
 		const mouseTarget: THREE.Vector2 = new THREE.Vector2(0, 0);
@@ -354,11 +357,11 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 		canvas.addEventListener('pointerleave', onLeave);
 
 		let raf = 0;
-		const animate = (): void => {
-			raf = requestAnimationFrame(animate);
-			const t = clock.getElapsedTime();
-			const dt = Math.max(0, t - prevTime);
-			prevTime = t;
+		const animate = (timestamp: number): void => {
+			if (!active) return;
+			timer.update(timestamp);
+			const t = getElapsed();
+			const dt = Math.max(0, getDelta());
 			uniforms.iTime.value = t;
 			const cdt = Math.min(0.033, Math.max(0.001, dt));
 			uniforms.uFlowTime.value += cdt;
@@ -370,11 +373,14 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 			mouseSmooth.lerp(mouseTarget, alpha);
 			uniforms.iMouse.value.set(mouseSmooth.x, mouseSmooth.y, 0, 0);
 			renderer.render(scene, camera);
+			if (active) raf = requestAnimationFrame(animate);
 		};
-		animate();
+		raf = requestAnimationFrame(animate);
 
 		return () => {
+			active = false;
 			cancelAnimationFrame(raf);
+			timer.dispose();
 			ro.disconnect();
 			canvas.removeEventListener('pointermove', onMove);
 			canvas.removeEventListener('pointerleave', onLeave);
@@ -382,7 +388,6 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 			geometry.dispose();
 			material.dispose();
 			renderer.dispose();
-			renderer.forceContextLoss();
 		};
 	});
 </script>
