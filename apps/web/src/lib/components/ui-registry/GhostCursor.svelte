@@ -1,8 +1,3 @@
-<!--
-	Three.js does not ship TypeScript declarations in this project. The WebGL setup is intentionally
-	imperative, so the type-aware and Svelte DOM rules cannot inspect these library calls safely.
--->
-<!-- eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, svelte/no-dom-manipulating -->
 <script lang="ts">
 	import * as THREE from 'three';
 	import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
