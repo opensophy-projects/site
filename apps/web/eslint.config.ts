@@ -46,6 +46,19 @@ export default defineConfig(
 		}
 	},
 	{
+		// three@0.185 does not ship TypeScript declarations. Keep the unsafe-call
+		// exception scoped to the two WebGL demos that import it instead of
+		// weakening type-aware linting for the rest of the application.
+		files: [
+			'src/lib/components/ui-registry/GhostCursor.svelte',
+			'src/lib/components/ui-registry/LaserFlow.svelte'
+		],
+		rules: {
+			'@typescript-eslint/no-unsafe-call': 'off',
+			'@typescript-eslint/no-unsafe-return': 'off'
+		}
+	},
+	{
 		rules: {
 			'@typescript-eslint/no-unused-vars': [
 				'error',
