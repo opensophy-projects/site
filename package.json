@@ -23,5 +23,8 @@
   "dependencies": {
     "carbon-icons-svelte": "^13.13.0",
     "three": "^0.185.1"
+  },
+  "overrides": {
+    "cookie": "0.7.2"
   }
 }
