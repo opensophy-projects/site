@@ -1,0 +1,100 @@
+---
+title: Разлёт текста
+description: Эффект "разбегания" текста от курсора мыши.
+keywords: 'Opensophy, Разлёт текста, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import TextRepel from '$lib/components/ui-registry/TextRepel.svelte';
+	import { TextRepelSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'strength',
+			label: 'Сила',
+			defaultValue: 18,
+			min: 5,
+			max: 40,
+			step: 1
+		},
+		{
+			type: 'number',
+			name: 'radius',
+			label: 'Радиус (px)',
+			defaultValue: 160,
+			min: 50,
+			max: 300,
+			step: 10
+		}
+	];
+</script>
+
+# Разлёт текста
+
+Текст "разбегается" от курсора мыши. Каждое слово или символ отталкивается в зависимости от расстояния до курсора.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'TextRepel.svelte', code: TextRepelSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<TextRepel
+			strength={values.strength as number}
+			radius={values.radius as number}
+		>
+			<span class="text-xl font-medium text-foreground">
+				Наведите курсор на текст. Слова будут отталкиваться.
+			</span>
+		</TextRepel>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Режим слов
+
+```svelte
+<TextRepel mode="words">
+	<p>Текст из нескольких слов</p>
+</TextRepel>
+```
+
+### Режим символов
+
+```svelte
+<TextRepel mode="chars">
+	<p>Каждый символ отдельно</p>
+</TextRepel>
+```
+
+### С внешним триггером
+
+```svelte
+<script>
+	let containerEl: HTMLElement;
+</script>
+
+<div bind:this={containerEl} class="p-8 bg-background-inset">
+	<TextRepel hoverTarget={containerEl}>
+		<p>Текст реагирует на курсор в контейнере</p>
+	</TextRepel>
+</div>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `mode` | `'words' \| 'chars'` | `'words'` | Режим разбивки |
+| `strength` | `number` | `18` | Макс. расстояние смещения (px) |
+| `radius` | `number` | `160` | Радиус влияния курсора (px) |
+| `falloffPower` | `number` | `1.5` | Степень затухания |
+| `duration` | `number` | `0.45` | Длительность анимации (с) |
+| `ease` | `string` | `"power3.out"` | Easing функция |
+| `hoverTarget` | `HTMLElement \| null` | `null` | Внешний элемент-триггер |
+| `class` | `string` | — | Дополнительные классы |

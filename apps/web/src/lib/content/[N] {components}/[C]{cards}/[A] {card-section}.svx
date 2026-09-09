@@ -1,0 +1,64 @@
+---
+title: Секция карточек
+description: Секция из 6 карточек услуг с уникальными SVG-визуализациями для каждой карточки.
+keywords: 'Opensophy, Секция карточек, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import CardSection from '$lib/components/ui/CardSection.svelte';
+	import cardSectionSource from '$lib/components/ui/CardSection.svelte?raw';
+</script>
+
+# Секция карточек
+
+Компонент-секция с карточками услуг. Каждая карточка имеет уникальную визуализацию: tool badges, концентрические дуги, чеклист автоматизации, бар-чарт, shield с протоколами и анимированная SVG-книга.
+
+## Превью
+
+<ComponentPreview
+	sources={[
+		{ name: 'CardSection.svelte', code: cardSectionSource, language: 'svelte' }
+	]}
+>
+	<div class="w-full p-4">
+		<CardSection />
+	</div>
+</ComponentPreview>
+
+## Карточки
+
+| Карточка | Визуализация | Услуга |
+| --- | --- | --- |
+| Security Analysis | Tool badges на линиях | SCA, SAST, DAST, LINT, WAF, IaC |
+| Pentest | Концентрические дуги | Проверка защищённости |
+| Automation | Чеклист с fade | Автоматизация процессов |
+| Dev | Вертикальные бары | Разработка под заказ |
+| Access | Shield + протокол chips | Настройка безопасного доступа |
+| Knowledge | Анимированная книга | Открытые знания |
+
+## Особенности
+
+- Адаптивная сетка: 2 колонки → 1 колонка на мобильных
+- Карточки Automation и Knowledge — на всю ширину
+- CSS-only анимация книги (`bookFloat` keyframes)
+- Поддержка тёмной/светлой темы через CSS-переменные
+- Все визуализации — чистый HTML/CSS/SVG, без зависимостей
+
+## Использование
+
+```svelte
+<script>
+	import CardSection from '$lib/components/ui/CardSection.svelte';
+</script>
+
+<CardSection />
+```
+
+## Кастомизация
+
+Компонент не принимает пропсов — содержимое задано жёстко. Для изменений:
+
+- **Тексты и цены**: заголовки, описания, `.card-price-value`
+- **Визуализации**: CSS и SVG-разметка внутри компонента
+- **Списки**: массивы `automationVisible`, `automationHidden`

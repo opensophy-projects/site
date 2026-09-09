@@ -1,0 +1,64 @@
+---
+title: Раздвижение текста
+description: Эффект раздвигания текста при наведении с анимацией символов.
+keywords: 'Opensophy, Раздвижение текста, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import SplitHover from '$lib/components/ui-registry/SplitHover.svelte';
+	import { SplitHoverSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+</script>
+
+# Раздвижение текста
+
+Компонент для создания эффекта "раздвигания" текста при наведении. Текст дублируется, и символы анимируются вертикально один за другим.
+
+## Демо
+
+<ComponentPreview
+	sources={[{ name: 'SplitHover.svelte', code: SplitHoverSource, language: 'svelte' }]}
+>
+	{#snippet children()}
+		<div class="flex flex-col items-start gap-4">
+			<SplitHover>
+				<span class="text-2xl font-bold text-foreground">Наведите на меня</span>
+			</SplitHover>
+			<SplitHover>
+				<span class="text-lg text-foreground-muted">Ещё один пример</span>
+			</SplitHover>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовое использование
+
+```svelte
+<SplitHover>
+	<span class="text-xl font-bold">Текст при наведении</span>
+</SplitHover>
+```
+
+### С внешним триггером
+
+```svelte
+<script>
+	let hoverTarget: HTMLElement;
+</script>
+
+<div bind:this={hoverTarget} class="p-4 bg-background-inset">
+	<SplitHover hoverTarget={hoverTarget}>
+		<span>Текст реагирует на наведение на родителя</span>
+	</SplitHover>
+</div>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `hoverTarget` | `HTMLElement \| null` | `null` | Внешний элемент для триггера hover |
+| `class` | `string` | — | Дополнительные классы |

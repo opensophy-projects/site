@@ -1,0 +1,146 @@
+---
+title: Свечение
+description: Мягкое розовое свечение — радиальный градиент как в hero-секции главной страницы. Выбор стороны: сверху, снизу, слева, справа.
+keywords: 'Opensophy, Свечение, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import GlowHorizon from '$lib/components/ui-registry/glowhorizon.svelte';
+	import { GlowHorizonSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'variant',
+			label: 'Сторона',
+			defaultValue: 'top',
+			options: [
+				{ label: 'Сверху', value: 'top' },
+				{ label: 'Снизу', value: 'bottom' },
+				{ label: 'Слева', value: 'left' },
+				{ label: 'Справа', value: 'right' }
+			]
+		},
+		{
+			type: 'range',
+			name: 'opacity',
+			label: 'Прозрачность',
+			defaultValue: 0.28,
+			min: 0,
+			max: 1,
+			step: 0.02
+		}
+	];
+</script>
+
+# Свечение
+
+Мягкое розовое свечение на основе радиального градиента — тот же эффект, что используется в hero-секции главной страницы. Градиент переходит от прозрачного к малиновому (`#f43f5e`), розовому (`#fda4af`) и светлому (`#fff1f2`), создавая тёплое акцентное свечение у выбранного края контейнера. Используется как фоновый декоративный элемент для hero-секций, баннеров и CTA-блоков.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'glowhorizon.svelte', code: GlowHorizonSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="relative h-[420px] w-full overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon
+				variant={values.variant as 'top' | 'bottom' | 'left' | 'right'}
+				opacity={values.opacity as number}
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Все варианты
+
+<ComponentPreview
+	sources={[{ name: 'glowhorizon.svelte', code: GlowHorizonSource, language: 'svelte' }]}
+>
+	<div class="grid w-full grid-cols-2 gap-3 p-4">
+		<div class="relative h-40 overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon variant="top" />
+			<div class="absolute bottom-2 left-2 text-xs text-foreground-muted">top</div>
+		</div>
+		<div class="relative h-40 overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon variant="bottom" />
+			<div class="absolute top-2 left-2 text-xs text-foreground-muted">bottom</div>
+		</div>
+		<div class="relative h-40 overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon variant="left" />
+			<div class="absolute right-2 top-2 text-xs text-foreground-muted">left</div>
+		</div>
+		<div class="relative h-40 overflow-hidden rounded-lg bg-background-inset">
+			<GlowHorizon variant="right" />
+			<div class="absolute left-2 top-2 text-xs text-foreground-muted">right</div>
+		</div>
+	</div>
+</ComponentPreview>
+
+## Особенности
+
+- 4 стороны свечения: `top`, `bottom`, `left`, `right`
+- Радиальный градиент: прозрачный → малиновый (`#f43f5e`) → розовый (`#fda4af`) → светлый (`#fff1f2`)
+- Настраиваемая прозрачность через пропс `opacity` (по умолчанию `0.28`)
+- Автоматически приглушается в тёмной теме
+- Тот же эффект, что в hero-секции и CTA-блоке главной страницы
+- Статичная отрисовка — без анимации, видно сразу при загрузке
+- Не перехватывает события мыши (`pointer-events: none`)
+
+## Использование
+
+### Базовый пример
+
+```svelte
+<script>
+	import GlowHorizon from '$lib/components/ui-registry/glowhorizon.svelte';
+</script>
+
+<div class="relative h-[400px] w-full overflow-hidden rounded-lg bg-background-inset">
+	<GlowHorizon variant="top" />
+</div>
+```
+
+### Стороны свечения
+
+```svelte
+<GlowHorizon variant="bottom" />
+<GlowHorizon variant="left" />
+<GlowHorizon variant="right" />
+```
+
+### Настройка прозрачности
+
+```svelte
+<GlowHorizon variant="top" opacity={0.4} />
+<GlowHorizon variant="bottom" opacity={0.15} />
+```
+
+### Hero-секция со свечением
+
+```svelte
+<section class="relative overflow-hidden rounded-lg bg-background-inset">
+	<GlowHorizon variant="top" />
+	<div class="relative z-10 px-8 py-16 text-center">
+		<h1>Заголовок секции</h1>
+		<p>Описание поверх свечения</p>
+	</div>
+</section>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `variant` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Сторона свечения |
+| `opacity` | `number` | `0.28` | Прозрачность свечения (0–1) |
+| `class` | `string` | `''` | Дополнительные CSS-классы |
+
+## Доступность
+
+- Чисто декоративный элемент (`aria-hidden`) — не перехватывает фокус и не мешает навигации с клавиатуры
+- Не влияет на читаемость контента при правильном позиционировании
+- Свечение статично — безопасно для чувствительности к движению
