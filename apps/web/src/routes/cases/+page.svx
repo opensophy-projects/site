@@ -1,7 +1,7 @@
 ---
 title: Кейсы
 description: Открытые и доступные кейсы проекта Opensophy.
-keywords: 'Opensophy, Кейсы, кейсы DevSecOps, кибербезопасность, автоматизация'
+keywords: 'Opensophy, opensophy кейсы, кейсы, кейсы DevSecOps, кибербезопасность, информационная безопасность, аудит безопасности, пентест, поиск уязвимостей, bug bounty, разработка сайтов, автоматизация, DevOps услуги, услуги информационной безопасности'
 ---
 
 <script lang="ts">
@@ -142,24 +142,24 @@ keywords: 'Opensophy, Кейсы, кейсы DevSecOps, кибербезопас
 	}
 
 	.case-logo-wrapper {
-		flex-shrink: 0;
+		flex: 0 0 18rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 16rem;
-		min-height: 9rem;
+		width: 18rem;
+		height: 10rem;
 		max-width: 100%;
-		overflow: hidden;
+		padding: 0.5rem;
 	}
 
 	.case-logo {
-		max-width: 16rem;
-		max-height: 8rem;
-		width: 16rem;
-		height: 8rem;
+		display: block;
+		width: 100%;
+		height: 100%;
+		max-width: 18rem;
+		max-height: 10rem;
 		object-fit: contain;
-		transform: scale(2.2);
-		transition: opacity 0.2s ease, transform 0.2s ease;
+		transition: opacity 0.2s ease;
 	}
 
 	.case-logo-link {
@@ -170,7 +170,6 @@ keywords: 'Opensophy, Кейсы, кейсы DevSecOps, кибербезопас
 
 	.case-logo-link:hover .case-logo {
 		opacity: 0.7;
-		transform: scale(2.3);
 	}
 
 	.case-logo-text {
@@ -226,13 +225,8 @@ keywords: 'Opensophy, Кейсы, кейсы DevSecOps, кибербезопас
 
 		.case-logo {
 			width: min(16rem, 72vw);
-			height: auto;
+			height: 7rem;
 			max-height: 7rem;
-			transform: scale(1.35);
-		}
-
-		.case-logo-link:hover .case-logo {
-			transform: scale(1.4);
 		}
 
 		.case-row {
