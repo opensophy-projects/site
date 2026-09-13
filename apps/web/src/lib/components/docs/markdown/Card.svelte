@@ -21,7 +21,7 @@
 		this={href ? 'a' : 'div'}
 		{href}
 		class={cn(
-			'group block rounded-lg border border-border bg-background p-5 card transition-[border-color,transform] duration-150 hover:-translate-y-0.5 hover:border-accent/60'
+			'group block rounded-lg border border-border bg-background p-5 card transition-colors duration-150 hover:border-accent/60'
 		)}
 	>
 		{#if eyebrow}<div class="mb-3 text-xs font-semibold tracking-widest text-accent uppercase">

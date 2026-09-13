@@ -259,26 +259,25 @@
 
 				<!-- Hamburger toggle: mobile only, rendered only when isMobile is true -->
 				{#if isMobile}
-					<button
-						type="button"
-						onclick={toggleMobile}
-						data-slot="toggle-button"
-						data-open={isMobileOpen}
-						class={cn(
-							"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]",
-							classes?.toggleButton,
-						)}
-						aria-expanded={isMobileOpen}
-						aria-label={isMobileOpen ? "Закрыть меню" : "Открыть меню"}
-					>
-						<span class="sr-only">{isMobileOpen ? "Закрыть меню" : "Открыть меню"}</span>
-						<span class="menu-toggle-icon menu-toggle-open">
-							<ChevronRight size={16} class="rotate-90" />
-						</span>
-						<span class="menu-toggle-icon menu-toggle-close">
-							<Close size={16} />
-						</span>
-					</button>
+					<span class={cn("inset-shadow inline-flex rounded-xl bg-background-inset p-1.5", classes?.toggleButton)}>
+						<button
+							type="button"
+							onclick={toggleMobile}
+							data-slot="toggle-button"
+							data-open={isMobileOpen}
+							class="card group relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 hover:border-accent/60 active:scale-[0.95]"
+							aria-expanded={isMobileOpen}
+							aria-label={isMobileOpen ? "Закрыть меню" : "Открыть меню"}
+						>
+							<span class="sr-only">{isMobileOpen ? "Закрыть меню" : "Открыть меню"}</span>
+							<span class="menu-toggle-icon menu-toggle-open">
+								<ChevronRight size={16} class="rotate-90" />
+							</span>
+							<span class="menu-toggle-icon menu-toggle-close">
+								<Close size={16} />
+							</span>
+						</button>
+					</span>
 				{/if}
 			</div>
 		</div>
