@@ -1,35 +1,29 @@
+<script module lang="ts">
+	let componentPreviewCounter = 0;
+</script>
+
 <script lang="ts">
-	import { onDestroy, onMount, tick } from 'svelte';
-	import { Flip } from 'gsap/Flip';
-	import { gsap } from 'gsap';
+	import type { Snippet } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import { cn } from '$lib/utils/cn';
-	import CodePanel from './component-preview/CodePanel.svelte';
-	import ControlsPanel from './component-preview/ControlsPanel.svelte';
-	import PreviewFrame from './component-preview/PreviewFrame.svelte';
-	import {
-		getDefaultControlValue,
-		type ComponentPreviewChildren,
-		type ComponentPreviewControl,
-		type ComponentPreviewValue,
-		type ComponentPreviewValues,
-		type SourceTab
-	} from './component-preview/types';
-	import {
-		readControlValuesFromSearch,
-		writeControlValuesToSearch
-	} from './component-preview/url-state';
+	import { getHighlighter } from '$lib/utils/highlighter';
+	import ScrollArea from '../ui/ScrollArea.svelte';
+	import ShikiCodeBlock from './ShikiCodeBlock.svelte';
+	import CopyCodeButton from './markdown/CopyCodeButton.svelte';
+
+	type SourceTab = {
+		name: string;
+		code: string;
+		language?: string;
+	};
 
 	type ComponentProps = {
 		code?: string;
 		language?: string;
 		label?: string;
-		children?: ComponentPreviewChildren;
-		codeSlot?: import('svelte').Snippet;
+		children?: Snippet;
+		codeSlot?: Snippet;
 		sources?: SourceTab[];
-		controls?: ComponentPreviewControl[];
-		refreshOnFullScreen?: boolean;
-		refreshOnControlChange?: boolean;
-		controlRefreshDelay?: number;
 		class?: string;
 		[key: string]: unknown;
 	};
@@ -41,29 +35,20 @@
 		language: providedLanguage,
 		label: providedLabel,
 		sources: providedSources,
-		controls: providedControls = [],
-		refreshOnFullScreen = false,
-		refreshOnControlChange = false,
-		controlRefreshDelay = 120,
 		class: className = '',
 		...restProps
 	}: ComponentProps = $props();
+	componentPreviewCounter += 1;
+	const tabsInstanceId = `component-preview-${componentPreviewCounter.toString()}`;
+	const panelId = `${tabsInstanceId}-panel`;
+	const codeScrollId = `${tabsInstanceId}-code-scroll`;
 
-	let isFullScreen = $state(false);
 	let previewKey = $state(0);
-	let previewRef = $state<HTMLElement>();
-	let placeholderRef = $state<HTMLElement>();
-	let controlValues = $state<ComponentPreviewValues>({});
-	let hasInitializedUrlState = $state(false);
-	let controlRefreshTimer: ReturnType<typeof setTimeout> | null = null;
 
-	const controls = $derived(providedControls);
 	const tabs = $derived(
 		(() => {
 			const normalized =
-				providedSources?.filter((tab): tab is SourceTab =>
-					Boolean(tab.code)
-				) ?? [];
+				providedSources?.filter((tab): tab is SourceTab => Boolean(tab.code)) ?? [];
 
 			if (normalized.length > 0) {
 				return normalized;
@@ -83,210 +68,274 @@
 		})()
 	);
 
-	const buildDefaultValues = () =>
-		Object.fromEntries(
-			controls.map((control) => [
-				control.name,
-				getDefaultControlValue(control)
-			])
-		);
+	let activeTab = $state(0);
+	let tabList = $state<HTMLDivElement | null>(null);
+	let activeIndicatorLeft = $state(0);
+	let activeIndicatorWidth = $state(0);
+	let pendingIndicatorFrame: number | null = null;
 
-	const reloadPreview = () => {
-		previewKey += 1;
-	};
+	const tabRefs = new SvelteMap<number, HTMLButtonElement>();
 
-	const scheduleControlRefresh = () => {
-		if (!refreshOnControlChange) return;
+	const selectedTab = $derived(
+		tabs.length === 0 ? 0 : Math.min(activeTab, Math.max(0, tabs.length - 1))
+	);
+	const activeSource = $derived(tabs.at(selectedTab) ?? null);
+	const activeTabId = $derived(`${tabsInstanceId}-tab-${selectedTab.toString()}`);
 
-		if (controlRefreshTimer) {
-			clearTimeout(controlRefreshTimer);
+	const highlightedSources = $derived.by(() => {
+		const highlighter = getHighlighter();
+		const highlightedSources: Record<string, { light: string; dark: string }> = {};
+
+		for (const tab of tabs) {
+			const lang = tab.language ?? 'typescript';
+			highlightedSources[tab.name] = {
+				light: highlighter.codeToHtml(tab.code, {
+					lang,
+					theme: 'github-light',
+					tabindex: false
+				}),
+				dark: highlighter.codeToHtml(tab.code, {
+					lang,
+					theme: 'github-dark',
+					tabindex: false
+				})
+			};
 		}
 
-		controlRefreshTimer = setTimeout(() => {
-			controlRefreshTimer = null;
-			reloadPreview();
-		}, controlRefreshDelay);
-	};
+		return highlightedSources;
+	});
 
-	const mergeValues = (
-		nextValues: ComponentPreviewValues
-	): { values: ComponentPreviewValues; changed: boolean } => {
-		const defaults = buildDefaultValues();
-		const mergedValues: ComponentPreviewValues = {};
-		let changed = false;
+	function setActiveTab(index: number) {
+		activeTab = index;
+	}
 
-		for (const [name, defaultValue] of Object.entries(defaults)) {
-			const nextValue = nextValues[name] ?? defaultValue;
-			mergedValues[name] = nextValue;
+	function registerTab(node: HTMLElement, index: number) {
+		tabRefs.set(index, node as HTMLButtonElement);
 
-			if (controlValues[name] !== nextValue) {
-				changed = true;
+		return {
+			update(nextIndex: number) {
+				if (nextIndex === index) return;
+				tabRefs.delete(index);
+				index = nextIndex;
+				tabRefs.set(index, node as HTMLButtonElement);
+			},
+			destroy() {
+				tabRefs.delete(index);
 			}
-		}
-
-		if (
-			Object.keys(controlValues).length !== Object.keys(mergedValues).length
-		) {
-			changed = true;
-		}
-
-		return { values: mergedValues, changed };
-	};
-
-	const applyControlValues = (
-		nextValues: ComponentPreviewValues,
-		options: { refresh?: boolean } = {}
-	) => {
-		const { values, changed } = mergeValues(nextValues);
-		if (!changed) return;
-
-		controlValues = values;
-
-		if (options.refresh) {
-			scheduleControlRefresh();
-		}
-	};
-
-	const readUrlState = () => {
-		if (typeof window === 'undefined') return buildDefaultValues();
-		return readControlValuesFromSearch(controls, window.location.search);
-	};
-
-	const writeUrlState = () => {
-		if (typeof window === 'undefined' || !hasInitializedUrlState) return;
-
-		const nextSearch = writeControlValuesToSearch(
-			controls,
-			controlValues,
-			window.location.search
-		);
-		const nextUrl = `${window.location.pathname}${nextSearch}${window.location.hash}`;
-		const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-
-		if (nextUrl === currentUrl) return;
-		window.history.replaceState(window.history.state, '', nextUrl);
-	};
-
-	const resetControls = () => {
-		applyControlValues(buildDefaultValues());
-		scheduleControlRefresh();
-	};
-
-	const updateControl = (name: string, value: ComponentPreviewValue) => {
-		applyControlValues({
-			...controlValues,
-			[name]: value
-		});
-		scheduleControlRefresh();
-	};
-
-	$effect(() => {
-		applyControlValues(controlValues);
-	});
-
-	$effect(() => {
-		writeUrlState();
-	});
-
-	onMount(() => {
-		gsap.registerPlugin(Flip);
-		applyControlValues(readUrlState(), { refresh: refreshOnControlChange });
-		hasInitializedUrlState = true;
-
-		const handlePopState = () => {
-			applyControlValues(readUrlState(), { refresh: refreshOnControlChange });
 		};
+	}
 
-		window.addEventListener('popstate', handlePopState);
+	function updateActiveIndicator() {
+		const activeTabElement = tabRefs.get(selectedTab);
+
+		if (!tabList || !activeTabElement) {
+			activeIndicatorLeft = 0;
+			activeIndicatorWidth = 0;
+			return;
+		}
+
+		activeIndicatorLeft = activeTabElement.offsetLeft;
+		activeIndicatorWidth = activeTabElement.offsetWidth;
+	}
+
+	function scheduleActiveIndicatorUpdate() {
+		if (typeof window === 'undefined') {
+			updateActiveIndicator();
+			return;
+		}
+
+		if (pendingIndicatorFrame !== null) {
+			window.cancelAnimationFrame(pendingIndicatorFrame);
+		}
+
+		pendingIndicatorFrame = window.requestAnimationFrame(() => {
+			pendingIndicatorFrame = null;
+			updateActiveIndicator();
+		});
+	}
+
+	function focusTabByIndex(index: number) {
+		const tabElement = document.getElementById(`${tabsInstanceId}-tab-${index.toString()}`);
+		if (tabElement instanceof HTMLButtonElement) {
+			tabElement.focus();
+		}
+	}
+
+	function handleTabKeydown(event: KeyboardEvent, index: number) {
+		if (!tabs.length) return;
+		const lastIndex = tabs.length - 1;
+		let nextIndex: number;
+
+		switch (event.key) {
+			case 'ArrowRight':
+			case 'ArrowDown':
+				event.preventDefault();
+				nextIndex = index === lastIndex ? 0 : index + 1;
+				break;
+			case 'ArrowLeft':
+			case 'ArrowUp':
+				event.preventDefault();
+				nextIndex = index === 0 ? lastIndex : index - 1;
+				break;
+			case 'Home':
+				event.preventDefault();
+				nextIndex = 0;
+				break;
+			case 'End':
+				event.preventDefault();
+				nextIndex = lastIndex;
+				break;
+			default:
+				return;
+		}
+
+		setActiveTab(nextIndex);
+		focusTabByIndex(nextIndex);
+	}
+
+	$effect(() => {
+		const currentSelectedTab = selectedTab;
+		const currentTabList = tabList;
+		const currentTabsLength = tabs.length;
+		void currentSelectedTab;
+		void currentTabList;
+		void currentTabsLength;
+
+		scheduleActiveIndicatorUpdate();
+
+		if (typeof window === 'undefined') return;
+
+		window.addEventListener('resize', scheduleActiveIndicatorUpdate);
 
 		return () => {
-			window.removeEventListener('popstate', handlePopState);
+			window.removeEventListener('resize', scheduleActiveIndicatorUpdate);
+			if (pendingIndicatorFrame !== null) {
+				window.cancelAnimationFrame(pendingIndicatorFrame);
+				pendingIndicatorFrame = null;
+			}
 		};
 	});
-
-	onDestroy(() => {
-		if (controlRefreshTimer) {
-			clearTimeout(controlRefreshTimer);
-		}
-	});
-
-	const toggleFullScreen = async () => {
-		const currentPreviewRef = previewRef;
-		const currentPlaceholderRef = placeholderRef;
-		if (!currentPreviewRef || !currentPlaceholderRef) return;
-
-		if (!isFullScreen) {
-			const state = Flip.getState(currentPreviewRef);
-			const rect = currentPreviewRef.getBoundingClientRect();
-			currentPlaceholderRef.style.height = `${String(rect.height)}px`;
-			currentPlaceholderRef.style.width = `${String(rect.width)}px`;
-
-			isFullScreen = true;
-			await tick();
-
-			document.body.appendChild(currentPreviewRef);
-
-			currentPreviewRef.style.setProperty('position', 'fixed', 'important');
-			currentPreviewRef.style.setProperty('top', '0', 'important');
-			currentPreviewRef.style.setProperty('left', '0', 'important');
-			currentPreviewRef.style.setProperty('width', '100vw', 'important');
-			currentPreviewRef.style.setProperty('height', '100dvh', 'important');
-			currentPreviewRef.style.setProperty('margin', '0', 'important');
-
-			Flip.from(state, {
-				duration: 0.5,
-				ease: 'power3.inOut',
-				absolute: true,
-				zIndex: 50,
-				onComplete: () => {
-					if (refreshOnFullScreen) {
-						reloadPreview();
-					}
-				}
-			});
-		} else {
-			Flip.fit(currentPreviewRef, currentPlaceholderRef, {
-				duration: 0.5,
-				ease: 'power3.inOut',
-				absolute: true,
-				zIndex: 50,
-				onComplete: () => {
-					isFullScreen = false;
-					currentPlaceholderRef.appendChild(currentPreviewRef);
-					currentPlaceholderRef.style.height = '';
-					currentPlaceholderRef.style.width = '';
-					currentPreviewRef.style.cssText = '';
-					if (refreshOnFullScreen) {
-						reloadPreview();
-					}
-				}
-			});
-		}
-	};
 </script>
 
 <section
-	class={cn('relative w-full rounded-lg bg-background-inset p-1.5 inset-shadow')}
+	class={cn('card-outer relative w-full rounded-lg bg-background-inset p-1.5')}
 	{...restProps}
 >
 	<div class="flex h-full flex-col rounded-md">
-		<PreviewFrame
-			bind:previewRef
-			bind:placeholderRef
-			{children}
-			values={controlValues}
-			{previewKey}
-			{isFullScreen}
-			class={className}
-			onReload={reloadPreview}
-			onToggleFullScreen={toggleFullScreen}
-		/>
-		<ControlsPanel
-			{controls}
-			values={controlValues}
-			onChange={updateControl}
-			onReset={resetControls}
-		/>
-		<CodePanel {tabs} {codeSlot} />
+		<div
+			class="relative flex min-h-96 flex-1 flex-col items-center justify-center overflow-hidden rounded-md bg-background card"
+		>
+			<div class="group/preview relative flex h-full w-full flex-1 flex-col">
+				<ScrollArea
+					mode="both"
+					id="component-preview-live"
+					class={cn('w-full flex-1', className)}
+					viewportClass="min-h-full w-full flex flex-col"
+				>
+					<div class="flex w-full flex-1 flex-col items-center justify-center">
+						{#key previewKey}
+							{#if children}
+								{@render children()}
+							{/if}
+						{/key}
+					</div>
+				</ScrollArea>
+			</div>
+		</div>
+		<div
+			class="mt-2 flex flex-1 flex-col overflow-hidden rounded-md rounded-b-md bg-background card relative"
+		>
+			{#if tabs.length}
+				<div
+					class="relative flex items-center text-sm after:absolute after:inset-x-0 after:bottom-0 after:h-px after:guide-duotone after:content-['']"
+				>
+					<div
+						class="relative flex flex-1 items-center overflow-x-auto"
+						role="tablist"
+						aria-label="Source files"
+						bind:this={tabList}
+					>
+						{#if activeIndicatorWidth > 0}
+							<div
+								class="tab-active-line pointer-events-none absolute bottom-0 left-0 z-10 h-0.5 transition-[transform,width] duration-150 ease-out motion-reduce:transition-none"
+								style={`
+									width: ${activeIndicatorWidth.toString()}px;
+									transform: translateX(${activeIndicatorLeft.toString()}px);
+								`}
+							></div>
+						{/if}
+
+						{#each tabs as tab, index (tab.name)}
+							<button
+								type="button"
+								id={`${tabsInstanceId}-tab-${index.toString()}`}
+								role="tab"
+								aria-selected={index === selectedTab}
+								aria-controls={panelId}
+								tabindex={index === selectedTab ? 0 : -1}
+								class={cn(
+									'focus-ring relative z-20 px-4 py-3 text-sm font-medium tracking-normal whitespace-nowrap transition-[color,box-shadow] duration-150 ease-out outline-none select-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset motion-reduce:transition-none',
+									index === selectedTab
+										? 'text-accent'
+										: 'text-foreground-muted hover:text-foreground'
+								)}
+								onclick={() => {
+									setActiveTab(index);
+								}}
+								onkeydown={(event) => {
+									handleTabKeydown(event, index);
+								}}
+								use:registerTab={index}
+							>
+								{tab.name}
+							</button>
+						{/each}
+					</div>
+					<div class="mr-2 w-fit flex-none">
+						{#if activeSource}
+							<CopyCodeButton code={activeSource.code} />
+						{/if}
+					</div>
+				</div>
+			{/if}
+			<div id={panelId} role="tabpanel" aria-labelledby={activeTabId} class="flex-1">
+				<ScrollArea
+					mode="both"
+					id={codeScrollId}
+					class="relative max-h-96"
+					viewportTabbable={false}
+				>
+					<div
+						class="p-4 text-sm *:mt-0 *:rounded-none *:border-0 *:bg-transparent *:p-0 *:inset-shadow-none"
+					>
+						{#if activeSource}
+							<ShikiCodeBlock
+								code=""
+								htmlLight={highlightedSources[activeSource.name].light}
+								htmlDark={highlightedSources[activeSource.name].dark}
+								unstyled={true}
+								scrollable={false}
+							/>
+						{:else if codeSlot}
+							{@render codeSlot()}
+						{/if}
+					</div>
+				</ScrollArea>
+			</div>
+		</div>
 	</div>
+
+	<style>
+		.tab-active-line {
+			background-image: linear-gradient(
+				to right,
+				transparent,
+				oklch(from var(--color-accent) l c h / 0.68) 18%,
+				var(--color-accent) 50%,
+				oklch(from var(--color-accent) l c h / 0.68) 82%,
+				transparent
+			);
+			filter: drop-shadow(0 0 6px oklch(from var(--color-accent) l c h / 0.38));
+		}
+	</style>
 </section>
