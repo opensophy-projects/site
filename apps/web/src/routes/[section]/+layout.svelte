@@ -239,6 +239,7 @@
 			<aside
 				class="flex h-full min-h-0 flex-col bg-background p-4"
 				aria-label="Оглавление и действия"
+				style="--toc-fade-color: var(--color-background);"
 			>
 				{#if showToc}
 					<div class="min-h-0 flex-1">

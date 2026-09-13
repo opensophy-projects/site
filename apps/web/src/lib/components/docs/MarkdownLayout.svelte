@@ -52,7 +52,7 @@
 
 <article
 	data-doc-content
-	class="w-full max-w-4xl space-y-6 text-base leading-relaxed text-foreground"
+	class="w-full max-w-none space-y-6 text-base leading-relaxed text-foreground"
 >
 	{#if children}
 		{@render children()}
