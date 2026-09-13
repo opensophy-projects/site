@@ -65,7 +65,7 @@ const DEFAULTS: Required<LiquidOptions> = {
   intensity: 2,
   distortion: 0.4,
   blend: 5,
-  color: [0.145, 0.239, 0.867],
+  color: [0.956, 0.247, 0.369],
   rainbow: false,
 };
 

@@ -17,6 +17,7 @@
 		mode?: ScrollMode;
 		thumbTabbable?: boolean;
 		viewportTabbable?: boolean;
+		showScrollbar?: boolean;
 	};
 
 	const MIN_THUMB_SIZE = 20;
@@ -32,7 +33,8 @@
 		viewportStyle,
 		mode = 'vertical',
 		thumbTabbable = true,
-		viewportTabbable = true
+		viewportTabbable = true,
+		showScrollbar = true
 	}: Props = $props();
 	const viewportId = $derived(id ?? undefined);
 
@@ -66,8 +68,8 @@
 		return 'overflow-x-hidden overflow-y-auto';
 	});
 
-	const showVerticalTrack = $derived(verticalEnabled && verticalVisible);
-	const showHorizontalTrack = $derived(horizontalEnabled && horizontalVisible);
+	const showVerticalTrack = $derived(showScrollbar && verticalEnabled && verticalVisible);
+	const showHorizontalTrack = $derived(showScrollbar && horizontalEnabled && horizontalVisible);
 
 	function clamp(value: number, min: number, max: number) {
 		return Math.min(max, Math.max(min, value));

@@ -61,7 +61,7 @@ export interface FlameWrapInstance {
 }
 
 const DEFAULTS: Required<FlameWrapOptions> = {
-  color: [0.31, 0.54, 1],
+  color: [0.956, 0.247, 0.369],
   intensity: 0.5,
   height: 170,
   spread: 8,

@@ -1,0 +1,73 @@
+---
+title: Огненная карточка
+description: WebGL-карточка с акцентной огненной рамкой, искрами и тепловым искажением.
+keywords: 'Opensophy, FlameWrap, WebGL, card, flame, UI components'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import FlameWrap from '$lib/components/ui-registry/FlameWrap.svelte';
+	import { FlameWrapSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'number', name: 'intensity', label: 'Интенсивность', defaultValue: 0.5, min: 0, max: 3, step: 0.1 },
+		{ type: 'number', name: 'height', label: 'Высота пламени', defaultValue: 170, min: 24, max: 260, step: 2 },
+		{ type: 'number', name: 'sparks', label: 'Искры', defaultValue: 1.5, min: 0, max: 3, step: 0.1 }
+	];
+</script>
+
+# Огненная карточка
+
+`FlameWrap` оборачивает содержимое в WebGL-рамку с языками акцентного пламени, искрами, тлением и тепловым искажением. Используйте компонент как самостоятельную карточку или выразительный CTA-блок.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'FlameWrap.svelte', code: FlameWrapSource, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<div class="p-16 pt-24">
+			<FlameWrap class="rounded-xl" intensity={values.intensity as number} height={values.height as number} sparks={values.sparks as number}>
+				<div class="rounded-xl border border-border bg-background-inset p-7">
+					<p class="text-sm font-medium text-accent">Акцентная рамка</p>
+					<h3 class="mt-2 text-xl font-medium text-foreground">Огненная карточка</h3>
+					<p class="mt-2 text-sm text-foreground-muted">Настраивайте пламя, искры и тепловые эффекты.</p>
+				</div>
+			</FlameWrap>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script>
+	import FlameWrap from '$lib/components/ui-registry/FlameWrap.svelte';
+</script>
+
+<FlameWrap class="rounded-xl">
+	<div class="rounded-xl border border-border bg-background-inset p-6">
+		Карточка с огненной рамкой
+	</div>
+</FlameWrap>
+```
+
+## Особенности
+
+- Акцентный цвет пламени `#f43f5e` по умолчанию
+- WebGL-эффекты пламени, искр, дыма и тлеющего края
+- Контент остаётся обычным HTML и принимает прокрутку при необходимости
+- Останавливает анимацию вне viewport и учитывает `prefers-reduced-motion`
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `color` | `[number, number, number]` | `[0.956, 0.247, 0.369]` | Акцентный RGB-цвет в диапазоне 0–1 |
+| `intensity` / `height` / `spread` / `radius` | `number` | `0.5` / `170` / `8` / `40` | Яркость, размер пламени, свечение и радиус карточки |
+| `speed` / `scale` | `number` | `0.25` / `0.75` | Скорость и детализация анимации |
+| `turbulence` / `turbulenceScale` / `turbulenceReach` | `number` | `0.5` / `0.5` / `25` | Настройки тепловой турбулентности |
+| `sparks` / `sparkSize` / `sparkDensity` / `sparkSpeed` | `number` | `1.5` / `0.35` / `1` / `1` | Управление искрами |
+| `rim` / `melt` / `distortion` | `number` | `2.5` / `4.5` / `10` | Свечение края, оплавление и искажение |
+| `smoke` / `ember` / `scorch` | `number` | `1.5` / `2` / `0` | Дым, тление и обугливание |
+| `class` | `string` | `''` | CSS-классы обёртки |
+| `children` | `Snippet` | — | Содержимое карточки |

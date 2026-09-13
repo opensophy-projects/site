@@ -1,0 +1,70 @@
+---
+title: Лазер
+description: WebGL-текстура с лазерным лучом, тепловым свечением и реакцией на прокрутку.
+keywords: 'Opensophy, Laser, WebGL, shader, texture, UI components'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Laser from '$lib/components/ui-registry/Laser.svelte';
+	import { LaserSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'number', name: 'speed', label: 'Скорость', defaultValue: 0.3, min: 0, max: 1, step: 0.05 },
+		{ type: 'number', name: 'glow', label: 'Свечение', defaultValue: 2, min: 0, max: 3, step: 0.1 },
+		{ type: 'number', name: 'wave', label: 'Волна луча', defaultValue: 10, min: 0, max: 30, step: 1 }
+	];
+</script>
+
+# Лазер
+
+`Laser` — интерактивная WebGL-текстура с акцентным лазерным лучом. Луч открывает контент с тепловым свечением, мерцанием и лёгким искажением; интенсивность дополнительно реагирует на прокрутку содержимого.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'Laser.svelte', code: LaserSource, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<Laser
+			class="h-[360px] w-full overflow-hidden rounded-lg bg-background-inset"
+			speed={values.speed as number}
+			glow={values.glow as number}
+			wave={values.wave as number}
+		/>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script>
+	import Laser from '$lib/components/ui-registry/Laser.svelte';
+</script>
+
+<Laser class="h-96 overflow-hidden rounded-lg bg-background-inset">
+	<div class="p-8">Контент поверх лазерного эффекта</div>
+</Laser>
+```
+
+## Особенности
+
+- Акцентный цвет по умолчанию — `#f43f5e`
+- WebGL-отрисовка с адаптацией к размеру контейнера
+- Учитывает `prefers-reduced-motion` и останавливает отрисовку вне viewport
+- Принимает любой контент через `children`
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `speed` | `number` | `0.3` | Скорость анимации |
+| `offset` | `number` | `140` | Отступ луча от нижнего края, px |
+| `color` | `[number, number, number]` | `[0.956, 0.247, 0.369]` | Акцентный RGB-цвет в диапазоне 0–1 |
+| `thickness` | `number` | `6` | Толщина ядра луча, px |
+| `core` | `number` | `1` | Яркость белого ядра (0–2) |
+| `radius` / `glow` | `number` | `20` / `2` | Радиус и яркость свечения |
+| `wave` / `width` / `flicker` | `number` | `10` / `0.55` / `0.2` | Волна, относительная ширина и мерцание луча |
+| `reveal` / `heat` / `shimmer` / `sparkle` | `number` | `400` / `1.5` / `12` / `0.25` | Настройки раскрытия и нагрева контента |
+| `reactivity` | `number` | `1` | Усиление эффекта от прокрутки |
+| `class` | `string` | `''` | CSS-классы контейнера |
+| `children` | `Snippet` | — | Контент внутри текстуры |

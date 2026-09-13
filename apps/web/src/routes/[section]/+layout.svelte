@@ -237,7 +237,7 @@
 	{#snippet aside()}
 		{#if showRightAside}
 			<aside
-				class="z-50 hidden max-h-full min-h-0 w-56 flex-col justify-between overflow-hidden py-8 xl:col-start-2 xl:row-start-1 xl:flex 2xl:col-start-3"
+				class="flex h-full min-h-0 flex-col bg-background p-4"
 				aria-label="Оглавление и действия"
 			>
 				{#if showToc}
@@ -247,7 +247,7 @@
 							headings={data.tocHeadings}
 							title={sectionUi.toc.title}
 							emptyLabel={sectionUi.toc.emptyLabel}
-							minViewportWidth={sectionUi.toc.minViewportWidth}
+							minViewportWidth={0}
 							{scrollContainerId}
 						/>
 					</div>

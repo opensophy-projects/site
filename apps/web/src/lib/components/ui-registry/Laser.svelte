@@ -53,7 +53,7 @@ export interface LaserInstance {
 const DEFAULTS: Required<LaserOptions> = {
   speed: 0.3,
   offset: 140,
-  color: [0.05, 0.35, 1],
+  color: [0.956, 0.247, 0.369],
   thickness: 6,
   core: 1,
   radius: 20,

@@ -21,6 +21,9 @@ import DriftWallSource from './driftwall.svelte?raw';
 import GlowHorizonSource from './glowhorizon.svelte?raw';
 import LaserFlowSource from './LaserFlow.svelte?raw';
 import GhostCursorSource from './GhostCursor.svelte?raw';
+import LaserSource from './Laser.svelte?raw';
+import FlameWrapSource from './FlameWrap.svelte?raw';
+import LiquidSource from './Liquid.svelte?raw';
 
 export {
 	ButtonSource,
@@ -46,4 +49,7 @@ export {
 	GlowHorizonSource,
 	LaserFlowSource,
 	GhostCursorSource,
+	LaserSource,
+	FlameWrapSource,
+	LiquidSource,
 };
