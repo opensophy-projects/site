@@ -22,6 +22,19 @@ keywords: 'Opensophy, Новости, opensophy news, open-source, IT'
 
 		<div class="news-content w-full max-w-4xl">
 
+
+## Обновление от 13 августа
+
+<Badge variant="accent">os.dokploy</Badge>
+<Badge variant="success">релиз</Badge>
+<Badge variant="outline">сайт</Badge>
+
+os.dokploy вышел в релиз: Enterprise-функции доступны без доплаты. Для раннего доступа к приватному репозиторию теперь можно оставить заявку прямо на странице проекта — достаточно написать в Telegram или на почту и указать GitHub-профиль.
+
+Также обновили карточки проектов на главной, статус os.dokploy до 100% и доступность интерфейса: пустая область под открытым меню больше не блокирует прокрутку страницы.
+
+---
+
 ## Обновление от 30 августа
 
 <Badge variant="accent">сайт</Badge>

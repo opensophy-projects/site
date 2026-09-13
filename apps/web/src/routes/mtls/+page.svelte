@@ -129,7 +129,7 @@
         клиентские сертификаты — без перезагрузки Traefik.
       </p>
       <div class="flex flex-wrap justify-center gap-3">
-        <Button href={githubUrl}>→ Открыть на GitHub</Button>
+        <Button href={githubUrl}>Открыть на GitHub</Button>
       </div>
       <div class="flex flex-wrap justify-center gap-2">
         <Badge>MIT License</Badge><Badge>Bash + OpenSSL + Python3</Badge><Badge

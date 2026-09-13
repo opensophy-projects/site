@@ -12,6 +12,17 @@ type SitemapEntry = {
 
 const staticPages: SitemapEntry[] = [
 	{ path: '/', changefreq: 'weekly', priority: '1.0' },
+	{ path: '/dokploy', changefreq: 'weekly', priority: '0.9' },
+	{ path: '/mtls', changefreq: 'weekly', priority: '0.9' },
+	{ path: '/status', changefreq: 'weekly', priority: '0.8' },
+	{ path: '/news', changefreq: 'weekly', priority: '0.8' },
+	{ path: '/cases', changefreq: 'monthly', priority: '0.7' },
+	{ path: '/templates', changefreq: 'weekly', priority: '0.8' },
+	{ path: '/templates/docker', changefreq: 'weekly', priority: '0.8' },
+	{ path: '/service-policy', changefreq: 'monthly', priority: '0.6' },
+	{ path: '/solutions/automation', changefreq: 'monthly', priority: '0.8' },
+	{ path: '/solutions/infrastructure', changefreq: 'monthly', priority: '0.8' },
+	{ path: '/solutions/security', changefreq: 'monthly', priority: '0.8' },
 	{ path: '/llms.txt', changefreq: 'weekly', priority: '0.4' }
 ];
 

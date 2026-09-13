@@ -141,14 +141,9 @@
 		data-slot="overlay"
 		class={cn(
 			position === "fixed" ? "fixed" : "absolute",
-			"inset-0 z-40 bg-background-inset/80",
+			"pointer-events-none inset-0 z-40 bg-background-inset/80",
 			classes?.overlay,
 		)}
-		onclick={closeDesktop}
-		onkeydown={handleKeydown}
-		role="button"
-		tabindex="-1"
-		aria-label="Закрыть меню"
 	></div>
 {/if}
 

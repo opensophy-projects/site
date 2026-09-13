@@ -4,6 +4,10 @@
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
+  import { siteConfig } from "$lib/config/site";
+  import Close from "carbon-icons-svelte/lib/Close.svelte";
+  import Email from "carbon-icons-svelte/lib/Email.svelte";
+  import LocationCurrent from "carbon-icons-svelte/lib/LocationCurrent.svelte";
 
   const features = [
     [
@@ -54,6 +58,21 @@
       "Self-hosted и открытый исходный код",
       "Создан для разработчиков, которым нужен полный контроль и гибкость — с самостоятельным хостингом и открытым кодом.",
     ],
+  ];
+
+  let earlyAccessOpen = $state(false);
+
+  function closeEarlyAccess() {
+    earlyAccessOpen = false;
+  }
+
+  function handleEarlyAccessKeydown(event: KeyboardEvent) {
+    if (event.key === "Escape") closeEarlyAccess();
+  }
+
+  const earlyAccessContacts = [
+    { label: "Telegram", href: siteConfig.links.telegram, icon: LocationCurrent },
+    { label: siteConfig.links.email, href: `mailto:${siteConfig.links.email}`, icon: Email },
   ];
 
   const enterpriseFeatures = [
@@ -118,7 +137,7 @@
         мелочами.
       </p>
       <div class="flex flex-wrap justify-center gap-3">
-        <Button variant="secondary">в разработке</Button>
+        <Button onclick={() => { earlyAccessOpen = true; }}>Получить ранний доступ</Button>
       </div>
     </div>
   </section>
@@ -180,7 +199,83 @@
   </section>
 </main>
 
+{#if earlyAccessOpen}
+  <div
+    class="early-access-overlay fixed inset-0 z-[100] flex items-center justify-center bg-background-inset/80 px-4 backdrop-blur-sm"
+    onclick={closeEarlyAccess}
+    onkeydown={handleEarlyAccessKeydown}
+    role="button"
+    tabindex="-1"
+    aria-label="Закрыть окно раннего доступа"
+  >
+    <div
+      class="early-access-modal relative w-full max-w-md rounded-lg border border-border bg-background p-6"
+      onclick={(event) => { event.stopPropagation(); }}
+      onkeydown={(event) => { event.stopPropagation(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="early-access-title"
+      tabindex="-1"
+    >
+      <button type="button" class="early-access-close" onclick={closeEarlyAccess} aria-label="Закрыть">
+        <Close size={18} />
+      </button>
+      <h2 id="early-access-title" class="text-lg font-medium tracking-tight text-foreground">Получить ранний доступ</h2>
+      <p class="mt-1 text-sm leading-relaxed text-foreground-muted">
+        Чтобы получить доступ, пожалуйста, напишите нам в удобный для вас контакт.
+      </p>
+      <p class="mt-4 text-sm leading-relaxed text-foreground-muted">
+        Обязательно укажите ссылку на ваш GitHub-профиль: доступ будет выдан в приватный репозиторий.
+      </p>
+      <div class="mt-5 flex flex-col gap-2">
+        {#each earlyAccessContacts as contact (contact.href)}
+          {@const Icon = contact.icon}
+          <a
+            href={contact.href}
+            target={contact.href.startsWith("http") ? "_blank" : undefined}
+            rel={contact.href.startsWith("http") ? "external" : undefined}
+            class="flex items-center gap-3 rounded-sm border border-border bg-background-inset px-4 py-3 text-sm font-medium text-foreground-muted transition-colors duration-150 ease-out hover:bg-background-muted hover:text-foreground"
+          >
+            <Icon size={18} />
+            <span>{contact.label}</span>
+          </a>
+        {/each}
+      </div>
+    </div>
+  </div>
+{/if}
+
 <style>
+  .early-access-overlay {
+    animation: fade-in 200ms ease-out;
+  }
+  .early-access-modal {
+    animation: scale-in 250ms ease-out;
+  }
+  .early-access-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    width: 2rem;
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    color: var(--foreground-muted);
+  }
+  .early-access-close:hover {
+    background: var(--background-muted);
+    color: var(--foreground);
+  }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
   .hero-section {
     min-height: 56vh;
   }
