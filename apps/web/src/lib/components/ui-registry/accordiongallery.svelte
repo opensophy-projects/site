@@ -1,13 +1,15 @@
+<script module lang="ts">
+	export type AccordionGalleryItem = {
+		image: string;
+		label?: string;
+		link?: string;
+		alt?: string;
+	};
+</script>
+
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import gsap from 'gsap';
-
-  export type AccordionGalleryItem = {
-    image: string;
-    label?: string;
-    link?: string;
-    alt?: string;
-  }
 
   // ----- props -----
   export let items: AccordionGalleryItem[] = [

@@ -59,6 +59,32 @@ export default defineConfig(
 		}
 	},
 	{
+		files: ['src/types/three.d.ts'],
+		rules: {
+			// three@0.185 has no declarations; the shim must expose opaque values.
+			'@typescript-eslint/no-explicit-any': 'off'
+		}
+	},
+	{
+		// These imported WebGL demos predate the current strict lint preset.
+		// Keep their runtime code intact while applying the preset to new code.
+		files: [
+			'src/lib/components/ui-registry/FlameWrap.svelte',
+			'src/lib/components/ui-registry/Laser.svelte',
+			'src/lib/components/ui-registry/Liquid.svelte'
+		],
+		rules: {
+			'@typescript-eslint/no-non-null-assertion': 'off',
+			'@typescript-eslint/no-unnecessary-type-assertion': 'off',
+			'@typescript-eslint/consistent-type-definitions': 'off',
+			'@typescript-eslint/no-floating-promises': 'off',
+			'@typescript-eslint/no-empty-function': 'off',
+			'@typescript-eslint/array-type': 'off',
+			'no-empty': 'off',
+			'svelte/prefer-svelte-reactivity': 'off'
+		}
+	},
+	{
 		rules: {
 			'@typescript-eslint/no-unused-vars': [
 				'error',
@@ -79,6 +105,16 @@ export default defineConfig(
 			'@typescript-eslint/no-unsafe-member-access': 'off',
 			'no-useless-assignment': 'off',
 			'svelte/no-navigation-without-resolve': 'off'
+		}
+	},
+	{
+		files: [
+			'src/lib/components/ui-registry/FlameWrap.svelte',
+			'src/lib/components/ui-registry/Laser.svelte',
+			'src/lib/components/ui-registry/Liquid.svelte'
+		],
+		rules: {
+			'@typescript-eslint/consistent-type-definitions': 'off'
 		}
 	}
 );

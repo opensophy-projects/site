@@ -67,7 +67,7 @@
 		const prevParentPos = parent.style.position;
 		if (!prevParentPos || prevParentPos === 'static') parent.style.position = 'relative';
 
-		const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
+		const renderer = new THREE.WebGLRenderer({
 			canvas: canvasEl,
 			antialias: !isTouch,
 			alpha: true,
@@ -85,18 +85,18 @@
 		canvasEl.style.height = '100%';
 		canvasEl.style.background = 'transparent';
 
-		const scene: THREE.Scene = new THREE.Scene();
-		const camera: THREE.OrthographicCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-		const geom: THREE.PlaneGeometry = new THREE.PlaneGeometry(2, 2);
+		const scene = new THREE.Scene();
+		const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+		const geom = new THREE.PlaneGeometry(2, 2);
 
 		const maxTrail = Math.max(1, Math.floor(trailLength));
-		const trailBuf: THREE.Vector2[] = Array.from(
+		const trailBuf = Array.from(
 			{ length: maxTrail },
 			() => new THREE.Vector2(0.5, 0.5)
 		);
 		let head = 0;
 
-		const baseColor: THREE.Color = new THREE.Color(color);
+		const baseColor = new THREE.Color(color);
 
 		const baseVertex = `varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position,1.0);}`;
 		const fragment = `
@@ -147,7 +147,7 @@
 				gl_FragColor=vec4(colorAcc,outAlpha);
 			}`;
 
-		const material: THREE.ShaderMaterial = new THREE.ShaderMaterial({
+		const material = new THREE.ShaderMaterial({
 			defines: { MAX_TRAIL_LENGTH: maxTrail },
 			uniforms: {
 				iTime: { value: 0 },
@@ -166,12 +166,12 @@
 			depthTest: false,
 			depthWrite: false
 		});
-		const mesh: THREE.Mesh = new THREE.Mesh(geom, material);
+		const mesh = new THREE.Mesh(geom, material);
 		scene.add(mesh);
 
-		const composer: EffectComposer = new EffectComposer(renderer);
+		const composer = new EffectComposer(renderer);
 		composer.addPass(new RenderPass(scene, camera));
-		const bloomPass: UnrealBloomPass = new UnrealBloomPass(
+		const bloomPass = new UnrealBloomPass(
 			new THREE.Vector2(1, 1),
 			bloomStrength,
 			bloomRadius,
@@ -179,7 +179,7 @@
 		);
 		composer.addPass(bloomPass);
 
-		const filmPass: ShaderPass = new ShaderPass({
+		const filmPass = new ShaderPass({
 			uniforms: {
 				tDiffuse: { value: null },
 				iTime: { value: 0 },
@@ -190,7 +190,7 @@
 		});
 		composer.addPass(filmPass);
 
-		const unpremultiplyPass: ShaderPass = new ShaderPass({
+		const unpremultiplyPass = new ShaderPass({
 			uniforms: { tDiffuse: { value: null } },
 			vertexShader: `varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
 			fragmentShader: `uniform sampler2D tDiffuse;varying vec2 vUv;void main(){vec4 c=texture2D(tDiffuse,vUv);float a=max(c.a,1e-5);vec3 s=c.rgb/a;gl_FragColor=vec4(clamp(s,0.,1.),c.a);}`
@@ -231,8 +231,8 @@
 		ro.observe(host);
 
 		const start = performance.now();
-		const currentMouse: THREE.Vector2 = new THREE.Vector2(0.5, 0.5);
-		const velocity: THREE.Vector2 = new THREE.Vector2(0, 0);
+		const currentMouse = new THREE.Vector2(0.5, 0.5);
+		const velocity = new THREE.Vector2(0, 0);
 		let fadeOpacity = 1;
 		let lastMoveTime = performance.now();
 		let pointerActive = false;
@@ -266,7 +266,7 @@
 			const N = trailBuf.length;
 			head = (head + 1) % N;
 			trailBuf[head].copy(material.uniforms.iMouse.value);
-			const arr: THREE.Vector2[] = material.uniforms.iPrevMouse.value;
+			const arr = material.uniforms.iPrevMouse.value;
 			for (let i = 0; i < N; i++) {
 				const srcIdx = (head - i + N) % N;
 				arr[i].copy(trailBuf[srcIdx]);

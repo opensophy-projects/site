@@ -1,8 +1,11 @@
+<script module lang="ts">
+	export type DepthCarouselItem = string | { image: string; alt?: string };
+</script>
+
 <script lang="ts">
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import gsap from 'gsap';
 
-  export type DepthCarouselItem = string | { image: string; alt?: string };
   type TiltDirection = 'left' | 'right';
 
   // ----- props -----

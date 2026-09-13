@@ -147,7 +147,7 @@
   }
 </script>
 
-{#snippet productsPanel(isMobile)}
+{#snippet productsPanel(isMobile: boolean)}
   <div data-slot="grid" class="grid grid-cols-1 md:grid-cols-3">
     {#each productColumns as column (column.title)}
       <div
@@ -204,7 +204,7 @@
   {/if}
 {/snippet}
 
-{#snippet solutionsPanel(_isMobile)}
+{#snippet solutionsPanel(_isMobile: boolean)}
   <div
     data-slot="row"
     class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-4"
@@ -235,7 +235,7 @@
   </div>
 {/snippet}
 
-{#snippet resourcesPanel(isMobile)}
+{#snippet resourcesPanel(isMobile: boolean)}
   <div
     data-slot="row"
     class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3"

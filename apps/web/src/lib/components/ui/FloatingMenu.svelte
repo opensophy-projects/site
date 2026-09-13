@@ -165,6 +165,8 @@
 >
 	<div
 		data-slot="root"
+		role="navigation"
+		aria-label="Навигационное меню"
 		class={cn(
 			"floating-menu relative flex w-full flex-col overflow-hidden border-border bg-background text-foreground",
 			isMobileOpen ? "h-full max-h-full border-0" : "max-h-[calc(100dvh-2rem)] rounded-lg border",

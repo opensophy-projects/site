@@ -69,8 +69,7 @@
 		portalTarget = "body",
 	}: Props = $props();
 
-	const isContained = $derived(portalTarget !== "body");
-	const positionClass = isContained ? "absolute" : "fixed";
+	const positionClass = $derived(portalTarget !== "body" ? "absolute" : "fixed");
 
 	let isOpen = $state(false);
 	let timeline: gsap.core.Timeline | null = null;
@@ -148,7 +147,7 @@
 				gsap.set(containerRef, { maxWidth: maxWidthInitial });
 				gsap.set(menuWrapperRef, { height: 0, autoAlpha: 0 });
 
-				const linkElements = gsap.utils.toArray(
+				const linkElements = gsap.utils.toArray<HTMLElement>(
 					`[data-slot="link-text"]`,
 					menuWrapperRef,
 				);

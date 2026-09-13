@@ -259,7 +259,7 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 		if (!mount || !canvasEl) return;
 		let active = true;
 		const canvas: HTMLCanvasElement = canvasEl;
-		const renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer({
+		const renderer = new THREE.WebGLRenderer({
 			canvas,
 			antialias: false,
 			alpha: false,
@@ -277,9 +277,9 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 		canvas.style.height = '100%';
 		canvas.style.display = 'block';
 
-		const scene: THREE.Scene = new THREE.Scene();
-		const camera: THREE.OrthographicCamera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-		const geometry: THREE.BufferGeometry = new THREE.BufferGeometry();
+		const scene = new THREE.Scene();
+		const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+		const geometry = new THREE.BufferGeometry();
 		geometry.setAttribute(
 			'position',
 			new THREE.BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3)
@@ -311,7 +311,7 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 			uFade: { value: 0 }
 		};
 
-		const material: THREE.RawShaderMaterial = new THREE.RawShaderMaterial({
+		const material = new THREE.RawShaderMaterial({
 			vertexShader: VERT,
 			fragmentShader: FRAG,
 			uniforms,
@@ -320,18 +320,18 @@ void main(){vec4 fc;mainImage(fc,gl_FragCoord.xy);gl_FragColor=fc;}`;
 			depthWrite: false,
 			blending: THREE.NormalBlending
 		});
-		const mesh: THREE.Mesh = new THREE.Mesh(geometry, material);
+		const mesh = new THREE.Mesh(geometry, material);
 		mesh.frustumCulled = false;
 		scene.add(mesh);
 
-		const timer: THREE.Timer = new THREE.Timer();
+		const timer = new THREE.Timer();
 		timer.connect(document);
 		const getElapsed = (): number => timer.getElapsed();
 		const getDelta = (): number => timer.getDelta();
 		let fade = 0;
 		let rect: DOMRect | null = null;
-		const mouseTarget: THREE.Vector2 = new THREE.Vector2(0, 0);
-		const mouseSmooth: THREE.Vector2 = new THREE.Vector2(0, 0);
+		const mouseTarget = new THREE.Vector2(0, 0);
+		const mouseSmooth = new THREE.Vector2(0, 0);
 
 		const setSize = (): void => {
 			const w = mount.clientWidth || 1;

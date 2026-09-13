@@ -1,11 +1,13 @@
+<script module lang="ts">
+	export type DriftWallItem = {
+		image: string;
+		title?: string;
+		href?: string;
+	};
+</script>
+
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
-
-  export type DriftWallItem = {
-    image: string;
-    title?: string;
-    href?: string;
-  }
 
   // ----- props -----
   export let items: DriftWallItem[] = Array.from({ length: 15 }, (_, i) => {
