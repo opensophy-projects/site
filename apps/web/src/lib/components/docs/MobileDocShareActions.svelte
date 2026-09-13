@@ -8,19 +8,21 @@
 	} from '$lib/config/content-ui';
 	import { portal } from '$lib/utils/use-portal';
 	import { copyToClipboard } from '$lib/utils/copy';
-	import Checkmark from 'carbon-icons-svelte/lib/Checkmark.svelte';
-	import OverflowMenuHorizontal from 'carbon-icons-svelte/lib/OverflowMenuHorizontal.svelte';
+	import { AppCheckIcon, AppGitHubIcon, AppMoreHorizontalIcon } from '$lib/components/icons';
 	import { onMount, tick } from 'svelte';
+	import { motionDuration, motionDistance } from '$lib/utils/motion';
 
 	type Props = {
 		rawPath?: string | null;
 		rawUrl?: string | null;
+		githubUrl?: string | null;
 		pageActionsConfig?: SectionUiConfig['pageActions'];
 	};
 
 	let {
 		rawPath,
 		rawUrl,
+		githubUrl,
 		pageActionsConfig = contentUiDefaults.pageActions
 	}: Props = $props();
 
@@ -37,7 +39,8 @@
 	const chatGptUrl = $derived(assistantUrls.chatGptUrl);
 	const claudeUrl = $derived(assistantUrls.claudeUrl);
 	const canShowCopy = $derived(pageActionsConfig.showCopyMarkdown && Boolean(rawPath));
-	const hasMenuActions = $derived(Boolean(chatGptUrl) || Boolean(claudeUrl));
+	const canShowRepository = $derived(pageActionsConfig.showRepositoryLink && Boolean(githubUrl));
+	const hasMenuActions = $derived(canShowRepository || Boolean(chatGptUrl) || Boolean(claudeUrl));
 	const hasActions = $derived(canShowCopy || hasMenuActions);
 	const prefetchedContentPromise = $derived.by(() => {
 		if (!canShowCopy || !rawPath || !canUseWindow) {
@@ -232,7 +235,7 @@
 	});
 
 	const buttonClass =
-		"focus-ring focus-outline hit-target card relative inline-flex h-9 w-full shrink-0 flex-1 items-center justify-center gap-2 rounded-sm bg-background px-4 py-2 text-sm font-medium whitespace-nowrap text-foreground transition-[background-color,box-shadow] duration-150 ease-out outline-none hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 motion-reduce:transition-none";
+		"focus-ring focus-outline hit-target card relative inline-flex h-9 w-full font-medium shrink-0 items-center justify-center gap-2 rounded-sm bg-background px-4 py-2 text-sm whitespace-nowrap text-foreground transition-[background-color,box-shadow] duration-150 ease-out outline-none hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 flex-1 motion-reduce:transition-none";
 </script>
 
 {#if hasActions}
@@ -246,39 +249,82 @@
 					aria-disabled={copyState === 'success'}
 					class={buttonClass}
 				>
-				<span class="grid place-items-center" style="grid-template-areas: 'content';">
-					{#key copyState}
-						<span
-							class="flex items-center gap-2 text-foreground will-change-transform"
-							style="grid-area: content;"
-							in:fly={{ y: 20, duration: 300, easing: backOut }}
-							out:fly={{ y: -20, duration: 200, easing: backOut }}
-						>
-							{#if copyState === 'success'}
-								<Checkmark class="size-4 flex-none" />
-							{:else}
-								<svg
-									role="img"
-									viewBox="0 0 24 24"
-									fill="none"
-									aria-hidden="true"
-									class="size-4 flex-none"
-								>
-									<title>Markdown</title>
-									<path
-										class="stroke-current"
-										d="M1.212 5.5h21.576c.407 0 .712.317.712.679v11.549a.695.695 0 0 1-.712.677H1.212a.695.695 0 0 1-.712-.678V6.18c0-.362.305-.679.712-.679Z"
-									/>
-									<path
-										class="fill-current"
-										d="M3.03 15.96V7.946h2.425l2.424 2.946 2.424-2.946h2.424v8.014h-2.424v-4.596L7.88 14.31l-2.424-2.946v4.596H3.03Zm15.152 0-3.636-3.89h2.424V7.947h2.424v4.125h2.424l-3.636 3.889Z"
-									/>
-								</svg>
-							{/if}
-							<span>{copyLabel}</span>
-						</span>
-					{/key}
-				</span>
+					<span
+						class="grid place-items-center overflow-hidden"
+						style="grid-template-areas: 'content';"
+					>
+						{#key copyState}
+							<span
+								class="flex items-center gap-2 font-medium tracking-normal text-foreground will-change-transform motion-reduce:will-change-auto"
+								style="grid-area: content;"
+								in:fly={{ y: motionDistance(20), duration: motionDuration(300), easing: backOut }}
+								out:fly={{
+									y: motionDistance(-20),
+									duration: motionDuration(200),
+									easing: backOut
+								}}
+							>
+								{#if copyState === 'success'}
+									<AppCheckIcon class="size-4 flex-none" />
+								{:else}
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										width="18px"
+										height="18px"
+										viewBox="0 0 18 18"
+										aria-hidden="true"
+										class="flex-none"
+										class:text-warning={copyState === 'error'}
+									>
+										<rect
+											x=".75"
+											y="3.75"
+											width="16.5"
+											height="10.5"
+											rx="2"
+											ry="2"
+											fill="none"
+											stroke="currentColor"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="1.5"
+										/>
+										<polyline
+											points="8.75 11.25 8.75 6.75 8.356 6.75 6.25 9.5 4.144 6.75 3.75 6.75 3.75 11.25"
+											fill="none"
+											stroke="currentColor"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="1.5"
+											data-color="color-2"
+										/>
+										<polyline
+											points="11.5 9.5 13.25 11.25 15 9.5"
+											fill="none"
+											stroke="currentColor"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="1.5"
+											data-color="color-2"
+										/>
+										<line
+											x1="13.25"
+											y1="11.25"
+											x2="13.25"
+											y2="6.75"
+											fill="none"
+											stroke="currentColor"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="1.5"
+											data-color="color-2"
+										/>
+									</svg>
+								{/if}
+								<span>{copyLabel}</span>
+							</span>
+						{/key}
+					</span>
 				</button>
 			</div>
 		{/if}
@@ -295,7 +341,7 @@
 					aria-controls={dropdownId}
 					aria-expanded={isDropdownOpen}
 				>
-					<OverflowMenuHorizontal class="size-4" />
+					<AppMoreHorizontalIcon class="size-4" />
 				</button>
 
 				{#if isDropdownOpen}
@@ -306,16 +352,30 @@
 						class="z-50 flex w-48 origin-top-right flex-col gap-0.5 rounded-md bg-background p-1 card"
 						role="menu"
 						aria-label={pageActionsConfig.moreActionsAriaLabel}
-						in:fly={{ y: -5, duration: 200, easing: backOut }}
-						out:fly={{ y: -5, duration: 150, easing: backOut }}
+						in:fly={{ y: motionDistance(-5), duration: motionDuration(200), easing: backOut }}
+						out:fly={{ y: motionDistance(-5), duration: motionDuration(150), easing: backOut }}
 					>
+						{#if canShowRepository}
+							<a
+								href={githubUrl}
+								target="_blank"
+								rel="external"
+								role="menuitem"
+								class="focus-ring group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-medium tracking-normal text-foreground-muted transition-[color,background-color,box-shadow] outline-none hover:bg-background-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset motion-reduce:transition-none"
+							>
+								<AppGitHubIcon class="size-4 flex-none" />
+								{pageActionsConfig.repositoryLinkLabel}
+								<span class="sr-only">{opensInNewTabLabel}</span>
+							</a>
+						{/if}
+
 						{#if chatGptUrl}
 							<a
 								href={chatGptUrl}
 								target="_blank"
 								rel="external"
 								role="menuitem"
-								class="group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-medium tracking-normal text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
+								class="focus-ring group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-medium tracking-normal text-foreground-muted transition-[color,background-color,box-shadow] outline-none hover:bg-background-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset motion-reduce:transition-none"
 							>
 								<svg
 									role="img"
@@ -340,7 +400,7 @@
 								target="_blank"
 								rel="external"
 								role="menuitem"
-								class="group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-medium tracking-normal text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
+								class="focus-ring group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-medium tracking-normal text-foreground-muted transition-[color,background-color,box-shadow] outline-none hover:bg-background-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset motion-reduce:transition-none"
 							>
 								<svg
 									role="img"
