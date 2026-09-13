@@ -237,11 +237,11 @@
 	{#snippet aside()}
 		{#if showRightAside}
 			<aside
-				class="z-50 hidden max-h-full min-h-0 w-56 flex-col justify-between overflow-hidden py-8 xl:col-start-2 xl:row-start-1 xl:flex 2xl:col-start-3"
+				class="pointer-events-none z-50 hidden max-h-full min-h-0 w-56 flex-col justify-between overflow-hidden py-8 xl:col-start-2 xl:row-start-1 xl:flex 2xl:col-start-3"
 				aria-label="Оглавление и действия"
 			>
 				{#if showToc}
-					<div class="min-h-0 flex-1">
+					<div class="pointer-events-auto min-h-0 flex-1">
 						<TableOfContents
 							selector={tocSelector}
 							headings={data.tocHeadings}
@@ -253,11 +253,13 @@
 					</div>
 				{/if}
 				{#if showDocActions}
-					<DocShareActions
-						{rawPath}
-						{rawUrl}
-						pageActionsConfig={sectionUi.pageActions}
-					/>
+					<div class="pointer-events-auto">
+						<DocShareActions
+							{rawPath}
+							{rawUrl}
+							pageActionsConfig={sectionUi.pageActions}
+						/>
+					</div>
 				{/if}
 			</aside>
 		{/if}

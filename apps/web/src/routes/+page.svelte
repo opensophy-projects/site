@@ -24,6 +24,7 @@
     description: string;
     colors: string[];
     glowColor: string;
+    glowIntensity?: number;
     status: ProjectStatus;
   };
 
@@ -33,7 +34,8 @@
       description:
         "Платформа для документации и публикации контента. Подходит для технических команд, авторов и всех, кто хочет структурированно делиться знаниями.",
       colors: ["#f43f5e", "#f472b6", "#b2263e"],
-      glowColor: "330 70 65",
+      glowColor: "350 90 72",
+      glowIntensity: 1.15,
       status: {
         variant: "released",
         label: "Проект в релизе",
@@ -45,7 +47,8 @@
       description:
         "Библиотека готовых UI-компонентов с живым превью и гибкими настройками. Включает анимации, интерактивные блоки и фирменные компоненты Opensophy — для разработчиков и дизайнеров.",
       colors: ["#f43f5e", "#f472b6", "#b2263e"],
-      glowColor: "330 70 65",
+      glowColor: "350 90 72",
+      glowIntensity: 1.15,
       status: {
         variant: "released",
         label: "Проект в релизе",
@@ -57,7 +60,8 @@
       description:
         "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik. Позволяет надёжно закрыть доступ к сервисам и серверам без лишних сложностей.",
       colors: ["#f43f5e", "#f472b6", "#b2263e"],
-      glowColor: "330 70 65",
+      glowColor: "350 90 72",
+      glowIntensity: 1.15,
       status: {
         variant: "released",
         label: "Проект в релизе",
@@ -69,8 +73,9 @@
       description:
         "Форк проекта Dokploy — платформа для управления серверами и деплоя приложений. Бесплатная enterprise-версия с обновлённым дизайном, встроенным управлением mTLS и русификацией.",
       colors: ["#f43f5e", "#f472b6", "#b2263e"],
-      glowColor: "330 70 65",
-      status: { variant: "in-progress", label: "Скоро в релизе" },
+      glowColor: "350 90 72",
+      glowIntensity: 1.15,
+      status: { variant: "released", label: "Проект в релизе", href: "/dokploy" },
     },
   ];
 
@@ -172,6 +177,7 @@
         <CardProject
           colors={project.colors}
           glowColor={project.glowColor}
+          glowIntensity={project.glowIntensity}
           borderRadius={12}
         >
           <div class="project-card-body">

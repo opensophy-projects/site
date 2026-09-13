@@ -4,6 +4,17 @@
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
+  import Close from "carbon-icons-svelte/lib/Close.svelte";
+  import Email from "carbon-icons-svelte/lib/Email.svelte";
+  import LogoGithub from "carbon-icons-svelte/lib/LogoGithub.svelte";
+  import Chat from "carbon-icons-svelte/lib/Chat.svelte";
+  import { siteConfig } from "$lib/config/site";
+
+  let earlyAccessOpen = $state(false);
+
+  function closeEarlyAccess() {
+    earlyAccessOpen = false;
+  }
 
   const features = [
     [
@@ -118,7 +129,7 @@
         мелочами.
       </p>
       <div class="flex flex-wrap justify-center gap-3">
-        <Button variant="secondary">в разработке</Button>
+        <Button onclick={() => { earlyAccessOpen = true; }}>Получить ранний доступ</Button>
       </div>
     </div>
   </section>
@@ -179,6 +190,41 @@
     </div>
   </section>
 </main>
+
+{#if earlyAccessOpen}
+  <div
+    class="early-access-overlay"
+    role="button"
+    tabindex="-1"
+    aria-label="Закрыть окно раннего доступа"
+    onclick={closeEarlyAccess}
+    onkeydown={(event) => { if (event.key === "Escape") closeEarlyAccess(); }}
+  >
+    <div
+      class="early-access-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="early-access-title"
+      tabindex="-1"
+      onclick={(event) => { event.stopPropagation(); }}
+      onkeydown={(event) => { event.stopPropagation(); }}
+    >
+      <button type="button" class="early-access-close" onclick={closeEarlyAccess} aria-label="Закрыть">
+        <Close size={18} />
+      </button>
+      <p class="section-overline">Ранний доступ</p>
+      <h2 id="early-access-title">Получить ранний доступ</h2>
+      <p>
+        Для получения доступа напишите нам в удобный для вас контакт. Обязательно укажите ссылку на ваш GitHub-профиль: доступ будет выдан в приватный репозиторий.
+      </p>
+      <div class="early-access-contacts">
+        <a href={siteConfig.links.telegram} target="_blank" rel="noreferrer"><Chat size={18} />Telegram @opensophy</a>
+        <a href={`mailto:${siteConfig.links.email}`}><Email size={18} />{siteConfig.links.email}</a>
+        <a href={siteConfig.links.github} target="_blank" rel="noreferrer"><LogoGithub size={18} />GitHub Opensophy</a>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   .hero-section {
@@ -267,4 +313,47 @@
     );
     opacity: 0.28;
   }
+  .early-access-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgb(0 0 0 / 45%);
+  }
+  .early-access-modal {
+    position: relative;
+    width: min(100%, 32rem);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg, 0.75rem);
+    background: var(--background-inset);
+    padding: 2rem;
+    box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 25%);
+  }
+  .early-access-modal h2 {
+    margin: 0 2rem 1rem 0;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+  }
+  .early-access-modal p:not(.section-overline) {
+    color: var(--foreground-muted);
+    line-height: 1.6;
+  }
+  .early-access-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-sm, 0.25rem);
+    color: var(--foreground-muted);
+  }
+  .early-access-close:hover { background: var(--background-muted); color: var(--foreground); }
+  .early-access-contacts { display: grid; gap: 0.5rem; margin-top: 1.5rem; }
+  .early-access-contacts a { display: flex; align-items: center; gap: 0.625rem; border-radius: var(--radius-sm, 0.25rem); padding: 0.625rem 0.75rem; color: var(--foreground-muted); font-size: 0.875rem; font-weight: 500; }
+  .early-access-contacts a:hover { background: var(--background-muted); color: var(--foreground); }
 </style>

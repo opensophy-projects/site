@@ -232,19 +232,20 @@
 	});
 
 	const buttonClass =
-		"inset-shadow relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground transition-[background-color] duration-150 ease-out hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50";
+		"focus-ring focus-outline hit-target card relative inline-flex h-9 w-full shrink-0 flex-1 items-center justify-center gap-2 rounded-sm bg-background px-4 py-2 text-sm font-medium whitespace-nowrap text-foreground transition-[background-color,box-shadow] duration-150 ease-out outline-none hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50 has-[>svg]:px-3 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 motion-reduce:transition-none";
 </script>
 
 {#if hasActions}
 	<div class="relative z-20 mt-8 flex w-full gap-2 lg:hidden">
 		{#if canShowCopy}
-			<button
-				type="button"
-				onclick={() => void handleCopy()}
-				aria-live="polite"
-				aria-disabled={copyState === 'success'}
-				class="inset-shadow relative inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-sm bg-background-inset px-3 text-sm font-medium tracking-normal text-foreground transition-[background-color] duration-150 ease-out hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50"
-			>
+			<div class="card-outer w-full rounded-md bg-background-inset p-1.5">
+				<button
+					type="button"
+					onclick={() => void handleCopy()}
+					aria-live="polite"
+					aria-disabled={copyState === 'success'}
+					class={buttonClass}
+				>
 				<span class="grid place-items-center" style="grid-template-areas: 'content';">
 					{#key copyState}
 						<span
@@ -278,11 +279,12 @@
 						</span>
 					{/key}
 				</span>
-			</button>
+				</button>
+			</div>
 		{/if}
 
 		{#if hasMenuActions}
-			<div class="relative">
+			<div class="card-outer relative rounded-md bg-background-inset p-1.5">
 				<button
 					id={dropdownTriggerId}
 					type="button"
@@ -301,7 +303,7 @@
 						use:portal={'main'}
 						id={dropdownId}
 						style={dropdownStyle}
-						class="z-[100] flex w-48 origin-top-right flex-col gap-0.5 rounded-md bg-background p-1 card"
+						class="z-50 flex w-48 origin-top-right flex-col gap-0.5 rounded-md bg-background p-1 card"
 						role="menu"
 						aria-label={pageActionsConfig.moreActionsAriaLabel}
 						in:fly={{ y: -5, duration: 200, easing: backOut }}
