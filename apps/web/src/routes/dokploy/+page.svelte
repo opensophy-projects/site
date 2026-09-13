@@ -4,6 +4,15 @@
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
+  import Close from "carbon-icons-svelte/lib/Close.svelte";
+  import Email from "carbon-icons-svelte/lib/Email.svelte";
+  import LocationCurrent from "carbon-icons-svelte/lib/LocationCurrent.svelte";
+
+  let earlyAccessOpen = $state(false);
+
+  function closeEarlyAccess() {
+    earlyAccessOpen = false;
+  }
 
   const features = [
     [
@@ -118,7 +127,9 @@
         мелочами.
       </p>
       <div class="flex flex-wrap justify-center gap-3">
-        <Button variant="secondary">в разработке</Button>
+        <Button variant="primary" size="lg" onclick={() => { earlyAccessOpen = true; }}>
+          Получить ранний доступ
+        </Button>
       </div>
     </div>
   </section>
@@ -154,8 +165,7 @@
         <CardProject
           className="min-h-40"
           colors={["#f43f5e", "#f472b6", "#b2263e"]}
-          glowColor="350 90 72"
-          glowIntensity={1.15}
+          glowColor="330 70 65"
         >
           <div class="p-5">
             <h3 class="text-lg font-semibold tracking-tight text-foreground">
@@ -179,6 +189,45 @@
     </div>
   </section>
 </main>
+
+{#if earlyAccessOpen}
+  <div
+    class="early-access-overlay"
+    onclick={closeEarlyAccess}
+    onkeydown={(event) => { if (event.key === "Escape") closeEarlyAccess(); }}
+    role="button"
+    tabindex="-1"
+    aria-label="Закрыть окно раннего доступа"
+  >
+    <div
+      class="early-access-modal"
+      onclick={(event) => { event.stopPropagation(); }}
+      onkeydown={(event) => { event.stopPropagation(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="early-access-title"
+      tabindex="-1"
+    >
+      <button type="button" class="early-access-close" onclick={closeEarlyAccess} aria-label="Закрыть">
+        <Close size={18} />
+      </button>
+      <p class="section-overline">os.dokploy</p>
+      <h2 id="early-access-title">Получить ранний доступ</h2>
+      <p>
+        Для получения доступа напишите нам в удобный для вас канал. Обязательно укажите
+        профиль GitHub — доступ будет выдан в приватный репозиторий.
+      </p>
+      <div class="early-access-contacts">
+        <a href="https://t.me/opensophy" target="_blank" rel="noreferrer">
+          <LocationCurrent size={18} /> Telegram
+        </a>
+        <a href="mailto:opensophy@gmail.com">
+          <Email size={18} /> opensophy@gmail.com
+        </a>
+      </div>
+    </div>
+  </div>
+{/if}
 
 <style>
   .hero-section {
@@ -267,4 +316,56 @@
     );
     opacity: 0.28;
   }
+  .early-access-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: color-mix(in srgb, var(--background-inset) 82%, transparent);
+    backdrop-filter: blur(6px);
+    animation: fade-in 160ms ease-out;
+  }
+  .early-access-modal {
+    position: relative;
+    width: min(100%, 31rem);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--background);
+    box-shadow: var(--shadow-xl);
+    animation: scale-in 180ms ease-out;
+  }
+  .early-access-modal h2 { margin: 0; font-size: 1.5rem; letter-spacing: -0.03em; }
+  .early-access-modal p:not(.section-overline) { margin: 0.75rem 0 1.25rem; line-height: 1.6; color: var(--foreground-muted); }
+  .early-access-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--background-inset);
+    color: var(--foreground-muted);
+  }
+  .early-access-contacts { display: grid; gap: 0.5rem; }
+  .early-access-contacts a {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--background-inset);
+    color: var(--foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .early-access-contacts a:hover { border-color: var(--accent); color: var(--accent); }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes scale-in { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: scale(1); } }
 </style>

@@ -70,7 +70,7 @@
         "Форк проекта Dokploy — платформа для управления серверами и деплоя приложений. Бесплатная enterprise-версия с обновлённым дизайном, встроенным управлением mTLS и русификацией.",
       colors: ["#f43f5e", "#f472b6", "#b2263e"],
       glowColor: "330 70 65",
-      status: { variant: "in-progress", label: "Скоро в релизе" },
+      status: { variant: "released", label: "Проект в релизе", href: "/dokploy" },
     },
   ];
 

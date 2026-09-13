@@ -23,7 +23,6 @@
 <svelte:head>
 	<title>{errorTitle} — {siteConfig.name}</title>
 	<meta name="description" content={errorDescription} />
-	<meta name="robots" content="noindex, nofollow" />
 </svelte:head>
 
 <SiteMenu />

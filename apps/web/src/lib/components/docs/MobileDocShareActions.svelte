@@ -232,7 +232,7 @@
 	});
 
 	const buttonClass =
-		"inset-shadow relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground transition-[background-color] duration-150 ease-out hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50";
+		"inset-shadow card relative inline-flex size-9 items-center justify-center rounded-sm border border-border bg-background-inset text-foreground transition-[background-color] duration-150 ease-out hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50";
 </script>
 
 {#if hasActions}
@@ -243,7 +243,7 @@
 				onclick={() => void handleCopy()}
 				aria-live="polite"
 				aria-disabled={copyState === 'success'}
-				class="inset-shadow relative inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-sm bg-background-inset px-3 text-sm font-medium tracking-normal text-foreground transition-[background-color] duration-150 ease-out hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50"
+				class="inset-shadow card relative inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-sm border border-border bg-background-inset px-3 text-sm font-medium tracking-normal text-foreground transition-[background-color] duration-150 ease-out hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50"
 			>
 				<span class="grid place-items-center" style="grid-template-areas: 'content';">
 					{#key copyState}

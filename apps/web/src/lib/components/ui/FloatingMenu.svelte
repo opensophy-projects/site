@@ -145,6 +145,7 @@
 			classes?.overlay,
 		)}
 		onclick={closeDesktop}
+		onwheel={(event) => { window.scrollBy({ top: event.deltaY, left: event.deltaX }); }}
 		onkeydown={handleKeydown}
 		role="button"
 		tabindex="-1"
@@ -205,7 +206,7 @@
 							data-slot="trigger"
 							data-open={openId === trigger.id}
 							class={cn(
-								"group flex items-center gap-1.5 rounded-sm px-3 py-2 text-sm font-medium text-foreground-muted transition-colors duration-150 hover:bg-background-inset hover:text-foreground",
+								"group inset-shadow card flex items-center gap-1.5 rounded-sm border border-transparent px-3 py-2 text-sm font-medium text-foreground-muted transition-colors duration-150 hover:border-border hover:bg-background-inset hover:text-foreground",
 								openId === trigger.id && "bg-background-inset text-foreground",
 								classes?.trigger,
 							)}
@@ -265,7 +266,7 @@
 						data-slot="toggle-button"
 						data-open={isMobileOpen}
 						class={cn(
-							"group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]",
+							"group inset-shadow card transition-scale relative inline-flex size-9 items-center justify-center rounded-sm border border-border bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]",
 							classes?.toggleButton,
 						)}
 						aria-expanded={isMobileOpen}
@@ -300,7 +301,7 @@
 								onclick={() => { toggleMobileAccordion(trigger.id); }}
 								data-slot="mobile-trigger"
 								data-open={mobileOpenId === trigger.id}
-								class="flex w-full items-center justify-between px-5 py-6 text-left text-lg font-medium text-foreground"
+								class="inset-shadow card flex w-full items-center justify-between border-b border-border bg-background px-5 py-6 text-left text-lg font-medium text-foreground"
 								aria-expanded={mobileOpenId === trigger.id}
 							>
 								{trigger.label}

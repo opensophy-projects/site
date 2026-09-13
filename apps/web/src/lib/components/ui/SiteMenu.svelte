@@ -289,7 +289,7 @@
     <ThemeToggle />
     <button
       type="button"
-      class="group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
+      class="group inset-shadow card transition-scale relative inline-flex size-9 items-center justify-center rounded-sm border border-border bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
       onclick={() => {
         searchState.open();
       }}
@@ -337,7 +337,7 @@
     >
       <button
         type="button"
-        class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-sm text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
+        class="inset-shadow card absolute top-3 right-3 flex size-8 items-center justify-center rounded-sm border border-border bg-background-inset text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
         onclick={() => {
           contactsState.close();
         }}
