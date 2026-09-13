@@ -24,6 +24,8 @@
 	<title>{title}</title>
 	<meta name="description" content={description} />
 	<meta name="keywords" content={keywordsContent} />
+	<meta name="robots" content="index, follow" />
+	<meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
 	<link rel="canonical" href={canonicalUrl} />
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={description} />

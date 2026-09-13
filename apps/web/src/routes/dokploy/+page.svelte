@@ -1,5 +1,6 @@
 <script lang="ts">
 	import PageSeo from '$lib/components/seo/PageSeo.svelte';
+	import { siteConfig } from '$lib/config/site';
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
@@ -56,7 +57,7 @@
     ],
   ];
 
-  const enterpriseFeatures = [
+	const enterpriseFeatures = [
     [
       "SSO / SAML",
       "Бесшовная аутентификация через корпоративных провайдеров идентификации для безопасного централизованного управления доступом.",
@@ -89,8 +90,16 @@
       "Русифицированный интерфейс",
       "Полная локализация платформы на русский язык — комфортная работа без языкового барьера для русскоязычных разработчиков.",
     ],
-  ];
+	];
+
+	let earlyAccessOpen = $state(false);
+
+	function closeEarlyAccess() {
+		earlyAccessOpen = false;
+	}
 </script>
+
+<svelte:window onkeydown={(event) => event.key === 'Escape' && closeEarlyAccess()} />
 
 <PageSeo title="os.dokploy — сервер уровня Enterprise" description="os.dokploy — форк Dokploy для управления серверами, деплоя приложений и бесплатных enterprise-возможностей." type="website" />
 
@@ -118,7 +127,21 @@
         мелочами.
       </p>
       <div class="flex flex-wrap justify-center gap-3">
-        <Button variant="secondary">в разработке</Button>
+		<div class="relative">
+			<Button onclick={() => (earlyAccessOpen = !earlyAccessOpen)}>Получить ранний доступ</Button>
+			{#if earlyAccessOpen}
+				<div class="early-access-menu" role="dialog" aria-label="Получение раннего доступа">
+					<p class="text-sm leading-relaxed text-foreground-muted">
+						Для получения доступа напишите нам удобным для вас способом. Обязательно укажите
+						ссылку на ваш GitHub-профиль: доступ будет выдан в приватный репозиторий.
+					</p>
+					<div class="mt-3 grid gap-1">
+						<a href={siteConfig.links.telegram} target="_blank" rel="noreferrer">Telegram @opensophy</a>
+						<a href={`mailto:${siteConfig.links.email}`}>{siteConfig.links.email}</a>
+					</div>
+				</div>
+			{/if}
+		</div>
       </div>
     </div>
   </section>
@@ -221,11 +244,37 @@
     letter-spacing: -0.04em;
     line-height: 1.05;
   }
-  .section-block {
+	.section-block {
     position: relative;
     padding-top: clamp(2.5rem, 5vw, 4rem);
     padding-bottom: clamp(2.5rem, 5vw, 4rem);
-  }
+	}
+	.early-access-menu {
+		position: absolute;
+		z-index: 20;
+		top: calc(100% + 0.75rem);
+		left: 50%;
+		width: min(22rem, calc(100vw - 2rem));
+		padding: 1rem;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md, 0.375rem);
+		background: var(--background-inset);
+		box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+		text-align: left;
+		transform: translateX(-50%);
+	}
+	.early-access-menu a {
+		border-radius: var(--radius-sm, 0.25rem);
+		padding: 0.5rem 0.75rem;
+		color: var(--foreground-muted);
+		font-size: 0.875rem;
+		font-weight: 500;
+		transition: background-color 150ms ease-out, color 150ms ease-out;
+	}
+	.early-access-menu a:hover {
+		background: var(--background-muted);
+		color: var(--foreground);
+	}
   .section-overline {
     margin-bottom: 1rem;
     font-size: 0.75rem;
