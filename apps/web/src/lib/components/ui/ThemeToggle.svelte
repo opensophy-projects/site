@@ -12,12 +12,10 @@
 	const className = $derived((props as Props).class ?? '');
 </script>
 
-<button
-	type="button"
-	class={cn(
-		'inset-shadow relative inline-flex size-9 items-center justify-center rounded-md border border-border bg-background-inset text-foreground transition-colors duration-150 hover:border-accent/60 active:scale-[0.95]',
-		className
-	)}
+<span class={cn('inset-shadow inline-flex rounded-xl bg-background-inset p-1.5', className)}>
+	<button
+		type="button"
+		class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 hover:border-accent/60 active:scale-[0.95]"
 		onclick={themeStore.toggle}
 		aria-label={themeStore.isDark ? 'Светлая тема' : 'Тёмная тема'}
 	>
@@ -28,7 +26,8 @@
 		<span class="theme-toggle-icon theme-toggle-moon">
 			<Moon size={16} />
 		</span>
-</button>
+	</button>
+</span>
 
 <style>
 	.theme-toggle-icon {

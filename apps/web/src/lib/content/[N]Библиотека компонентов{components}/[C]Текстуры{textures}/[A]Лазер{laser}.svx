@@ -11,9 +11,9 @@ keywords: 'Opensophy, Laser, WebGL, shader, texture, UI components'
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [
-		{ type: 'range', name: 'speed', label: 'Скорость', defaultValue: 0.3, min: 0, max: 1, step: 0.05 },
-		{ type: 'range', name: 'glow', label: 'Свечение', defaultValue: 2, min: 0, max: 3, step: 0.1 },
-		{ type: 'range', name: 'wave', label: 'Волна луча', defaultValue: 10, min: 0, max: 30, step: 1 }
+		{ type: 'number', name: 'speed', label: 'Скорость', defaultValue: 0.3, min: 0, max: 1, step: 0.05 },
+		{ type: 'number', name: 'glow', label: 'Свечение', defaultValue: 2, min: 0, max: 3, step: 0.1 },
+		{ type: 'number', name: 'wave', label: 'Волна луча', defaultValue: 10, min: 0, max: 30, step: 1 }
 	];
 </script>
 
@@ -25,15 +25,12 @@ keywords: 'Opensophy, Laser, WebGL, shader, texture, UI components'
 
 <ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'Laser.svelte', code: LaserSource, language: 'svelte' }]}>
 	{#snippet children(values)}
-		<Laser class="h-[360px] w-full overflow-hidden rounded-lg bg-background-inset" speed={values.speed as number} glow={values.glow as number} wave={values.wave as number}>
-			<div class="flex h-full items-start p-8">
-				<div class="max-w-sm rounded-md border border-border bg-background/80 p-5 backdrop-blur-sm">
-					<p class="text-sm font-medium text-accent">Акцентный луч</p>
-					<h3 class="mt-2 text-xl font-medium text-foreground">Лазерная текстура</h3>
-					<p class="mt-2 text-sm text-foreground-muted">Прокрутите область, чтобы усилить свечение и эффект раскрытия.</p>
-				</div>
-			</div>
-		</Laser>
+		<Laser
+			class="h-[360px] w-full overflow-hidden rounded-lg bg-background-inset"
+			speed={values.speed as number}
+			glow={values.glow as number}
+			wave={values.wave as number}
+		/>
 	{/snippet}
 </ComponentPreview>
 
