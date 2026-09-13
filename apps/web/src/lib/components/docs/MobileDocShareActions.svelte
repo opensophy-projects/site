@@ -236,14 +236,14 @@
 </script>
 
 {#if hasActions}
-	<div class="relative z-20 mt-8 flex w-full gap-2 lg:hidden">
+	<div class="relative z-20 mt-8 flex w-full gap-2 rounded-xl bg-background-inset p-1.5 inset-shadow lg:hidden">
 		{#if canShowCopy}
 			<button
 				type="button"
 				onclick={() => void handleCopy()}
 				aria-live="polite"
 				aria-disabled={copyState === 'success'}
-				class="inset-shadow relative inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-sm bg-background-inset px-3 text-sm font-medium tracking-normal text-foreground transition-[background-color] duration-150 ease-out hover:bg-background-muted disabled:pointer-events-none disabled:opacity-50"
+				class="card relative inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-background px-3 text-sm font-medium tracking-normal text-foreground transition-[background-color,transform] duration-150 ease-out hover:-translate-y-0.5 hover:border-accent/60 disabled:pointer-events-none disabled:opacity-50"
 			>
 				<span class="grid place-items-center" style="grid-template-areas: 'content';">
 					{#key copyState}
@@ -287,7 +287,7 @@
 					id={dropdownTriggerId}
 					type="button"
 					onclick={toggleDropdown}
-					class={buttonClass}
+					class={`${buttonClass} card rounded-lg border border-border bg-background hover:-translate-y-0.5 hover:border-accent/60`}
 					aria-label={pageActionsConfig.moreActionsAriaLabel}
 					aria-haspopup="menu"
 					aria-controls={dropdownId}
