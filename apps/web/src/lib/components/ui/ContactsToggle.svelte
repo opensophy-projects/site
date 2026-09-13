@@ -88,7 +88,7 @@
 	bind:this={buttonEl}
 	type="button"
 	class={cn(
-		'group transition-scale inset-shadow relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]',
+		'group transition-scale inset-shadow relative inline-flex size-9 items-center justify-center rounded-md border border-border bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]',
 		className
 	)}
 	onclick={toggle}

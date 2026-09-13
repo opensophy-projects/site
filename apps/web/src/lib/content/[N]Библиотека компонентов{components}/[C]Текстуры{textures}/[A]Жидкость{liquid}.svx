@@ -1,0 +1,70 @@
+---
+title: Жидкость
+description: Интерактивная WebGL-текстура с акцентным жидкостным следом от движения курсора.
+keywords: 'Opensophy, Liquid, WebGL, fluid, texture, UI components'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Liquid from '$lib/components/ui-registry/Liquid.svelte';
+	import { LiquidSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'range', name: 'intensity', label: 'Интенсивность', defaultValue: 2, min: 0, max: 4, step: 0.1 },
+		{ type: 'range', name: 'distortion', label: 'Искажение', defaultValue: 0.4, min: 0, max: 2, step: 0.1 },
+		{ type: 'range', name: 'force', label: 'Сила движения', defaultValue: 1.1, min: 0.1, max: 3, step: 0.1 }
+	];
+</script>
+
+# Жидкость
+
+`Liquid` создаёт жидкостный след акцентного цвета при движении указателя. Текстура использует WebGL-симуляцию потока и может мягко искажать или окрашивать расположенный внутри контент.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'Liquid.svelte', code: LiquidSource, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<Liquid class="h-[360px] w-full overflow-hidden rounded-lg bg-background-inset" intensity={values.intensity as number} distortion={values.distortion as number} force={values.force as number}>
+			<div class="flex h-full items-center justify-center p-8">
+				<div class="rounded-md border border-border bg-background/80 p-5 text-center backdrop-blur-sm">
+					<p class="text-sm font-medium text-accent">Двигайте курсором</p>
+					<p class="mt-2 text-sm text-foreground-muted">Жидкостный след появляется поверх контента.</p>
+				</div>
+			</div>
+		</Liquid>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script>
+	import Liquid from '$lib/components/ui-registry/Liquid.svelte';
+</script>
+
+<Liquid class="h-96 overflow-hidden rounded-lg bg-background-inset">
+	<div class="p-8">Контент с интерактивной текстурой</div>
+</Liquid>
+```
+
+## Особенности
+
+- Акцентный жидкостный след `#f43f5e` по умолчанию
+- Интерактивная WebGL-симуляция с поддержкой touch и pointer events
+- Можно настроить физику, цвет, силу, искажение и смешивание с контентом
+- Анимация учитывает `prefers-reduced-motion`
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `simResolution` / `dyeResolution` | `number` | `128` / `512` | Разрешение симуляции и цветового следа |
+| `densityDissipation` / `velocityDissipation` | `number` | `0.96` / `1` | Затухание цвета и скорости |
+| `pressure` / `pressureIterations` / `curl` | `number` | `0.8` / `4` / `1.9` | Параметры расчёта потока |
+| `radius` / `force` | `number` | `0.3` / `1.1` | Радиус и сила следа |
+| `intensity` / `distortion` / `blend` | `number` | `2` / `0.4` / `5` | Яркость, искажение и смешивание с контентом |
+| `color` | `[number, number, number]` | `[0.956, 0.247, 0.369]` | Акцентный RGB-цвет в диапазоне 0–1 |
+| `rainbow` | `boolean` | `false` | Окрашивать след по направлению движения |
+| `class` | `string` | `''` | CSS-классы контейнера |
+| `children` | `Snippet` | — | Контент внутри текстуры |

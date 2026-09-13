@@ -298,7 +298,7 @@
 			<button
 				type="button"
 				onclick={openSearch}
-				class="group transition-scale inset-shadow relative inline-flex size-9 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
+				class="group transition-scale inset-shadow relative inline-flex size-9 cursor-pointer items-center justify-center rounded-md border border-border bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
 				aria-label="Открыть поиск"
 			>
 				<Search size={16} />
@@ -309,7 +309,7 @@
 				id={tocButtonId}
 				type="button"
 				onclick={toggleToc}
-				class="group transition-scale inset-shadow relative inline-flex size-9 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
+				class="group transition-scale inset-shadow relative inline-flex size-9 cursor-pointer items-center justify-center rounded-md border border-border bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
 				aria-label="Оглавление"
 			>
 				<List size={16} />
@@ -318,7 +318,7 @@
 		<button
 			id={toggleButtonId}
 			onclick={toggle}
-			class="group transition-scale inset-shadow relative inline-flex size-9 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
+			class="group transition-scale inset-shadow relative inline-flex size-9 cursor-pointer items-center justify-center rounded-md border border-border bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
 			aria-label="Открыть меню"
 		>
 			<OpenPanelFilledRight size={16} />
@@ -350,7 +350,7 @@
 		ontransitionend={handleSidebarTransitionEnd}
 	>
 		<div class="absolute top-0 right-0 flex justify-end p-4">
-			<button id={closeButtonId} onclick={closePanel} aria-label="Close menu">
+			<button id={closeButtonId} type="button" onclick={closePanel} class="inset-shadow inline-flex size-9 items-center justify-center rounded-md border border-border bg-background-inset text-foreground active:scale-[0.95]" aria-label="Закрыть меню">
 				<Close class="size-6" />
 			</button>
 		</div>
@@ -408,7 +408,7 @@
 				</span>
 				<span class="text-sm font-medium tracking-tight">На этой странице</span>
 			</div>
-			<button id={tocCloseButtonId} onclick={closeTocPanel} aria-label="Close table of contents">
+			<button id={tocCloseButtonId} type="button" onclick={closeTocPanel} class="inset-shadow inline-flex size-9 items-center justify-center rounded-md border border-border bg-background-inset text-foreground active:scale-[0.95]" aria-label="Закрыть оглавление">
 				<Close class="size-6" />
 			</button>
 		</div>
