@@ -8,7 +8,6 @@
 	import ScrollArea from '$lib/components/ui/ScrollArea.svelte';
 	import Dropdown from '$lib/components/ui/Dropdown.svelte';
 	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
-	import ContactsToggle from '$lib/components/ui/ContactsToggle.svelte';
 	import SearchTrigger from '$lib/components/content/search/SearchTrigger.svelte';
 	import Logo from '$lib/components/ui/Logo.svelte';
 	import ChevronRight from 'carbon-icons-svelte/lib/ChevronRight.svelte';
@@ -456,7 +455,6 @@
 		{#if showThemeToggle}
 			<ThemeToggle />
 		{/if}
-		<ContactsToggle />
 		{#if showRepositoryLink}
 			<a
 				class="group transition-scale inset-shadow relative inline-flex size-7 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"

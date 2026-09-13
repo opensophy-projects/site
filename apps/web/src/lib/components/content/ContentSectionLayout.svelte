@@ -26,17 +26,17 @@
 
 	const DEFAULT_GRID_CLASS_BASE =
 		'relative flex size-full min-h-0 min-w-0 lg:grid lg:grid-cols-[21rem_minmax(0,1fr)]';
-	const DEFAULT_GRID_CLASS_WITH_ASIDE = '';
+	const DEFAULT_GRID_CLASS_WITH_ASIDE = 'xl:grid-cols-[21rem_minmax(0,1fr)_21rem]';
 	const DEFAULT_SIDEBAR_SHELL_CLASS = 'hidden min-h-0 lg:block lg:h-full lg:p-4 lg:pr-0';
+	const DEFAULT_ASIDE_SHELL_CLASS = 'hidden min-h-0 xl:block xl:h-full xl:p-4 xl:pl-0';
 	const DEFAULT_CONTENT_SHELL_CLASS =
 		'flex h-full min-h-0 w-full min-w-0 flex-1 lg:pt-2 lg:pr-2 lg:pb-2 lg:pl-4';
 	const DEFAULT_CONTENT_WRAPPER_CLASS_BASE =
 		'inset-shadow relative h-full max-h-full min-h-0 w-full min-w-0 overflow-hidden border border-border bg-background-inset pt-12 lg:grid lg:grid-cols-[minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:overflow-visible lg:rounded-xl lg:pt-0';
-	const DEFAULT_CONTENT_WRAPPER_CLASS_WITH_ASIDE =
-		'xl:grid-cols-[minmax(0,1fr)_14rem_2rem] 2xl:grid-cols-[minmax(0,52rem)_minmax(0,1fr)_14rem_2rem]';
+	const DEFAULT_CONTENT_WRAPPER_CLASS_WITH_ASIDE = '';
 	const DEFAULT_SCROLL_AREA_CLASS_BASE = 'h-full max-h-full min-h-0 w-full min-w-0 lg:row-start-1';
 	const DEFAULT_SCROLL_AREA_CLASS_NO_ASIDE = '';
-	const DEFAULT_SCROLL_AREA_CLASS_WITH_ASIDE = 'xl:col-start-1 xl:col-end-4 2xl:col-end-5';
+	const DEFAULT_SCROLL_AREA_CLASS_WITH_ASIDE = '';
 	const DEFAULT_SCROLL_VIEWPORT_CLASS_BASE = 'rounded-lg overscroll-none flex flex-col';
 	const DEFAULT_SCROLL_VIEWPORT_CLASS_PADDED = 'gap-8 px-4 py-8 lg:px-8';
 	const DEFAULT_SCROLL_VIEWPORT_CLASS_PADDED_WITH_ASIDE =
@@ -247,11 +247,13 @@
 				>
 					{@render main()}
 				</ScrollArea>
-
-				{#if aside && resolvedShowAside}
-					{@render aside()}
-				{/if}
 			</div>
 		</div>
+
+		{#if aside && resolvedShowAside}
+			<div class={DEFAULT_ASIDE_SHELL_CLASS}>
+				{@render aside()}
+			</div>
+		{/if}
 	</div>
 </main>
