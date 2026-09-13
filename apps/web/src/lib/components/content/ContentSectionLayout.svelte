@@ -26,9 +26,9 @@
 
 	const DEFAULT_GRID_CLASS_BASE =
 		'relative flex size-full min-h-0 min-w-0 lg:grid lg:grid-cols-[21rem_minmax(0,1fr)]';
-	const DEFAULT_GRID_CLASS_WITH_ASIDE = 'xl:grid-cols-[21rem_minmax(0,1fr)_21rem]';
+	const DEFAULT_GRID_CLASS_WITH_ASIDE = 'lg:grid-cols-[21rem_minmax(0,1fr)_21rem]';
 	const DEFAULT_SIDEBAR_SHELL_CLASS = 'hidden min-h-0 lg:block lg:h-full lg:p-4 lg:pr-0';
-	const DEFAULT_ASIDE_SHELL_CLASS = 'hidden min-h-0 xl:block xl:h-full xl:p-4 xl:pl-0';
+	const DEFAULT_ASIDE_SHELL_CLASS = 'hidden min-h-0 lg:block lg:h-full lg:p-4 lg:pl-0';
 	const DEFAULT_CONTENT_SHELL_CLASS =
 		'flex h-full min-h-0 w-full min-w-0 flex-1 lg:pt-2 lg:pr-2 lg:pb-2 lg:pl-4';
 	const DEFAULT_CONTENT_WRAPPER_CLASS_BASE =

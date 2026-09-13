@@ -247,7 +247,7 @@
 							headings={data.tocHeadings}
 							title={sectionUi.toc.title}
 							emptyLabel={sectionUi.toc.emptyLabel}
-							minViewportWidth={sectionUi.toc.minViewportWidth}
+							minViewportWidth={0}
 							{scrollContainerId}
 						/>
 					</div>
