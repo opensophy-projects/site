@@ -166,10 +166,12 @@
               href={link.href}
               class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
             >
-              <span
-                class="group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]"
-              >
-                <Icon size={20} />
+              <span class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5">
+                <span
+                  class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
+                >
+                  <Icon size={20} />
+                </span>
               </span>
               <span class="min-w-0 flex-1 leading-tight">
                 <span class="block text-sm font-medium text-foreground">
@@ -213,10 +215,12 @@
         href={link.href}
         class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
       >
-        <span
-          class="group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]"
-        >
-          <Icon size={20} />
+        <span class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5">
+          <span
+            class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
+          >
+            <Icon size={20} />
+          </span>
         </span>
         <span class="min-w-0 flex-1 leading-tight">
           <span class="block text-sm font-medium text-foreground">
@@ -242,10 +246,12 @@
         href={link.href}
         class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
       >
-        <span
-          class="group inset-shadow transition-scale relative inline-flex size-9 shrink-0 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out group-hover/link:text-accent group-active/link:scale-[0.95]"
-        >
-          <Icon size={20} />
+        <span class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5">
+          <span
+            class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
+          >
+            <Icon size={20} />
+          </span>
         </span>
         <span class="min-w-0 flex-1 leading-tight">
           <span class="block text-sm font-medium text-foreground">
@@ -287,17 +293,19 @@
   {/snippet}
   {#snippet actionsEnd()}
     <ThemeToggle />
-    <button
-      type="button"
-      class="group inset-shadow transition-scale relative inline-flex size-9 items-center justify-center rounded-sm bg-background-inset text-foreground duration-150 ease-out active:scale-[0.95]"
-      onclick={() => {
-        searchState.open();
-      }}
-      aria-label="Открыть поиск"
-    >
-      <span class="sr-only">Открыть поиск</span>
-      <Search size={16} />
-    </button>
+    <span class="inset-shadow inline-flex rounded-xl bg-background-inset p-1.5">
+      <button
+        type="button"
+        class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 hover:border-accent/60 active:scale-[0.95]"
+        onclick={() => {
+          searchState.open();
+        }}
+        aria-label="Открыть поиск"
+      >
+        <span class="sr-only">Открыть поиск</span>
+        <Search size={16} />
+      </button>
+    </span>
   {/snippet}
   {#snippet mobileFooter()}
     <div class="mobile-footer-btn w-full">

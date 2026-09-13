@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
 import { siteConfig } from '$lib';
+import { getTemplateEntries } from '$lib/templates/registry';
 
 export const prerender = true;
 import { contentSections, getContentSectionHref, getContentSectionManifest } from '$lib/content/sections';
@@ -12,7 +13,18 @@ type SitemapEntry = {
 
 const staticPages: SitemapEntry[] = [
 	{ path: '/', changefreq: 'weekly', priority: '1.0' },
-	{ path: '/llms.txt', changefreq: 'weekly', priority: '0.4' }
+	{ path: '/llms.txt', changefreq: 'weekly', priority: '0.4' },
+	{ path: '/solutions/security', changefreq: 'monthly', priority: '0.8' },
+	{ path: '/solutions/automation', changefreq: 'monthly', priority: '0.8' },
+	{ path: '/solutions/infrastructure', changefreq: 'monthly', priority: '0.8' },
+	{ path: '/mtls', changefreq: 'weekly', priority: '0.8' },
+	{ path: '/dokploy', changefreq: 'weekly', priority: '0.8' },
+	{ path: '/templates', changefreq: 'weekly', priority: '0.8' },
+	{ path: '/templates/docker', changefreq: 'weekly', priority: '0.7' },
+	{ path: '/news', changefreq: 'weekly', priority: '0.7' },
+	{ path: '/cases', changefreq: 'monthly', priority: '0.7' },
+	{ path: '/status', changefreq: 'daily', priority: '0.6' },
+	{ path: '/service-policy', changefreq: 'yearly', priority: '0.5' }
 ];
 
 const buildTimestamp = new Date().toISOString();
@@ -52,8 +64,18 @@ export const GET: RequestHandler = () => {
 			priority: '0.8'
 		}))
 	);
+	const templateEntries: SitemapEntry[] = getTemplateEntries().map((template) => ({
+		path: `/templates/${template.slug}`,
+		changefreq: 'weekly',
+		priority: '0.7'
+	}));
 
-	const uniqueEntries = dedupeEntries([...staticPages, ...sectionRootEntries, ...sectionEntries]);
+	const uniqueEntries = dedupeEntries([
+		...staticPages,
+		...templateEntries,
+		...sectionRootEntries,
+		...sectionEntries
+	]);
 
 	const body =
 		`<?xml version="1.0" encoding="UTF-8"?>` +
