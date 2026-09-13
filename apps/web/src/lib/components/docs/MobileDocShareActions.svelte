@@ -249,7 +249,7 @@
 				<span class="grid place-items-center" style="grid-template-areas: 'content';">
 					{#key copyState}
 						<span
-							class="flex items-center gap-2 text-foreground will-change-transform"
+							class="flex items-center gap-2 font-medium tracking-normal text-foreground will-change-transform motion-reduce:will-change-auto"
 							style="grid-area: content;"
 							in:fly={{ y: 20, duration: 300, easing: backOut }}
 							out:fly={{ y: -20, duration: 200, easing: backOut }}
@@ -315,7 +315,7 @@
 								target="_blank"
 								rel="external"
 								role="menuitem"
-								class="group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-medium tracking-normal text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
+								class="focus-ring group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-medium tracking-normal text-foreground-muted transition-[color,background-color,box-shadow] outline-none hover:bg-background-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset motion-reduce:transition-none"
 							>
 								<svg
 									role="img"
@@ -340,7 +340,7 @@
 								target="_blank"
 								rel="external"
 								role="menuitem"
-								class="group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-medium tracking-normal text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
+								class="focus-ring group flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm font-medium tracking-normal text-foreground-muted transition-[color,background-color,box-shadow] outline-none hover:bg-background-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset motion-reduce:transition-none"
 							>
 								<svg
 									role="img"
