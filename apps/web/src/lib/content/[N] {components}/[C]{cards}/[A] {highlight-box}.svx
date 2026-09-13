@@ -1,0 +1,87 @@
+---
+title: Подсвеченный блок
+description: Контейнер с подсветкой для акцентирования внимания на важном контенте.
+keywords: 'Opensophy, Подсвеченный блок, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import HighlightBox from '$lib/components/ui-registry/HighlightBox.svelte';
+	import { HighlightBoxSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'boolean',
+			name: 'active',
+			label: 'Активен',
+			defaultValue: true
+		}
+	];
+</script>
+
+# Подсвеченный блок
+
+Контейнер с подсветкой для акцентирования внимания на важном контенте. При активном состоянии использует акцентный цвет темы.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'HighlightBox.svelte', code: HighlightBoxSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="w-full max-w-md">
+			<HighlightBox active={values.active as boolean}>
+				<p class="text-sm text-foreground">Это важный контент, который нужно подсветить.</p>
+			</HighlightBox>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Примеры использования
+
+### Активное состояние
+
+<HighlightBox active={true}>
+	<p class="text-sm text-foreground">Важное уведомление с акцентной подсветкой.</p>
+</HighlightBox>
+
+```svelte
+<HighlightBox active={true}>
+	<p>Важное уведомление с акцентной подсветкой.</p>
+</HighlightBox>
+```
+
+### Неактивное состояние
+
+<HighlightBox active={false}>
+	<p class="text-sm text-foreground-muted">Обычный блок без подсветки.</p>
+</HighlightBox>
+
+```svelte
+<HighlightBox active={false}>
+	<p>Обычный блок без подсветки.</p>
+</HighlightBox>
+```
+
+### Сложный контент
+
+<HighlightBox active={true}>
+	<h4 class="mb-2 text-sm font-medium text-foreground">Заголовок</h4>
+	<p class="text-sm text-foreground-muted">Описание с дополнительной информацией и деталями.</p>
+</HighlightBox>
+
+```svelte
+<HighlightBox active={true}>
+	<h4>Заголовок</h4>
+	<p>Описание с дополнительной информацией.</p>
+</HighlightBox>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `active` | `boolean` | `false` | Активное состояние с акцентной подсветкой |
+| `class` | `string` | — | Дополнительные классы |

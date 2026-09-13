@@ -1,0 +1,107 @@
+---
+title: Бегущая строка
+description: Анимированная бегущая строка с поддержкой скорости прокрутки и направления.
+keywords: 'Opensophy, Бегущая строка, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Marquee from '$lib/components/ui-registry/Marquee.svelte';
+	import { MarqueeSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'duration',
+			label: 'Длительность (с)',
+			defaultValue: 8,
+			min: 2,
+			max: 20,
+			step: 1
+		},
+		{
+			type: 'number',
+			name: 'gap',
+			label: 'Отступ (px)',
+			defaultValue: 32,
+			min: 8,
+			max: 64,
+			step: 8
+		},
+		{
+			type: 'boolean',
+			name: 'reversed',
+			label: 'Обратное направление',
+			defaultValue: false
+		}
+	];
+</script>
+
+# Бегущая строка
+
+Бесконечно прокручиваемая бегущая строка с поддержкой любого контента. Использует GSAP для плавной анимации и реагирует на скорость прокрутки страницы.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'Marquee.svelte', code: MarqueeSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="w-full overflow-hidden rounded-lg bg-background-inset py-4">
+			<Marquee
+				duration={values.duration as number}
+				gap={values.gap as number}
+				reversed={values.reversed as boolean}
+			>
+				<span class="whitespace-nowrap text-sm font-medium text-foreground">Дизайн</span>
+				<span class="whitespace-nowrap text-sm font-medium text-foreground">Разработка</span>
+				<span class="whitespace-nowrap text-sm font-medium text-foreground">Анимации</span>
+				<span class="whitespace-nowrap text-sm font-medium text-foreground">Интерфейсы</span>
+			</Marquee>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовая бегущая строка
+
+```svelte
+<Marquee>
+	<span>Пункт 1</span>
+	<span>Пункт 2</span>
+	<span>Пункт 3</span>
+</Marquee>
+```
+
+### С изображениями
+
+```svelte
+<Marquee gap={48} duration={10}>
+	<img src="/logo1.svg" alt="Logo 1" class="h-12" />
+	<img src="/logo2.svg" alt="Logo 2" class="h-12" />
+	<img src="/logo3.svg" alt="Logo 3" class="h-12" />
+</Marquee>
+```
+
+### Обратное направление
+
+```svelte
+<Marquee reversed={true}>
+	<span>Прокрутка справа налево</span>
+</Marquee>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `duration` | `number` | `5` | Длительность одного цикла в секундах |
+| `gap` | `number` | `32` | Расстояние между элементами в пикселях |
+| `repeat` | `number` | `3` | Количество повторений контента |
+| `reversed` | `boolean` | `false` | Обратное направление прокрутки |
+| `velocity` | `number` | `0.5` | Множитель скорости от прокрутки |
+| `scrollElement` | `string \| HTMLElement \| null` | — | Элемент для отслеживания прокрутки |
+| `class` | `string` | — | Дополнительные классы |

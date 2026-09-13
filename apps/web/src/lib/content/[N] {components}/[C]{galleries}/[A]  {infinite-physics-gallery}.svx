@@ -1,0 +1,165 @@
+---
+title: Бесконечная физическая галерея
+description: Галерея с физикой инерции и бесконечной прокруткой.
+keywords: 'Opensophy, Бесконечная физическая галерея, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import InfinitePhysicsGallery from '$lib/components/ui-registry/InfinitePhysicsGallery.svelte';
+	import { InfinitePhysicsGallerySource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+	import type { InfinitePhysicsGalleryItem } from '$lib/components/ui-registry/InfinitePhysicsGallery.types';
+
+	const items: InfinitePhysicsGalleryItem[] = [
+		{ type: 'image', image: { src: 'https://habrastorage.org/r/w1560/getpro/habr/upload_files/a29/091/152/a2909115275f79c8875cf6cff7883390.png', alt: 'Image 1' } },
+		{ type: 'image', image: { src: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/3ec/0cf/dd2/3ec0cfdd29d3d793f9d00bf0e08be589.jpg', alt: 'Image 2' } },
+		{ type: 'image', image: { src: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/6f2/748/9f8/6f27489f8cce5207d5c32afde5ca41de.jpeg', alt: 'Image 3' } },
+		{ type: 'image', image: { src: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/ad8/e34/e2b/ad8e34e2bd9be3570741b3eae9881711.jpeg', alt: 'Image 4' } },
+	];
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'cellWidth',
+			label: 'Ширина (px)',
+			defaultValue: 200,
+			min: 100,
+			max: 400,
+			step: 20
+		},
+		{
+			type: 'number',
+			name: 'cellHeight',
+			label: 'Высота (px)',
+			defaultValue: 250,
+			min: 150,
+			max: 500,
+			step: 25
+		},
+		{
+			type: 'number',
+			name: 'gap',
+			label: 'Отступ (px)',
+			defaultValue: 20,
+			min: 10,
+			max: 40,
+			step: 5
+		}
+	];
+</script>
+
+# Бесконечная физическая галерея
+
+Галерея изображений/видео с физикой инерции, поддержкой drag-прокрутки и бесконечным повторением контента.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'InfinitePhysicsGallery.svelte', code: InfinitePhysicsGallerySource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="h-[300px] w-full overflow-hidden rounded-lg bg-background-inset">
+			<InfinitePhysicsGallery
+				items={items}
+				cellWidth={values.cellWidth as number}
+				cellHeight={values.cellHeight as number}
+				gap={values.gap as number}
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### С изображениями (локальные файлы)
+
+```svelte
+<script>
+	import InfinitePhysicsGallery from '$lib/components/ui-registry/InfinitePhysicsGallery.svelte';
+
+	const items = [
+		{ type: 'image', image: { src: '/photo1.jpg', alt: 'Photo 1' } },
+		{ type: 'image', image: { src: '/photo2.jpg', alt: 'Photo 2' } },
+		{ type: 'image', image: { src: '/photo3.jpg', alt: 'Photo 3' } }
+	];
+</script>
+
+<div class="h-[400px] w-full">
+	<InfinitePhysicsGallery items={items} />
+</div>
+```
+
+### С изображениями по ссылкам (URL)
+
+```svelte
+<script>
+	import InfinitePhysicsGallery from '$lib/components/ui-registry/InfinitePhysicsGallery.svelte';
+
+	const items = [
+		{ type: 'image', image: { src: 'ссылка1', alt: 'Image 1' } },
+		{ type: 'image', image: { src: 'ссылка2', alt: 'Image 2' } },
+		{ type: 'image', image: { src: 'ссылка3', alt: 'Image 3' } }
+	];
+</script>
+
+<div class="h-[400px] w-full">
+	<InfinitePhysicsGallery items={items} />
+</div>
+```
+
+### С видео
+
+```svelte
+<script>
+	const items = [
+		{ type: 'video', video: { src: '/video1.mp4' } },
+		{ type: 'video', video: { src: '/video2.mp4' } },
+		{ type: 'image', image: { src: 'ссылка1', alt: 'Photo' } }
+	];
+</script>
+
+<InfinitePhysicsGallery items={items} cellWidth={300} cellHeight={400} />
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `items` | `InfinitePhysicsGalleryItem[]` | `[]` | Массив элементов галереи |
+| `cellWidth` | `number` | `320` | Ширина ячейки (px) |
+| `cellHeight` | `number` | `400` | Высота ячейки (px) |
+| `gap` | `number` | `24` | Отступ между ячейками (px) |
+| `friction` | `number` | `0.95` | Коэффициент трения инерции |
+| `cellClass` | `string` | — | Классы для ячейки |
+| `scrollSettings` | `ScrollSettings` | — | Настройки прокрутки |
+| `class` | `string` | — | Дополнительные классы |
+
+### ScrollSettings
+
+```typescript
+interface ScrollSettings {
+	wheelSpeed?: number;      // default: 2
+	friction?: number;        // default: 0.95
+	edgeThreshold?: number;   // default: 100
+	edgeScrollSpeed?: number; // default: 2
+}
+```
+
+### InfinitePhysicsGalleryItem
+
+```typescript
+type InfinitePhysicsGalleryItem =
+	| { type: 'image'; image: { src: string; alt?: string } }
+	| { type: 'video'; video: { src: string } };
+```
+
+Поле `src` принимает как локальные пути (`/images/photo.jpg`), так и внешние URL (`ссылка/...`).
+
+## Взаимодействие
+
+- **Drag & Drop** — перетаскивание для прокрутки
+- **Колёсико мыши** — прокрутка с инерцией
+- **Края экрана** — автопрокрутка при наведении на края
+- **Touch** — поддержка сенсорных устройств

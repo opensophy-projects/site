@@ -1,0 +1,153 @@
+---
+title: Плавающее меню
+description: Анимированная навигационная панель с раскрывающимися группами ссылок, плавным раскрытием на GSAP и слотами для брендинга и действий.
+keywords: 'Opensophy, Плавающее меню, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import FloatingMenuDemo from '$lib/components/ui/FloatingMenuDemo.svelte';
+	import floatingMenuDemoSource from '$lib/components/ui/FloatingMenuDemo.svelte?raw';
+	import { brandingConfig } from '$lib/config/branding';
+
+	const menuGroups = [
+		{
+			title: 'Продукты',
+			links: [
+				{ label: 'Документация', href: '/docs' },
+				{ label: 'Компоненты', href: '/components' },
+				{ label: 'Шаблоны', href: '/templates' }
+			]
+		},
+		{
+			title: 'Услуги',
+			variant: 'muted' as const,
+			links: [
+				{ label: 'Безопасность', href: '/service-policy' },
+				{ label: 'Автоматизация', href: '/mtls' },
+				{ label: 'Инфраструктура', href: '/dokploy' }
+			]
+		},
+		{
+			title: 'Ресурсы',
+			links: [
+				{ label: 'База знаний', href: '/article/general' },
+				{ label: 'Статус проектов', href: '/status' },
+				{ label: 'Как я работаю', href: '/service-policy' }
+			]
+		}
+	];
+</script>
+
+# Плавающее меню
+
+`FloatingMenuDemo` — анимированная навигационная панель. Нажмите кнопку «Menu» слева, чтобы раскрыть сетку групп ссылок с плавной анимацией на GSAP: контейнер расширяется, затемнение появляется, а строки ссылок выезжают по очереди.
+
+## Интерактивное превью
+
+Нажмите «Menu», чтобы открыть панель. Нажмите ещё раз, нажмите на затемнённую область или клавишу `Escape`, чтобы закрыть.
+
+<ComponentPreview
+	sources={[{ name: 'FloatingMenuDemo.svelte', code: floatingMenuDemoSource, language: 'svelte' }]}
+	class="min-h-[30rem]"
+>
+	<div
+		id="floating-menu-demo-preview"
+		class="relative h-[30rem] w-full overflow-hidden rounded-lg bg-background-inset"
+		style="transform: translateZ(0);"
+	>
+		<FloatingMenuDemo
+			menuGroups={menuGroups}
+			portalTarget="#floating-menu-demo-preview"
+			primaryButton={{ label: 'Начать', href: '/docs' }}
+			secondaryButton={{ label: 'Услуги', href: '/service-policy' }}
+		>
+			{#snippet logo()}
+				<img
+					src={brandingConfig.logo}
+					alt={brandingConfig.name}
+					class="h-6 w-auto"
+				/>
+				<span class="font-medium tracking-tight text-foreground">{brandingConfig.name}</span>
+			{/snippet}
+		</FloatingMenuDemo>
+	</div>
+</ComponentPreview>
+
+## Как устроено
+
+- `menuGroups` задаёт группы ссылок. Каждая группа содержит `title`, массив `links` и опциональный `variant: "muted"` для группы с фоном.
+- `logo` — сниппет брендинга по центру шапки.
+- `primaryButton` и `secondaryButton` добавляют кнопки-ссылки в правую часть шапки.
+- `classes` позволяет переопределить стили отдельных областей без изменения компонента.
+- `portalTarget` указывает, куда переносится меню через портал. По умолчанию — `"body"`; для встраивания в ограниченный контейнер передайте CSS-селектор.
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import FloatingMenuDemo from '$lib/components/ui/FloatingMenuDemo.svelte';
+
+	const menuGroups = [
+		{
+			title: 'Продукты',
+			links: [
+				{ label: 'Документация', href: '/docs' },
+				{ label: 'Компоненты', href: '/components' }
+			]
+		},
+		{
+			title: 'Ресурсы',
+			variant: 'muted',
+			links: [
+				{ label: 'База знаний', href: '/article' },
+				{ label: 'Статус', href: '/status' }
+			]
+		}
+	];
+</script>
+
+<FloatingMenuDemo
+	menuGroups={menuGroups}
+	primaryButton={{ label: 'Начать', href: '/docs' }}
+>
+	{#snippet logo()}
+		<span>Мой проект</span>
+	{/snippet}
+</FloatingMenuDemo>
+```
+
+## Пропсы
+
+| Пропс | Тип | Описание |
+| --- | --- | --- |
+| `menuGroups` | `MenuGroup[]` | Группы ссылок для отображения в меню |
+| `logo` | `Snippet` | Брендинг по центру шапки |
+| `primaryButton` | `MenuButton` | Основная кнопка-ссылка (акцентный цвет) |
+| `secondaryButton` | `MenuButton` | Вторая кнопка-ссылка (скрыта на мобильном) |
+| `classes` | `FloatingMenuClasses` | Классы для отдельных областей меню |
+| `portalTarget` | `HTMLElement \| string` | Куда переносится меню через портал (по умолчанию `"body"`) |
+| `class` | `string` | Дополнительный класс корневого элемента |
+
+## Структура `MenuGroup`
+
+```typescript
+type MenuGroup = {
+	title: string;
+	variant?: "default" | "muted";
+	links: { label: string; href: string }[];
+};
+```
+
+`variant: "muted"` добавляет группе фоновый цвет, чтобы визуально выделить её среди остальных.
+
+## Анимация
+
+Меню использует GSAP для анимации раскрытия: контейнер плавно расширяется, появляется затемнение, линии гамбургера превращаются в крестик, а строки ссылок выезжают снизу с поэтапной задержкой. Анимация реверсируется при закрытии — все шаги проигрываются в обратном порядке.
+
+## Поведение и доступность
+
+- Меню открывается и закрывается нажатием на кнопку «Menu».
+- Нажатие `Escape` или клик по затемнённой области закрывает меню.
+- Адаптивная раскладка: на мобильном меню раскрывается на всю ширину, на планшете и десктопе — по центру с ограничением ширины.
+- Все интерактивные элементы доступны с клавиатуры.
