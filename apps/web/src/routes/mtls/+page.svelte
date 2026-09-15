@@ -18,7 +18,7 @@
     ],
     [
       "CRL/OCSP — оверинжиниринг",
-      "Поднимать инфраструктуру списков отзыва ради 5–20 клиентских сертификатов — избыточно.",
+      "Поднимать инфраструктуру списков отзыва ради 5–20 клиентских сертификатов — избыточно. crl.pem остаётся лишь дополнительным артефактом для внешних потребителей.",
     ],
     [
       "Ручное управление не масштабируется",
@@ -41,32 +41,23 @@
     ],
     [
       "Traefik + Docker Compose",
-      "Совместим из коробки, есть пресеты Dokploy, Traefik и локальный.",
+      "Работает с shared или per-service CA bundle, hot-reload через file provider.",
     ],
   ];
 
   const features = [
-    ["CLI + TUI", "Команды и интерактивный режим для ежедневных операций."],
-    ["Контроль доступа", "Выпуск, отзыв и изоляция клиентов по сервисам."],
-    [
-      "Журнал аудита",
-      "История действий: кто, когда и зачем выпускал сертификат.",
-    ],
-    ["Шифрование ключа CA", "Защита приватного ключа корневого центра."],
-    [
-      "Bundle per-service",
-      "Отдельные bundle-файлы для разных сервисов Traefik.",
-    ],
-    ["Webhook-уведомления", "События можно отправлять во внешние системы."],
-    ["Backup / Restore", "Резервное копирование и восстановление состояния."],
-    [
-      "Продление сертификатов",
-      "Обновление клиентских сертификатов без ручного OpenSSL.",
-    ],
-    ["Проверка цепочки", "Валидация Root CA → Int-CA → client.crt."],
-    ["Валидация YAML", "Проверка конфигурации перед применением."],
+    ["Управление CA", "ca create / info / backup / restore — свой корневой центр сертификации."],
+    ["Жизненный цикл сертификатов", "cert issue / list / renew / verify / scan — без ручного OpenSSL."],
+    ["Мгновенный отзыв", "cert revoke пересобирает CA bundle, доступ блокируется без reload Traefik."],
+    ["Защищённые PKCS#12", "Клиентские .p12-файлы и зашифрованный приватный ключ CA."],
+    ["Shared / per-service bundle", "Общий bundle или отдельный на сервис — гибкая изоляция клиентов."],
+    ["Сервисы new / patch", "service add / list / delete / delete-full с двумя режимами применения."],
+    ["Именованные пресеты", "preset save / apply / list / delete — сохранённые наборы путей и конфигурации."],
+    ["JSONL-аудит с ротацией", "История действий: кто, когда и зачем выпускал или отзывал сертификат."],
+    ["Безопасные пароли", "Пароль OpenSSL передаётся через временный файл 0600, а не через argv/history."],
+    ["Safe-replace конфигурации", "Traefik YAML валидируется перед заменой, исходник сохраняется как .bak."],
     ["Блокировка БД", "flock защищает состояние от конкурентных запусков."],
-    ["Удаление сервиса", "Полная очистка service bundle и связанных записей."],
+    ["CI", "Bash syntax check, ShellCheck, smoke- и security-тесты на каждый push/PR."],
   ];
 
   const requirements = [
@@ -74,26 +65,26 @@
     ["python3", "служебная обработка данных"],
     ["bash ≥4", "исполнение CLI-скрипта"],
     ["flock", "безопасная блокировка БД"],
-    ["curl*", "опциональные webhook-уведомления"],
-    ["ip*", "опциональная диагностика окружения"],
+    ["gzip", "ротация audit-лога"],
+    ["root (UID 0)", "работа с приватным ключевым материалом CA и клиентов"],
   ];
 
   const faqItems = [
     {
       question: "Нужен ли root?",
-      answer: "Обычно да, но есть локальный пресет без sudo [бета].",
+      answer: "Да, всегда — скрипт создаёт и читает приватные ключи CA и клиентов, поэтому требует UID 0 (sudo или root-shell).",
     },
     {
-      question: "Поддерживается ли ECDSA?",
-      answer: "Нет, только RSA — это известное ограничение.",
+      question: "Как передать пароль сертификата?",
+      answer: "Через интерактивный режим или временный файл с правами 0600 — не через --pass в production, иначе значение может попасть в history или process list.",
     },
     {
       question: "Что будет, если Traefik перезагрузить?",
-      answer: "Ничего: hot-reload работает через file provider.",
+      answer: "Ничего: hot-reload работает через file provider, пересборка bundle подхватывается автоматически.",
     },
     {
       question: "Как отозвать доступ клиенту?",
-      answer: "Командой cert revoke, эффект мгновенный.",
+      answer: "Командой cert revoke — она пересобирает CA bundle, эффект мгновенный, reload Traefik не требуется.",
     },
     {
       question: "Лицензия?",
@@ -126,14 +117,14 @@
       </h1>
       <p class="max-w-3xl text-lg text-foreground-muted md:text-xl">
         Bash-скрипт, который выпускает, продлевает и мгновенно отзывает
-        клиентские сертификаты — без перезагрузки Traefik.
+        клиентские сертификаты — без перезагрузки Traefik, без передачи паролей через argv и без сетевых уведомлений.
       </p>
       <div class="flex flex-wrap justify-center gap-3">
         <Button href={githubUrl}>Открыть на GitHub</Button>
       </div>
       <div class="flex flex-wrap justify-center gap-2">
         <Badge>MIT License</Badge><Badge>Bash + OpenSSL + Python3</Badge><Badge
-          >v2.0</Badge
+          >Требует root</Badge
         >
       </div>
     </div>
@@ -149,26 +140,26 @@
   <section class="section-block w-full max-w-5xl px-4">
     <p class="section-overline">Как работает</p>
     <h2 class="section-heading">
-      Один промежуточный CA на клиента + bundle-файл
+      CA bundle на сервис + мгновенная пересборка при отзыве
     </h2>
     <div class="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
       <div class="space-y-4 text-foreground-muted">
         <p>
-          Каждому клиенту создаётся свой промежуточный CA, подписанный корневым.
-          Traefik доверяет не клиентским сертификатам напрямую, а bundle-файлу с
-          промежуточными CA активных клиентов.
+          Traefik доверяет не клиентским сертификатам напрямую, а bundle-файлу
+          (caFiles) — общему или отдельному для каждого сервиса. Скрипт
+          управляет содержимым bundle: выпуск клиента добавляет запись, отзыв
+          — удаляет её и пересобирает файл.
         </p>
         <p>
-          Отзыв — это удаление промежуточного CA из bundle. File provider
-          Traefik подхватывает изменение сам, поэтому доступ блокируется
-          мгновенно и без перезагрузки.
+          File provider Traefik подхватывает изменение сам, поэтому доступ
+          блокируется мгновенно и без перезагрузки. Файл <code>crl.pem</code>
+          — дополнительный артефакт для внешних потребителей, а не основной
+          механизм отзыва.
         </p>
       </div>
       <div class="grid gap-3">
-        <div class="chain-row">
-          Root CA → Int-CA (alice) → client.crt (alice)
-        </div>
-        <div class="chain-row">Root CA → Int-CA (bob) → client.crt (bob)</div>
+        <div class="chain-row">bundle[api].caFiles ← client.crt (alice)</div>
+        <div class="chain-row">bundle[api].caFiles ← client.crt (bob)</div>
       </div>
     </div>
     <div class="mt-6 grid gap-3 md:grid-cols-3">
@@ -205,7 +196,7 @@
     </div>
     <p class="mt-4 text-center text-foreground-muted">
       <strong class="text-foreground"
-        >Проверено на Ubuntu, платформа Dokploy.</strong
+        >Только Linux. Запуск строго от root — скрипт работает с приватным ключевым материалом.</strong
       >
     </p>
   </section>

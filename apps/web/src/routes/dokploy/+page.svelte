@@ -5,6 +5,8 @@
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
+  import ChevronLeft from "carbon-icons-svelte/lib/ChevronLeft.svelte";
+  import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
 
   const features = [
     [
@@ -92,7 +94,17 @@
     ],
 	];
 
+  const screenshots = Array.from({ length: 29 }, (_, index) => ({
+    src: `/dokploy${index + 1}.png`,
+    alt: `Интерфейс os.dokploy — скриншот ${index + 1}`,
+  }));
+
 	let earlyAccessOpen = $state(false);
+  let activeScreenshot = $state(0);
+
+  function showScreenshot(index: number) {
+    activeScreenshot = (index + screenshots.length) % screenshots.length;
+  }
 
 	function closeEarlyAccess() {
 		earlyAccessOpen = false;
@@ -156,6 +168,54 @@
       RBAC, White Labeling, mTLS — всё, что нужно для enterprise-инфраструктуры,
       входит бесплатно.
     </p>
+  </section>
+
+  <section class="section-block w-full max-w-6xl px-4">
+    <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <p class="section-overline">Интерфейс платформы</p>
+        <h2 class="section-heading mb-0">Посмотрите os.dokploy в работе</h2>
+      </div>
+      <p class="text-sm text-foreground-muted">{activeScreenshot + 1} / {screenshots.length}</p>
+    </div>
+
+    <div class="screenshot-carousel" aria-roledescription="carousel" aria-label="Скриншоты os.dokploy">
+      <img
+        class="screenshot-carousel-image"
+        src={screenshots[activeScreenshot].src}
+        alt={screenshots[activeScreenshot].alt}
+      />
+      <button
+        type="button"
+        class="screenshot-carousel-control screenshot-carousel-control-prev"
+        aria-label="Предыдущий скриншот"
+        onclick={() => showScreenshot(activeScreenshot - 1)}
+      >
+        <ChevronLeft size={24} />
+      </button>
+      <button
+        type="button"
+        class="screenshot-carousel-control screenshot-carousel-control-next"
+        aria-label="Следующий скриншот"
+        onclick={() => showScreenshot(activeScreenshot + 1)}
+      >
+        <ChevronRight size={24} />
+      </button>
+    </div>
+
+    <div class="screenshot-thumbnails" aria-label="Выбор скриншота">
+      {#each screenshots as screenshot, index (screenshot.src)}
+        <button
+          type="button"
+          class:active={activeScreenshot === index}
+          aria-label={`Показать скриншот ${index + 1}`}
+          aria-current={activeScreenshot === index ? "true" : undefined}
+          onclick={() => showScreenshot(index)}
+        >
+          <img src={screenshot.src} alt="" loading="lazy" />
+        </button>
+      {/each}
+    </div>
   </section>
 
   <section class="section-block w-full max-w-5xl px-4">
@@ -282,6 +342,86 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--foreground-muted);
+  }
+  .screenshot-carousel {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl, 1rem);
+    background: var(--background-inset);
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
+  }
+  .screenshot-carousel-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: contain;
+    background: #111;
+  }
+  .screenshot-carousel-control {
+    position: absolute;
+    top: 50%;
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    transform: translateY(-50%);
+    border: 1px solid rgb(255 255 255 / 0.3);
+    border-radius: 9999px;
+    background: rgb(17 17 17 / 0.75);
+    color: #fff;
+    cursor: pointer;
+    transition: transform 150ms ease-out, background-color 150ms ease-out;
+  }
+  .screenshot-carousel-control:hover {
+    background: rgb(17 17 17 / 0.95);
+  }
+  .screenshot-carousel-control:focus-visible,
+  .screenshot-thumbnails button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+  .screenshot-carousel-control:active {
+    transform: translateY(-50%) scale(0.94);
+  }
+  .screenshot-carousel-control-prev { left: 1rem; }
+  .screenshot-carousel-control-next { right: 1rem; }
+  .screenshot-thumbnails {
+    display: flex;
+    gap: 0.625rem;
+    overflow-x: auto;
+    padding: 1rem 0.25rem 0.25rem;
+    scrollbar-width: thin;
+  }
+  .screenshot-thumbnails button {
+    flex: 0 0 5rem;
+    overflow: hidden;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: var(--radius-md, 0.375rem);
+    background: var(--background-muted);
+    cursor: pointer;
+    opacity: 0.65;
+    transition: border-color 150ms ease-out, opacity 150ms ease-out;
+  }
+  .screenshot-thumbnails button:hover,
+  .screenshot-thumbnails button.active {
+    border-color: var(--accent);
+    opacity: 1;
+  }
+  .screenshot-thumbnails img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+  }
+  @media (max-width: 640px) {
+    .screenshot-carousel-control {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+    .screenshot-carousel-control-prev { left: 0.5rem; }
+    .screenshot-carousel-control-next { right: 0.5rem; }
   }
   .section-heading {
     margin: 0 0 1.5rem;
