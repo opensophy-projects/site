@@ -89,24 +89,23 @@ keywords: 'Opensophy, AsciiSweep, UI, UI components, библиотека ком
 				glow={values.glow as number}
 				charset={values.charset as 'ascii' | 'blocks' | 'binary'}
 				class="absolute inset-0"
-				let:source let:content
 			>
-				<s:slot>
+				{#snippet children()}
 					<div class="flex h-full items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-950 dark:to-indigo-950">
 						<div class="text-center">
 							<h3 class="text-2xl font-bold text-foreground">Панель 1</h3>
 							<p class="mt-2 text-foreground-muted">Исходное содержимое</p>
 						</div>
 					</div>
-				</s:slot>
-				<s:slot>
+				{/snippet}
+				{#snippet alternate()}
 					<div class="flex h-full items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-100 dark:from-emerald-950 dark:to-teal-950">
 						<div class="text-center">
 							<h3 class="text-2xl font-bold text-foreground">Панель 2</h3>
 							<p class="mt-2 text-foreground-muted">Целевое содержимое</p>
 						</div>
 					</div>
-				</s:slot>
+				{/snippet}
 			</AsciiSweep>
 		</div>
 	{/snippet}

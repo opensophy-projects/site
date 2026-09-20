@@ -888,9 +888,9 @@ function disposeObject(root: THREE.Object3D) {
       if (!material) continue;
       for (const value of Object.values(material as Record<string, unknown>)) {
         if (!(value instanceof THREE.Texture)) continue;
-        value.dispose();
+        (value as { dispose: () => void }).dispose();
       }
-      (material as THREE.Material).dispose();
+      (material as { dispose: () => void }).dispose();
     }
   });
 }
