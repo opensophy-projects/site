@@ -896,7 +896,7 @@ function disposeObject(root: THREE.Object3D) {
         if (!(value instanceof THREE.Texture)) continue;
         value.dispose();
       }
-      (material as THREE.Material).dispose();
+      material.dispose();
     }
   });
 }
