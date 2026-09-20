@@ -4,7 +4,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-export interface AsciiObjectOptions {
+export type AsciiObjectOptions = {
   /** URL of the asset to display: GLB/glTF, SVG, PNG, JPEG, WebP, or GIF. Object URLs from a file input work too. The format is sniffed from the bytes, not the extension. */
   src?: string;
   /** Render the object as ASCII characters. Turn off to see the raw render. */
@@ -65,21 +65,21 @@ export interface AsciiObjectOptions {
   onLoad?: (() => void) | null;
   /** Called when an asset fails to load. */
   onError?: ((error: unknown) => void) | null;
-}
+};
 
-export interface AsciiObjectElements {
+export type AsciiObjectElements = {
   /** Canvas the scene renders to. */
   canvas: HTMLCanvasElement;
-}
+};
 
-export interface AsciiObjectInstance {
+export type AsciiObjectInstance = {
   /** Update options live. Changing src loads the new asset. */
   setOptions: (options: AsciiObjectOptions) => void;
   /** Re-read canvas size. Call when the element is resized. */
   resize: () => void;
   /** Stop the loop and release all GPU resources. */
   destroy: () => void;
-}
+};
 
 const PRINTABLE_ASCII = Array.from({ length: 95 }, (_, i) =>
   String.fromCharCode(32 + i),
@@ -283,20 +283,20 @@ void main() {
   }
 }`;
 
-interface FormerDef {
+type FormerDef = {
   kind: "ring" | "box";
   intensity: number;
   position: [number, number, number];
   scale: [number, number, number];
   lookAtCenter?: boolean;
   withLight?: boolean;
-}
+};
 
-const ROOM_BLOCKS: Array<{
+const ROOM_BLOCKS: {
   position: [number, number, number];
   rotation: [number, number, number];
   scale: [number, number, number];
-}> = [
+}[] = [
   {
     position: [-10.906, -1, 1.846],
     rotation: [0, -0.195, 0],
@@ -407,7 +407,7 @@ const BEVEL_SIZE = 0.006;
 const ATLAS_CELL = 64;
 const ATLAS_PAD = 8;
 const MAX_GLYPHS = 255;
-const INNER_CIRCLES: Array<[number, number]> = [
+const INNER_CIRCLES: [number, number][] = [
   [0.28, 0.26],
   [0.72, 0.14],
   [0.28, 0.56],
@@ -785,7 +785,8 @@ function buildShapes(
   }
   if (covered >= traceW * traceH * 0.995) return [rectangle()];
 
-  const rings = traceContours(inside, width, height)
+  type RingEntry = { points: number[]; area: number; depth: number };
+  const rings: RingEntry[] = traceContours(inside, width, height)
     .map((points) => simplify(points, SIMPLIFY_TOLERANCE))
     .filter((points) => points.length >= 6 && ringArea(points) >= MIN_AREA)
     .map((points) => ({ points, area: ringArea(points), depth: 0 }))
@@ -818,14 +819,14 @@ function buildShapes(
     return path;
   };
 
-  const shapes = new Map<(typeof rings)[number], THREE.Shape>();
+  const shapes = new Map<RingEntry, THREE.Shape>();
   for (const ring of rings) {
     if (ring.depth % 2 === 0)
       shapes.set(ring, new THREE.Shape(toPath(ring.points)));
   }
   for (const ring of rings) {
     if (ring.depth % 2 === 0) continue;
-    let parent: (typeof rings)[number] | null = null;
+    let parent: RingEntry | null = null;
     for (const other of rings) {
       if (other.depth !== ring.depth - 1) continue;
       if (!ringContains(other.points, ring.points[0], ring.points[1])) continue;
@@ -885,12 +886,11 @@ function disposeObject(root: THREE.Object3D) {
       : [mesh.material];
     for (const material of materials) {
       if (!material) continue;
-      for (const value of Object.values(material)) {
-        const texture = value as { dispose: () => void };
-        if (!(texture instanceof THREE.Texture)) continue;
-        texture.dispose();
+      for (const value of Object.values(material as Record<string, unknown>)) {
+        if (!(value instanceof THREE.Texture)) continue;
+        value.dispose();
       }
-      material.dispose();
+      (material as THREE.Material).dispose();
     }
   });
 }
@@ -1118,7 +1118,7 @@ export function createAsciiObject(
         standard.roughness =
           config.roughness >= 0
             ? config.roughness
-            : standard.userData.baseRoughness;
+            : (standard.userData.baseRoughness as number);
       }
     });
   }
@@ -1329,7 +1329,7 @@ export function createAsciiObject(
   observer.observe(canvas);
   resize();
   applyOptions();
-  loadAsset();
+  void loadAsset();
 
   let inView = true;
   let loopRunning = false;
@@ -1426,7 +1426,7 @@ export function createAsciiObject(
       }
       applyOptions();
       resize();
-      loadAsset();
+      void loadAsset();
       startLoop();
     },
     resize,
@@ -1459,9 +1459,9 @@ export function createAsciiObject(
 <script lang="ts">
   import { onMount } from "svelte";
 
-  interface Props extends AsciiObjectOptions {
+  type Props = AsciiObjectOptions & {
     class?: string;
-  }
+  };
 
   let { class: className = "", ...options }: Props = $props();
 
