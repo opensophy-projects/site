@@ -1,8 +1,10 @@
 <script module lang="ts">
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { SvelteMap, SvelteSet } from "svelte/reactivity";
 
 export type AsciiObjectOptions = {
   /** URL of the asset to display: GLB/glTF, SVG, PNG, JPEG, WebP, or GIF. Object URLs from a file input work too. The format is sniffed from the bytes, not the extension. */
@@ -421,7 +423,7 @@ function clampAspect(aspect: number) {
 }
 
 function buildGlyphList(charset: string) {
-  const seen = new Set<string>([" "]);
+  const seen = new SvelteSet<string>([" "]);
   const glyphs = [" "];
   for (const ch of charset) {
     if (glyphs.length >= MAX_GLYPHS) break;
@@ -447,8 +449,8 @@ function glyphShapes(
     const originX = (g % cols) * padW + ATLAS_PAD;
     const originY = Math.floor(g / cols) * padH + ATLAS_PAD;
     for (let c = 0; c < 6; c++) {
-      const cx = INNER_CIRCLES[c][0] * cellW;
-      const cy = INNER_CIRCLES[c][1] * cellH;
+      const cx = INNER_CIRCLES[c]![0] * cellW;
+      const cy = INNER_CIRCLES[c]![1] * cellH;
       let sum = 0;
       let total = 0;
       for (let y = Math.floor(cy - radius); y <= Math.ceil(cy + radius); y++) {
@@ -469,7 +471,7 @@ function glyphShapes(
           )
             continue;
           sum +=
-            image.data[((originY + y) * image.width + originX + x) * 4 + 3];
+            image.data[((originY + y) * image.width + originX + x) * 4 + 3] ?? 0;
         }
       }
       vectors[g * 6 + c] = total ? sum / (total * 255) : 0;
@@ -478,10 +480,13 @@ function glyphShapes(
   for (let c = 0; c < 6; c++) {
     let peak = 0;
     for (let g = 0; g < count; g++) {
-      peak = Math.max(peak, vectors[g * 6 + c]);
+      peak = Math.max(peak, vectors[g * 6 + c] ?? 0);
     }
     if (peak > 0) {
-      for (let g = 0; g < count; g++) vectors[g * 6 + c] /= peak;
+      for (let g = 0; g < count; g++) {
+        const idx = g * 6 + c;
+        vectors[idx] = (vectors[idx] ?? 0) / peak;
+      }
     }
   }
   return vectors;
@@ -594,10 +599,10 @@ function traceContours(inside: Uint8Array, width: number, height: number) {
     for (let x = 0; x < width - 1; x++) {
       const base = y * width + x;
       const code =
-        inside[base] |
-        (inside[base + 1] << 1) |
-        (inside[base + width + 1] << 2) |
-        (inside[base + width] << 3);
+        (inside[base] ?? 0) |
+        ((inside[base + 1] ?? 0) << 1) |
+        ((inside[base + width + 1] ?? 0) << 2) |
+        ((inside[base + width] ?? 0) << 3);
       if (code === 0 || code === 15) continue;
       const top = x + 0.5;
       const right = y + 0.5;
@@ -638,9 +643,9 @@ function traceContours(inside: Uint8Array, width: number, height: number) {
 
   const count = segments.length / 4;
   const stride = width * 2 + 1;
-  const ends = new Map<number, number[]>();
+  const ends = new SvelteMap<number, number[]>();
   const keyAt = (index: number) =>
-    segments[index * 2 + 1] * 2 * stride + segments[index * 2] * 2;
+    (segments[index * 2 + 1] ?? 0) * 2 * stride + (segments[index * 2] ?? 0) * 2;
   for (let i = 0; i < count; i++) {
     for (const end of [i * 2, i * 2 + 1]) {
       const key = keyAt(end);
@@ -656,14 +661,14 @@ function traceContours(inside: Uint8Array, width: number, height: number) {
     if (used[start]) continue;
     const points: number[] = [];
     let current = start;
-    let x = segments[start * 4];
-    let y = segments[start * 4 + 1];
+    let x = segments[start * 4] ?? 0;
+    let y = segments[start * 4 + 1] ?? 0;
     while (current >= 0 && !used[current]) {
       used[current] = 1;
       const head = current * 4;
       const forward = segments[head] === x && segments[head + 1] === y;
-      x = forward ? segments[head + 2] : segments[head];
-      y = forward ? segments[head + 3] : segments[head + 1];
+      x = forward ? (segments[head + 2] ?? 0) : (segments[head] ?? 0);
+      y = forward ? (segments[head + 3] ?? 0) : (segments[head + 1] ?? 0);
       points.push(x, y);
       const bucket = ends.get(y * 2 * stride + x * 2);
       let next = -1;
@@ -691,19 +696,19 @@ function simplify(points: number[], tolerance: number) {
   const stack = [0, count - 1];
   const toleranceSq = tolerance * tolerance;
   while (stack.length) {
-    const last = stack.pop() as number;
-    const first = stack.pop() as number;
+    const last = stack.pop()!;
+    const first = stack.pop()!;
     if (last - first < 2) continue;
-    const ax = points[first * 2];
-    const ay = points[first * 2 + 1];
-    const dx = points[last * 2] - ax;
-    const dy = points[last * 2 + 1] - ay;
+    const ax = points[first * 2] ?? 0;
+    const ay = points[first * 2 + 1] ?? 0;
+    const dx = (points[last * 2] ?? 0) - ax;
+    const dy = (points[last * 2 + 1] ?? 0) - ay;
     const lengthSq = dx * dx + dy * dy;
     let farthest = -1;
     let farthestSq = toleranceSq;
     for (let i = first + 1; i < last; i++) {
-      const px = points[i * 2] - ax;
-      const py = points[i * 2 + 1] - ay;
+      const px = (points[i * 2] ?? 0) - ax;
+      const py = (points[i * 2 + 1] ?? 0) - ay;
       const t = lengthSq > 0 ? (px * dx + py * dy) / lengthSq : 0;
       const clamped = t < 0 ? 0 : t > 1 ? 1 : t;
       const ox = px - dx * clamped;
@@ -720,7 +725,7 @@ function simplify(points: number[], tolerance: number) {
   }
   const result: number[] = [];
   for (let i = 0; i < count; i++) {
-    if (keep[i]) result.push(points[i * 2], points[i * 2 + 1]);
+    if (keep[i]) result.push(points[i * 2] ?? 0, points[i * 2 + 1] ?? 0);
   }
   return result;
 }
@@ -728,7 +733,7 @@ function simplify(points: number[], tolerance: number) {
 function ringArea(points: number[]) {
   let area = 0;
   for (let i = 0, j = points.length - 2; i < points.length; j = i, i += 2) {
-    area += (points[j] - points[i]) * (points[j + 1] + points[i + 1]);
+    area += ((points[j] ?? 0) - (points[i] ?? 0)) * ((points[j + 1] ?? 0) + (points[i + 1] ?? 0));
   }
   return Math.abs(area) / 2;
 }
@@ -736,11 +741,11 @@ function ringArea(points: number[]) {
 function ringContains(points: number[], x: number, y: number) {
   let inside = false;
   for (let i = 0, j = points.length - 2; i < points.length; j = i, i += 2) {
-    const yi = points[i + 1];
-    const yj = points[j + 1];
+    const yi = points[i + 1] ?? 0;
+    const yj = points[j + 1] ?? 0;
     if (yi > y === yj > y) continue;
     const t = (y - yi) / (yj - yi);
-    if (x < points[i] + t * (points[j] - points[i])) inside = !inside;
+    if (x < (points[i] ?? 0) + t * ((points[j] ?? 0) - (points[i] ?? 0))) inside = !inside;
   }
   return inside;
 }
@@ -778,7 +783,7 @@ function buildShapes(
   let covered = 0;
   for (let y = 0; y < traceH; y++) {
     for (let x = 0; x < traceW; x++) {
-      const on = data[(y * traceW + x) * 4 + 3] >= ALPHA_CUTOFF ? 1 : 0;
+      const on = (data[(y * traceW + x) * 4 + 3] ?? 0) >= ALPHA_CUTOFF ? 1 : 0;
       inside[(y + 1) * width + x + 1] = on;
       covered += on;
     }
@@ -787,9 +792,9 @@ function buildShapes(
 
   type RingEntry = { points: number[]; area: number; depth: number };
   const rings: RingEntry[] = traceContours(inside, width, height)
-    .map((points) => simplify(points, SIMPLIFY_TOLERANCE))
-    .filter((points) => points.length >= 6 && ringArea(points) >= MIN_AREA)
-    .map((points) => ({ points, area: ringArea(points), depth: 0 }))
+    .map((pts) => simplify(pts, SIMPLIFY_TOLERANCE))
+    .filter((pts) => pts.length >= 6 && ringArea(pts) >= MIN_AREA)
+    .map((pts) => ({ points: pts, area: ringArea(pts), depth: 0 }))
     .sort((a, b) => b.area - a.area)
     .slice(0, MAX_CONTOURS);
   if (!rings.length) return [rectangle()];
@@ -799,27 +804,27 @@ function buildShapes(
       if (
         other !== ring &&
         other.area > ring.area &&
-        ringContains(other.points, ring.points[0], ring.points[1])
+        ringContains(other.points, ring.points[0] ?? 0, ring.points[1] ?? 0)
       ) {
         ring.depth += 1;
       }
     }
   }
 
-  const toPath = (points: number[]) => {
+  const toPath = (pts: number[]) => {
     const path: THREE.Vector2[] = [];
-    for (let i = 0; i < points.length; i += 2) {
+    for (let i = 0; i < pts.length; i += 2) {
       path.push(
         new THREE.Vector2(
-          ((points[i] - 0.5) / traceW) * aspectW,
-          (1 - (points[i + 1] - 0.5) / traceH) * aspectH,
+          (((pts[i] ?? 0) - 0.5) / traceW) * aspectW,
+          (1 - ((pts[i + 1] ?? 0) - 0.5) / traceH) * aspectH,
         ),
       );
     }
     return path;
   };
 
-  const shapes = new Map<RingEntry, THREE.Shape>();
+  const shapes = new SvelteMap<RingEntry, THREE.Shape>();
   for (const ring of rings) {
     if (ring.depth % 2 === 0)
       shapes.set(ring, new THREE.Shape(toPath(ring.points)));
@@ -829,7 +834,7 @@ function buildShapes(
     let parent: RingEntry | null = null;
     for (const other of rings) {
       if (other.depth !== ring.depth - 1) continue;
-      if (!ringContains(other.points, ring.points[0], ring.points[1])) continue;
+      if (!ringContains(other.points, ring.points[0] ?? 0, ring.points[1] ?? 0)) continue;
       if (!parent || other.area < parent.area) parent = other;
     }
     const shape = parent ? shapes.get(parent) : undefined;
@@ -1087,7 +1092,8 @@ export function createAsciiObject(
       ringMaterial.color.set(config.highlight).multiplyScalar(15);
     }
     envTarget?.dispose();
-    envTarget = pmrem.fromScene(roomScene!, 0, 0.1, 1000);
+    // roomScene is guaranteed non-null after buildRoom()
+    envTarget = pmrem.fromScene(roomScene as THREE.Scene, 0, 0.1, 1000);
     scene.environment = envTarget.texture;
   }
 
@@ -1225,7 +1231,7 @@ export function createAsciiObject(
     ctx.font = `600 ${fontPx}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
     for (let g = 0; g < glyphs.length; g++) {
       ctx.fillText(
-        glyphs[g],
+        glyphs[g] ?? "",
         (g % cols) * padW + padW / 2,
         Math.floor(g / cols) * padH + padH / 2,
       );
@@ -1454,6 +1460,7 @@ export function createAsciiObject(
     },
   };
 }
+/* eslint-enable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */
 </script>
 
 <script lang="ts">
@@ -1465,10 +1472,11 @@ export function createAsciiObject(
 
   let { class: className = "", ...options }: Props = $props();
 
-  let canvasEl = $state<HTMLCanvasElement>()!;
+  let canvasEl = $state<HTMLCanvasElement | undefined>(undefined);
   let instance: AsciiObjectInstance | null = null;
 
   onMount(() => {
+    if (!canvasEl) return;
     instance = createAsciiObject({ canvas: canvasEl }, options);
     return () => {
       instance?.destroy();
