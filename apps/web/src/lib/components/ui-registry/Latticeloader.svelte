@@ -1,6 +1,4 @@
-<script lang="ts">
-  import { onDestroy } from 'svelte';
-
+<script module lang="ts">
   export type LatticeStatus = 'working' | 'done' | 'error';
   export type LatticePatternName =
     | 'arrow'
@@ -21,6 +19,10 @@
     scale?: number;
     lit?: 0.25 | 0.35 | 0.45 | 0.62;
   }
+</script>
+
+<script lang="ts">
+  import { onDestroy } from 'svelte';
 
   type ResolvedPattern = { cells: (number | null)[]; loop: number; scale: number; lit?: number };
 

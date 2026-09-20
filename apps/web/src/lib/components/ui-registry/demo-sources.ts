@@ -26,6 +26,7 @@ import FlameWrapSource from './FlameWrap.svelte?raw';
 import LiquidSource from './Liquid.svelte?raw';
 import AsciiObjectSource from './AsciiObject.svelte?raw';
 import AsciiSweepSource from './AsciiSweep.svelte?raw';
+import LatticeloaderSource from './Latticeloader.svelte?raw';
 
 export {
         ButtonSource,
@@ -56,4 +57,5 @@ export {
         LiquidSource,
         AsciiObjectSource,
         AsciiSweepSource,
+        LatticeloaderSource,
 };
