@@ -6,96 +6,8 @@ keywords: 'Opensophy, AsciiSweep, UI, UI components, библиотека ком
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import AsciiSweep from '$lib/components/ui-registry/AsciiSweep.svelte';
-	import { AsciiSweepSource } from '$lib/components/ui-registry/demo-sources';
-	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
-	import FeatureCards from '$lib/components/ui-registry/FeatureCards.svelte';
-
-	const controls: ComponentPreviewControl[] = [
-		{
-			type: 'number',
-			name: 'duration',
-			label: 'Длительность (с)',
-			defaultValue: 2,
-			min: 0.5,
-			max: 5,
-			step: 0.5
-		},
-		{
-			type: 'number',
-			name: 'band',
-			label: 'Ширина полосы',
-			defaultValue: 0.28,
-			min: 0.1,
-			max: 0.5,
-			step: 0.05
-		},
-		{
-			type: 'number',
-			name: 'scale',
-			label: 'Масштаб символа',
-			defaultValue: 2,
-			min: 1,
-			max: 4,
-			step: 1
-		},
-		{
-			type: 'color',
-			name: 'color',
-			label: 'Цвет',
-			defaultValue: '#4ade80'
-		},
-		{
-			type: 'number',
-			name: 'glow',
-			label: 'Свечение',
-			defaultValue: 2,
-			min: 0,
-			max: 3,
-			step: 0.5
-		},
-		{
-			type: 'select',
-			name: 'charset',
-			label: 'Набор символов',
-			defaultValue: 'ascii',
-			options: [
-				{ label: 'ASCII', value: 'ascii' },
-				{ label: 'Blocks', value: 'blocks' },
-				{ label: 'Binary', value: 'binary' }
-			]
-		}
-	];
-
-	const cardsSet1 = [
-		{
-			title: 'Строгие контракты',
-			description:
-				'Описывайте компоненты с жёсткой валидацией параметров, типов и зависимостей ещё до запуска в продакшен.',
-			icon: 'contracts' as const
-		},
-		{
-			title: 'Планировщик кадров',
-			description:
-				'Управляйте потоком обработки с явным порядком стадий и поведением инвалидации под конкретный сценарий.',
-			icon: 'scheduling' as const
-		}
-	];
-
-	const cardsSet2 = [
-		{
-			title: 'Диагностика ошибок',
-			description:
-				'Нормализуйте ошибки в структурированные отчёты с фрагментами исходника, подсказками и обработкой для продакшена.',
-			icon: 'diagnostics' as const
-		},
-		{
-			title: 'Безопасность',
-			description:
-				'Защитите приложения с помощью встроенных механизмов аутентификации, авторизации и шифрования данных.',
-			icon: 'security' as const
-		}
-	];
+	import AsciiSweepDemo from '$lib/components/ui-registry/AsciiSweepDemo.svelte';
+	import { AsciiSweepDemoSource } from '$lib/components/ui-registry/demo-sources';
 </script>
 
 # ASCII-сканирование
@@ -104,35 +16,13 @@ keywords: 'Opensophy, AsciiSweep, UI, UI components, библиотека ком
 
 ## Интерактивное демо
 
-Нажмите кнопку для запуска эффекта сканирования. Меняйте параметры в панели управления для настройки внешнего вида.
+Нажмите кнопку для запуска эффекта сканирования. Компонент автоматически переключается между двумя наборами карточек каждые 4 секунды.
 
 <ComponentPreview
-	controls={controls}
-	sources={[{ name: 'AsciiSweep.svelte', code: AsciiSweepSource, language: 'svelte' }]}
+	sources={[{ name: 'AsciiSweepDemo.svelte', code: AsciiSweepDemoSource, language: 'svelte' }]}
 >
-	{#snippet children(values)}
-		<div class="relative h-[400px] w-full overflow-hidden rounded-lg border border-border">
-			<AsciiSweep
-				duration={values.duration as number}
-				band={values.band as number}
-				scale={values.scale as number}
-				color={values.color as string}
-				glow={values.glow as number}
-				charset={values.charset as 'ascii' | 'blocks' | 'binary'}
-				class="absolute inset-0"
-			>
-				{#snippet children()}
-					<div class="h-full p-6">
-						<FeatureCards cards={cardsSet1} />
-					</div>
-				{/snippet}
-				{#snippet alternate()}
-					<div class="h-full p-6">
-						<FeatureCards cards={cardsSet2} />
-					</div>
-				{/snippet}
-			</AsciiSweep>
-		</div>
+	{#snippet children()}
+		<AsciiSweepDemo />
 	{/snippet}
 </ComponentPreview>
 
