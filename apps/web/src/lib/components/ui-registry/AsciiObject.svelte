@@ -1,5 +1,5 @@
 <script module lang="ts">
-/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-redundant-type-constituents */
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
@@ -449,8 +449,9 @@ function glyphShapes(
     const originX = (g % cols) * padW + ATLAS_PAD;
     const originY = Math.floor(g / cols) * padH + ATLAS_PAD;
     for (let c = 0; c < 6; c++) {
-      const cx = INNER_CIRCLES[c]![0] * cellW;
-      const cy = INNER_CIRCLES[c]![1] * cellH;
+      const [nx, ny] = INNER_CIRCLES[c] ?? [0, 0];
+      const cx = nx * cellW;
+      const cy = ny * cellH;
       let sum = 0;
       let total = 0;
       for (let y = Math.floor(cy - radius); y <= Math.ceil(cy + radius); y++) {
@@ -695,9 +696,9 @@ function simplify(points: number[], tolerance: number) {
   keep[count - 1] = 1;
   const stack = [0, count - 1];
   const toleranceSq = tolerance * tolerance;
-  while (stack.length) {
-    const last = stack.pop()!;
-    const first = stack.pop()!;
+  while (stack.length >= 2) {
+    const last = stack.pop() ?? 0;
+    const first = stack.pop() ?? 0;
     if (last - first < 2) continue;
     const ax = points[first * 2] ?? 0;
     const ay = points[first * 2 + 1] ?? 0;
@@ -1088,12 +1089,13 @@ export function createAsciiObject(
 
   function refreshEnvironment() {
     if (!roomScene) buildRoom();
+    const room = roomScene;
+    if (!room) return;
     if (ringMaterial) {
       ringMaterial.color.set(config.highlight).multiplyScalar(15);
     }
     envTarget?.dispose();
-    // roomScene is guaranteed non-null after buildRoom()
-    envTarget = pmrem.fromScene(roomScene as THREE.Scene, 0, 0.1, 1000);
+    envTarget = pmrem.fromScene(room, 0, 0.1, 1000);
     scene.environment = envTarget.texture;
   }
 
@@ -1124,7 +1126,7 @@ export function createAsciiObject(
         standard.roughness =
           config.roughness >= 0
             ? config.roughness
-            : (standard.userData.baseRoughness as number);
+            : standard.userData.baseRoughness;
       }
     });
   }
@@ -1254,15 +1256,9 @@ export function createAsciiObject(
     );
     shapeTexture.needsUpdate = true;
     postMaterial.uniforms.tAtlas.value = atlasTexture;
-    (postMaterial.uniforms.uAtlasGrid.value as THREE.Vector2).set(cols, rows);
-    (postMaterial.uniforms.uAtlasPad.value as THREE.Vector2).set(
-      ATLAS_PAD / padW,
-      ATLAS_PAD / padH,
-    );
-    (postMaterial.uniforms.uAtlasInner.value as THREE.Vector2).set(
-      cellW / padW,
-      cellH / padH,
-    );
+    postMaterial.uniforms.uAtlasGrid.value.set(cols, rows);
+    postMaterial.uniforms.uAtlasPad.value.set(ATLAS_PAD / padW, ATLAS_PAD / padH);
+    postMaterial.uniforms.uAtlasInner.value.set(cellW / padW, cellH / padH);
     cellMaterial.uniforms.tShapes.value = shapeTexture;
     cellMaterial.uniforms.uGlyphCount.value = glyphs.length;
   }
@@ -1299,13 +1295,13 @@ export function createAsciiObject(
     cellMaterial.uniforms.uInvert.value = config.invert ? 1 : 0;
     postMaterial.uniforms.uAscii.value = config.ascii ? 1 : 0;
     postMaterial.uniforms.uColored.value = config.colored ? 1 : 0;
-    (postMaterial.uniforms.uColor.value as THREE.Color).setStyle(
+    postMaterial.uniforms.uColor.value.setStyle(
       config.color || "#ffffff",
       THREE.NoColorSpace,
     );
     postMaterial.uniforms.uHasBg.value = config.background ? 1 : 0;
     if (config.background) {
-      (postMaterial.uniforms.uBackground.value as THREE.Color).setStyle(
+      postMaterial.uniforms.uBackground.value.setStyle(
         config.background,
         THREE.NoColorSpace,
       );
@@ -1460,7 +1456,7 @@ export function createAsciiObject(
     },
   };
 }
-/* eslint-enable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-redundant-type-constituents, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment */
+/* eslint-enable @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-redundant-type-constituents */
 </script>
 
 <script lang="ts">
