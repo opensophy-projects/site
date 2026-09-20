@@ -25,8 +25,6 @@ import LaserSource from './Laser.svelte?raw';
 import FlameWrapSource from './FlameWrap.svelte?raw';
 import LiquidSource from './Liquid.svelte?raw';
 import AsciiObjectSource from './AsciiObject.svelte?raw';
-import AsciiSweepSource from './AsciiSweep.svelte?raw';
-import AsciiSweepDemoSource from './AsciiSweepDemo.svelte?raw';
 import LatticeloaderSource from './Latticeloader.svelte?raw';
 
 export {
@@ -57,7 +55,5 @@ export {
 	FlameWrapSource,
 	LiquidSource,
 	AsciiObjectSource,
-	AsciiSweepSource,
-	AsciiSweepDemoSource,
 	LatticeloaderSource,
 };
