@@ -1,0 +1,242 @@
+---
+title: AsciiObject
+description: 3D-объект, рендерящийся в ASCII-символы. Поддерживает GLB/glTF, SVG, PNG, JPEG, WebP и GIF. В качестве примера используется логотип opensophy.
+keywords: 'Opensophy, AsciiObject, UI, UI components, библиотека компонентов, open-source, ASCII, 3D'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import AsciiObject from '$lib/components/ui-registry/AsciiObject.svelte';
+	import { AsciiObjectSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'boolean',
+			name: 'ascii',
+			label: 'ASCII режим',
+			defaultValue: true
+		},
+		{
+			type: 'boolean',
+			name: 'colored',
+			label: 'Цветные символы',
+			defaultValue: true
+		},
+		{
+			type: 'number',
+			name: 'cellSize',
+			label: 'Размер ячейки',
+			defaultValue: 10,
+			min: 4,
+			max: 20,
+			step: 1
+		},
+		{
+			type: 'number',
+			name: 'contrast',
+			label: 'Контраст',
+			defaultValue: 1.5,
+			min: 0.5,
+			max: 3,
+			step: 0.1
+		},
+		{
+			type: 'number',
+			name: 'exposure',
+			label: 'Экспозиция',
+			defaultValue: 1,
+			min: 0.5,
+			max: 2,
+			step: 0.1
+		},
+		{
+			type: 'boolean',
+			name: 'autoRotate',
+			label: 'Авто-вращение',
+			defaultValue: true
+		},
+		{
+			type: 'number',
+			name: 'floatIntensity',
+			label: 'Сила парения',
+			defaultValue: 2,
+			min: 0,
+			max: 5,
+			step: 0.5
+		}
+	];
+</script>
+
+# AsciiObject
+
+Компонент для отображения 3D-объектов и изображений в виде ASCII-символов. Использует Three.js для рендеринга сцены и кастомный шейдер для преобразования в символы.
+
+## Интерактивное демо
+
+В примере используется логотип opensophy. Меняйте параметры в панели управления для настройки внешнего вида.
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'AsciiObject.svelte', code: AsciiObjectSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="flex h-[400px] w-full items-center justify-center">
+			<AsciiObject
+				src="/logo.png"
+				ascii={values.ascii as boolean}
+				colored={values.colored as boolean}
+				cellSize={values.cellSize as number}
+				contrast={values.contrast as number}
+				exposure={values.exposure as number}
+				autoRotate={values.autoRotate as boolean}
+				floatIntensity={values.floatIntensity as number}
+				class="h-[350px] w-[350px]"
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовое использование с логотипом
+
+```svelte
+<AsciiObject src="/logo.png" />
+```
+
+### С настройками ASCII
+
+```svelte
+<AsciiObject
+	src="/logo.png"
+	ascii={true}
+	colored={true}
+	cellSize={10}
+	contrast={1.5}
+	exposure={1}
+/>
+```
+
+### С авто-вращением и парением
+
+```svelte
+<AsciiObject
+	src="/logo.png"
+	autoRotate={true}
+	autoRotateSpeed={2}
+	floatIntensity={2}
+	rotationIntensity={1}
+	floatSpeed={2}
+/>
+```
+
+### С камерой и орбитой
+
+```svelte
+<AsciiObject
+	src="/logo.png"
+	orbit={true}
+	zoom={false}
+	fov={65}
+	cameraDistance={4.2}
+/>
+```
+
+### С кастомным цветом
+
+```svelte
+<AsciiObject
+	src="/logo.png"
+	colored={false}
+	color="#4ade80"
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `src` | `string` | `""` | URL ассета: GLB/glTF, SVG, PNG, JPEG, WebP или GIF |
+| `ascii` | `boolean` | `true` | Рендерить как ASCII-символы |
+| `cellSize` | `number` | `10` | Высота одной символьной ячейки в CSS пикселях |
+| `cellAspect` | `number` | `0.6` | Ширина ячейки относительно высоты (0.35–1.25) |
+| `charset` | `string` | `" !\"#$%&'()*+,-./0-9:;<=>?@A-Z[\\]^_`a-z{|}~"` | Набор символов для рендерера |
+| `colored` | `boolean` | `true` | Тонировать символы цветом сцены |
+| `color` | `string` | `"#ffffff"` | Цвет символов когда `colored=false` |
+| `contrast` | `number` | `1.5` | Контраст тонального подбора символов |
+| `edgeContrast` | `number` | `3` | Сила привязки к краям объекта (1 отключает) |
+| `exposure` | `number` | `1` | Множитель яркости перед подбором символов |
+| `invert` | `boolean` | `false` | Инвертировать тона объекта |
+| `background` | `string` | `""` | Цвет фона за символами (пусто = прозрачный) |
+| `highlight` | `string` | `"#066aff"` | Акцентный цвет кольцевого света |
+| `environmentIntensity` | `number` | `1` | Яркость студийного освещения |
+| `roughness` | `number` | `-1` | Перекрытие шероховатости материалов (0–1, -1 = значение ассета) |
+| `scale` | `number` | `3` | Размер самой длинной стороны объекта |
+| `xOffset` | `number` | `0` | Горизонтальное смещение объекта |
+| `yOffset` | `number` | `0` | Вертикальное смещение объекта |
+| `floatIntensity` | `number` | `2` | Сила анимации парения (0 отключает) |
+| `rotationIntensity` | `number` | `1` | Сила покачивания при простое (0 отключает) |
+| `floatSpeed` | `number` | `2` | Скорость анимации парения и покачивания |
+| `orbit` | `boolean` | `true` | Разрешить вращение камеры перетаскиванием |
+| `zoom` | `boolean` | `false` | Разрешить зум колесом/щипком |
+| `autoRotate` | `boolean` | `false` | Вращать камеру вокруг объекта |
+| `autoRotateSpeed` | `number` | `2` | Скорость вращения при `autoRotate` |
+| `fov` | `number` | `65` | Поле зрения камеры в градусах |
+| `cameraDistance` | `number` | `4.2` | Расстояние камеры от центра объекта |
+| `dracoDecoderPath` | `string` | `"https://www.gstatic.com/draco/versioned/decoders/1.5.7/"` | URL декодера Draco |
+| `onLoad` | `() => void \| null` | `null` | Вызывается после загрузки ассета |
+| `onError` | `(error: unknown) => void \| null` | `null` | Вызывается при ошибке загрузки |
+| `class` | `string` | — | Дополнительные классы |
+
+## Instance API
+
+Компонент экспортирует методы для программного управления:
+
+```svelte
+<script lang="ts">
+	let asciiObject: import('$lib/components/ui-registry/AsciiObject.svelte').AsciiObjectInstance;
+</script>
+
+<AsciiObject bind:this={asciiObject} src="/logo.png" />
+
+<button onclick={() => asciiObject?.setOptions({ ascii: false })}>
+	Показать оригинал
+</button>
+```
+
+### Методы
+
+| Метод | Описание |
+| --- | --- |
+| `setOptions(options: AsciiObjectOptions)` | Обновить параметры на лету. Изменение `src` загружает новый ассет |
+| `resize()` | Перечитать размер канваса. Вызывать при ресайзе элемента |
+| `destroy()` | Остановить цикл и освободить GPU ресурсы |
+
+## Форматы ассетов
+
+Компонент автоматически определяет формат по байтам файла:
+
+- **GLB** — бинарный glTF (начинается с `glTF`)
+- **glTF** — JSON glTF (начинается с `{`)
+- **PNG** — начинается с `0x89 PNG`
+- **JPEG** — начинается с `0xFFD8`
+- **WebP** — начинается с `RIFF...WEBP`
+- **GIF** — начинается с `GIF8`
+- **SVG** — XML, содержащий `<svg>`
+
+## Анимации
+
+Компонент включает две встроенные анимации:
+
+1. **Парение (bob)** — вертикальное движение объекта вверх-вниз
+2. **Покачивание (rocking)** — лёгкое вращение вокруг оси Y
+
+Обе анимации используют синусоидальные волны с разными частотами для естественного движения.
+
+## Производительность
+
+- Рендеринг происходит на WebGL канвасе
+- ASCII конвертация выполняется в фрагментном шейдере
+- Для сложных 3D-моделей используйте Draco компрессию
+- Размер `cellSize` влияет на производительность: меньшие ячейки = больше символов = выше нагрузка
