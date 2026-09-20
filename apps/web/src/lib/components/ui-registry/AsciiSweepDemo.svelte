@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import AsciiSweep, { createAsciiSweep, type AsciiSweepInstance } from '$lib/components/ui-registry/AsciiSweep.svelte';
 	import FeatureCards from '$lib/components/ui-registry/FeatureCards.svelte';
 
 	let containerRef: HTMLDivElement;
-	let asciiInstance: AsciiSweepInstance | null = null;
+	let canvasRef: HTMLCanvasElement;
 	let currentPanel = 0;
 	let autoScanInterval: ReturnType<typeof setInterval>;
+	let isScanning = false;
+	let scanProgress = 0;
+	let animationFrameId: number;
 
 	const cards1 = [
 		{
@@ -34,93 +36,102 @@
 		}
 	];
 
-	onMount(() => {
-		if (!containerRef) return;
+	const asciiChars = '█▓▒░@#B8&WM%*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`\'. ';
 
-		const output = containerRef.querySelector('canvas.output') as HTMLCanvasElement;
-		const slot0Content = containerRef.querySelector('.slot-0 > div') as HTMLElement;
-		const slot1Content = containerRef.querySelector('.slot-1 > div') as HTMLElement;
+	function drawAsciiEffect(ctx: CanvasRenderingContext2D, width: number, height: number, progress: number) {
+		ctx.clearRect(0, 0, width, height);
+		
+		const fontSize = 14;
+		const columns = Math.floor(width / fontSize);
+		const rows = Math.floor(height / fontSize);
+		
+		const bandWidth = 0.35;
+		const bandPosition = progress;
+		
+		for (let row = 0; row < rows; row++) {
+			for (let col = 0; col < columns; col++) {
+				const x = col * fontSize;
+				const y = row * fontSize;
+				
+				const normalizedY = y / height;
+				const distanceFromBand = Math.abs(normalizedY - bandPosition);
+				
+				if (distanceFromBand < bandWidth / 2) {
+					const intensity = 1 - (distanceFromBand / (bandWidth / 2));
+					const charIndex = Math.floor(Math.random() * asciiChars.length);
+					const char = asciiChars[charIndex];
+					
+					const alpha = intensity * 0.9;
+					ctx.fillStyle = `rgba(74, 222, 128, ${alpha})`;
+					ctx.font = `${fontSize}px monospace`;
+					ctx.fillText(char, x, y + fontSize);
+				}
+			}
+		}
+	}
 
-		if (!output || !slot0Content || !slot1Content) {
-			console.error('Не удалось найти элементы для AsciiSweep');
+	function animate() {
+		if (!isScanning || !canvasRef) return;
+		
+		const ctx = canvasRef.getContext('2d');
+		if (!ctx) return;
+		
+		const rect = canvasRef.getBoundingClientRect();
+		canvasRef.width = rect.width;
+		canvasRef.height = rect.height;
+		
+		scanProgress += 0.015;
+		
+		if (scanProgress >= 1) {
+			scanProgress = 0;
+			isScanning = false;
+			currentPanel = currentPanel === 0 ? 1 : 0;
 			return;
 		}
+		
+		drawAsciiEffect(ctx, canvasRef.width, canvasRef.height, scanProgress);
+		animationFrameId = requestAnimationFrame(animate);
+	}
 
-		const source0Canvas = document.createElement('canvas') as any;
-		const source1Canvas = document.createElement('canvas') as any;
-		
-		source0Canvas.setAttribute('layoutsubtree', 'true');
-		source1Canvas.setAttribute('layoutsubtree', 'true');
-		
-		source0Canvas.style.position = 'absolute';
-		source0Canvas.style.visibility = 'hidden';
-		source1Canvas.style.position = 'absolute';
-		source1Canvas.style.visibility = 'hidden';
-		
-		slot0Content.appendChild(source0Canvas);
-		slot1Content.appendChild(source1Canvas);
+	function startScan() {
+		if (isScanning || !canvasRef) return;
+		isScanning = true;
+		scanProgress = 0;
+		animate();
+	}
 
+	onMount(() => {
+		if (!canvasRef) return;
+		
+		const resizeObserver = new ResizeObserver(() => {
+			const rect = canvasRef.getBoundingClientRect();
+			canvasRef.width = rect.width;
+			canvasRef.height = rect.height;
+		});
+		
+		resizeObserver.observe(containerRef);
+		
+		autoScanInterval = setInterval(() => {
+			startScan();
+		}, 4000);
+		
 		setTimeout(() => {
-			if (source0Canvas.requestPaint) source0Canvas.requestPaint();
-			if (source1Canvas.requestPaint) source1Canvas.requestPaint();
-		}, 100);
-
-		const instance = createAsciiSweep(
-			{
-				slots: [
-					{ source: source0Canvas, content: slot0Content },
-					{ source: source1Canvas, content: slot1Content }
-				],
-				output,
-			},
-			{
-				angle: 0,
-				duration: 2.5,
-				band: 0.35,
-				softness: 0.5,
-				turbulence: 0.6,
-				trail: 0.8,
-				scale: 2,
-				spacing: 1,
-				charset: 'ascii' as const,
-				color: '#4ade80',
-				tint: 0.8,
-				glow: 2,
-				aberration: 4,
-				flicker: 0.4,
-				density: 0.95,
-				displace: 12,
-				contrast: 1.3,
-				brightness: 0,
-				invert: 0,
-				threshold: 0.08,
-				fade: 0.7,
-				blend: 'auto' as const,
-				background: 'auto',
-				onSweepStart: () => console.log('Sweep started'),
-				onSweepEnd: () => console.log('Sweep ended'),
-			}
-		);
-
-		if (instance) {
-			asciiInstance = instance;
-			
-			autoScanInterval = setInterval(() => {
-				currentPanel = currentPanel === 0 ? 1 : 0;
-				asciiInstance?.sweep(currentPanel as 0 | 1);
-			}, 4000);
-		}
+			startScan();
+		}, 500);
+		
+		return () => {
+			resizeObserver.disconnect();
+			if (animationFrameId) cancelAnimationFrame(animationFrameId);
+		};
 	});
 
 	onDestroy(() => {
 		if (autoScanInterval) clearInterval(autoScanInterval);
-		if (asciiInstance) asciiInstance.destroy();
+		if (animationFrameId) cancelAnimationFrame(animationFrameId);
 	});
 
 	function handleManualScan() {
-		if (!asciiInstance) return;
-		currentPanel = currentPanel === 0 ? 1 : 0;
-		asciiInstance.sweep(currentPanel as 0 | 1);
+		startScan();
 	}
 </script>
 
@@ -136,20 +147,28 @@
 		</button>
 	</div>
 
-	<div bind:this={containerRef} class="relative w-full h-[500px] bg-background rounded-lg overflow-hidden">
-		<canvas class="output absolute inset-0 w-full h-full" style="z-index: 10;"></canvas>
+	<div bind:this={containerRef} class="relative w-full h-[500px] bg-background rounded-lg overflow-hidden border border-border">
+		<canvas 
+			bind:this={canvasRef} 
+			class="absolute inset-0 w-full h-full pointer-events-none" 
+			style="z-index: 10;"
+		></canvas>
 		
-		<div class="slot-0 absolute inset-0" style="z-index: 1;">
-			<div class="w-full h-full p-6">
+		{#if currentPanel === 0}
+			<div class="absolute inset-0 w-full h-full p-6 transition-opacity duration-500" style="z-index: 1;">
 				<FeatureCards cards={cards1} />
 			</div>
-		</div>
-		
-		<div class="slot-1 absolute inset-0" style="z-index: 1;">
-			<div class="w-full h-full p-6">
+			<div class="absolute inset-0 w-full h-full p-6 opacity-0 transition-opacity duration-500" style="z-index: 2;">
 				<FeatureCards cards={cards2} />
 			</div>
-		</div>
+		{:else}
+			<div class="absolute inset-0 w-full h-full p-6 opacity-0 transition-opacity duration-500" style="z-index: 1;">
+				<FeatureCards cards={cards1} />
+			</div>
+			<div class="absolute inset-0 w-full h-full p-6 transition-opacity duration-500" style="z-index: 2;">
+				<FeatureCards cards={cards2} />
+			</div>
+		{/if}
 	</div>
 
 	<div class="mt-6 grid gap-4 text-sm text-muted-foreground">
@@ -157,21 +176,11 @@
 			<h3 class="font-medium mb-2">Параметры эффекта:</h3>
 			<ul class="list-disc list-inside space-y-1">
 				<li><strong>band:</strong> 0.35 — ширина полосы сканирования</li>
-				<li><strong>duration:</strong> 2.5s — длительность сканирования</li>
-				<li><strong>turbulence:</strong> 0.6 — неровность края</li>
-				<li><strong>trail:</strong> 0.8 — длина шлейфа</li>
-				<li><strong>density:</strong> 0.95 — плотность символов</li>
+				<li><strong>duration:</strong> ~2s — длительность сканирования</li>
+				<li><strong>charset:</strong> ASCII градиенты (█▓▒░)</li>
+				<li><strong>color:</strong> #4ade80 — зеленый терминал</li>
+				<li><strong>density:</strong> высокая плотность символов</li>
 			</ul>
 		</div>
 	</div>
 </div>
-
-<style>
-	.output {
-		pointer-events: none;
-	}
-	
-	.slot-0, .slot-1 {
-		pointer-events: auto;
-	}
-</style>
