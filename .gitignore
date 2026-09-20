@@ -5,33 +5,7 @@ node_modules/
 # Build artifacts
 dist/
 build/
-*.js.map
-*.css.map
-
-# Cache directories
-.cache/
-.node_cache/
-.npm/
-
-# Temporary files
-*.tmp
-*.temp
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-
-# Environment
-.env
-.env.local
-*.env
-
-# Editors
-.vscode/
-.idea/
-*.swp
-*.swo
+target/
 
 # Python
 __pycache__/
@@ -39,25 +13,36 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
-*.so
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# MyPy
-.mypy_cache/
-
-# PyTest
+env/
+venv/
+.venv/
+.ENV
+.env
+.env.local
+.env.*
 .pytest_cache/
+.mypy_cache/
+.coverage
+coverage/
 
-# SvelteKit specific
-.svelte-kit/
-.output/
+# Logs
+*.log
 
-# Vite specific
-.vite/
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
 
 # Compressed files
 *.zip
