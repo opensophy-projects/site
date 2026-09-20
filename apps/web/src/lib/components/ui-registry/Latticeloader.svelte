@@ -13,12 +13,12 @@
     | 'pulse';
   export type LatticeGrid = 3 | 4;
 
-  export interface LatticePattern {
+  export type LatticePattern = {
     cells: (number | null)[];
     loop?: number;
     scale?: number;
     lit?: 0.25 | 0.35 | 0.45 | 0.62;
-  }
+  };
 </script>
 
 <script lang="ts">
@@ -27,34 +27,44 @@
   type ResolvedPattern = { cells: (number | null)[]; loop: number; scale: number; lit?: number };
 
   // ---- Static pattern data (unchanged from the React source) ----
+  const ORBIT_3: ResolvedPattern = { cells: [0, 1, 2, 7, null, 3, 6, 5, 4], loop: 8, scale: 1.2 };
+  const SWEEP_4: ResolvedPattern = {
+    cells: [0, 1, 2, 3, 1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6],
+    loop: 5,
+    scale: 1,
+    lit: 0.45
+  };
+
   const PATTERNS: Record<LatticePatternName, Partial<Record<LatticeGrid, ResolvedPattern>>> = {
     arrow: { 3: { cells: [1, 2, 3, 0, 1, 2, 1, 2, 3], loop: 7.2, scale: 1 } },
     dots: { 3: { cells: [0, 1, 2, 0, 1, 2, 0, 1, 2], loop: 3, scale: 2.4 } },
     ripple: { 3: { cells: [2, 1, 2, 1, 0, 1, 2, 1, 2], loop: 4.8, scale: 1.5 } },
     spiral: { 3: { cells: [0, 1, 2, 7, 8, 3, 6, 5, 4], loop: 9, scale: 1.2, lit: 0.35 } },
     orbit: {
-      3: { cells: [0, 1, 2, 7, null, 3, 6, 5, 4], loop: 8, scale: 1.2 },
+      3: ORBIT_3,
       4: { cells: [0, 1, 2, 3, 11, null, null, 4, 10, null, null, 5, 9, 8, 7, 6], loop: 6, scale: 1.2, lit: 0.45 }
     },
     snake: {
       3: { cells: [0, 1, 2, 5, 4, 3, 6, 7, 8], loop: 9, scale: 1, lit: 0.35 },
       4: { cells: [0, 1, 2, 3, 7, 6, 5, 4, 8, 9, 10, 11, 15, 14, 13, 12], loop: 16, scale: 1, lit: 0.25 }
     },
-    sweep: { 4: { cells: [0, 1, 2, 3, 1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6], loop: 5, scale: 1, lit: 0.45 } },
+    sweep: { 4: SWEEP_4 },
     spin: { 4: { cells: [0, 0, 1, 1, 0, 0, 1, 1, 3, 3, 2, 2, 3, 3, 2, 2], loop: 4, scale: 1.6, lit: 0.35 } },
     rain: { 4: { cells: [0, 2, 1, 3, 1, 3, 2, 4, 2, 4, 3, 5, 3, 5, 4, 6], loop: 4, scale: 1.2, lit: 0.35 } },
     pulse: { 4: { cells: [2, 1, 1, 2, 1, 0, 0, 1, 1, 0, 0, 1, 2, 1, 1, 2], loop: 2.4, scale: 2.5, lit: 0.45 } }
   };
-  const DEFAULT_PATTERN: Record<LatticeGrid, LatticePatternName> = { 3: 'orbit', 4: 'sweep' };
+  const DEFAULT_PATTERN: Record<LatticeGrid, ResolvedPattern> = { 3: ORBIT_3, 4: SWEEP_4 };
   const MARKS: Record<LatticeGrid, Record<'done' | 'error', number[]>> = {
     3: { done: [2, 3, 5, 7], error: [0, 2, 4, 6, 8] },
     4: { done: [7, 8, 10, 13], error: [0, 3, 5, 6, 9, 10, 12, 15] }
   };
 
+  const toGrid = (value: number): LatticeGrid => (value === 4 ? 4 : 3);
+
   function resolvePattern(pattern: LatticePatternName | LatticePattern, grid: LatticeGrid): ResolvedPattern {
     if (typeof pattern === 'string') {
       const named = PATTERNS[pattern];
-      return (named && named[grid]) || (PATTERNS[DEFAULT_PATTERN[grid]][grid] as ResolvedPattern);
+      return (named && named[grid]) || DEFAULT_PATTERN[grid];
     }
     const cells = Array.from({ length: grid * grid }, (_, i) => pattern.cells[i] ?? null);
     const max = Math.max(0, ...cells.filter((v) => v != null));
@@ -93,7 +103,7 @@
   export { className as class };
 
   // ---- Derived pattern data ----
-  $: n = (grid === 4 ? 4 : 3) as LatticeGrid;
+  $: n = toGrid(grid);
   $: pat = resolvePattern(pattern, n);
   $: marks = MARKS[n];
   $: d = step * pat.scale;
@@ -124,6 +134,7 @@
       const startedAt = performance.now();
       ds = 0;
       intervalId = setInterval(() => {
+        // eslint-disable-next-line svelte/infinite-reactive-loop -- ds is only written here, never read, so it is not a dependency of this block
         ds = Math.floor((performance.now() - startedAt) / 100);
       }, 100);
     }
