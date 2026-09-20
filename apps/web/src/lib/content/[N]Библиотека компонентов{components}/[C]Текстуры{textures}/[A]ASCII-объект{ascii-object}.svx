@@ -1,5 +1,5 @@
 ---
-title: AsciiObject
+title: ASCII-объект
 description: 3D-объект, рендерящийся в ASCII-символы. Поддерживает GLB/glTF, SVG, PNG, JPEG, WebP и GIF. В качестве примера используется логотип opensophy.
 keywords: 'Opensophy, AsciiObject, UI, UI components, библиотека компонентов, open-source, ASCII, 3D'
 ---
@@ -68,7 +68,7 @@ keywords: 'Opensophy, AsciiObject, UI, UI components, библиотека ко�
 	];
 </script>
 
-# AsciiObject
+# ASCII-объект
 
 Компонент для отображения 3D-объектов и изображений в виде ASCII-символов. Использует Three.js для рендеринга сцены и кастомный шейдер для преобразования в символы.
 

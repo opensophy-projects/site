@@ -1,5 +1,5 @@
 ---
-title: AsciiSweep
+title: ASCII-сканирование
 description: Эффект ASCII-сканирования между двумя панелями. Плавный переход с использованием символьной волны, свечения и хроматической аберрации.
 keywords: 'Opensophy, AsciiSweep, UI, UI components, библиотека компонентов, open-source, ASCII, эффект'
 ---
@@ -67,7 +67,7 @@ keywords: 'Opensophy, AsciiSweep, UI, UI components, библиотека ком
 	];
 </script>
 
-# AsciiSweep
+# ASCII-сканирование
 
 Эффект сканирования между двумя панелями с использованием ASCII-символов. Создаёт волну из символов, которая плавно переходит от одного контента к другому.
 
