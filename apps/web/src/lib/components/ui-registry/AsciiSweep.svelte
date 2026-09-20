@@ -143,6 +143,12 @@ type ElementImageContext = CanvasRenderingContext2D & {
   drawElementImage?: (element: Element, x: number, y: number) => void;
 };
 
+declare module "svelte/elements" {
+  interface HTMLCanvasAttributes {
+    layoutsubtree?: string;
+  }
+}
+
 const VERT = `#version 300 es
 precision highp float;
 layout(location = 0) in vec2 aPos;
@@ -987,7 +993,8 @@ function initializeAsciiSweep(
   }));
 
   if (htmlInCanvas) {
-    for (const state of states) {
+    for (let index = 0; index < states.length; index++) {
+      const state = states[index]!;
       state.paintable.onpaint = () => {
         try {
           state.ctx!.reset();
@@ -1035,7 +1042,8 @@ function initializeAsciiSweep(
   }
 
   function requestCapture(immediate = false) {
-    for (const state of states) {
+    for (let index = 0; index < states.length; index++) {
+      const state = states[index]!;
       if (htmlInCanvas) state.paintable.requestPaint?.();
       else queueCapture(state, immediate);
     }
@@ -1094,7 +1102,8 @@ function initializeAsciiSweep(
       changed = true;
     }
     if (htmlInCanvas) {
-      for (const state of states) {
+      for (let index = 0; index < states.length; index++) {
+        const state = states[index]!;
         const cssWidth = Math.max(1, Math.round(state.source.clientWidth));
         const cssHeight = Math.max(1, Math.round(state.source.clientHeight));
         if (
@@ -1203,7 +1212,7 @@ function initializeAsciiSweep(
   const controlled = () => config.progress >= 0;
 
   function render(now: number) {
-    for (const state of states) uploadSlot(state);
+    states.forEach(uploadSlot);
 
     const from = states[fromSlot];
     const to = states[toSlot];
@@ -1463,7 +1472,7 @@ function initializeAsciiSweep(
     start();
   });
   resizeObserver.observe(output);
-  for (const state of states) resizeObserver.observe(state.content);
+  states.forEach((state) => resizeObserver.observe(state.content));
 
   const intersection = new IntersectionObserver((entries) => {
     visible = entries[entries.length - 1]?.isIntersecting ?? true;
@@ -1480,7 +1489,8 @@ function initializeAsciiSweep(
     const source = event.target as HTMLElement | null;
     if (!source) return;
     syncingScroll = true;
-    for (const state of states) {
+    for (let index = 0; index < states.length; index++) {
+      const state = states[index]!;
       if (state.content === source) continue;
       if (state.content.scrollTop !== source.scrollTop) {
         state.content.scrollTop = source.scrollTop;
@@ -1493,7 +1503,8 @@ function initializeAsciiSweep(
     requestCapture();
     start();
   }
-  for (const state of states) {
+  for (let index = 0; index < states.length; index++) {
+    const state = states[index]!;
     state.content.addEventListener("scroll", onPanelScroll, { passive: true });
   }
 
@@ -1518,11 +1529,12 @@ function initializeAsciiSweep(
       });
 
   function onFallbackVisualChange() {
-    for (const state of states) queueCapture(state);
+    states.forEach((state) => queueCapture(state));
   }
 
   if (!htmlInCanvas) {
-    for (const state of states) {
+    for (let index = 0; index < states.length; index++) {
+      const state = states[index]!;
       state.content.addEventListener("load", onFallbackVisualChange, true);
       state.content.addEventListener(
         "loadeddata",
@@ -1593,7 +1605,8 @@ function initializeAsciiSweep(
       motionQuery.removeEventListener("change", onMotionChange);
       document.removeEventListener("visibilitychange", onPageVisibility);
       if (!htmlInCanvas) {
-        for (const state of states) {
+        for (let index = 0; index < states.length; index++) {
+          const state = states[index]!;
           state.content.removeEventListener("load", onFallbackVisualChange, true);
           state.content.removeEventListener(
             "loadeddata",
@@ -1626,7 +1639,8 @@ function initializeAsciiSweep(
           onFallbackVisualChange,
         );
       }
-      for (const state of states) {
+      for (let index = 0; index < states.length; index++) {
+        const state = states[index]!;
         state.content.removeEventListener("scroll", onPanelScroll);
         window.clearTimeout(state.captureTimer);
         window.clearTimeout(state.scrollTimer);
@@ -1641,11 +1655,6 @@ function initializeAsciiSweep(
   };
 }
 
-  declare module "svelte/elements" {
-    interface HTMLCanvasAttributes {
-      layoutsubtree?: string;
-    }
-  }
 </script>
 
 <script lang="ts">

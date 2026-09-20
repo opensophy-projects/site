@@ -877,7 +877,7 @@ function createImageObject(
 }
 
 function disposeObject(root: THREE.Object3D) {
-  root.traverse((node) => {
+  root.traverse((node: unknown) => {
     const mesh = node as THREE.Mesh;
     if (mesh.geometry) mesh.geometry.dispose();
     const materials = Array.isArray(mesh.material)
@@ -886,8 +886,9 @@ function disposeObject(root: THREE.Object3D) {
     for (const material of materials) {
       if (!material) continue;
       for (const value of Object.values(material)) {
-        if (!(value instanceof THREE.Texture)) continue;
-        value.dispose();
+        const texture = value as { dispose: () => void };
+        if (!(texture instanceof THREE.Texture)) continue;
+        texture.dispose();
       }
       material.dispose();
     }
@@ -1103,7 +1104,7 @@ export function createAsciiObject(
 
   function applyRoughness() {
     if (!model) return;
-    model.traverse((node) => {
+    model.traverse((node: unknown) => {
       const mesh = node as THREE.Mesh;
       const materials = Array.isArray(mesh.material)
         ? mesh.material

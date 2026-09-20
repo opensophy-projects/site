@@ -161,7 +161,7 @@ keywords: 'Opensophy, AsciiObject, UI, UI components, библиотека ко�
 | `ascii` | `boolean` | `true` | Рендерить как ASCII-символы |
 | `cellSize` | `number` | `10` | Высота одной символьной ячейки в CSS пикселях |
 | `cellAspect` | `number` | `0.6` | Ширина ячейки относительно высоты (0.35–1.25) |
-| `charset` | `string` | `" !\"#$%&'()*+,-./0-9:;<=>?@A-Z[\\]^_`a-z{|}~"` | Набор символов для рендерера |
+| `charset` | `string` | `Printable ASCII characters` | Набор символов для рендерера |
 | `colored` | `boolean` | `true` | Тонировать символы цветом сцены |
 | `color` | `string` | `"#ffffff"` | Цвет символов когда `colored=false` |
 | `contrast` | `number` | `1.5` | Контраст тонального подбора символов |

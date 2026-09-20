@@ -1,0 +1,159 @@
+---
+title: Индикатор загрузки решётки
+description: Анимированный индикатор загрузки из ячеек решётки с состояниями выполнения и ошибки.
+keywords: 'Opensophy, Latticeloader, loader, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Latticeloader from '$lib/components/ui-registry/Latticeloader.svelte';
+	import { LatticeloaderSource } from '$lib/components/ui-registry/demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'status',
+			label: 'Статус',
+			defaultValue: 'working',
+			options: [
+				{ label: 'Загрузка', value: 'working' },
+				{ label: 'Готово', value: 'done' },
+				{ label: 'Ошибка', value: 'error' }
+			]
+		},
+		{
+			type: 'select',
+			name: 'pattern',
+			label: 'Анимация',
+			defaultValue: 'orbit',
+			options: [
+				{ label: 'Орбита', value: 'orbit' },
+				{ label: 'Стрелка', value: 'arrow' },
+				{ label: 'Змейка', value: 'snake' },
+				{ label: 'Пульс', value: 'pulse' }
+			]
+		},
+		{
+			type: 'select',
+			name: 'grid',
+			label: 'Размер решётки',
+			defaultValue: 3,
+			options: [
+				{ label: '3 × 3', value: 3 },
+				{ label: '4 × 4', value: 4 }
+			]
+		},
+		{
+			type: 'color',
+			name: 'color',
+			label: 'Цвет',
+			defaultValue: '#f43f5e'
+		},
+		{
+			type: 'boolean',
+			name: 'glow',
+			label: 'Свечение',
+			defaultValue: false
+		}
+	];
+</script>
+
+# Индикатор загрузки решётки
+
+`Latticeloader` показывает ход асинхронной операции анимацией ячеек. После завершения или ошибки анимация сменяется на постоянную отметку, а текст сообщает итоговое время.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'Latticeloader.svelte', code: LatticeloaderSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="flex min-h-24 items-center justify-center">
+			<Latticeloader
+				status={values.status as 'working' | 'done' | 'error'}
+				pattern={values.pattern as 'orbit' | 'arrow' | 'snake' | 'pulse'}
+				grid={values.grid as 3 | 4}
+				color={values.color as string}
+				glow={values.glow as boolean}
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовая загрузка
+
+```svelte
+<script lang="ts">
+	import Latticeloader from '$lib/components/ui-registry/Latticeloader.svelte';
+</script>
+
+<Latticeloader />
+```
+
+### Завершённая операция
+
+Передайте состояние `done`, чтобы показать отметку завершения и зафиксировать время.
+
+```svelte
+<Latticeloader status="done" elapsed={2.8} doneLabel="Готово за" />
+```
+
+### Ошибка с решёткой 4 × 4
+
+```svelte
+<Latticeloader
+	status="error"
+	grid={4}
+	pattern="pulse"
+	errorLabel="Не удалось выполнить за"
+	color="#f59e0b"
+	errorColor="#ef4444"
+	glow={true}
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `label` | `string` | `"Thinking"` | Текст во время загрузки |
+| `doneLabel` | `string` | `"Done in"` | Текст после успешного завершения |
+| `errorLabel` | `string` | `"Failed after"` | Текст после ошибки |
+| `status` | `"working" \| "done" \| "error"` | `"working"` | Состояние операции |
+| `pattern` | `LatticePatternName \| LatticePattern` | `"orbit"` | Встроенный или пользовательский порядок анимации |
+| `grid` | `3 \| 4` | `3` | Размер решётки |
+| `shape` | `"square" \| "round"` | `"round"` | Форма ячеек |
+| `color` | `string` | `"var(--accent, #f43f5e)"` | Цвет активных ячеек |
+| `doneColor` | `string` | `"#22c55e"` | Цвет отметки успеха |
+| `errorColor` | `string` | `"#ef4444"` | Цвет отметки ошибки |
+| `cellSize` | `number` | `6` | Размер ячейки в пикселях |
+| `gap` | `number` | `2` | Расстояние между ячейками в пикселях |
+| `fontSize` | `number` | `14` | Размер текста в пикселях |
+| `step` | `number` | `90` | Задержка между ячейками в миллисекундах |
+| `idleOpacity` | `number` | `0.15` | Прозрачность неактивных ячеек |
+| `glow` | `boolean` | `false` | Включить свечение активных ячеек |
+| `glowColor` | `string` | `""` | Цвет свечения; пустая строка использует цвет состояния |
+| `showTimer` | `boolean` | `true` | Показывать таймер |
+| `elapsed` | `number \| undefined` | `undefined` | Зафиксированное время в секундах |
+| `class` | `string` | `""` | Дополнительные CSS-классы |
+| `style` | `string` | `""` | Дополнительные inline-стили |
+
+## Пользовательский паттерн
+
+Передайте объект с индексами ячеек. Значения задают порядок их включения, а `null` оставляет в решётке пустую ячейку.
+
+```svelte
+<Latticeloader
+	grid={3}
+	pattern={{
+		cells: [0, 1, 2, 7, null, 3, 6, 5, 4],
+		loop: 8,
+		scale: 1.2,
+		lit: 0.45
+	}}
+/>
+```
