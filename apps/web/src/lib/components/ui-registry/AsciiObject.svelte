@@ -892,7 +892,7 @@ function disposeObject(root: THREE.Object3D) {
       : [mesh.material];
     for (const material of materials) {
       if (!material) continue;
-      for (const value of Object.values(material as Record<string, unknown>)) {
+      for (const value of Object.values(material)) {
         if (!(value instanceof THREE.Texture)) continue;
         value.dispose();
       }
@@ -1118,15 +1118,14 @@ export function createAsciiObject(
         ? mesh.material
         : [mesh.material];
       for (const material of materials) {
-        const standard = material as THREE.MeshStandardMaterial;
-        if (!standard || typeof standard.roughness !== "number") continue;
-        if (standard.userData.baseRoughness === undefined) {
-          standard.userData.baseRoughness = standard.roughness;
+        if (!(material instanceof THREE.MeshStandardMaterial)) continue;
+        if (material.userData.baseRoughness === undefined) {
+          material.userData.baseRoughness = material.roughness;
         }
-        standard.roughness =
+        material.roughness =
           config.roughness >= 0
             ? config.roughness
-            : standard.userData.baseRoughness;
+            : material.userData.baseRoughness;
       }
     });
   }
