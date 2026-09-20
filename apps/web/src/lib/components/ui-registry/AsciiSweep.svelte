@@ -3,7 +3,7 @@ export type AsciiSweepCharset = "ascii" | "blocks" | "binary";
 
 export type AsciiSweepBlend = "auto" | "add" | "over";
 
-export interface AsciiSweepOptions {
+export type AsciiSweepOptions = {
   /** Sweep direction in degrees. 0 sweeps left to right, 90 sweeps bottom to top. */
   angle?: number;
   /** Seconds the sweep takes from one panel to the other. */
@@ -58,23 +58,23 @@ export interface AsciiSweepOptions {
   onSweepStart?: (to: number) => void;
   /** Called once the sweep has fully settled on its destination panel. */
   onSweepEnd?: (to: number) => void;
-}
+};
 
-export interface AsciiSweepSlot {
+export type AsciiSweepSlot = {
   /** Canvas with layoutsubtree that hosts this panel's HTML. */
   source: HTMLCanvasElement;
   /** The element inside the source canvas that gets captured. */
   content: HTMLElement;
-}
+};
 
-export interface AsciiSweepElements {
+export type AsciiSweepElements = {
   /** The two panel slots the effect sweeps between. */
   slots: [AsciiSweepSlot, AsciiSweepSlot];
   /** Canvas the WebGL effect renders to. */
   output: HTMLCanvasElement;
-}
+};
 
-export interface AsciiSweepInstance {
+export type AsciiSweepInstance = {
   /** Update effect options live. */
   setOptions: (options: AsciiSweepOptions) => void;
   /** Sweep to slot 0 or 1. Pass an angle to override the configured direction for this sweep only. */
@@ -87,7 +87,7 @@ export interface AsciiSweepInstance {
   resize: () => void;
   /** Stop the loop and release all GPU resources. */
   destroy: () => void;
-}
+};
 
 const CHARSETS: Record<AsciiSweepCharset, number[]> = {
   ascii: [
@@ -103,6 +103,8 @@ const FADE_OUT_S = 0.45;
 
 const MAX_GLYPHS = 16;
 const FALLBACK_CAPTURE_DELAY = 500;
+
+const noop = () => undefined;
 
 const DEFAULTS: Required<AsciiSweepOptions> = {
   angle: 0,
@@ -130,8 +132,8 @@ const DEFAULTS: Required<AsciiSweepOptions> = {
   fade: 0.75,
   blend: "auto",
   background: "auto",
-  onSweepStart: () => {},
-  onSweepEnd: () => {},
+  onSweepStart: noop,
+  onSweepEnd: noop,
 };
 
 type PaintableCanvas = HTMLCanvasElement & {
@@ -411,8 +413,8 @@ void main () {
 
 export function supportsHtmlInCanvas(): boolean {
   if (typeof document === "undefined") return false;
-  const probe = document.createElement("canvas") as PaintableCanvas;
-  const ctx = probe.getContext("2d") as ElementImageContext | null;
+  const probe: PaintableCanvas = document.createElement("canvas");
+  const ctx: ElementImageContext | null = probe.getContext("2d");
   return Boolean(
     ctx &&
     typeof ctx.drawElementImage === "function" &&
@@ -420,20 +422,20 @@ export function supportsHtmlInCanvas(): boolean {
   );
 }
 
-interface FallbackRect {
+type FallbackRect = {
   left: number;
   top: number;
   right: number;
   bottom: number;
-}
+};
 
-interface FallbackPaintState {
+type FallbackPaintState = {
   style: CSSStyleDeclaration;
   visible: boolean;
   opacity: number;
   clip: FallbackRect;
   childrenClip: FallbackRect;
-}
+};
 
 function intersectFallbackRects(
   first: FallbackRect,
@@ -629,7 +631,10 @@ function paintFallbackMedia(
       targetWidth,
       targetHeight,
     );
-  } catch {}
+  } catch {
+    // Cross-origin or otherwise undrawable media is skipped.
+    return;
+  }
 }
 
 function isFallbackMediaOriginClean(
@@ -733,8 +738,7 @@ function paintFallbackText(
     if (visible.length === 0) return;
     const totalWidth = visible.reduce((sum, rect) => sum + rect.width, 0);
     let offset = 0;
-    for (let index = 0; index < visible.length; index++) {
-      const rect = visible[index];
+    for (const [index, rect] of visible.entries()) {
       const remaining = text.length - offset;
       if (remaining <= 0) break;
       const count =
@@ -750,8 +754,8 @@ function paintFallbackText(
       if (!line.trim()) continue;
       const x = rect.left - rootRect.left + rect.width * anchor;
       const metrics = ctx.measureText(line);
-      const ascent = metrics.fontBoundingBoxAscent ?? 0;
-      const descent = metrics.fontBoundingBoxDescent ?? 0;
+      const ascent = metrics.fontBoundingBoxAscent;
+      const descent = metrics.fontBoundingBoxDescent;
       const y =
         ascent > 0
           ? rect.top -
@@ -832,7 +836,7 @@ export function createAsciiSweep(
   }
 }
 
-interface SlotState {
+type SlotState = {
   source: HTMLCanvasElement;
   content: HTMLElement;
   ctx: ElementImageContext | null;
@@ -849,7 +853,7 @@ interface SlotState {
   capturedScrollTop: number;
   captureErrorLogged: boolean;
   uploadErrorLogged: boolean;
-}
+};
 
 function initializeAsciiSweep(
   elements: AsciiSweepElements,
@@ -861,14 +865,15 @@ function initializeAsciiSweep(
     throw new Error("AsciiSweep needs exactly two slots");
   }
 
-  const gl = output.getContext("webgl2", {
+  const glContext = output.getContext("webgl2", {
     alpha: true,
     depth: false,
     stencil: false,
     antialias: false,
     premultipliedAlpha: true,
   });
-  if (!gl || gl.isContextLost()) return null;
+  if (!glContext || glContext.isContextLost()) return null;
+  const gl: WebGL2RenderingContext = glContext;
 
   const probeCtx = (() => {
     const probe = document.createElement("canvas");
@@ -891,15 +896,16 @@ function initializeAsciiSweep(
   }
 
   let destroyed = false;
-  let wake = () => {};
+  let wake = noop;
 
   function compile(type: number, text: string): WebGLShader {
-    const shader = gl!.createShader(type)!;
-    gl!.shaderSource(shader, text);
-    gl!.compileShader(shader);
-    if (!gl!.getShaderParameter(shader, gl!.COMPILE_STATUS)) {
-      const message = gl!.getShaderInfoLog(shader) || "Unknown shader error";
-      gl!.deleteShader(shader);
+    const shader = gl.createShader(type);
+    if (!shader) throw new Error("Could not create a shader");
+    gl.shaderSource(shader, text);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      const message = gl.getShaderInfoLog(shader) || "Unknown shader error";
+      gl.deleteShader(shader);
       throw new Error(message);
     }
     return shader;
@@ -907,7 +913,8 @@ function initializeAsciiSweep(
 
   const vertexShader = compile(gl.VERTEX_SHADER, VERT);
   const fragmentShader = compile(gl.FRAGMENT_SHADER, FRAG);
-  const program = gl.createProgram()!;
+  const program = gl.createProgram();
+  if (!program) throw new Error("Could not create a program");
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
@@ -920,11 +927,12 @@ function initializeAsciiSweep(
     throw new Error(message);
   }
 
-  const uniforms: Record<string, WebGLUniformLocation> = {};
+  const uniforms: Record<string, WebGLUniformLocation | null> = {};
   const uniformCount = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
   for (let i = 0; i < uniformCount; i++) {
-    const info = gl.getActiveUniform(program, i)!;
-    uniforms[info.name] = gl.getUniformLocation(program, info.name)!;
+    const info = gl.getActiveUniform(program, i);
+    if (!info) continue;
+    uniforms[info.name] = gl.getUniformLocation(program, info.name);
   }
 
   const quad = gl.createBuffer();
@@ -938,33 +946,32 @@ function initializeAsciiSweep(
   gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
   function createSlotTexture(): WebGLTexture {
-    const texture = gl!.createTexture()!;
-    gl!.bindTexture(gl!.TEXTURE_2D, texture);
-    gl!.texParameteri(
-      gl!.TEXTURE_2D,
-      gl!.TEXTURE_MIN_FILTER,
-      gl!.LINEAR_MIPMAP_LINEAR,
+    const texture = gl.createTexture();
+    if (!texture) throw new Error("Could not create a texture");
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(
+      gl.TEXTURE_2D,
+      gl.TEXTURE_MIN_FILTER,
+      gl.LINEAR_MIPMAP_LINEAR,
     );
-    gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_MAG_FILTER, gl!.LINEAR);
-    gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_WRAP_S, gl!.CLAMP_TO_EDGE);
-    gl!.texParameteri(gl!.TEXTURE_2D, gl!.TEXTURE_WRAP_T, gl!.CLAMP_TO_EDGE);
-    gl!.texImage2D(
-      gl!.TEXTURE_2D,
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
       0,
-      gl!.RGBA,
+      gl.RGBA,
       1,
       1,
       0,
-      gl!.RGBA,
-      gl!.UNSIGNED_BYTE,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
       new Uint8Array([0, 0, 0, 0]),
     );
     return texture;
   }
 
-  const firstCtx = slots[0].source.getContext(
-    "2d",
-  ) as ElementImageContext | null;
+  const firstCtx: ElementImageContext | null = slots[0].source.getContext("2d");
   const htmlInCanvas = Boolean(
     firstCtx &&
     typeof firstCtx.drawElementImage === "function" &&
@@ -974,10 +981,7 @@ function initializeAsciiSweep(
   const states: SlotState[] = slots.map((slot, index) => ({
     source: slot.source,
     content: slot.content,
-    ctx:
-      index === 0
-        ? firstCtx
-        : (slot.source.getContext("2d") as ElementImageContext | null),
+    ctx: index === 0 ? firstCtx : slot.source.getContext("2d"),
     paintable: slot.source as PaintableCanvas,
     texture: createSlotTexture(),
     fallbackCanvas: null,
@@ -993,15 +997,19 @@ function initializeAsciiSweep(
   }));
 
   if (htmlInCanvas) {
-    for (let index = 0; index < states.length; index++) {
-      const state = states[index]!;
+    for (const state of states) {
       state.paintable.onpaint = () => {
+        const ctx = state.ctx;
+        if (!ctx?.drawElementImage) return;
         try {
-          state.ctx!.reset();
-          state.ctx!.drawElementImage!(state.content, 0, 0);
+          ctx.reset();
+          ctx.drawElementImage(state.content, 0, 0);
           state.dirty = true;
           wake();
-        } catch {}
+        } catch {
+          // The element may not be paintable yet; the next paint retries.
+          return;
+        }
       };
     }
   }
@@ -1042,8 +1050,7 @@ function initializeAsciiSweep(
   }
 
   function requestCapture(immediate = false) {
-    for (let index = 0; index < states.length; index++) {
-      const state = states[index]!;
+    for (const state of states) {
       if (htmlInCanvas) state.paintable.requestPaint?.();
       else queueCapture(state, immediate);
     }
@@ -1102,8 +1109,7 @@ function initializeAsciiSweep(
       changed = true;
     }
     if (htmlInCanvas) {
-      for (let index = 0; index < states.length; index++) {
-        const state = states[index]!;
+      for (const state of states) {
         const cssWidth = Math.max(1, Math.round(state.source.clientWidth));
         const cssHeight = Math.max(1, Math.round(state.source.clientHeight));
         if (
@@ -1167,7 +1173,7 @@ function initializeAsciiSweep(
         : (CHARSETS[config.charset] ?? CHARSETS.ascii);
     const count = Math.min(ramp.length, MAX_GLYPHS);
     glyphData.fill(0);
-    for (let i = 0; i < count; i++) glyphData[i] = ramp[i] >>> 0;
+    for (let i = 0; i < count; i++) glyphData[i] = (ramp[i] ?? 0) >>> 0;
     return count;
   }
 
@@ -1177,16 +1183,16 @@ function initializeAsciiSweep(
     if (bitmap.width < 1 || bitmap.height < 1) return;
     state.dirty = false;
     try {
-      gl!.bindTexture(gl!.TEXTURE_2D, state.texture);
-      gl!.texImage2D(
-        gl!.TEXTURE_2D,
+      gl.bindTexture(gl.TEXTURE_2D, state.texture);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
         0,
-        gl!.RGBA,
-        gl!.RGBA,
-        gl!.UNSIGNED_BYTE,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
         bitmap,
       );
-      gl!.generateMipmap(gl!.TEXTURE_2D);
+      gl.generateMipmap(gl.TEXTURE_2D);
       state.stamp = performance.now();
       state.uploadErrorLogged = false;
     } catch (error) {
@@ -1217,53 +1223,53 @@ function initializeAsciiSweep(
     const from = states[fromSlot];
     const to = states[toSlot];
 
-    gl!.useProgram(program);
-    gl!.activeTexture(gl!.TEXTURE0);
-    gl!.bindTexture(gl!.TEXTURE_2D, from.texture);
-    gl!.uniform1i(uniforms.uFrom, 0);
-    gl!.activeTexture(gl!.TEXTURE1);
-    gl!.bindTexture(gl!.TEXTURE_2D, to.texture);
-    gl!.uniform1i(uniforms.uTo, 1);
+    gl.useProgram(program);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, from.texture);
+    gl.uniform1i(uniforms.uFrom, 0);
+    gl.activeTexture(gl.TEXTURE1);
+    gl.bindTexture(gl.TEXTURE_2D, to.texture);
+    gl.uniform1i(uniforms.uTo, 1);
 
-    gl!.uniform2f(uniforms.uResolution, output.width, output.height);
-    gl!.uniform1f(uniforms.uProgress, progress);
+    gl.uniform2f(uniforms.uResolution, output.width, output.height);
+    gl.uniform1f(uniforms.uProgress, progress);
 
     const radians = (sweepAngle * Math.PI) / 180;
-    gl!.uniform2f(uniforms.uDir, Math.cos(radians), Math.sin(radians));
+    gl.uniform2f(uniforms.uDir, Math.cos(radians), Math.sin(radians));
 
     const dpr = output.width / Math.max(output.clientWidth, 1);
     const glyphCss = Math.max(config.scale, 0.5);
     const spacing = Math.round(Math.min(Math.max(config.spacing, 0), 3));
-    gl!.uniform1f(uniforms.uGlyphPx, glyphCss * dpr);
-    gl!.uniform1f(uniforms.uSpacing, spacing);
+    gl.uniform1f(uniforms.uGlyphPx, glyphCss * dpr);
+    gl.uniform1f(uniforms.uSpacing, spacing);
     // The content texture is in device pixels, so the LOD that averages a cell
     // has to be derived in device pixels too.
-    gl!.uniform1f(
+    gl.uniform1f(
       uniforms.uLod,
       Math.max(0, Math.log2((5 + 2 * spacing) * glyphCss * dpr) - 1),
     );
 
     const glyphCount = resolveGlyphs();
-    gl!.uniform1uiv(uniforms["uGlyphs[0]"], glyphData);
-    gl!.uniform1i(uniforms.uGlyphCount, glyphCount);
+    gl.uniform1uiv(uniforms["uGlyphs[0]"], glyphData);
+    gl.uniform1i(uniforms.uGlyphCount, glyphCount);
 
-    gl!.uniform1f(uniforms.uBand, Math.min(Math.max(config.band, 0.02), 1));
-    gl!.uniform1f(uniforms.uSoftness, config.softness);
-    gl!.uniform1f(uniforms.uTurbulence, Math.max(config.turbulence, 0));
-    gl!.uniform1f(uniforms.uTrail, Math.max(config.trail, 0));
-    gl!.uniform3f(uniforms.uInk, inkRgb[0], inkRgb[1], inkRgb[2]);
-    gl!.uniform1f(uniforms.uTint, config.tint);
-    gl!.uniform1f(uniforms.uGlow, config.glow);
-    gl!.uniform1f(uniforms.uAberration, Math.max(config.aberration, 0) * dpr);
-    gl!.uniform1f(uniforms.uFlicker, config.flicker);
-    gl!.uniform1f(uniforms.uDensity, config.density);
-    gl!.uniform1f(uniforms.uDisplace, Math.max(config.displace, 0) * dpr);
-    gl!.uniform1f(uniforms.uContrast, Math.max(config.contrast, 0));
-    gl!.uniform1f(uniforms.uBrightness, config.brightness);
-    gl!.uniform1f(uniforms.uInvert, config.invert);
-    gl!.uniform1f(uniforms.uThreshold, Math.max(config.threshold, 0.001));
-    gl!.uniform1f(uniforms.uFade, config.fade);
-    gl!.uniform1f(
+    gl.uniform1f(uniforms.uBand, Math.min(Math.max(config.band, 0.02), 1));
+    gl.uniform1f(uniforms.uSoftness, config.softness);
+    gl.uniform1f(uniforms.uTurbulence, Math.max(config.turbulence, 0));
+    gl.uniform1f(uniforms.uTrail, Math.max(config.trail, 0));
+    gl.uniform3f(uniforms.uInk, inkRgb[0], inkRgb[1], inkRgb[2]);
+    gl.uniform1f(uniforms.uTint, config.tint);
+    gl.uniform1f(uniforms.uGlow, config.glow);
+    gl.uniform1f(uniforms.uAberration, Math.max(config.aberration, 0) * dpr);
+    gl.uniform1f(uniforms.uFlicker, config.flicker);
+    gl.uniform1f(uniforms.uDensity, config.density);
+    gl.uniform1f(uniforms.uDisplace, Math.max(config.displace, 0) * dpr);
+    gl.uniform1f(uniforms.uContrast, Math.max(config.contrast, 0));
+    gl.uniform1f(uniforms.uBrightness, config.brightness);
+    gl.uniform1f(uniforms.uInvert, config.invert);
+    gl.uniform1f(uniforms.uThreshold, Math.max(config.threshold, 0.001));
+    gl.uniform1f(uniforms.uFade, config.fade);
+    gl.uniform1f(
       uniforms.uAdditive,
       config.blend === "add"
         ? 1
@@ -1273,17 +1279,17 @@ function initializeAsciiSweep(
             ? 1
             : 0,
     );
-    gl!.uniform3f(uniforms.uBg, backingRgb[0], backingRgb[1], backingRgb[2]);
-    gl!.uniform1f(uniforms.uBgLum, backingLum);
-    gl!.uniform1f(uniforms.uTime, now / 1000);
-    gl!.uniform1f(uniforms.uActive, active);
-    gl!.uniform1f(uniforms.uMaxX, contentMaxX);
+    gl.uniform3f(uniforms.uBg, backingRgb[0], backingRgb[1], backingRgb[2]);
+    gl.uniform1f(uniforms.uBgLum, backingLum);
+    gl.uniform1f(uniforms.uTime, now / 1000);
+    gl.uniform1f(uniforms.uActive, active);
+    gl.uniform1f(uniforms.uMaxX, contentMaxX);
 
-    gl!.bindFramebuffer(gl!.FRAMEBUFFER, null);
-    gl!.viewport(0, 0, output.width, output.height);
-    gl!.clearColor(0, 0, 0, 0);
-    gl!.clear(gl!.COLOR_BUFFER_BIT);
-    gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, output.width, output.height);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
   let raf = 0;
@@ -1489,8 +1495,7 @@ function initializeAsciiSweep(
     const source = event.target as HTMLElement | null;
     if (!source) return;
     syncingScroll = true;
-    for (let index = 0; index < states.length; index++) {
-      const state = states[index]!;
+    for (const state of states) {
       if (state.content === source) continue;
       if (state.content.scrollTop !== source.scrollTop) {
         state.content.scrollTop = source.scrollTop;
@@ -1503,8 +1508,7 @@ function initializeAsciiSweep(
     requestCapture();
     start();
   }
-  for (let index = 0; index < states.length; index++) {
-    const state = states[index]!;
+  for (const state of states) {
     state.content.addEventListener("scroll", onPanelScroll, { passive: true });
   }
 
@@ -1533,8 +1537,7 @@ function initializeAsciiSweep(
   }
 
   if (!htmlInCanvas) {
-    for (let index = 0; index < states.length; index++) {
-      const state = states[index]!;
+    for (const state of states) {
       state.content.addEventListener("load", onFallbackVisualChange, true);
       state.content.addEventListener(
         "loadeddata",
@@ -1605,9 +1608,12 @@ function initializeAsciiSweep(
       motionQuery.removeEventListener("change", onMotionChange);
       document.removeEventListener("visibilitychange", onPageVisibility);
       if (!htmlInCanvas) {
-        for (let index = 0; index < states.length; index++) {
-          const state = states[index]!;
-          state.content.removeEventListener("load", onFallbackVisualChange, true);
+        for (const state of states) {
+          state.content.removeEventListener(
+            "load",
+            onFallbackVisualChange,
+            true,
+          );
           state.content.removeEventListener(
             "loadeddata",
             onFallbackVisualChange,
@@ -1639,18 +1645,17 @@ function initializeAsciiSweep(
           onFallbackVisualChange,
         );
       }
-      for (let index = 0; index < states.length; index++) {
-        const state = states[index]!;
+      for (const state of states) {
         state.content.removeEventListener("scroll", onPanelScroll);
         window.clearTimeout(state.captureTimer);
         window.clearTimeout(state.scrollTimer);
-        gl!.deleteTexture(state.texture);
+        gl.deleteTexture(state.texture);
         if (htmlInCanvas) state.paintable.onpaint = null;
       }
-      gl!.deleteProgram(program);
-      gl!.deleteShader(vertexShader);
-      gl!.deleteShader(fragmentShader);
-      gl!.deleteBuffer(quad);
+      gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
+      gl.deleteBuffer(quad);
     },
   };
 }
@@ -1660,7 +1665,7 @@ function initializeAsciiSweep(
 <script lang="ts">
   import { onMount, tick } from "svelte";
 
-  interface Props extends AsciiSweepOptions {
+  type Props = AsciiSweepOptions & {
     class?: string;
     /** The first panel. */
     children?: import("svelte").Snippet;
@@ -1670,7 +1675,7 @@ function initializeAsciiSweep(
     index?: number;
     /** Flip the sweep 180 degrees when sweeping back to the first panel. */
     directional?: boolean;
-  }
+  };
 
   let {
     class: className = "",
@@ -1684,11 +1689,11 @@ function initializeAsciiSweep(
   const PANEL_STYLE =
     "position: absolute; inset: 0; width: 100%; height: 100%; overflow: auto;";
 
-  let sourceAEl = $state<HTMLCanvasElement>()!;
-  let sourceBEl = $state<HTMLCanvasElement>()!;
-  let contentAEl = $state<HTMLDivElement>()!;
-  let contentBEl = $state<HTMLDivElement>()!;
-  let outputEl = $state<HTMLCanvasElement>()!;
+  let sourceAEl = $state<HTMLCanvasElement>();
+  let sourceBEl = $state<HTMLCanvasElement>();
+  let contentAEl = $state<HTMLDivElement>();
+  let contentBEl = $state<HTMLDivElement>();
+  let outputEl = $state<HTMLCanvasElement>();
   let native = $state(false);
   let ready = $state(false);
   let instance: AsciiSweepInstance | null = null;
@@ -1720,7 +1725,7 @@ function initializeAsciiSweep(
   onMount(() => {
     native = supportsHtmlInCanvas();
     let disposed = false;
-    (async () => {
+    void (async () => {
       await tick();
       if (disposed) return;
       instance = create();
