@@ -146,6 +146,8 @@ type ElementImageContext = CanvasRenderingContext2D & {
 };
 
 declare module "svelte/elements" {
+  // Declaration merging only works with an interface, so a type alias would not extend Svelte's own definition.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface HTMLCanvasAttributes {
     layoutsubtree?: string;
   }
@@ -982,7 +984,7 @@ function initializeAsciiSweep(
     source: slot.source,
     content: slot.content,
     ctx: index === 0 ? firstCtx : slot.source.getContext("2d"),
-    paintable: slot.source as PaintableCanvas,
+    paintable: slot.source,
     texture: createSlotTexture(),
     fallbackCanvas: null,
     dirty: false,
