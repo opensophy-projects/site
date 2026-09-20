@@ -38,7 +38,7 @@
     }
   ];
 
-  const asciiChars = '█▓▒░@#B8&WM%*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,"^`\'.';
+  const asciiChars = '█▓▒░@#B8&WM%*oahkbdpqwmZO0QLCJUYXzcvunxrjft/|()1{}[]?-_+~<>i!lI;:,"^`\'.';
 
   function drawAsciiEffect(ctx: CanvasRenderingContext2D, width: number, height: number, progress: number) {
     ctx.clearRect(0, 0, width, height);
