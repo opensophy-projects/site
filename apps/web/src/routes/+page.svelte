@@ -5,7 +5,6 @@
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui/TextLoop.svelte";
-  import ArrowRight from "carbon-icons-svelte/lib/ArrowRight.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
@@ -164,7 +163,7 @@
         class="h-full w-full"
         background=""
         cellSize={6}
-        scale={7}
+        scale={5}
         orbit={true}
         autoRotate={true}
         autoRotateSpeed={0.5}
@@ -188,7 +187,7 @@
   <div class="products-glow" aria-hidden="true">
     <div class="products-bg"></div>
   </div>
-  <section class="section-block w-full max-w-5xl mx-auto px-4">
+  <section class="section-block products-section w-full max-w-5xl mx-auto px-4">
     <p class="section-overline">Продукты</p>
     <div class="projects-grid">
       {#each projects as project (project.title)}
@@ -496,19 +495,27 @@
     opacity: 1;
   }
 
+  /* Логотип: без overflow:hidden, чтобы контейнер его не обрезал */
   .about-ascii {
     height: 17rem;
     margin-top: 1.5rem;
-    overflow: hidden;
-    border-radius: 1rem;
+    overflow: visible;
   }
+
+  /* Свечение над продуктами: высота как у hero, нижняя (прозрачная) часть
+     заходит под секцию, чтобы не было пустого разрыва */
   .products-glow {
     position: relative;
     width: 100%;
-    height: 18rem;
+    height: clamp(24rem, 70vh, 40rem);
     margin-top: 1rem;
+    margin-bottom: -8rem;
     overflow: hidden;
     pointer-events: none;
+  }
+  .products-section {
+    position: relative;
+    z-index: 1;
   }
   .products-bg {
     position: absolute;
@@ -543,7 +550,8 @@
       height: 13rem;
     }
     .products-glow {
-      height: 13rem;
+      height: 16rem;
+      margin-bottom: -5rem;
     }
   }
 
