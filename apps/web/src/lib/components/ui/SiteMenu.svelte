@@ -200,10 +200,7 @@
 {/snippet}
 
 {#snippet solutionsPanel(_isMobile: boolean)}
-  <div
-    data-slot="row"
-    class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-4"
-  >
+  <div data-slot="row" class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2">
     {#each solutionLinks as link (link.href)}
       {@const Icon = link.icon}
       <a
@@ -293,11 +290,6 @@
     >
   {/snippet}
   {#snippet actionsEnd()}
-    <a
-      href="/service-policy"
-      class="hidden text-sm font-medium text-foreground-muted transition-colors hover:text-foreground lg:inline-flex"
-      >Политика оказания услуг</a
-    >
     <ThemeToggle />
     <span class="inset-shadow inline-flex rounded-xl bg-background-inset p-1.5">
       <button

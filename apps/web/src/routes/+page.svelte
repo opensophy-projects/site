@@ -163,9 +163,9 @@
         highlight="#f43f5e"
         class="h-full w-full"
         background=""
-        cellSize={8}
-        scale={2.4}
-        orbit={false}
+        cellSize={6}
+        scale={7}
+        orbit={true}
         autoRotate={true}
         autoRotateSpeed={0.5}
       />
@@ -185,7 +185,9 @@
   </section>
 
   <!-- Projects Section -->
-  <div class="products-glow" aria-hidden="true"></div>
+  <div class="products-glow" aria-hidden="true">
+    <div class="products-bg"></div>
+  </div>
   <section class="section-block w-full max-w-5xl mx-auto px-4">
     <p class="section-overline">Продукты</p>
     <div class="projects-grid">
@@ -495,21 +497,27 @@
   }
 
   .about-ascii {
-    height: 13rem;
+    height: 17rem;
     margin-top: 1.5rem;
     overflow: hidden;
     border-radius: 1rem;
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--accent) 9%, transparent),
-      transparent 65%
-    );
   }
   .products-glow {
-    width: min(100%, 80rem);
-    height: 11rem;
+    position: relative;
+    width: 100%;
+    height: 18rem;
     margin-top: 1rem;
     overflow: hidden;
+    pointer-events: none;
+  }
+  .products-bg {
+    position: absolute;
+    inset: 0;
+    max-width: 80rem;
+    margin-inline: auto;
+    overflow: hidden;
+    border-top-left-radius: var(--radius-3xl, 3.3rem);
+    border-top-right-radius: var(--radius-3xl, 3.3rem);
     background: radial-gradient(
       125% 125% at 50% 100%,
       transparent 40%,
@@ -518,7 +526,9 @@
       #fff1f2 100%
     );
     opacity: 0.28;
-    pointer-events: none;
+  }
+  :global(.dark) .products-bg {
+    opacity: 0.22;
   }
   @media (max-width: 600px) {
     .about-note {
@@ -530,7 +540,10 @@
       width: 13rem;
     }
     .about-ascii {
-      height: 10rem;
+      height: 13rem;
+    }
+    .products-glow {
+      height: 13rem;
     }
   }
 
