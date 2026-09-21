@@ -187,9 +187,7 @@
   <div class="products-glow" aria-hidden="true">
     <div class="products-bg"></div>
   </div>
-  <section
-    class="section-block products-section w-full max-w-5xl mx-auto px-4"
-  >
+  <section class="section-block products-section w-full max-w-5xl mx-auto px-4">
     <p class="section-overline">Продукты</p>
     <div class="projects-grid">
       {#each projects as project (project.title)}
@@ -256,15 +254,6 @@
       <a class="services-action" href="/service-policy"
         >Политика оказания услуг</a
       >
-    </div>
-  </section>
-
-  <!-- Footer Glow Section (mirrors hero) -->
-  <section
-    class="footer-glow-section relative flex w-full items-center justify-center px-6 py-16 md:py-20"
-  >
-    <div class="footer-glow-card" aria-hidden="true">
-      <div class="footer-glow-bg"></div>
     </div>
   </section>
 </main>
@@ -363,11 +352,12 @@
     margin: 0;
   }
 
-  /* ─── CTA Section (unused legacy block, kept for reference) ─── */
+  /* ─── CTA Section ──────────────────────────────────────────── */
   .cta-section {
     position: relative;
   }
 
+  /* Та же карточка что у hero — но градиент идёт сверху вниз */
   .cta-card {
     position: absolute;
     inset: 0;
@@ -377,11 +367,13 @@
     left: 0;
     right: 0;
     overflow: hidden;
+    /* Скругление сверху — зеркально hero */
     border-top-left-radius: var(--radius-3xl, 3.3rem);
     border-top-right-radius: var(--radius-3xl, 3.3rem);
     box-shadow: none;
   }
 
+  /* Градиент сверху вниз (at 50% 0% → прозрачный внизу) */
   .cta-bg {
     position: absolute;
     inset: 0;
@@ -400,6 +392,7 @@
     opacity: 0.22;
   }
 
+  /* CTA Typography */
   .cta-heading {
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 500;
@@ -416,6 +409,7 @@
     margin: 0;
   }
 
+  /* CTA Button */
   .cta-button {
     display: inline-flex;
     align-items: center;
@@ -446,44 +440,6 @@
   .cta-button:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(244, 63, 94, 0.2);
-  }
-
-  /* ─── Footer Glow Section (mirrors hero exactly) ───────────── */
-  .footer-glow-section {
-    min-height: 45vh;
-    position: relative;
-  }
-
-  .footer-glow-card {
-    position: absolute;
-    inset: 0;
-    max-width: 80rem;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    overflow: hidden;
-    border-top-left-radius: var(--radius-3xl, 3.3rem);
-    border-top-right-radius: var(--radius-3xl, 3.3rem);
-    box-shadow: none;
-  }
-
-  .footer-glow-bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      125% 125% at 50% 100%,
-      transparent 40%,
-      #f43f5e 68%,
-      #fda4af 86%,
-      #fff1f2 100%
-    );
-    opacity: 0.28;
-  }
-
-  :global(.dark) .footer-glow-bg {
-    opacity: 0.22;
   }
 
   /* ─── Section Layout ───────────────────────────────────────── */
@@ -546,21 +502,20 @@
     overflow: visible;
   }
 
-  /* Свечение над продуктами: контент "Продукты" теперь поднят так,
-     чтобы заголовок и первая строка карточек попадали в зону свечения. */
+  /* Свечение над продуктами: высота как у hero, нижняя (прозрачная) часть
+     заходит под секцию, чтобы не было пустого разрыва */
   .products-glow {
     position: relative;
     width: 100%;
     height: clamp(24rem, 70vh, 40rem);
     margin-top: 1rem;
-    margin-bottom: -15rem;
+    margin-bottom: -8rem;
     overflow: hidden;
     pointer-events: none;
   }
   .products-section {
     position: relative;
     z-index: 1;
-    padding-top: 0;
   }
   .products-bg {
     position: absolute;
@@ -596,10 +551,7 @@
     }
     .products-glow {
       height: 16rem;
-      margin-bottom: -9rem;
-    }
-    .footer-glow-section {
-      min-height: 30vh;
+      margin-bottom: -5rem;
     }
   }
 
