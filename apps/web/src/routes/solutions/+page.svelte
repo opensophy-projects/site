@@ -106,7 +106,7 @@
   }
 </script>
 
-
+<a
   href="#main-content"
   class="sr-only fixed top-3 left-3 z-100 bg-foreground px-4 py-2 text-sm text-background-inset focus:not-sr-only"
 >
@@ -184,64 +184,61 @@
   </section>
 
   <!-- Projects Section -->
+  <div class="products-glow" aria-hidden="true">
+    <div class="products-bg"></div>
+  </div>
   <section
-    class="products-section relative flex w-full flex-col items-center px-6 py-20 md:py-28"
+    class="section-block products-section w-full max-w-5xl mx-auto px-4"
   >
-    <div class="products-card" aria-hidden="true">
-      <div class="products-bg"></div>
-    </div>
-
-    <div class="relative z-10 w-full max-w-5xl mx-auto px-4">
-      <p class="section-overline">Продукты</p>
-      <div class="projects-grid">
-        {#each projects as project (project.title)}
-          <CardProject
-            colors={project.colors}
-            glowColor={project.glowColor}
-            borderRadius={12}
-          >
-            <div class="project-card-body">
-              <div class="project-card-header">
-                <span class="project-slug">{project.title}</span>
-                {#if project.status.modalText}
-                  {@const modalText = project.status.modalText}
-                  <button
-                    type="button"
-                    class="project-status project-status-{project.status
-                      .variant} project-status-link"
-                    onclick={() => {
-                      openStatusModal(modalText);
-                    }}
-                  >
-                    {project.status.label}
-                  </button>
-                {:else if project.status.href}
-                  
-                    href={project.status.href}
-                    target={isExternal(project.status.href)
-                      ? "_blank"
-                      : undefined}
-                    rel={isExternal(project.status.href)
-                      ? "noreferrer"
-                      : undefined}
-                    class="project-status project-status-{project.status
-                      .variant} project-status-link"
-                  >
-                    {project.status.label}
-                  </a>
-                {:else}
-                  <span
-                    class="project-status project-status-{project.status.variant}"
-                  >
-                    {project.status.label}
-                  </span>
-                {/if}
-              </div>
-              <p class="project-desc">{project.description}</p>
+    <p class="section-overline">Продукты</p>
+    <div class="projects-grid">
+      {#each projects as project (project.title)}
+        <CardProject
+          colors={project.colors}
+          glowColor={project.glowColor}
+          borderRadius={12}
+        >
+          <div class="project-card-body">
+            <div class="project-card-header">
+              <span class="project-slug">{project.title}</span>
+              {#if project.status.modalText}
+                {@const modalText = project.status.modalText}
+                <button
+                  type="button"
+                  class="project-status project-status-{project.status
+                    .variant} project-status-link"
+                  onclick={() => {
+                    openStatusModal(modalText);
+                  }}
+                >
+                  {project.status.label}
+                </button>
+              {:else if project.status.href}
+                <a
+                  href={project.status.href}
+                  target={isExternal(project.status.href)
+                    ? "_blank"
+                    : undefined}
+                  rel={isExternal(project.status.href)
+                    ? "noreferrer"
+                    : undefined}
+                  class="project-status project-status-{project.status
+                    .variant} project-status-link"
+                >
+                  {project.status.label}
+                </a>
+              {:else}
+                <span
+                  class="project-status project-status-{project.status.variant}"
+                >
+                  {project.status.label}
+                </span>
+              {/if}
             </div>
-          </CardProject>
-        {/each}
-      </div>
+            <p class="project-desc">{project.description}</p>
+          </div>
+        </CardProject>
+      {/each}
     </div>
   </section>
 
@@ -262,13 +259,12 @@
     </div>
   </section>
 
-  <!-- Outro glow (identical to hero) -->
+  <!-- Footer Glow Section (mirrors hero) -->
   <section
-    class="hero-section relative flex w-full items-center justify-center px-6 py-24 md:py-32"
-    aria-hidden="true"
+    class="footer-glow-section relative flex w-full items-center justify-center px-6 py-16 md:py-20"
   >
-    <div class="hero-card" aria-hidden="true">
-      <div class="hero-bg"></div>
+    <div class="footer-glow-card" aria-hidden="true">
+      <div class="footer-glow-bg"></div>
     </div>
   </section>
 </main>
@@ -367,12 +363,11 @@
     margin: 0;
   }
 
-  /* ─── CTA Section ──────────────────────────────────────────── */
+  /* ─── CTA Section (unused legacy block, kept for reference) ─── */
   .cta-section {
     position: relative;
   }
 
-  /* Та же карточка что у hero — но градиент идёт сверху вниз */
   .cta-card {
     position: absolute;
     inset: 0;
@@ -382,13 +377,11 @@
     left: 0;
     right: 0;
     overflow: hidden;
-    /* Скругление сверху — зеркально hero */
     border-top-left-radius: var(--radius-3xl, 3.3rem);
     border-top-right-radius: var(--radius-3xl, 3.3rem);
     box-shadow: none;
   }
 
-  /* Градиент сверху вниз (at 50% 0% → прозрачный внизу) */
   .cta-bg {
     position: absolute;
     inset: 0;
@@ -407,7 +400,6 @@
     opacity: 0.22;
   }
 
-  /* CTA Typography */
   .cta-heading {
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 500;
@@ -424,7 +416,6 @@
     margin: 0;
   }
 
-  /* CTA Button */
   .cta-button {
     display: inline-flex;
     align-items: center;
@@ -455,6 +446,44 @@
   .cta-button:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(244, 63, 94, 0.2);
+  }
+
+  /* ─── Footer Glow Section (mirrors hero exactly) ───────────── */
+  .footer-glow-section {
+    min-height: 45vh;
+    position: relative;
+  }
+
+  .footer-glow-card {
+    position: absolute;
+    inset: 0;
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    border-top-left-radius: var(--radius-3xl, 3.3rem);
+    border-top-right-radius: var(--radius-3xl, 3.3rem);
+    box-shadow: none;
+  }
+
+  .footer-glow-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      125% 125% at 50% 100%,
+      transparent 40%,
+      #f43f5e 68%,
+      #fda4af 86%,
+      #fff1f2 100%
+    );
+    opacity: 0.28;
+  }
+
+  :global(.dark) .footer-glow-bg {
+    opacity: 0.22;
   }
 
   /* ─── Section Layout ───────────────────────────────────────── */
@@ -517,34 +546,32 @@
     overflow: visible;
   }
 
-  /* ─── Products Section (та же схема, что у hero) ─────────────
-     Карточка со свечением занимает всю секцию, контент лежит
-     поверх неё через z-10 — заголовок и карточки продуктов
-     теперь реально находятся на уровне свечения. */
+  /* Свечение над продуктами: контент "Продукты" теперь поднят так,
+     чтобы заголовок и первая строка карточек попадали в зону свечения. */
+  .products-glow {
+    position: relative;
+    width: 100%;
+    height: clamp(24rem, 70vh, 40rem);
+    margin-top: 1rem;
+    margin-bottom: -15rem;
+    overflow: hidden;
+    pointer-events: none;
+  }
   .products-section {
     position: relative;
-    min-height: 55vh;
+    z-index: 1;
+    padding-top: 0;
   }
-
-  .products-card {
-    position: absolute;
-    inset: 0;
-    max-width: 80rem;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    overflow: hidden;
-    border-radius: var(--radius-3xl, 3.3rem);
-    box-shadow: none;
-  }
-
   .products-bg {
     position: absolute;
     inset: 0;
-    pointer-events: none;
+    max-width: 80rem;
+    margin-inline: auto;
+    overflow: hidden;
+    border-top-left-radius: var(--radius-3xl, 3.3rem);
+    border-top-right-radius: var(--radius-3xl, 3.3rem);
     background: radial-gradient(
-      125% 125% at 50% 0%,
+      125% 125% at 50% 100%,
       transparent 40%,
       #f43f5e 68%,
       #fda4af 86%,
@@ -552,11 +579,9 @@
     );
     opacity: 0.28;
   }
-
   :global(.dark) .products-bg {
     opacity: 0.22;
   }
-
   @media (max-width: 600px) {
     .about-note {
       transform: translateY(-0.6rem);
@@ -569,8 +594,12 @@
     .about-ascii {
       height: 13rem;
     }
-    .products-section {
-      min-height: 45vh;
+    .products-glow {
+      height: 16rem;
+      margin-bottom: -9rem;
+    }
+    .footer-glow-section {
+      min-height: 30vh;
     }
   }
 
