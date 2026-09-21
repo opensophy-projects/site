@@ -69,22 +69,15 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="25" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
 </Cards>
 
-### Галереи
+### Медиа
 
-Галереи изображений и медиа:
+Компоненты для изображений, галерей и видео:
 
 <Cards>
 <Card eyebrow="26" title="Бесконечная физическая галерея" href="/components/infinite-physics-gallery">Галерея с физикой инерции, drag-прокруткой и бесконечным повторением контента.</Card>
 <Card eyebrow="27" title="Аккордеонная галерея" href="/components/accordion-gallery">Галерея с аккордеонным раскрытием панелей при наведении.</Card>
 <Card eyebrow="28" title="Карусель с глубиной" href="/components/depth-carousel">3D-карусель с перспективным смещением и параллаксом.</Card>
 <Card eyebrow="29" title="Дрейфующая стена" href="/components/drift-wall">Стена изображений с плавным дрейфом и параллакс-эффектом.</Card>
-</Cards>
-
-### Медиа
-
-Компоненты для работы с медиа-контентом:
-
-<Cards>
 <Card eyebrow="30" title="Видеоплеер" href="/components/video-player">Кастомизируемый видеоплеер с управлением и поддержкой плакатов.</Card>
 </Cards>
 
@@ -109,4 +102,8 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="37" title="Блок кода" href="/components/codeblock">Блоки кода с подсветкой Shiki, копированием и встроенным поиском.</Card>
 <Card eyebrow="38" title="Графики" href="/components/charts">Все типы графиков через `:::chart`: line, bar, pie, radar и другие.</Card>
 <Card eyebrow="39" title="TOC индикатор" href="/components/toc-indicator">Оглавление с активным индикатором, SVG-линиями и pulse-анимацией.</Card>
+<Card eyebrow="40" title="Индикатор загрузки" href="/components/lattice-loader">Анимированный индикатор загрузки.</Card>
+<Card eyebrow="41" title="Призрачный курсор" href="/components/ghost-cursor">Декоративный курсорный эффект.</Card>
+<Card eyebrow="42" title="Лазерный поток" href="/components/laser-flow">Декоративный эффект лазерного потока.</Card>
+<Card eyebrow="43" title="ASCII-объект" href="/components/ascii-object">Интерактивный ASCII-объект.</Card>
 </Cards>

@@ -107,7 +107,7 @@
 <div class={cn("inset-shadow rounded-lg bg-background-inset p-[1.5px]", className)}>
 	<div
 		{@attach attachContainer}
-		class="flex h-full w-full overflow-hidden rounded-[calc(var(--radius-lg)-1.5px)] bg-background card"
+		class="flex h-full w-full items-center overflow-hidden rounded-[calc(var(--radius-lg)-1.5px)] bg-background card"
 	>
 		{#each Array(repeat) as _, i (i)}
 			<div

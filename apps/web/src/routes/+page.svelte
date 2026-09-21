@@ -8,7 +8,7 @@
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
-  const heroLoopTexts = ["знания", "open-source", "безопасность", "разработку"];
+  const heroLoopTexts = ["Open Source", "DevSecOps"];
 
   type StatusVariant = "in-progress" | "released" | "frozen" | "not-started";
 
@@ -37,7 +37,7 @@
       status: {
         variant: "released",
         label: "Проект в релизе",
-        href: "https://github.com/opensophy-projects/docs",
+        href: "https://opensophy.com/docs/opensophy-docs",
       },
     },
     {
@@ -49,7 +49,7 @@
       status: {
         variant: "released",
         label: "Проект в релизе",
-        href: "/components",
+        href: "https://opensophy.com/components/overview",
       },
     },
     {
@@ -61,8 +61,15 @@
       status: {
         variant: "released",
         label: "Проект в релизе",
-        href: "https://github.com/opensophy-projects/mtls",
+        href: "https://opensophy.com/mtls",
       },
+    },
+    {
+      title: "os.compose",
+      description: "Библиотека готовых Docker Compose-шаблонов для DevSecOps.",
+      colors: ["#f43f5e", "#f472b6", "#b2263e"],
+      glowColor: "350 90 72",
+      status: { variant: "in-progress", label: "Проект развивается", href: "https://opensophy.com/templates/docker" },
     },
     {
       title: "os.dokploy",
@@ -73,7 +80,7 @@
       status: {
         variant: "released",
         label: "Проект в релизе",
-        href: "/dokploy",
+        href: "https://opensophy.com/dokploy",
       },
     },
   ];
@@ -133,44 +140,21 @@
 
   <!-- About Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline">О проекте</p>
-    <h2 class="section-lead text-foreground-muted">
-      <span class="text-foreground">Opensophy</span> —
-      <span class="text-accent">инициатива</span> открытой философии в IT. Качественные
-      и доступные знания, услуги, инструменты и решения.
+    <p class="section-overline">Что такое Opensophy?</p>
+    <h2 class="section-lead text-foreground-muted about-copy">
+      <span class="text-foreground">Opensophy</span><button type="button" class="about-note" aria-label="Что означает название">?</button> — это инициатива, которая развивает <span class="text-accent">DevSecOps и Open Source</span> и делает их доступнее для разработчиков и команд.
     </h2>
   </section>
 
   <!-- What We Do Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
     <p class="section-overline">Чем занимается</p>
-    <div class="section-headlines">
-      <h2 class="section-headline-plain">
-        Учим безопасности, настраиваем защиту, автоматизируем рутину.
-      </h2>
-      <h2 class="section-headline-muted">
-        От образовательных материалов до внедрения <span class="text-accent"
-          >DevSecOps</span
-        >
-        в реальную инфраструктуру.
-      </h2>
-    </div>
-    <CardSection />
-    <div class="services-actions">
-      <a class="services-action services-action-primary" href="/service-policy"
-        >Политика оказания услуг</a
-      >
-    </div>
+    <h2 class="section-lead text-foreground-muted"><span class="text-foreground">Opensophy занимается </span><span class="text-accent">внедрением DevSecOps: автоматизацией, безопасностью и инфраструктурой</span>, развитием open-source инструментов для разработчиков и DevOps-команд, а также подготовкой образовательных материалов.</h2>
   </section>
 
   <!-- Projects Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline">Что разрабатывает</p>
-    <h2 class="section-lead text-foreground-muted">
-      <span class="text-foreground">Создаём</span>
-      <span class="text-accent">open-source инструменты</span> для безопасной инфраструктуры
-      и современных IT-команд.
-    </h2>
+    <p class="section-overline">Продукты</p>
     <div class="projects-grid">
       {#each projects as project (project.title)}
         <CardProject
@@ -222,34 +206,14 @@
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section
-    class="cta-section relative flex w-full items-center justify-center px-6 py-24 md:py-32"
-  >
-    <div class="cta-card" aria-hidden="true">
-      <div class="cta-bg"></div>
-    </div>
-
-    <div
-      class="relative z-10 flex flex-col items-center gap-6 text-center max-w-5xl w-full"
-    >
-      <h2 class="cta-heading">
-        Готовы к&nbsp;<span class="text-accent">сотрудничеству?</span>
-      </h2>
-      <p class="cta-sub">
-        Нужна помощь с инфраструктурой, безопасностью или DevSecOps?<br />
-        Напишите — отвечу в течение двух рабочих дней.
-      </p>
-      <button
-        type="button"
-        class="cta-button"
-        onclick={() => {
-          contactsState.open();
-        }}
-      >
-        <span>Написать нам</span>
-        <ArrowRight size={16} />
-      </button>
+  <!-- Services Section -->
+  <section class="section-block w-full max-w-5xl mx-auto px-4">
+    <p class="section-overline">Услуги</p>
+    <CardSection />
+    <div class="services-actions">
+      <a class="services-action" href="/solutions">Посмотреть все услуги</a>
+      <button type="button" class="services-action services-action-primary" onclick={() => contactsState.open()}>Заказать услуги</button>
+      <a class="services-action" href="/service-policy">Политика оказания услуг</a>
     </div>
   </section>
 </main>
@@ -452,6 +416,10 @@
     color: var(--foreground-muted);
     margin-bottom: 2rem;
   }
+
+  .about-note { position:relative; display:inline-grid; place-items:center; width:1.25rem; height:1.25rem; margin-left:.25rem; vertical-align:middle; border-radius:999px; background:var(--accent); color:white; font-size:.8rem; cursor:help; }
+  .about-note::after { content:"от «open philosophy» — «открытая философия»"; position:absolute; right:0; top:calc(100% + .5rem); z-index:5; width:max-content; max-width:16rem; padding:.55rem .7rem; border-radius:.5rem; background:var(--foreground); color:var(--background); font-size:.8rem; line-height:1.35; opacity:0; pointer-events:none; transition:opacity .15s; }
+  .about-note:hover::after, .about-note:focus::after { opacity:1; }
 
   .section-lead {
     font-size: clamp(1.75rem, 3.5vw, 2.6rem);

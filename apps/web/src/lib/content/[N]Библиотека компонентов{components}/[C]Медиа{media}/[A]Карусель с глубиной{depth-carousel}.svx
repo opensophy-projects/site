@@ -88,7 +88,7 @@ keywords: 'Opensophy, Карусель с глубиной, UI, UI components, �
 	sources={[{ name: 'depth-carousel.svelte', code: DepthCarouselSource, language: 'svelte' }]}
 >
 	{#snippet children(values)}
-		<div class="min-h-[560px] w-full rounded-lg bg-background-inset">
+		<div class="min-h-[600px] w-full rounded-lg bg-background-inset pt-8">
 			<DepthCarousel
 				items={items}
 				cardWidth={values.cardWidth as number}

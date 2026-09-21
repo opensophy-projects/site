@@ -53,7 +53,7 @@
         },
         {
           label: "os.compose",
-          description: "Наши готовые шаблоны для инструментов DevSecOps/AppSec.",
+          description: "Библиотека готовых Docker Compose-шаблонов для DevSecOps.",
           href: "/templates/docker/",
           icon: DockerLogo,
         },
@@ -75,24 +75,10 @@
   // ---- Решения: плоский ряд карточек ----
   const solutionLinks = [
     {
-      label: "Автоматизация",
-      description: "Создаю автоматизацию любого уровня — от простых задач до сложных процессов.",
-      href: "/solutions/automation",
-      icon: Settings,
-    },
-    {
-      label: "Безопасность",
-      description:
-        "Встраиваю безопасность в разработку, тестирование и запуск ваших проектов.",
-      href: "/solutions/security",
+      label: "Услуги",
+      description: "Аудит безопасности, DevSecOps, консультации и помощь с инфраструктурой.",
+      href: "/solutions",
       icon: IbmCloudGateKeeper,
-    },
-    {
-      label: "Инфраструктура",
-      description:
-        "Настраиваю серверы, приложения и инструменты для стабильной работы проектов.",
-      href: "/solutions/infrastructure",
-      icon: AddServer,
     },
     {
       label: "Политика оказания услуг",
