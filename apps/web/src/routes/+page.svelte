@@ -184,9 +184,6 @@
   </section>
 
   <!-- Projects Section -->
-  <div class="products-glow" aria-hidden="true">
-    <div class="products-bg"></div>
-  </div>
   <section class="section-block products-section w-full max-w-5xl mx-auto px-4">
     <p class="section-overline">Продукты</p>
     <div class="projects-grid">
@@ -502,41 +499,11 @@
     overflow: visible;
   }
 
-  /* Свечение над продуктами: высота как у hero, нижняя (прозрачная) часть
-     заходит под секцию, чтобы не было пустого разрыва */
-  .products-glow {
-    position: relative;
-    width: 100%;
-    height: clamp(24rem, 70vh, 40rem);
-    margin-top: 1rem;
-    margin-bottom: -8rem;
-    overflow: hidden;
-    pointer-events: none;
-  }
   .products-section {
     position: relative;
     z-index: 1;
   }
-  .products-bg {
-    position: absolute;
-    inset: 0;
-    max-width: 80rem;
-    margin-inline: auto;
-    overflow: hidden;
-    border-top-left-radius: var(--radius-3xl, 3.3rem);
-    border-top-right-radius: var(--radius-3xl, 3.3rem);
-    background: radial-gradient(
-      125% 125% at 50% 100%,
-      transparent 40%,
-      #f43f5e 68%,
-      #fda4af 86%,
-      #fff1f2 100%
-    );
-    opacity: 0.28;
-  }
-  :global(.dark) .products-bg {
-    opacity: 0.22;
-  }
+
   @media (max-width: 600px) {
     .about-note {
       transform: translateY(-0.6rem);
@@ -548,10 +515,6 @@
     }
     .about-ascii {
       height: 13rem;
-    }
-    .products-glow {
-      height: 16rem;
-      margin-bottom: -5rem;
     }
   }
 
