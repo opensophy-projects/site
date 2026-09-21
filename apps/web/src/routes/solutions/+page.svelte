@@ -30,7 +30,7 @@
     <ServicesGrid />
     <section class="mt-14 flex flex-wrap gap-3">
       <button class="action primary" onclick={() => contactsState.open()}
-        >Заказать услуги <ArrowRight size={16} /></button
+        >Заказать услуги</button
       ><a class="action" href="/service-policy">Политика оказания услуг</a>
     </section>
   </div>
