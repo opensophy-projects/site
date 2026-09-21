@@ -2,7 +2,6 @@
   import PageSeo from "$lib/components/seo/PageSeo.svelte";
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import ServicesGrid from "$lib/components/ui/ServicesGrid.svelte";
-  import ArrowRight from "carbon-icons-svelte/lib/ArrowRight.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 </script>
 
