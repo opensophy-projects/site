@@ -133,7 +133,7 @@
     >
       <p class="hero-name">{brandingConfig.name}</p>
       <p class="hero-lead">
-        проект про <TextLoop
+        здесь про <TextLoop
           texts={heroLoopTexts}
           interval={2200}
           class="text-accent"
