@@ -1,6 +1,7 @@
 <script lang="ts">
   import { brandingConfig } from "$lib";
-  import CardSection from "$lib/components/ui/CardSection.svelte";
+  import ServicesGrid from "$lib/components/ui/ServicesGrid.svelte";
+  import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui/TextLoop.svelte";
@@ -69,7 +70,11 @@
       description: "Библиотека готовых Docker Compose-шаблонов для DevSecOps.",
       colors: ["#f43f5e", "#f472b6", "#b2263e"],
       glowColor: "350 90 72",
-      status: { variant: "in-progress", label: "Проект развивается", href: "https://opensophy.com/templates/docker" },
+      status: {
+        variant: "in-progress",
+        label: "Проект развивается",
+        href: "https://opensophy.com/templates/docker",
+      },
     },
     {
       title: "os.dokploy",
@@ -142,17 +147,44 @@
   <section class="section-block w-full max-w-5xl mx-auto px-4">
     <p class="section-overline">Что такое Opensophy?</p>
     <h2 class="section-lead text-foreground-muted about-copy">
-      <span class="text-foreground">Opensophy</span><button type="button" class="about-note" aria-label="Что означает название">?</button> — это инициатива, которая развивает <span class="text-accent">DevSecOps и Open Source</span> и делает их доступнее для разработчиков и команд.
+      <span class="text-foreground">Opensophy</span><button
+        type="button"
+        class="about-note"
+        aria-label="Что означает название">?</button
+      > <span class="about-dash">—</span> это инициатива, которая развивает
+      <span class="text-accent">DevSecOps и Open Source</span> и делает их доступнее
+      для разработчиков и команд.
     </h2>
+    <div class="about-ascii" aria-hidden="true">
+      <AsciiObject
+        src="/logo.png"
+        colored={false}
+        color="var(--accent)"
+        highlight="var(--accent)"
+        background=""
+        cellSize={8}
+        scale={2.4}
+        orbit={false}
+        autoRotate={true}
+        autoRotateSpeed={0.5}
+      />
+    </div>
   </section>
 
   <!-- What We Do Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
     <p class="section-overline">Чем занимается</p>
-    <h2 class="section-lead text-foreground-muted"><span class="text-foreground">Opensophy занимается </span><span class="text-accent">внедрением DevSecOps: автоматизацией, безопасностью и инфраструктурой</span>, развитием open-source инструментов для разработчиков и DevOps-команд, а также подготовкой образовательных материалов.</h2>
+    <h2 class="section-lead text-foreground-muted">
+      <span class="text-foreground">Opensophy занимается&nbsp;</span><span
+        class="text-accent"
+        >внедрением DevSecOps: автоматизацией, безопасностью и инфраструктурой</span
+      >, развитием open-source инструментов для разработчиков и DevOps-команд, а
+      также подготовкой образовательных материалов.
+    </h2>
   </section>
 
   <!-- Projects Section -->
+  <div class="products-glow" aria-hidden="true"></div>
   <section class="section-block w-full max-w-5xl mx-auto px-4">
     <p class="section-overline">Продукты</p>
     <div class="projects-grid">
@@ -209,11 +241,17 @@
   <!-- Services Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
     <p class="section-overline">Услуги</p>
-    <CardSection />
+    <ServicesGrid />
     <div class="services-actions">
       <a class="services-action" href="/solutions">Посмотреть все услуги</a>
-      <button type="button" class="services-action services-action-primary" onclick={() => contactsState.open()}>Заказать услуги</button>
-      <a class="services-action" href="/service-policy">Политика оказания услуг</a>
+      <button
+        type="button"
+        class="services-action services-action-primary"
+        onclick={() => contactsState.open()}>Заказать услуги</button
+      >
+      <a class="services-action" href="/service-policy"
+        >Политика оказания услуг</a
+      >
     </div>
   </section>
 </main>
@@ -417,9 +455,79 @@
     margin-bottom: 2rem;
   }
 
-  .about-note { position:relative; display:inline-grid; place-items:center; width:1.25rem; height:1.25rem; margin-left:.25rem; vertical-align:middle; border-radius:999px; background:var(--accent); color:white; font-size:.8rem; cursor:help; }
-  .about-note::after { content:"от «open philosophy» — «открытая философия»"; position:absolute; right:0; top:calc(100% + .5rem); z-index:5; width:max-content; max-width:16rem; padding:.55rem .7rem; border-radius:.5rem; background:var(--foreground); color:var(--background); font-size:.8rem; line-height:1.35; opacity:0; pointer-events:none; transition:opacity .15s; }
-  .about-note:hover::after, .about-note:focus::after { opacity:1; }
+  .about-note {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-left: 0.1rem;
+    transform: translateY(-0.75rem);
+    vertical-align: middle;
+    border-radius: 999px;
+    background: var(--accent);
+    color: white;
+    font-size: 0.8rem;
+    cursor: help;
+  }
+  .about-note::after {
+    content: "от «open philosophy» — «открытая философия»";
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    z-index: 5;
+    width: max-content;
+    max-width: 16rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.5rem;
+    background: var(--foreground);
+    color: var(--background);
+    font-size: 0.8rem;
+    line-height: 1.35;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+  }
+  .about-note:hover::after,
+  .about-note:focus::after {
+    opacity: 1;
+  }
+
+  .about-ascii {
+    height: 13rem;
+    margin-top: 1.5rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent) 9%, transparent),
+      transparent 65%
+    );
+  }
+  .products-glow {
+    width: min(100%, 80rem);
+    height: 11rem;
+    margin-top: 1rem;
+    background: radial-gradient(
+      70% 100% at 50% 100%,
+      color-mix(in srgb, var(--accent) 25%, transparent),
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+  @media (max-width: 600px) {
+    .about-note {
+      transform: translateY(-0.6rem);
+    }
+    .about-note::after {
+      right: auto;
+      left: -0.5rem;
+      width: 13rem;
+    }
+    .about-ascii {
+      height: 10rem;
+    }
+  }
 
   .section-lead {
     font-size: clamp(1.75rem, 3.5vw, 2.6rem);

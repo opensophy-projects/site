@@ -30,7 +30,8 @@
       links: [
         {
           label: "os.dokploy",
-          description: "Платформа для управления серверами и деплоя приложений.",
+          description:
+            "Платформа для управления серверами и деплоя приложений.",
           href: "/dokploy",
           icon: WebServicesContainer,
         },
@@ -47,13 +48,15 @@
       links: [
         {
           label: "os.ui",
-          description: "Библиотека готовых UI-компонентов с живым превью и гибкими настройками.",
+          description:
+            "Библиотека готовых UI-компонентов с живым превью и гибкими настройками.",
           href: "/components/overview",
           icon: QHintonPlot,
         },
         {
           label: "os.compose",
-          description: "Библиотека готовых Docker Compose-шаблонов для DevSecOps.",
+          description:
+            "Библиотека готовых Docker Compose-шаблонов для DevSecOps.",
           href: "/templates/docker/",
           icon: DockerLogo,
         },
@@ -64,7 +67,8 @@
       links: [
         {
           label: "os.mtls",
-          description: "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.",
+          description:
+            "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.",
           href: "/mtls",
           icon: Network_3,
         },
@@ -76,15 +80,10 @@
   const solutionLinks = [
     {
       label: "Услуги",
-      description: "Аудит безопасности, DevSecOps, консультации и помощь с инфраструктурой.",
+      description:
+        "Аудит безопасности, DevSecOps, консультации и помощь с инфраструктурой.",
       href: "/solutions",
       icon: IbmCloudGateKeeper,
-    },
-    {
-      label: "Политика оказания услуг",
-      description: "Узнайте о том как я работаю перед тем как заказать услугу.",
-      href: "/service-policy",
-      icon: Policy,
     },
   ];
 
@@ -152,7 +151,9 @@
               href={link.href}
               class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
             >
-              <span class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5">
+              <span
+                class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
+              >
                 <span
                   class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
                 >
@@ -163,7 +164,9 @@
                 <span class="block text-sm font-medium text-foreground">
                   {link.label}
                 </span>
-                <span class="mt-1 block text-sm leading-snug text-foreground-muted">
+                <span
+                  class="mt-1 block text-sm leading-snug text-foreground-muted"
+                >
                   {link.description}
                 </span>
               </span>
@@ -201,7 +204,9 @@
         href={link.href}
         class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
       >
-        <span class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5">
+        <span
+          class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
+        >
           <span
             class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
           >
@@ -232,7 +237,9 @@
         href={link.href}
         class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
       >
-        <span class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5">
+        <span
+          class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
+        >
           <span
             class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
           >
@@ -254,7 +261,9 @@
     <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
       <button
         type="button"
-        onclick={() => { contactsState.open(); }}
+        onclick={() => {
+          contactsState.open();
+        }}
         class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
       >
         Контакты
@@ -278,6 +287,11 @@
     >
   {/snippet}
   {#snippet actionsEnd()}
+    <a
+      href="/service-policy"
+      class="hidden text-sm font-medium text-foreground-muted transition-colors hover:text-foreground lg:inline-flex"
+      >Политика оказания услуг</a
+    >
     <ThemeToggle />
     <span class="inset-shadow inline-flex rounded-xl bg-background-inset p-1.5">
       <button
@@ -298,7 +312,13 @@
       <Button variant="secondary" size="lg" href="/status">Статус</Button>
     </div>
     <div class="mobile-footer-btn w-full">
-      <Button variant="primary" size="lg" onclick={() => { contactsState.open(); }}>
+      <Button
+        variant="primary"
+        size="lg"
+        onclick={() => {
+          contactsState.open();
+        }}
+      >
         Контакты
       </Button>
     </div>
