@@ -15,10 +15,8 @@
   import Policy from "carbon-icons-svelte/lib/Policy.svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
   import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
-  import Settings from "carbon-icons-svelte/lib/Settings.svelte";
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
   import IbmCloudGateKeeper from "carbon-icons-svelte/lib/IbmCloudGateKeeper.svelte";
-  import AddServer from "carbon-icons-svelte/lib/AddServer.svelte";
   import UserFavoriteAltFilled from "carbon-icons-svelte/lib/UserFavoriteAltFilled.svelte";
   import Book from "carbon-icons-svelte/lib/Book.svelte";
   import LocationCurrent from "carbon-icons-svelte/lib/LocationCurrent.svelte";
