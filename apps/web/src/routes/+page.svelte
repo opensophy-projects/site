@@ -159,8 +159,9 @@
       <AsciiObject
         src="/logo.png"
         colored={false}
-        color="var(--accent)"
-        highlight="var(--accent)"
+        color="#f43f5e"
+        highlight="#f43f5e"
+        class="h-full w-full"
         background=""
         cellSize={8}
         scale={2.4}
@@ -508,11 +509,15 @@
     width: min(100%, 80rem);
     height: 11rem;
     margin-top: 1rem;
+    overflow: hidden;
     background: radial-gradient(
-      70% 100% at 50% 100%,
-      color-mix(in srgb, var(--accent) 25%, transparent),
-      transparent 70%
+      125% 125% at 50% 100%,
+      transparent 40%,
+      #f43f5e 68%,
+      #fda4af 86%,
+      #fff1f2 100%
     );
+    opacity: 0.28;
     pointer-events: none;
   }
   @media (max-width: 600px) {
@@ -567,6 +572,7 @@
     flex-wrap: wrap;
     gap: 0.75rem;
     margin-top: 1.25rem;
+    justify-content: center;
   }
 
   .services-action {

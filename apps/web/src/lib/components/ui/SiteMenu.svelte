@@ -85,6 +85,12 @@
       href: "/solutions",
       icon: IbmCloudGateKeeper,
     },
+    {
+      label: "Политика оказания услуг",
+      description: "Узнайте, как я работаю перед тем, как заказать услугу.",
+      href: "/service-policy",
+      icon: Policy,
+    },
   ];
 
   // ---- Ресурсы: плоский ряд карточек ----
