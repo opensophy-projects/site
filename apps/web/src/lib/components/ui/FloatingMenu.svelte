@@ -160,7 +160,7 @@
 		"z-50",
 		isMobileOpen
 			? "inset-0"
-			: "top-2 left-1/2 w-full max-w-[95vw] -translate-x-1/2 md:top-4 md:max-w-[70vw] lg:max-w-[64rem]",
+			: "top-2 left-1/2 w-full max-w-[calc(100vw-2rem)] -translate-x-1/2 md:top-4 md:max-w-[70vw] lg:max-w-[64rem]",
 	)}
 >
 	<div

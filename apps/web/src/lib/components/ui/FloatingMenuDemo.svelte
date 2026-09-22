@@ -241,7 +241,7 @@
 	{@attach attachContainerRef}
 	data-slot="root"
 	class={cn(
-		"top-2 left-1/2 z-50 w-full max-w-[95vw] -translate-x-1/2 rounded-md border border-border bg-background text-foreground shadow-md md:top-4 md:max-w-[70vw] lg:max-w-[50vw]",
+		"top-2 left-1/2 z-50 w-full max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-md border border-border bg-background text-foreground shadow-md md:top-4 md:max-w-[70vw] lg:max-w-[50vw]",
 		positionClass,
 		className,
 		classes?.root,
