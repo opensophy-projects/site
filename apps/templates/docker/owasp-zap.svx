@@ -1,5 +1,5 @@
 ---
-title: демо шаблон owasp zap
+title: OWASP ZAP
 description: OWASP ZAP — инструмент динамического анализа безопасности веб-приложений, который помогает запускать baseline, full и API-сканы в контейнере и сохранять отчёты в HTML, JSON и Markdown.
 ---
 
@@ -8,27 +8,122 @@ description: OWASP ZAP — инструмент динамического ан�
 
 	const compose = `services:
   zap:
-    image: zaproxy/zap-stable:latest
+    image: \${ZAP_IMAGE:-zaproxy/zap-stable:latest}
     container_name: owasp-zap-scan
     restart: "no"                 # одноразовый запуск
+    init: true                    # tini как PID1 — корректные сигналы и reap зомби-процессов
 
     environment:
       TARGET_URL: \${TARGET_URL}
       SCAN_TYPE: \${SCAN_TYPE:-full}       # baseline | full | api
       SCAN_LEVEL: \${SCAN_LEVEL:-medium}
       EXTRA_ARGS: \${EXTRA_ARGS:-}
+      SCAN_TIMEOUT: \${SCAN_TIMEOUT:-0}
+      ZAP_ADDONS: \${ZAP_ADDONS:-}
 
     volumes:
       - "\${REPORT_DIR}:/zap/wrk:rw"
 
-    # Скрипт сканирования зашит base64-строкой, чтобы ни Dokploy, ни Docker
-    # Compose не трогали внутри него ни один символ "$" на этапе парсинга
-    # файла. Раскодируется и выполняется он уже внутри контейнера, поэтому
-    # переменные окружения (TARGET_URL, SCAN_TYPE и т.д.) разворачивает
-    # исключительно bash в рантайме — предсказуемо и без сюрпризов.
+    # Все "$" ниже, которые должны разворачиваться bash'ем ВНУТРИ контейнера
+    # (а не Docker Compose на этапе парсинга файла), записаны как "$$" —
+    # это стандартный способ Compose сказать "не трогай, это не моя переменная".
     entrypoint: ["/bin/bash", "-c"]
     command:
-      - "echo IyEvYmluL2Jhc2gKc2V0IC11byBwaXBlZmFpbAplY2hvICI9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSIKZWNobyAiIE9XQVNQIFpBUCDigJQg0L7QtNC90L7RgNCw0LfQvtCy0YvQuSDRgdC60LDQvSIKZWNobyAiPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0iCgpUQVJHRVRfVVJMPSIke1RBUkdFVF9VUkw6LX0iClNDQU5fVFlQRT0iJHtTQ0FOX1RZUEU6LWZ1bGx9IgpTQ0FOX0xFVkVMPSIke1NDQU5fTEVWRUw6LW1lZGl1bX0iCkVYVFJBX0FSR1M9IiR7RVhUUkFfQVJHUzotfSIKCmlmIFsgLXogIiRUQVJHRVRfVVJMIiBdOyB0aGVuCiAgZWNobyAiW0VSUk9SXSDQndC1INC30LDQtNCw0L0gVEFSR0VUX1VSTCDigJQg0YPQutCw0LbQuCDRhtC10LvRjCDQsNGC0LDQutC4INCyIEVudmlyb25tZW50IgogIGV4aXQgMQpmaQoKVElNRVNUQU1QPSIkKGRhdGUgKyVZJW0lZF8lSCVNJVMpIgpTQUZFX0hPU1Q9IiQocHJpbnRmICclcycgIiRUQVJHRVRfVVJMIiB8IHNlZCAtRSAncyNodHRwcz86Ly8jIzsgcyNbXmEtekEtWjAtOS5fLV0jXyNnJykiClJFUE9SVF9CQVNFTkFNRT0iemFwXyR7U0NBTl9UWVBFfV8ke1NBRkVfSE9TVH1fJHtUSU1FU1RBTVB9IgoKY2FzZSAiJFNDQU5fVFlQRSIgaW4KICBiYXNlbGluZSkgU0NSSVBUPSJ6YXAtYmFzZWxpbmUucHkiIDs7CiAgZnVsbCkgICAgIFNDUklQVD0iemFwLWZ1bGwtc2Nhbi5weSIgOzsKICBhcGkpICAgICAgU0NSSVBUPSJ6YXAtYXBpLXNjYW4ucHkiIDs7CiAgKikKICAgIGVjaG8gIltFUlJPUl0g0J3QtdC40LfQstC10YHRgtC90YvQuSBTQ0FOX1RZUEU6ICRTQ0FOX1RZUEUgKGJhc2VsaW5lfGZ1bGx8YXBpKSIKICAgIGV4aXQgMQogICAgOzsKZXNhYwoKbWtkaXIgLXAgL3phcC93cmsKCmVjaG8gItCm0LXQu9GMOiAgICAgICAgICAkVEFSR0VUX1VSTCIKZWNobyAi0KLQuNC/INGB0LrQsNC90LA6ICAgICAkU0NBTl9UWVBFICgkU0NSSVBUKSIKZWNobyAi0KPRgNC+0LLQtdC90Yw6ICAgICAgICRTQ0FOX0xFVkVMIgplY2hvICJIVE1MLdC+0YLRh9GR0YI6ICAgIC96YXAvd3JrLyR7UkVQT1JUX0JBU0VOQU1FfS5odG1sIgplY2hvICJKU09OLdC+0YLRh9GR0YI6ICAgIC96YXAvd3JrLyR7UkVQT1JUX0JBU0VOQU1FfS5qc29uIgplY2hvICJNRC3QvtGC0YfRkdGCOiAgICAgIC96YXAvd3JrLyR7UkVQT1JUX0JBU0VOQU1FfS5tZCIKZWNobyAi0JTQvtC/LiDRhNC70LDQs9C4OiAgICAke0VYVFJBX0FSR1M6LTzQvdC10YI+fSIKZWNobyAiLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0iCgoiJFNDUklQVCIgXAogIC10ICIkVEFSR0VUX1VSTCIgXAogIC1yICIke1JFUE9SVF9CQVNFTkFNRX0uaHRtbCIgXAogIC13ICIke1JFUE9SVF9CQVNFTkFNRX0ubWQiIFwKICAtSiAiJHtSRVBPUlRfQkFTRU5BTUV9Lmpzb24iIFwKICAtSSBcCiAgLWQgXAogICRFWFRSQV9BUkdTCgpFWElUX0NPREU9JD8KZWNobyAiLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0iCmVjaG8gItCh0LrQsNC9INC30LDQstC10YDRiNGR0L0uINCS0L3Rg9GC0YDQtdC90L3QuNC5INC60L7QtCDQt9Cw0LLQtdGA0YjQtdC90LjRjyBaQVA6ICRFWElUX0NPREUiCmVjaG8gIigwID0g0L/RgNC+0LHQu9C10Lwg0L3QtSDQvdCw0LnQtNC10L3QviwgMiA9IFdBUk4vRkFJTCDQvdCw0LnQtNC10L3RiyDigJQg0Y3RgtC+INC90L7RgNC80LDQu9GM0L3Ri9C5INC40YHRhdC+0LQsINC90LUg0YHQsdC+0LkpIgoKaWYgWyAtZiAiL3phcC93cmsvJHtSRVBPUlRfQkFTRU5BTUV9Lmh0bWwiIF07IHRoZW4KICAgIGNobW9kIDY0NCAvemFwL3dyay8ke1JFUE9SVF9CQVNFTkFNRX0uKiAyPi9kZXYvbnVsbCB8fCB0cnVlCiAgICBlY2hvICLQntGC0YfRkdGC0Ysg0YHQvtGF0YDQsNC90LXQvdGLINCyINC/0YDQuNC80L7QvdGC0LjRgNC+0LLQsNC90L3QvtC5INC/0LDQv9C60LUuIgplbHNlCiAgICBlY2hvICJbV0FSTl0gSFRNTC3QvtGC0YfRkdGCINC90LUg0L3QsNC50LTQtdC9IOKAlCDRgdC80L7RgtGA0Lgg0LvQvtCzINCy0YvRiNC1INC90LAg0L/RgNC10LTQvNC10YIg0L7RiNC40LHQutC4INGB0L7QtdC00LjQvdC10L3QuNGPINGBINGG0LXQu9GM0Y4uIgpmaQoKZWNobyAiPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0iCmVjaG8gIiDQmtC+0L3RgtC10LnQvdC10YAg0LfQsNCy0LXRgNGI0LDQtdGCINGA0LDQsdC+0YLRgyAo0L7QtNC90L7RgNCw0LfQvtCy0YvQuSDRgNC10LbQuNC8KSIKZWNobyAiPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0iCmV4aXQgMAo= | base64 -d | bash"
+      - |
+        set -uo pipefail
+        echo "=================================================="
+        echo " OWASP ZAP — одноразовый скан"
+        echo "=================================================="
+
+        TARGET_URL="$$\${TARGET_URL:-}"
+        SCAN_TYPE="$$\${SCAN_TYPE:-full}"
+        SCAN_LEVEL="$$\${SCAN_LEVEL:-medium}"
+        EXTRA_ARGS="$$\${EXTRA_ARGS:-}"
+        SCAN_TIMEOUT="$$\${SCAN_TIMEOUT:-0}"
+        ZAP_ADDONS="$$\${ZAP_ADDONS:-}"
+
+        if [ -z "$$TARGET_URL" ]; then
+          echo "[ERROR] Не задан TARGET_URL — укажи цель атаки в Environment"
+          exit 1
+        fi
+
+        # --- Установка доп. аддонов (если указаны) ---
+        # ID берутся из столбца "ID" на https://www.zaproxy.org/addons
+        if [ -n "$$ZAP_ADDONS" ]; then
+          echo "--------------------------------------------------"
+          echo "Устанавливаю аддоны: $$ZAP_ADDONS"
+          ADDON_ARGS=(-addonupdate)
+          for addon in $$ZAP_ADDONS; do
+            ADDON_ARGS+=(-addoninstall "$$addon")
+          done
+          zap.sh -cmd "$$\${ADDON_ARGS[@]}" -silent
+          ADDON_EXIT=$$?
+          if [ "$$ADDON_EXIT" -ne 0 ]; then
+            echo "[WARN] Установка аддонов завершилась с кодом $$ADDON_EXIT — проверь ID на https://www.zaproxy.org/addons и доступ контейнера в интернет"
+          else
+            echo "Аддоны установлены."
+          fi
+          echo "--------------------------------------------------"
+        fi
+
+        TIMESTAMP="$$(date +%Y%m%d_%H%M%S)"
+        SAFE_HOST="$$(printf '%s' "$$TARGET_URL" | sed -E 's#https?://##; s#[^a-zA-Z0-9._-]#_#g')"
+        REPORT_BASENAME="zap_$$\${SCAN_TYPE}_$$\${SAFE_HOST}_$$\${TIMESTAMP}"
+
+        case "$$SCAN_TYPE" in
+          baseline) SCRIPT="zap-baseline.py" ;;
+          full)     SCRIPT="zap-full-scan.py" ;;
+          api)      SCRIPT="zap-api-scan.py" ;;
+          *)
+            echo "[ERROR] Неизвестный SCAN_TYPE: $$SCAN_TYPE (baseline|full|api)"
+            exit 1
+            ;;
+        esac
+
+        mkdir -p /zap/wrk
+
+        echo "Цель:          $$TARGET_URL"
+        echo "Тип скана:     $$SCAN_TYPE ($$SCRIPT)"
+        echo "Уровень:       $$SCAN_LEVEL (справочно; не влияет на движок — используй EXTRA_ARGS с -z, если нужна настройка agressiveness)"
+        echo "Таймаут:       $$\${SCAN_TIMEOUT}s (0 = без ограничения)"
+        echo "Аддоны:        $$\${ZAP_ADDONS:-<нет>}"
+        echo "HTML-отчёт:    /zap/wrk/$$\${REPORT_BASENAME}.html"
+        echo "JSON-отчёт:    /zap/wrk/$$\${REPORT_BASENAME}.json"
+        echo "MD-отчёт:      /zap/wrk/$$\${REPORT_BASENAME}.md"
+        echo "Доп. флаги:    $$\${EXTRA_ARGS:-<нет>}"
+        echo "--------------------------------------------------"
+
+        RUN_CMD=("$$SCRIPT" -t "$$TARGET_URL" -r "$$\${REPORT_BASENAME}.html" -w "$$\${REPORT_BASENAME}.md" -J "$$\${REPORT_BASENAME}.json" -I -d)
+        if [ -n "$$EXTRA_ARGS" ]; then
+          read -ra EXTRA_ARR <<< "$$EXTRA_ARGS"
+          RUN_CMD+=("$$\${EXTRA_ARR[@]}")
+        fi
+
+        if [ "$$SCAN_TIMEOUT" -gt 0 ] 2>/dev/null; then
+          timeout "$$SCAN_TIMEOUT" "$$\${RUN_CMD[@]}"
+        else
+          "$$\${RUN_CMD[@]}"
+        fi
+
+        EXIT_CODE=$$?
+        echo "--------------------------------------------------"
+        if [ "$$EXIT_CODE" -eq 124 ]; then
+          echo "[WARN] Скан прерван по таймауту ($$\${SCAN_TIMEOUT}s)."
+        fi
+        echo "Скан завершён. Внутренний код завершения ZAP: $$EXIT_CODE"
+        echo "(0 = проблем не найдено, 2 = WARN/FAIL найдены — это нормальный исход, не сбой)"
+
+        if [ -f "/zap/wrk/$$\${REPORT_BASENAME}.html" ]; then
+            chmod 644 /zap/wrk/$$\${REPORT_BASENAME}.* 2>/dev/null || true
+            echo "Отчёты сохранены в примонтированной папке."
+        else
+            echo "[WARN] HTML-отчёт не найден — смотри лог выше на предмет ошибки соединения с целью."
+        fi
+
+        echo "=================================================="
+        echo " Контейнер завершает работу (одноразовый режим)"
+        echo "=================================================="
+        exit 0
 
     # --- лимиты ресурсов ---
     mem_limit: \${ZAP_MEM_LIMIT:-2g}
@@ -44,19 +139,57 @@ description: OWASP ZAP — инструмент динамического ан�
         max-file: "3"`;
 
 	const env = `# Цель атаки — обязательно
-TARGET_URL=https://вашацель/
+TARGET_URL=
 
 # Тип скана: baseline (быстрый, пассивный) | full (активный, дольше) | api (по OpenAPI/GraphQL)
 SCAN_TYPE=baseline
 
 # Уровень настойчивости атак: LOW | MEDIUM | HIGH | INSANE
+# Справочный параметр — сам по себе не передаётся в zap-*.py движок.
+# Чтобы реально повлиять на agressiveness сканирования — используй EXTRA_ARGS
+# с флагом -z (см. ниже).
 SCAN_LEVEL=medium
 
-# Любые дополнительные флаги zap-*.py через пробел, например: -j (ajax spider) -m 5 (5 мин на паука)
+# Доп. флаги для docker-скрипта сканирования (zap-baseline.py / zap-full-scan.py /
+# zap-api-scan.py — какой именно используется, зависит от SCAN_TYPE выше).
+# ВАЖНО: это НЕ маркетплейс аддонов (см. ZAP_ADDONS ниже) — тут только флаги
+# самого скрипта, вставляются через пробел, ничего экранировать не нужно.
+# Пример: EXTRA_ARGS=-j -m 5
+#
+# Где смотреть актуальный список флагов (у каждого скрипта свой набор):
+#   baseline:   https://www.zaproxy.org/docs/docker/baseline-scan/
+#   full scan:  https://www.zaproxy.org/docs/docker/full-scan/
+#   api scan:   https://www.zaproxy.org/docs/docker/api-scan/
+# Либо прямо из контейнера, без интернета:
+#   docker run --rm zaproxy/zap-stable zap-full-scan.py -h
+#
+# Частые флаги (для full/baseline; полный список — по ссылкам выше):
+#   -m <мин>     лимит времени на паука
+#   -j           включить Ajax-spider в помощь обычному (нужен для SPA/JS-роутов)
+#   -T <мин>     макс. время ожидания старта ZAP и пассивного скана
+#   -n <файл>    context-файл (для авторизованного скана)
+#   -U <юзер>    логин для авторизованного скана (вместе с -n)
+#   -l LEVEL     минимальный уровень для вывода: PASS|IGNORE|INFO|WARN|FAIL
+#   -z "<опц>"   низкоуровневые опции самого ZAP, например -z "-config aaa=bbb";
+#                сюда же прокидываются настройки уже установленных аддонов —
+#                сам аддон это не ставит, только настраивает
 EXTRA_ARGS=
 
+# Доп. аддоны ZAP через пробел (нужен именно ID, не название!). Смотри столбец
+# "ID" на https://www.zaproxy.org/addons — например: wappalyzer graphql postman soap
+# Ставятся автоматически перед сканом (zap.sh -addoninstall), контейнеру
+# нужен доступ в интернет к маркетплейсу.
+ZAP_ADDONS=
+
+# Таймаут скана в секундах. 0 = без ограничения.
+SCAN_TIMEOUT=0
+
 # Куда класть отчёты на хосте. Папка будет создана автоматически, если её нет.
-REPORT_DIR=/home/veil/Документы/работа/security/owasp-zap-report
+REPORT_DIR=
+
+# Образ ZAP. Можно зафиксировать конкретную версию вместо latest,
+# например zaproxy/zap-stable:2.16.1 — см. hub.docker.com/r/zaproxy/zap-stable/tags
+ZAP_IMAGE=zaproxy/zap-stable:latest
 
 # Лимиты ресурсов контейнера
 ZAP_MEM_LIMIT=2g
