@@ -185,6 +185,7 @@
 
   <!-- Projects Section -->
   <section class="section-block products-section w-full max-w-5xl mx-auto px-4">
+    <div class="products-glow" aria-hidden="true"></div>
     <p class="section-overline">Продукты</p>
     <div class="projects-grid">
       {#each projects as project (project.title)}
@@ -440,9 +441,11 @@
   }
 
   /* ─── Section Layout ───────────────────────────────────────── */
+  /* Уменьшены отступы между секциями, чтобы блоки "Что такое Opensophy?"
+     и "Чем занимается" помещались в один экран */
   .section-block {
-    padding-top: clamp(2rem, 4vw, 3rem);
-    padding-bottom: clamp(4rem, 8vw, 7rem);
+    padding-top: clamp(0.75rem, 1.5vw, 1.25rem);
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
   }
 
   .section-overline {
@@ -451,7 +454,7 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--foreground-muted);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 
   .about-note {
@@ -492,16 +495,48 @@
     opacity: 1;
   }
 
-  /* Логотип: без overflow:hidden, чтобы контейнер его не обрезал */
+  /* Логотип: без overflow:hidden, чтобы контейнер его не обрезал.
+     Высота и верхний отступ уменьшены под компактную вёрстку. */
   .about-ascii {
     height: 17rem;
-    margin-top: 1.5rem;
+    margin-top: 0.5rem;
     overflow: visible;
   }
 
+  /* ─── Products Section Glow ────────────────────────────────── */
   .products-section {
     position: relative;
     z-index: 1;
+  }
+
+  /* Квадратный блок свечения позади карточек продуктов.
+     Теперь это полностью залитый прямоугольник только акцентным цветом:
+     без прозрачного "провала" в центре и без чёрных/белых углов —
+     градиент идёт от чуть более светлого акцента в центре
+     к чуть более тёмному акценту по краям, оставаясь в одной гамме. */
+  .products-glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80rem;
+    max-width: 100vw;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    border-radius: var(--radius-3xl, 3.3rem);
+    background: radial-gradient(
+      farthest-corner at 50% 50%,
+      color-mix(in srgb, #f43f5e 85%, white) 0%,
+      #f43f5e 55%,
+      color-mix(in srgb, #f43f5e 80%, black) 100%
+    );
+    opacity: 0.32;
+  }
+
+  :global(.dark) .products-glow {
+    opacity: 0.22;
   }
 
   @media (max-width: 600px) {
@@ -515,6 +550,9 @@
     }
     .about-ascii {
       height: 13rem;
+    }
+    .products-glow {
+      width: 160%;
     }
   }
 
