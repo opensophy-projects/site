@@ -5,6 +5,7 @@
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui/TextLoop.svelte";
+  import Badge from "$lib/components/ui-registry/Badge.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
@@ -144,7 +145,9 @@
 
   <!-- About Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline">Что такое Opensophy?</p>
+    <div class="section-overline">
+      <Badge variant="accent">Что такое Opensophy?</Badge>
+    </div>
     <h2 class="section-lead text-foreground-muted about-copy">
       <span class="text-foreground">Opensophy</span><button
         type="button"
@@ -173,7 +176,9 @@
 
   <!-- What We Do Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline">Чем занимается</p>
+    <div class="section-overline">
+      <Badge variant="accent">Чем занимается</Badge>
+    </div>
     <h2 class="section-lead text-foreground-muted">
       <span class="text-foreground">Opensophy занимается&nbsp;</span><span
         class="text-accent"
@@ -186,7 +191,9 @@
   <!-- Projects Section -->
   <section class="section-block products-section w-full max-w-5xl mx-auto px-4">
     <div class="products-glow" aria-hidden="true"></div>
-    <p class="section-overline">Продукты</p>
+    <div class="section-overline">
+      <Badge variant="outline">Продукты</Badge>
+    </div>
     <div class="projects-grid">
       {#each projects as project (project.title)}
         <CardProject
@@ -240,7 +247,9 @@
 
   <!-- Services Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline">Услуги</p>
+    <div class="section-overline">
+      <Badge variant="accent">Услуги</Badge>
+    </div>
     <ServicesGrid />
     <div class="services-actions">
       <a class="services-action" href="/solutions">Посмотреть все услуги</a>
@@ -449,12 +458,15 @@
   }
 
   .section-overline {
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--foreground-muted);
+    display: flex;
     margin-bottom: 1rem;
+  }
+
+  .section-overline :global(.inset-shadow) {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.75rem;
   }
 
   .about-note {

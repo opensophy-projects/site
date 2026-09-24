@@ -21,7 +21,7 @@
 		success: 'bg-green-500/10 text-green-500',
 		warning: 'bg-orange-500/10 text-orange-500',
 		error: 'bg-red-500/10 text-red-500',
-		outline: 'bg-background-inset text-foreground'
+		outline: 'border border-foreground/60 bg-transparent text-foreground'
 	};
 </script>
 
