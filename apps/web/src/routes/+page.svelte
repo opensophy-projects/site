@@ -261,29 +261,28 @@
     <div class="author-glow" aria-hidden="true"></div>
     <p class="section-overline"><Badge variant="accent">Об авторе</Badge></p>
     <div class="author-copy">
-      <p class="section-lead text-accent">
+      <p class="author-lead">
         Привет! Меня зовут <span class="text-foreground">Даниил Кулешов</span>, я
         основатель и руководитель Opensophy. С 2025 года занимаюсь DevSecOps:
-        выстраиваю безопасные пайплайны, встраиваю безопасность в процесс
-        разработки и настраиваю инфраструктуру с нуля почти под любой стек и
-        любые ресурсы. Если инфраструктура уже есть, найду, что в ней не так, и
-        починю.
+        выстраиваю безопасные пайплайны, встраиваю безопасность в разработку и
+        настраиваю инфраструктуру с нуля почти под любой стек. Если
+        инфраструктура уже есть, найду, что в ней не так, и починю.
       </p>
-      <p class="section-lead text-accent">
-        До этого я занимался white hat-хакингом и bug bounty: искал уязвимости в
-        реальных проектах и передавал отчёты разработчикам.
-      </p>
-      <p class="section-lead text-accent">
-        В IT я пришёл не через безопасность. Сначала работал графическим
-        дизайнером, потом преподавал программирование, а затем стал
-        комьюнити-менеджером крупной мобильной игры в NetEase Games. И только
-        после этого выбрал кибербезопасность.
-      </p>
-      <p class="section-lead text-accent">
-        Сейчас я развиваю Opensophy: пишу open-source продукты и помогаю
-        командам, компаниям, проектам с безопасностью и инфраструктурой.
-        Продолжаю учиться и делюсь знаниями в статьях.
-      </p>
+      <div class="author-columns">
+        <p class="author-col">
+          До этого занимался white hat-хакингом и bug bounty: искал уязвимости в
+          реальных проектах и передавал отчёты разработчикам.
+        </p>
+        <p class="author-col">
+          В IT пришёл не через безопасность: был графическим дизайнером,
+          преподавал программирование, работал комьюнити-менеджером в NetEase
+          Games. Потом выбрал кибербезопасность.
+        </p>
+        <p class="author-col">
+          Сейчас развиваю Opensophy: пишу open-source продукты и помогаю
+          командам с безопасностью и инфраструктурой. Делюсь знаниями в статьях.
+        </p>
+      </div>
     </div>
   </section>
 </main>
@@ -690,7 +689,40 @@
   .author-copy {
     display: flex;
     flex-direction: column;
+    gap: 1.75rem;
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+  }
+
+  .author-lead {
+    font-size: clamp(1.15rem, 2vw, 1.5rem);
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .author-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
+  }
+
+  .author-col {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--accent);
+    margin: 0;
+    padding-top: 0.9rem;
+    border-top: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  @media (max-width: 767px) {
+    .author-columns {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
   }
 
   @media (max-width: 600px) {
