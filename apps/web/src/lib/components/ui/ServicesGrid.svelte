@@ -12,10 +12,10 @@
   // ── Размеры рисунков (scale) — крутить тут ─────────────────────────
   const SCALE = {
     shield: 4.4, // было 5 — чуть меньше
-    pentest: 13.5, // viewBox 450×152 → на всю ширину карточки
-    review: 13.5, // viewBox 450×152 → на всю ширину карточки
+    pentest: 12.5, // на всю ширину карточки с небольшим запасом
+    review: 12.5, // на всю ширину карточки с небольшим запасом
     leak: 4.2, // было 5 — поменьше
-    consult: 5.4, // облачка разнесены по высоте, целиком влезают
+    consult: 5.8, // оба облачка целиком в области рисунка
     gear: 4.4, // как щит
   };
 
@@ -65,20 +65,29 @@
     <path fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M82 98 L95 112 L120 84"/>
   </svg>`;
 
+  // ── Как совмещаем серый и акцентный слои ───────────────────────────
+  // AsciiObject подгоняет каждое изображение под его собственную рамку
+  // (bounding box) и центрирует. Поэтому слои с разным содержимым «уезжают»
+  // друг относительно друга. Чтобы рамки были идентичными, КАЖДЫЙ слой содержит
+  // ВСЕ фигуры: свои — белые (видимые), чужие — чёрные (пустые в ASCII).
+  const layerSvg = (viewBox: string, own: string, other: string) =>
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">${other}${own}</svg>`;
+
   // ── Проверка безопасности: как в оригинале ─────────────────────────
   // Холст 450×152 (≈ размер области рисунка). Большие дуги выходят за края
   // и обрезаются, вертикальная линия по центру.
-  // Серый слой: вертикаль + левая половина внешней дуги + правая половина внутренней.
-  // Акцентный слой: правая половина внешней дуги + левая половина внутренней.
-  const pentestGraySvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 152">
-    <rect x="222" y="0" width="6" height="152" fill="#ffffff"/>
-    <path d="M225 19.2 A273 273 0 0 0 225 565.2" fill="none" stroke="#ffffff" stroke-width="6"/>
-    <path d="M225 56 A225 225 0 0 1 225 506" fill="none" stroke="#ffffff" stroke-width="6"/>
-  </svg>`;
-  const pentestAccentSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 152">
-    <path d="M225 19.2 A273 273 0 0 1 225 565.2" fill="none" stroke="#ffffff" stroke-width="6"/>
-    <path d="M225 56 A225 225 0 0 0 225 506" fill="none" stroke="#ffffff" stroke-width="6"/>
-  </svg>`;
+  // Серое: вертикаль + левая половина внешней дуги + правая половина внутренней.
+  // Акцент: правая половина внешней дуги + левая половина внутренней.
+  const PENTEST_VB = "0 0 450 152";
+  const pentestGrayEls = (c: string) => `
+    <rect x="222" y="0" width="6" height="152" fill="${c}"/>
+    <path d="M225 19.2 A273 273 0 0 0 225 565.2" fill="none" stroke="${c}" stroke-width="6"/>
+    <path d="M225 56 A225 225 0 0 1 225 506" fill="none" stroke="${c}" stroke-width="6"/>`;
+  const pentestAccentEls = (c: string) => `
+    <path d="M225 19.2 A273 273 0 0 1 225 565.2" fill="none" stroke="${c}" stroke-width="6"/>
+    <path d="M225 56 A225 225 0 0 0 225 506" fill="none" stroke="${c}" stroke-width="6"/>`;
+  const pentestGraySvg = layerSvg(PENTEST_VB, pentestGrayEls("#ffffff"), pentestAccentEls("#000000"));
+  const pentestAccentSvg = layerSvg(PENTEST_VB, pentestAccentEls("#ffffff"), pentestGrayEls("#000000"));
 
   // ── Code review: столбики, в основном серые + немного акцентных ────
   const barsHeights = [
@@ -87,24 +96,23 @@
   ];
   const accentBars = new Set([4, 9, 12, 18, 23, 26]);
 
-  const buildBars = (accent: boolean) => {
+  const barsEls = (accent: boolean, color: string) => {
     const padX = 20;
     const baseY = 146;
     const maxH = 122;
     const slot = (450 - padX * 2) / barsHeights.length;
     const bw = 9;
-    const rects = barsHeights
+    return barsHeights
       .map((h, i) => {
         if (accentBars.has(i) !== accent) return "";
         const bh = (h / 100) * maxH;
         const x = padX + i * slot + (slot - bw) / 2;
-        return `<rect x="${x.toFixed(2)}" y="${(baseY - bh).toFixed(2)}" width="${bw}" height="${bh.toFixed(2)}" rx="1.5" fill="#ffffff"/>`;
+        return `<rect x="${x.toFixed(2)}" y="${(baseY - bh).toFixed(2)}" width="${bw}" height="${bh.toFixed(2)}" rx="1.5" fill="${color}"/>`;
       })
       .join("");
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 152">${rects}</svg>`;
   };
-  const barsGraySvg = buildBars(false);
-  const barsAccentSvg = buildBars(true);
+  const barsGraySvg = layerSvg("0 0 450 152", barsEls(false, "#ffffff"), barsEls(true, "#000000"));
+  const barsAccentSvg = layerSvg("0 0 450 152", barsEls(true, "#ffffff"), barsEls(false, "#000000"));
 
   // ── Лупа ───────────────────────────────────────────────────────────
   const leakSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 140">
@@ -117,24 +125,22 @@
     <path d="M50 44C55 36 63 32 71 31" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
   </svg>`;
 
-  // ── Консультация: одно облачко серое, второе акцентное ─────────────
-  // Серый слой — облачко клиента (с «?» и строчками)
-  const chatGraySvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150">
-   <g transform="translate(-4 -6)">
-    <path fill="#ffffff" d="M22 18H112C118.6 18 124 23.4 124 30V58C124 64.6 118.6 70 112 70H52L34 84V70H22C15.4 70 10 64.6 10 58V30C10 23.4 15.4 18 22 18Z"/>
-    <text x="28" y="51" font-family="ui-monospace, monospace" font-size="22" font-weight="700" fill="#000000">?</text>
-    <path d="M56 36C62 32 68 40 74 36C80 32 86 40 92 36C98 32 104 40 110 36" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-    <path d="M56 52C62 48 68 56 74 52C80 48 86 56 92 52" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-   </g>
-  </svg>`;
-  // Акцентный слой — облачко ответа
-  const chatAccentSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150">
-   <g transform="translate(4 16)">
-    <path fill="#ffffff" d="M108 62H198C204.6 62 210 67.4 210 74V102C210 108.6 204.6 114 198 114H186V128L168 114H108C101.4 114 96 108.6 96 102V74C96 67.4 101.4 62 108 62Z"/>
-    <path d="M112 80C118 76 124 84 130 80C136 76 142 84 148 80C154 76 160 84 166 80C172 76 178 84 184 80C190 76 194 82 198 80" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-    <path d="M112 96C118 92 124 100 130 96C136 92 142 100 148 96C154 92 160 100 166 96" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-   </g>
-  </svg>`;
+  // ── Консультация: серое облачко выше, акцентное ниже, не пересекаются ──
+  // fill — цвет облачка, hole — цвет «?» и строчек внутри (вырезы)
+  const chatGrayEls = (fill: string, hole: string) => `<g transform="translate(-4 -6)">
+    <path fill="${fill}" d="M22 18H112C118.6 18 124 23.4 124 30V58C124 64.6 118.6 70 112 70H52L34 84V70H22C15.4 70 10 64.6 10 58V30C10 23.4 15.4 18 22 18Z"/>
+    <text x="28" y="51" font-family="ui-monospace, monospace" font-size="22" font-weight="700" fill="${hole}">?</text>
+    <path d="M56 36C62 32 68 40 74 36C80 32 86 40 92 36C98 32 104 40 110 36" stroke="${hole}" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+    <path d="M56 52C62 48 68 56 74 52C80 48 86 56 92 52" stroke="${hole}" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  </g>`;
+  const chatAccentEls = (fill: string, hole: string) => `<g transform="translate(4 16)">
+    <path fill="${fill}" d="M108 62H198C204.6 62 210 67.4 210 74V102C210 108.6 204.6 114 198 114H186V128L168 114H108C101.4 114 96 108.6 96 102V74C96 67.4 101.4 62 108 62Z"/>
+    <path d="M112 80C118 76 124 84 130 80C136 76 142 84 148 80C154 76 160 84 166 80C172 76 178 84 184 80C190 76 194 82 198 80" stroke="${hole}" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+    <path d="M112 96C118 92 124 100 130 96C136 92 142 100 148 96C154 92 160 100 166 96" stroke="${hole}" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+  </g>`;
+  const CHAT_VB = "0 0 220 150";
+  const chatGraySvg = layerSvg(CHAT_VB, chatGrayEls("#ffffff", "#000000"), chatAccentEls("#000000", "#000000"));
+  const chatAccentSvg = layerSvg(CHAT_VB, chatAccentEls("#ffffff", "#000000"), chatGrayEls("#000000", "#000000"));
 
   // ── Шестерня ───────────────────────────────────────────────────────
   const gearSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
