@@ -7,12 +7,17 @@
    * картинка (<img>) с тем же src. Это чинит «белые экраны» и
    * неработающие иллюстрации в секции «Услуги» и логотип на главной.
    */
+  import type { ComponentProps } from "svelte";
   import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
-  import type { AsciiObjectOptions } from "$lib/components/ui-registry/AsciiObject.svelte";
   import { canRunHeavyEffects } from "$lib/utils/perf";
 
-  type Props = AsciiObjectOptions & {
+  // Типы пропсов берём напрямую из компонента, а не через отдельный
+  // именованный экспорт (он не резолвился и превращался в 'error' type).
+  type AsciiObjectProps = ComponentProps<typeof AsciiObject>;
+
+  type Props = Omit<AsciiObjectProps, "class" | "src"> & {
     class?: string;
+    src?: string;
     /** CSS-класс для картинки-замены на слабых устройствах */
     imgClass?: string;
     /** Альтернативный текст для картинки на слабых устройствах */
