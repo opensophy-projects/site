@@ -5,6 +5,7 @@
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui/TextLoop.svelte";
+  import Badge from "$lib/components/ui-registry/Badge.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
@@ -144,7 +145,7 @@
 
   <!-- About Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline">Что такое Opensophy?</p>
+    <p class="section-overline"><Badge variant="accent">Что такое Opensophy?</Badge></p>
     <h2 class="section-lead text-foreground-muted about-copy">
       <span class="text-foreground">Opensophy</span><button
         type="button"
@@ -173,7 +174,7 @@
 
   <!-- What We Do Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline">Чем занимается</p>
+    <p class="section-overline"><Badge variant="accent">Чем занимается</Badge></p>
     <h2 class="section-lead text-foreground-muted">
       <span class="text-foreground">Opensophy занимается&nbsp;</span><span
         class="text-accent"
@@ -240,7 +241,7 @@
 
   <!-- Services Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline">Услуги</p>
+    <p class="section-overline"><Badge variant="accent">Услуги</Badge></p>
     <ServicesGrid />
     <div class="services-actions">
       <a class="services-action" href="/solutions">Посмотреть все услуги</a>
