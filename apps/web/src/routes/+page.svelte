@@ -255,36 +255,6 @@
       >
     </div>
   </section>
-
-  <!-- About Author Section -->
-  <section class="section-block author-section w-full max-w-5xl mx-auto px-4">
-    <div class="author-glow" aria-hidden="true"></div>
-    <p class="section-overline"><Badge variant="accent">Об авторе</Badge></p>
-    <div class="author-copy">
-      <p class="author-lead">
-        Привет! Меня зовут <span class="text-foreground">Даниил Кулешов</span>, я
-        основатель и руководитель Opensophy. С 2025 года занимаюсь DevSecOps:
-        выстраиваю безопасные пайплайны, встраиваю безопасность в разработку и
-        настраиваю инфраструктуру с нуля почти под любой стек. Если
-        инфраструктура уже есть, найду, что в ней не так, и починю.
-      </p>
-      <div class="author-columns">
-        <p class="author-col">
-          До этого занимался white hat-хакингом и bug bounty: искал уязвимости в
-          реальных проектах и передавал отчёты разработчикам.
-        </p>
-        <p class="author-col">
-          В IT пришёл не через безопасность: был графическим дизайнером,
-          преподавал программирование, работал комьюнити-менеджером в NetEase
-          Games. Потом выбрал кибербезопасность.
-        </p>
-        <p class="author-col">
-          Сейчас развиваю Opensophy: пишу open-source продукты и помогаю
-          командам с безопасностью и инфраструктурой. Делюсь знаниями в статьях.
-        </p>
-      </div>
-    </div>
-  </section>
 </main>
 
 {#if statusModalOpen}
@@ -650,85 +620,6 @@
     border-color: transparent;
     background: var(--accent);
     color: #fff;
-  }
-
-  /* ─── About Author Section ─────────────────────────────────── */
-  .author-section {
-    position: relative;
-    z-index: 1;
-    padding-top: clamp(2rem, 4vw, 3rem);
-    padding-bottom: clamp(2rem, 4vw, 3rem);
-  }
-
-  /* Тот же блок, что и у «Продуктов», но серый вместо акцентного */
-  .author-glow {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80rem;
-    max-width: 100vw;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
-    pointer-events: none;
-    border-radius: var(--radius-3xl, 3.3rem);
-    background: radial-gradient(
-      farthest-corner at 50% 50%,
-      color-mix(in srgb, var(--foreground-muted) 60%, white) 0%,
-      var(--foreground-muted) 55%,
-      color-mix(in srgb, var(--foreground-muted) 80%, black) 100%
-    );
-    opacity: 0.2;
-  }
-
-  :global(.dark) .author-glow {
-    opacity: 0.16;
-  }
-
-  .author-copy {
-    display: flex;
-    flex-direction: column;
-    gap: 1.75rem;
-    max-width: 56rem;
-    margin: 0 auto;
-    padding: 0 0.5rem;
-  }
-
-  .author-lead {
-    font-size: clamp(1.15rem, 2vw, 1.5rem);
-    font-weight: 500;
-    line-height: 1.6;
-    color: var(--accent);
-    margin: 0;
-  }
-
-  .author-columns {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .author-col {
-    font-size: 0.9rem;
-    line-height: 1.65;
-    color: var(--accent);
-    margin: 0;
-    padding-top: 0.9rem;
-    border-top: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  }
-
-  @media (max-width: 767px) {
-    .author-columns {
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
-    }
-  }
-
-  @media (max-width: 600px) {
-    .author-glow {
-      width: 160%;
-    }
   }
 
   /* ─── Projects Grid ────────────────────────────────────────── */
