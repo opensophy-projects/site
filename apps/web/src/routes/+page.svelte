@@ -316,9 +316,17 @@
   </section>
 
   <!-- FAQ Section -->
-  <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline"><Badge variant="accent">Вопросы и ответы</Badge></p>
-    <Faq items={faqItems} />
+  <section
+    class="cta-section relative flex w-full items-center justify-center px-6 py-16 md:py-24"
+  >
+    <div class="cta-card" aria-hidden="true">
+      <div class="cta-bg"></div>
+    </div>
+
+    <div class="relative z-10 w-full max-w-5xl mx-auto">
+      <p class="section-overline"><Badge variant="accent">Вопросы и ответы</Badge></p>
+      <Faq items={faqItems} />
+    </div>
   </section>
 </main>
 
