@@ -255,6 +255,40 @@
       >
     </div>
   </section>
+
+  <!-- About Author Section -->
+  <section class="section-block author-section w-full max-w-5xl mx-auto px-4">
+    <p class="section-overline"><Badge variant="accent">Об авторе</Badge></p>
+    <blockquote class="author-quote">
+      <p class="author-quote-text">
+        Привет! Меня зовут <span class="text-foreground">Даниил Кулешов</span>, я
+        основатель и руководитель Opensophy. С 2025 года занимаюсь DevSecOps:
+        выстраиваю безопасные пайплайны, встраиваю безопасность в процесс
+        разработки и настраиваю инфраструктуру с нуля почти под любой стек и
+        любые ресурсы. Если инфраструктура уже есть, найду, что в ней не так, и
+        починю.
+      </p>
+      <p class="author-quote-text">
+        До этого я занимался white hat-хакингом и bug bounty: искал уязвимости в
+        реальных проектах и передавал отчёты разработчикам.
+      </p>
+      <p class="author-quote-text">
+        В IT я пришёл не через безопасность. Сначала работал графическим
+        дизайнером, потом преподавал программирование, а затем стал
+        комьюнити-менеджером крупной мобильной игры в NetEase Games. И только
+        после этого выбрал кибербезопасность.
+      </p>
+      <p class="author-quote-text">
+        Сейчас я развиваю Opensophy: пишу open-source продукты и помогаю
+        командам, компаниям, проектам с безопасностью и инфраструктурой.
+        Продолжаю учиться и делюсь знаниями в статьях.
+      </p>
+      <footer class="author-quote-footer">
+        <span class="author-quote-dash">—</span>
+        <cite class="author-quote-cite">Даниил Кулешов</cite>
+      </footer>
+    </blockquote>
+  </section>
 </main>
 
 {#if statusModalOpen}
@@ -620,6 +654,65 @@
     border-color: transparent;
     background: var(--accent);
     color: #fff;
+  }
+
+  /* ─── About Author Section ─────────────────────────────────── */
+  .author-quote {
+    position: relative;
+    margin: 0 auto;
+    max-width: 46rem;
+    padding: 1.75rem 2rem;
+    border-radius: var(--radius-sm, 0.55rem);
+    border: 1px solid var(--border);
+    background: var(--background-inset);
+  }
+
+  .author-quote::before {
+    content: "\201C";
+    position: absolute;
+    top: -0.5rem;
+    left: 0.9rem;
+    font-size: 4rem;
+    line-height: 1;
+    font-weight: 700;
+    color: var(--accent);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .author-quote-text {
+    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+    line-height: 1.75;
+    color: var(--foreground-muted);
+    margin: 0 0 1rem;
+  }
+
+  .author-quote-text:last-of-type {
+    margin-bottom: 0;
+  }
+
+  .author-quote-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .author-quote-dash {
+    color: var(--foreground-muted);
+  }
+
+  .author-quote-cite {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  @media (max-width: 600px) {
+    .author-quote {
+      padding: 1.5rem 1.25rem;
+    }
   }
 
   /* ─── Projects Grid ────────────────────────────────────────── */
