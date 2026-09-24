@@ -187,7 +187,7 @@
   <!-- Projects Section -->
   <section class="section-block products-section w-full max-w-5xl mx-auto px-4">
     <div class="products-glow" aria-hidden="true"></div>
-    <p class="section-overline">Продукты</p>
+    <p class="section-overline"><Badge variant="default">Продукты</Badge></p>
     <div class="projects-grid">
       {#each projects as project (project.title)}
         <CardProject
@@ -450,6 +450,9 @@
   }
 
   .section-overline {
+    display: flex;
+    justify-content: center;
+    text-align: center;
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: 0.14em;
