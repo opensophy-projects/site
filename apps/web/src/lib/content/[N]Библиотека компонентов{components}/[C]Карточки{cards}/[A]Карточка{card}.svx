@@ -8,6 +8,7 @@ keywords: 'Opensophy, Карточка, UI, UI components, библиотека 
 	import { ComponentPreview } from '$lib';
 	import Card from '$lib/components/docs/markdown/Card.svelte';
 	import cardSource from '$lib/components/docs/markdown/Card.svelte?raw';
+	import Cards from '$lib/components/docs/markdown/Cards.svelte';
 </script>
 
 # Карточка
