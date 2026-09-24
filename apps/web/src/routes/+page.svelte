@@ -324,7 +324,7 @@
     </div>
 
     <div class="relative z-10 w-full max-w-5xl mx-auto">
-      <p class="section-overline"><Badge variant="accent">Вопросы и ответы</Badge></p>
+      <p class="section-overline"><Badge variant="default">Вопросы и ответы</Badge></p>
       <Faq items={faqItems} />
     </div>
   </section>
