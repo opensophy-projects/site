@@ -660,3 +660,16 @@ sed '1i\Заголовок' file.txt                 # Добавить пере
 | `which command` | Путь к исполняемому файлу |
 | `echo "text"` | Вывести текст |
 | `exit` | Выйти из терминала / сессии |
+<script lang="ts">
+        import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+</script>
+
+---
+
+## Об авторе
+
+<Testimonial
+        name="Даниил Кулешов"
+        role="Руководитель проекта Opensophy, DevSecOps-инженер (opensophy)"
+        content="Автор этой статьи. Даниил Кулешов (opensophy) — руководитель проекта Opensophy и DevSecOps-инженер."
+/>

@@ -400,3 +400,16 @@ docker run -d --restart unless-stopped nginx
 2. [Документация Docker](https://docs.docker.com/)
 
 На этом базовое знакомство с Docker можно считать завершённым. В этой статье мы разобрали, зачем нужен Docker, какие проблемы он решает, как устроены контейнеры и образы, что такое Dockerfile, слои, кэширование, multi-stage builds, HEALTHCHECK и `.dockerignore`, а также рассмотрели основные команды, политики перезапуска и передачу переменных окружения. В серии статей по Docker от opensophy мы также рассмотрим следующие темы:
+<script lang="ts">
+        import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+</script>
+
+---
+
+## Об авторе
+
+<Testimonial
+        name="Даниил Кулешов"
+        role="Руководитель проекта Opensophy, DevSecOps-инженер (opensophy)"
+        content="Автор этой статьи. Даниил Кулешов (opensophy) — руководитель проекта Opensophy и DevSecOps-инженер."
+/>

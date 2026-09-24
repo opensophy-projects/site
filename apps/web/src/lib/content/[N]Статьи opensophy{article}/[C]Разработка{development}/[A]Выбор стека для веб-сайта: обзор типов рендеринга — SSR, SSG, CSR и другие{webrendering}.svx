@@ -335,3 +335,17 @@ RSC идеально подходят для современных React-при
 ## Литература
 
 [Google Search Central: Understand the JavaScript rendering basics](https://developers.google.com/search/docs/crawling-indexing/javascript/javascript-seo-basics)
+
+<script lang="ts">
+        import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+</script>
+
+---
+
+## Об авторе
+
+<Testimonial
+        name="Даниил Кулешов"
+        role="Руководитель проекта Opensophy, DevSecOps-инженер (opensophy)"
+        content="Автор этой статьи. Даниил Кулешов (opensophy) — руководитель проекта Opensophy и DevSecOps-инженер."
+/>

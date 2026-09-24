@@ -647,3 +647,16 @@ docker run --rm -v my_volume:/data -v $(pwd):/backup \
 Если запомнить только одну мысль, то она простая: важные данные не должны храниться внутри контейнера. Для постоянного хранения обычно используют тома, для работы с файлами хоста — bind mount, а для временных данных — tmpfs.
 
 Остальные темы, такие как драйверы, SELinux, Swarm и другие нюансы, пригодятся уже в более сложных сценариях. К ним всегда можно вернуться, когда возникнет конкретная задача.
+<script lang="ts">
+        import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+</script>
+
+---
+
+## Об авторе
+
+<Testimonial
+        name="Даниил Кулешов"
+        role="Руководитель проекта Opensophy, DevSecOps-инженер (opensophy)"
+        content="Автор этой статьи. Даниил Кулешов (opensophy) — руководитель проекта Opensophy и DevSecOps-инженер."
+/>
