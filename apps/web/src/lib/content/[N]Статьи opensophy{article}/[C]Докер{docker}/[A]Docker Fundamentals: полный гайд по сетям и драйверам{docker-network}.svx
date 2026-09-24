@@ -421,3 +421,17 @@ docker run --network=mynet busybox top
 
 В остальном вторая часть — это уже спецификация уровня «упёрся в задачу» (собственно, поэтому и пишу, кому и зачем, чтобы можно было находить нужное сразу, а не перечитывать всю статью заново и читать только то, что действительно потребуется).
   
+
+<script lang="ts">
+        import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+</script>
+
+---
+
+## Об авторе
+
+<Testimonial
+        name="Даниил Кулешов"
+        role="Руководитель проекта Opensophy, DevSecOps-инженер (opensophy)"
+        content="Автор этой статьи. Даниил Кулешов (opensophy) — руководитель проекта Opensophy и DevSecOps-инженер."
+/>

@@ -638,3 +638,16 @@ echo "umask 027" >> ~/.bashrc
 ## Заключение
 
 Мы рассмотрели всё: начиная от базовой модели UGO и битов rwx до алгоритма принятия решений ядром, специальных битов и ACL. В следующей части серии разберём процессы — как они рождаются, живут и умирают.
+<script lang="ts">
+        import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+</script>
+
+---
+
+## Об авторе
+
+<Testimonial
+        name="Даниил Кулешов"
+        role="Руководитель проекта Opensophy, DevSecOps-инженер (opensophy)"
+        content="Автор этой статьи. Даниил Кулешов (opensophy) — руководитель проекта Opensophy и DevSecOps-инженер."
+/>

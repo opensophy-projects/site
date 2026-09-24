@@ -234,3 +234,17 @@ mTLS — это отличный инструмент для конкретно�
 **Когда я выбрал бы VPN**: нужен полный доступ к инфраструктуре, удалённая работа.
 
 **Когда я выбрал бы IAP**: публичный сервис с множеством пользователей, SSO и 2FA обязательны, не нужно управлять сертификатами.
+
+<script lang="ts">
+        import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+</script>
+
+---
+
+## Об авторе
+
+<Testimonial
+        name="Даниил Кулешов"
+        role="Руководитель проекта Opensophy, DevSecOps-инженер (opensophy)"
+        content="Автор этой статьи. Даниил Кулешов (opensophy) — руководитель проекта Opensophy и DevSecOps-инженер."
+/>

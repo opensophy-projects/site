@@ -50,3 +50,17 @@ keywords: 'Opensophy, Мастер таблица по сетевым модел
 | **SMTP / IMAP / POP3** | L7 (Прикладной) | Протоколы электронной почты (отправка и получение). | SMTP (25/465/587), IMAP (143/993), POP3 (110/995). | Email Spoofing, Open Relay, Credential Theft. | `telnet`, `openssl s_client` |
 | **SNMP** (Simple Network Management Protocol) | L7 (Прикладной) | Мониторинг и управление сетевыми устройствами. | Использует UDP (порты 161/162). Версии: v1, v2c, v3 (безопасная). | SNMP Brute-force (Community Strings), Amplification Attacks. | `snmpwalk`, `snmpget` |
 | **NTP** (Network Time Protocol) | L7 (Прикладной) | Синхронизация времени между устройствами. | Использует UDP (порт 123). Высокая точность. | NTP Amplification (DDoS), Time Spoofing. | `ntpdate`, `chronyc` |
+
+<script lang="ts">
+        import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+</script>
+
+---
+
+## Об авторе
+
+<Testimonial
+        name="Даниил Кулешов"
+        role="Руководитель проекта Opensophy, DevSecOps-инженер (opensophy)"
+        content="Автор этой статьи. Даниил Кулешов (opensophy) — руководитель проекта Opensophy и DevSecOps-инженер."
+/>
