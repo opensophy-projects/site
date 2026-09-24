@@ -5,6 +5,10 @@ keywords: 'Opensophy, Главная, статьи, статьи, open-source'
 ---
 <script>
 	import Admonition from '$lib/components/docs/markdown/Admonition.svelte';
+	import Card from '$lib/components/docs/markdown/Card.svelte';
+	import Cards from '$lib/components/docs/markdown/Cards.svelte';
+	import Step from '$lib/components/docs/markdown/Step.svelte';
+	import Steps from '$lib/components/docs/markdown/Steps.svelte';
 </script>
 
 
