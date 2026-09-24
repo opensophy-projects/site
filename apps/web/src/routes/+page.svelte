@@ -258,9 +258,10 @@
 
   <!-- About Author Section -->
   <section class="section-block author-section w-full max-w-5xl mx-auto px-4">
+    <div class="author-glow" aria-hidden="true"></div>
     <p class="section-overline"><Badge variant="accent">Об авторе</Badge></p>
-    <blockquote class="author-quote">
-      <p class="author-quote-text">
+    <div class="author-copy">
+      <p class="section-lead text-accent">
         Привет! Меня зовут <span class="text-foreground">Даниил Кулешов</span>, я
         основатель и руководитель Opensophy. С 2025 года занимаюсь DevSecOps:
         выстраиваю безопасные пайплайны, встраиваю безопасность в процесс
@@ -268,26 +269,22 @@
         любые ресурсы. Если инфраструктура уже есть, найду, что в ней не так, и
         починю.
       </p>
-      <p class="author-quote-text">
+      <p class="section-lead text-accent">
         До этого я занимался white hat-хакингом и bug bounty: искал уязвимости в
         реальных проектах и передавал отчёты разработчикам.
       </p>
-      <p class="author-quote-text">
+      <p class="section-lead text-accent">
         В IT я пришёл не через безопасность. Сначала работал графическим
         дизайнером, потом преподавал программирование, а затем стал
         комьюнити-менеджером крупной мобильной игры в NetEase Games. И только
         после этого выбрал кибербезопасность.
       </p>
-      <p class="author-quote-text">
+      <p class="section-lead text-accent">
         Сейчас я развиваю Opensophy: пишу open-source продукты и помогаю
         командам, компаниям, проектам с безопасностью и инфраструктурой.
         Продолжаю учиться и делюсь знаниями в статьях.
       </p>
-      <footer class="author-quote-footer">
-        <span class="author-quote-dash">—</span>
-        <cite class="author-quote-cite">Даниил Кулешов</cite>
-      </footer>
-    </blockquote>
+    </div>
   </section>
 </main>
 
@@ -657,61 +654,48 @@
   }
 
   /* ─── About Author Section ─────────────────────────────────── */
-  .author-quote {
+  .author-section {
     position: relative;
-    margin: 0 auto;
-    max-width: 46rem;
-    padding: 1.75rem 2rem;
-    border-radius: var(--radius-sm, 0.55rem);
-    border: 1px solid var(--border);
-    background: var(--background-inset);
+    z-index: 1;
+    padding-top: clamp(2rem, 4vw, 3rem);
+    padding-bottom: clamp(2rem, 4vw, 3rem);
   }
 
-  .author-quote::before {
-    content: "\201C";
+  /* Тот же блок, что и у «Продуктов», но серый вместо акцентного */
+  .author-glow {
     position: absolute;
-    top: -0.5rem;
-    left: 0.9rem;
-    font-size: 4rem;
-    line-height: 1;
-    font-weight: 700;
-    color: var(--accent);
-    opacity: 0.6;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80rem;
+    max-width: 100vw;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
     pointer-events: none;
+    border-radius: var(--radius-3xl, 3.3rem);
+    background: radial-gradient(
+      farthest-corner at 50% 50%,
+      color-mix(in srgb, var(--foreground-muted) 60%, white) 0%,
+      var(--foreground-muted) 55%,
+      color-mix(in srgb, var(--foreground-muted) 80%, black) 100%
+    );
+    opacity: 0.2;
   }
 
-  .author-quote-text {
-    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
-    line-height: 1.75;
-    color: var(--foreground-muted);
-    margin: 0 0 1rem;
+  :global(.dark) .author-glow {
+    opacity: 0.16;
   }
 
-  .author-quote-text:last-of-type {
-    margin-bottom: 0;
-  }
-
-  .author-quote-footer {
+  .author-copy {
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.5rem;
-    margin-top: 1.25rem;
-  }
-
-  .author-quote-dash {
-    color: var(--foreground-muted);
-  }
-
-  .author-quote-cite {
-    font-style: normal;
-    font-weight: 600;
-    color: var(--foreground);
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
   @media (max-width: 600px) {
-    .author-quote {
-      padding: 1.5rem 1.25rem;
+    .author-glow {
+      width: 160%;
     }
   }
 
