@@ -1,23 +1,23 @@
 <script lang="ts">
   import AsciiVisual from "$lib/components/ui/AsciiVisual.svelte";
   import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
+  import { onMount } from "svelte";
+  import { canRunHeavyEffects } from "$lib/utils/perf";
 
-  const flameColor: [number, number, number] = [0.956, 0.247, 0.369];
+  // Мощное устройство → ASCII-рендер, слабое → лёгкие оригинальные
+  // иллюстрации (inline SVG/CSS, цвета берутся из переменных темы).
+  let mounted = $state(false);
+  let heavy = $state(false);
+  onMount(() => {
+    heavy = canRunHeavyEffects();
+    mounted = true;
+  });
 
-  // Цвет ASCII-рендеров совпадает с акцентом сайта (--accent)
-  const asciiColor = "#f43f5e";
-  // Серый для «приглушённых» частей рисунков (как foreground 12–55% в оригинале)
-  const asciiGray = "#6b6b76";
-
-  // ── Размеры рисунков (scale) — крутить тут ─────────────────────────
-  const SCALE = {
-    shield: 4.4, // было 5 — чуть меньше
-    pentest: 12.5, // на всю ширину карточки с небольшим запасом
-    review: 12.5, // на всю ширину карточки с небольшим запасом
-    leak: 4.2, // было 5 — поменьше
-    consult: 5.8, // оба облачка целиком в области рисунка
-    gear: 4.4, // как щит
-  };
+  const BAR_HEIGHTS = [
+    55, 40, 70, 45, 90, 60, 35, 80, 50, 75, 42, 88, 30, 65, 48, 92, 38, 72, 55,
+    85, 44, 68, 36, 78, 52, 62, 47, 58,
+  ];
+  const ACCENT_BARS = new Set([4, 9, 12, 18, 23, 26]);
 
   // Шестерня: считаем контур зубьев по кругу
   function buildGearPath(
@@ -28,7 +28,6 @@
     rInner: number,
   ): string {
     const step = (Math.PI * 2) / teeth;
-    // доли шага: подъём, вершина, спуск, впадина
     const a = step * 0.18;
     const b = step * 0.32;
     const c = step * 0.68;
@@ -51,7 +50,25 @@
     return `M${pts.join(" L")} Z`;
   }
 
+  const flameColor: [number, number, number] = [0.956, 0.247, 0.369];
+
+  // Цвет ASCII-рендеров совпадает с акцентом сайта (--accent)
+  const asciiColor = "#f43f5e";
+  // Серый для «приглушённых» частей рисунков (как foreground 12–55% в оригинале)
+  const asciiGray = "#6b6b76";
+
+  // ── Размеры рисунков (scale) — крутить тут ─────────────────────────
+  const SCALE = {
+    shield: 4.4,
+    pentest: 12.5,
+    review: 12.5,
+    leak: 4.2,
+    consult: 5.8,
+    gear: 4.4,
+  };
+
   const gearOuter = buildGearPath(100, 100, 12, 72, 58);
+  const gearInner = buildGearPath(100, 100, 12, 64, 52);
 
   // Обёртка svg -> data URL: AsciiObject грузит src через fetch,
   // data: URL работает без дополнительных файлов в /static
@@ -66,18 +83,12 @@
   </svg>`;
 
   // ── Как совмещаем серый и акцентный слои ───────────────────────────
-  // AsciiObject подгоняет каждое изображение под его собственную рамку
-  // (bounding box) и центрирует. Поэтому слои с разным содержимым «уезжают»
-  // друг относительно друга. Чтобы рамки были идентичными, КАЖДЫЙ слой содержит
-  // ВСЕ фигуры: свои — белые (видимые), чужие — чёрные (пустые в ASCII).
+  // Каждый слой содержит ВСЕ фигуры: свои — белые (видимые), чужие — чёрные
+  // (пустые в ASCII), чтобы рамки слоёв были идентичными.
   const layerSvg = (viewBox: string, own: string, other: string) =>
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}">${other}${own}</svg>`;
 
-  // ── Проверка безопасности: как в оригинале ─────────────────────────
-  // Холст 450×152 (≈ размер области рисунка). Большие дуги выходят за края
-  // и обрезаются, вертикальная линия по центру.
-  // Серое: вертикаль + левая половина внешней дуги + правая половина внутренней.
-  // Акцент: правая половина внешней дуги + левая половина внутренней.
+  // ── Проверка безопасности ──────────────────────────────────────────
   const PENTEST_VB = "0 0 450 152";
   const pentestGrayEls = (c: string) => `
     <rect x="222" y="0" width="6" height="152" fill="${c}"/>
@@ -89,22 +100,16 @@
   const pentestGraySvg = layerSvg(PENTEST_VB, pentestGrayEls("#ffffff"), pentestAccentEls("#000000"));
   const pentestAccentSvg = layerSvg(PENTEST_VB, pentestAccentEls("#ffffff"), pentestGrayEls("#000000"));
 
-  // ── Code review: столбики, в основном серые + немного акцентных ────
-  const barsHeights = [
-    55, 40, 70, 45, 90, 60, 35, 80, 50, 75, 42, 88, 30, 65, 48, 92, 38, 72, 55,
-    85, 44, 68, 36, 78, 52, 62, 47, 58,
-  ];
-  const accentBars = new Set([4, 9, 12, 18, 23, 26]);
-
+  // ── Code review: столбики ──────────────────────────────────────────
   const barsEls = (accent: boolean, color: string) => {
     const padX = 20;
     const baseY = 146;
     const maxH = 122;
-    const slot = (450 - padX * 2) / barsHeights.length;
+    const slot = (450 - padX * 2) / BAR_HEIGHTS.length;
     const bw = 9;
-    return barsHeights
+    return BAR_HEIGHTS
       .map((h, i) => {
-        if (accentBars.has(i) !== accent) return "";
+        if (ACCENT_BARS.has(i) !== accent) return "";
         const bh = (h / 100) * maxH;
         const x = padX + i * slot + (slot - bw) / 2;
         return `<rect x="${x.toFixed(2)}" y="${(baseY - bh).toFixed(2)}" width="${bw}" height="${bh.toFixed(2)}" rx="1.5" fill="${color}"/>`;
@@ -125,8 +130,7 @@
     <path d="M50 44C55 36 63 32 71 31" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
   </svg>`;
 
-  // ── Консультация: серое облачко выше, акцентное ниже, не пересекаются ──
-  // fill — цвет облачка, hole — цвет «?» и строчек внутри (вырезы)
+  // ── Консультация ───────────────────────────────────────────────────
   const chatGrayEls = (fill: string, hole: string) => `<g transform="translate(-4 -6)">
     <path fill="${fill}" d="M22 18H112C118.6 18 124 23.4 124 30V58C124 64.6 118.6 70 112 70H52L34 84V70H22C15.4 70 10 64.6 10 58V30C10 23.4 15.4 18 22 18Z"/>
     <text x="28" y="51" font-family="ui-monospace, monospace" font-size="22" font-weight="700" fill="${hole}">?</text>
@@ -331,11 +335,60 @@
       position: absolute;
       inset: 0;
     }
+
+    /* ═══ Лёгкие оригинальные иллюстрации (слабые устройства) ═══ */
+    .pt-visual { position: absolute; inset: 0; }
+    .pt-vline {
+      position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+      background: color-mix(in srgb, var(--foreground, #fff) 12%, transparent);
+    }
+    .pt-arc-outer, .pt-arc-outer-accent {
+      position: absolute; left: -3rem; right: -3rem; top: 1.2rem;
+      aspect-ratio: 1; border-radius: 50%;
+    }
+    .pt-arc-outer {
+      border: 1px solid color-mix(in srgb, var(--foreground, #fff) 10%, transparent);
+    }
+    .pt-arc-outer-accent {
+      border: 1px solid var(--accent, #e8834a);
+      -webkit-mask-image: linear-gradient(90deg, transparent 50%, black 50%);
+      mask-image: linear-gradient(90deg, transparent 50%, black 50%);
+    }
+    .pt-arc-inner, .pt-arc-inner-accent {
+      position: absolute; left: 0; right: 0; top: 3.5rem;
+      aspect-ratio: 1; border-radius: 50%;
+    }
+    .pt-arc-inner {
+      border: 1px solid color-mix(in srgb, var(--foreground, #fff) 10%, transparent);
+    }
+    .pt-arc-inner-accent {
+      border: 1px solid var(--accent, #e8834a);
+      -webkit-mask-image: linear-gradient(90deg, black 50%, transparent 50%);
+      mask-image: linear-gradient(90deg, black 50%, transparent 50%);
+    }
+    .dev-bars {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      height: 100%; padding: 1.25rem 1.25rem 0.5rem;
+    }
+    .dev-bar {
+      flex: 1;
+      background: color-mix(in srgb, var(--foreground, #fff) 12%, transparent);
+      border-radius: 2px 2px 0 0; min-width: 3px; max-width: 7px;
+    }
+    .dev-bar-accent { background: var(--accent, #e8834a) !important; }
+    .svg-visual {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--foreground, #fff);
+    }
+    .svg-visual svg { height: auto; }
+    .leak-visual svg   { width: min(82%, 12rem); }
+    .shield-visual svg { width: min(88%, 14rem); }
+    .chat-visual svg   { width: min(88%, 14rem); }
+    .gear-visual svg   { width: min(70%, 10rem); }
   </style>
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       1. ИНТЕГРАЦИЯ DEVSECOPS — щит (чуть меньше)
-       ══════════════════════════════════════════════════════════════════ -->
+  <!-- 1. ИНТЕГРАЦИЯ DEVSECOPS — щит -->
   <div class="card-devsecops flame-slot">
     <FlameWrap
       color={flameColor}
@@ -350,7 +403,9 @@
       <div class="card-shell card-wide">
         <div class="card-inner">
           <div class="visual-area">
-            <div class="ascii-visual" aria-hidden="true">
+            {#if mounted}
+            {#if heavy}
+<div class="ascii-visual" aria-hidden="true">
               <AsciiVisual
                 src={asciiVisuals.shield}
                 colored={false}
@@ -367,6 +422,16 @@
                 floatSpeed={1.5}
               />
             </div>
+            {:else}
+            <div class="svg-visual shield-visual" aria-hidden="true">
+              <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 44 L138 57 L138 95 C138 120 120 138 100 148 C80 138 62 120 62 95 L62 57 Z" stroke="color-mix(in srgb, var(--foreground, #fff) 80%, transparent)" stroke-width="2" stroke-linejoin="round" fill="none" />
+                <path d="M100 52 L132 63 L132 95 C132 116 116 132 100 141 C84 132 68 116 68 95 L68 63 Z" stroke="color-mix(in srgb, var(--foreground, #fff) 55%, transparent)" stroke-width="1.2" stroke-linejoin="round" fill="none" />
+                <path d="M82 98 L95 112 L120 84" stroke="var(--accent, #f03e5f)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+              </svg>
+            </div>
+            {/if}
+          {/if}
           </div>
           <div class="card-body">
             <div class="card-meta">
@@ -386,14 +451,14 @@
     </FlameWrap>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       2. ПРОВЕРКА БЕЗОПАСНОСТИ — как в оригинале, без левитации
-       ══════════════════════════════════════════════════════════════════ -->
+  <!-- 2. ПРОВЕРКА БЕЗОПАСНОСТИ -->
   <div class="card-shell card-pentest">
     <div class="card-inner">
       <div class="visual-area">
-        <div class="ascii-visual" aria-hidden="true">
-          <!-- серый слой: вертикаль + приглушённые половины дуг -->
+        {#if mounted}
+            {#if heavy}
+<div class="ascii-visual" aria-hidden="true">
+          <!-- серый слой (на слабых устройствах здесь целая цветная картинка) -->
           <div class="ascii-layer">
             <AsciiVisual
               src={asciiVisuals.pentestGray}
@@ -411,7 +476,7 @@
               floatSpeed={0}
             />
           </div>
-          <!-- акцентный слой: яркие половины дуг -->
+          <!-- акцентный слой: на слабых устройствах не нужен -->
           <div class="ascii-layer">
             <AsciiVisual
               src={asciiVisuals.pentestAccent}
@@ -430,6 +495,16 @@
             />
           </div>
         </div>
+            {:else}
+            <div class="pt-visual" aria-hidden="true">
+            <div class="pt-vline"></div>
+            <div class="pt-arc-outer"></div>
+            <div class="pt-arc-outer-accent"></div>
+            <div class="pt-arc-inner"></div>
+            <div class="pt-arc-inner-accent"></div>
+          </div>
+            {/if}
+          {/if}
       </div>
       <div class="card-body">
         <div class="card-meta">
@@ -447,14 +522,13 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       3. CODE REVIEW БЕЗОПАСНОСТИ — серые столбики + чуть акцентных,
-          крупнее, без левитации
-       ══════════════════════════════════════════════════════════════════ -->
+  <!-- 3. CODE REVIEW БЕЗОПАСНОСТИ -->
   <div class="card-shell card-review">
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
-        <div class="ascii-visual">
+        {#if mounted}
+            {#if heavy}
+<div class="ascii-visual">
           <div class="ascii-layer">
             <AsciiVisual
               src={asciiVisuals.reviewGray}
@@ -490,6 +564,14 @@
             />
           </div>
         </div>
+            {:else}
+            <div class="dev-bars">
+            {#each BAR_HEIGHTS as h, i (i)}
+              <div class="dev-bar" class:dev-bar-accent={ACCENT_BARS.has(i)} style="height: {h}%"></div>
+            {/each}
+          </div>
+            {/if}
+          {/if}
       </div>
       <div class="card-body">
         <div class="card-meta">
@@ -506,13 +588,13 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       4. ПОИСК УТЕЧЕК ДАННЫХ — лупа (поменьше)
-       ══════════════════════════════════════════════════════════════════ -->
+  <!-- 4. ПОИСК УТЕЧЕК ДАННЫХ — лупа -->
   <div class="card-shell card-leak">
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
-        <div class="ascii-visual">
+        {#if mounted}
+            {#if heavy}
+<div class="ascii-visual">
           <AsciiVisual
             src={asciiVisuals.leak}
             colored={false}
@@ -529,6 +611,20 @@
             floatSpeed={1.5}
           />
         </div>
+            {:else}
+            <div class="svg-visual leak-visual">
+            <svg viewBox="0 0 180 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="74" cy="60" r="36" fill="color-mix(in srgb, currentColor 8%, transparent)" stroke="currentColor" stroke-width="2.5" />
+              <circle cx="74" cy="60" r="29" stroke="color-mix(in srgb, currentColor 30%, transparent)" stroke-width="1" fill="none" />
+              <path d="M100 86 L134 120" stroke="currentColor" stroke-width="9" stroke-linecap="round" />
+              <path d="M58 52H90" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+              <path d="M58 62H84" stroke="var(--accent, #e8834a)" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M58 72H76" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.7" />
+              <path d="M50 44C55 36 63 32 71 31" stroke="var(--accent, #e8834a)" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
+            {/if}
+          {/if}
       </div>
       <div class="card-body">
         <div class="card-meta">
@@ -544,13 +640,13 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       5. КОНСУЛЬТАЦИЯ — одно облачко серое, второе акцентное, крупнее
-       ══════════════════════════════════════════════════════════════════ -->
+  <!-- 5. КОНСУЛЬТАЦИЯ -->
   <div class="card-shell card-consult">
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
-        <div class="ascii-visual">
+        {#if mounted}
+            {#if heavy}
+<div class="ascii-visual">
           <!-- серое облачко (вопрос) -->
           <div class="ascii-layer">
             <AsciiVisual
@@ -588,6 +684,20 @@
             />
           </div>
         </div>
+            {:else}
+            <div class="svg-visual chat-visual">
+            <svg viewBox="0 0 220 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 18H112C118.6 18 124 23.4 124 30V58C124 64.6 118.6 70 112 70H52L34 84V70H22C15.4 70 10 64.6 10 58V30C10 23.4 15.4 18 22 18Z" fill="color-mix(in srgb, currentColor 14%, transparent)" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+              <text x="28" y="51" font-family="ui-monospace, monospace" font-size="22" font-weight="700" fill="currentColor">?</text>
+              <path d="M56 36C62 32 68 40 74 36C80 32 86 40 92 36C98 32 104 40 110 36" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" />
+              <path d="M56 52C62 48 68 56 74 52C80 48 86 56 92 52" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6" />
+              <path d="M108 62H198C204.6 62 210 67.4 210 74V102C210 108.6 204.6 114 198 114H186V128L168 114H108C101.4 114 96 108.6 96 102V74C96 67.4 101.4 62 108 62Z" fill="color-mix(in srgb, var(--accent, #e8834a) 15%, transparent)" stroke="var(--accent, #e8834a)" stroke-width="1.8" stroke-linejoin="round" />
+              <path d="M112 80C118 76 124 84 130 80C136 76 142 84 148 80C154 76 160 84 166 80C172 76 178 84 184 80C190 76 194 82 198 80" stroke="var(--accent, #e8834a)" stroke-width="1.8" stroke-linecap="round" fill="none" />
+              <path d="M112 96C118 92 124 100 130 96C136 92 142 100 148 96C154 92 160 100 166 96" stroke="var(--accent, #e8834a)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6" />
+            </svg>
+          </div>
+            {/if}
+          {/if}
       </div>
       <div class="card-body">
         <div class="card-meta">
@@ -603,9 +713,7 @@
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════════════════════════════
-       6. ПОИСК И УСТРАНЕНИЕ НЕПОЛАДОК — шестерня (чуть меньше, как щит)
-       ══════════════════════════════════════════════════════════════════ -->
+  <!-- 6. ПОИСК И УСТРАНЕНИЕ НЕПОЛАДОК — шестерня -->
   <div class="card-trouble flame-slot">
     <FlameWrap
       color={flameColor}
@@ -620,7 +728,9 @@
       <div class="card-shell card-wide">
         <div class="card-inner">
           <div class="visual-area">
-            <div class="ascii-visual" aria-hidden="true">
+            {#if mounted}
+            {#if heavy}
+<div class="ascii-visual" aria-hidden="true">
               <AsciiVisual
                 src={asciiVisuals.gear}
                 colored={false}
@@ -637,6 +747,18 @@
                 floatSpeed={1.5}
               />
             </div>
+            {:else}
+            <div class="svg-visual gear-visual" aria-hidden="true">
+              <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d={gearOuter} stroke="color-mix(in srgb, var(--foreground, #fff) 80%, transparent)" stroke-width="2" stroke-linejoin="round" fill="none" />
+                <path d={gearInner} stroke="color-mix(in srgb, var(--foreground, #fff) 55%, transparent)" stroke-width="1.2" stroke-linejoin="round" fill="none" />
+                <circle cx="100" cy="100" r="34" stroke="color-mix(in srgb, var(--foreground, #fff) 30%, transparent)" stroke-width="1.5" fill="none" />
+                <circle cx="100" cy="100" r="20" stroke="color-mix(in srgb, var(--foreground, #fff) 55%, transparent)" stroke-width="1.2" fill="none" />
+                <circle cx="100" cy="100" r="7" fill="var(--accent, #f03e5f)" />
+              </svg>
+            </div>
+            {/if}
+          {/if}
           </div>
           <div class="card-body">
             <div class="card-meta">
