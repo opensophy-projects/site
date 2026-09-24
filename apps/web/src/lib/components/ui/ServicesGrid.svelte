@@ -12,10 +12,10 @@
   // ── Размеры рисунков (scale) — крутить тут ─────────────────────────
   const SCALE = {
     shield: 4.4, // было 5 — чуть меньше
-    pentest: 6, // viewBox 450×152 ≈ размер карточки
-    review: 6, // viewBox 450×152 ≈ размер карточки
+    pentest: 13.5, // viewBox 450×152 → на всю ширину карточки
+    review: 13.5, // viewBox 450×152 → на всю ширину карточки
     leak: 4.2, // было 5 — поменьше
-    consult: 6.5, // было 5 — побольше
+    consult: 5.4, // облачка разнесены по высоте, целиком влезают
     gear: 4.4, // как щит
   };
 
@@ -71,13 +71,13 @@
   // Серый слой: вертикаль + левая половина внешней дуги + правая половина внутренней.
   // Акцентный слой: правая половина внешней дуги + левая половина внутренней.
   const pentestGraySvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 152">
-    <rect x="223" y="0" width="4" height="152" fill="#ffffff"/>
-    <path d="M225 19.2 A273 273 0 0 0 225 565.2" fill="none" stroke="#ffffff" stroke-width="4"/>
-    <path d="M225 56 A225 225 0 0 1 225 506" fill="none" stroke="#ffffff" stroke-width="4"/>
+    <rect x="222" y="0" width="6" height="152" fill="#ffffff"/>
+    <path d="M225 19.2 A273 273 0 0 0 225 565.2" fill="none" stroke="#ffffff" stroke-width="6"/>
+    <path d="M225 56 A225 225 0 0 1 225 506" fill="none" stroke="#ffffff" stroke-width="6"/>
   </svg>`;
   const pentestAccentSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 152">
-    <path d="M225 19.2 A273 273 0 0 1 225 565.2" fill="none" stroke="#ffffff" stroke-width="4"/>
-    <path d="M225 56 A225 225 0 0 0 225 506" fill="none" stroke="#ffffff" stroke-width="4"/>
+    <path d="M225 19.2 A273 273 0 0 1 225 565.2" fill="none" stroke="#ffffff" stroke-width="6"/>
+    <path d="M225 56 A225 225 0 0 0 225 506" fill="none" stroke="#ffffff" stroke-width="6"/>
   </svg>`;
 
   // ── Code review: столбики, в основном серые + немного акцентных ────
@@ -92,7 +92,7 @@
     const baseY = 146;
     const maxH = 122;
     const slot = (450 - padX * 2) / barsHeights.length;
-    const bw = 8;
+    const bw = 9;
     const rects = barsHeights
       .map((h, i) => {
         if (accentBars.has(i) !== accent) return "";
@@ -119,17 +119,21 @@
 
   // ── Консультация: одно облачко серое, второе акцентное ─────────────
   // Серый слой — облачко клиента (с «?» и строчками)
-  const chatGraySvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 130">
+  const chatGraySvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150">
+   <g transform="translate(-4 -6)">
     <path fill="#ffffff" d="M22 18H112C118.6 18 124 23.4 124 30V58C124 64.6 118.6 70 112 70H52L34 84V70H22C15.4 70 10 64.6 10 58V30C10 23.4 15.4 18 22 18Z"/>
     <text x="28" y="51" font-family="ui-monospace, monospace" font-size="22" font-weight="700" fill="#000000">?</text>
     <path d="M56 36C62 32 68 40 74 36C80 32 86 40 92 36C98 32 104 40 110 36" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
     <path d="M56 52C62 48 68 56 74 52C80 48 86 56 92 52" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+   </g>
   </svg>`;
   // Акцентный слой — облачко ответа
-  const chatAccentSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 130">
+  const chatAccentSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 150">
+   <g transform="translate(4 16)">
     <path fill="#ffffff" d="M108 62H198C204.6 62 210 67.4 210 74V102C210 108.6 204.6 114 198 114H186V128L168 114H108C101.4 114 96 108.6 96 102V74C96 67.4 101.4 62 108 62Z"/>
     <path d="M112 80C118 76 124 84 130 80C136 76 142 84 148 80C154 76 160 84 166 80C172 76 178 84 184 80C190 76 194 82 198 80" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
     <path d="M112 96C118 92 124 100 130 96C136 92 142 100 148 96C154 92 160 100 166 96" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+   </g>
   </svg>`;
 
   // ── Шестерня ───────────────────────────────────────────────────────
