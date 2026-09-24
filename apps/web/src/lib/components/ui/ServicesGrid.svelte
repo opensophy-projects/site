@@ -1,11 +1,7 @@
 <script lang="ts">
-  import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
   import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
 
   const flameColor: [number, number, number] = [0.956, 0.247, 0.369];
-
-  // Цвет ASCII-рендеров совпадает с акцентом сайта (--accent)
-  const asciiColor = "#f43f5e";
 
   // Шестерня: считаем контур зубьев по кругу
   function buildGearPath(
@@ -40,76 +36,7 @@
   }
 
   const gearOuter = buildGearPath(100, 100, 12, 72, 58);
-
-  // Обёртка svg -> data URL: AsciiObject грузит src через fetch,
-  // data: URL работает без дополнительных файлов в /static
-  const svgSource = (svg: string) =>
-    `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-
-  // Иллюстрации карточек «Услуги» — те же рисунки, что были раньше,
-  // теперь в виде сплошных форм (ASCII-рендерер строит геометрию по альфа-каналу)
-  const shieldSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-    <path fill="#ffffff" d="M100 44 L138 57 L138 95 C138 120 120 138 100 148 C80 138 62 120 62 95 L62 57 Z"/>
-    <path fill="#000000" fill-rule="evenodd" d="M100 44 L138 57 L138 95 C138 120 120 138 100 148 C80 138 62 120 62 95 L62 57 Z M100 52 L132 63 L132 95 C132 116 116 132 100 141 C84 132 68 116 68 95 L68 63 Z"/>
-    <path fill="#ffffff" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M82 98 L95 112 L120 84"/>
-  </svg>`;
-
-  const pentestSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 152">
-    <rect x="99" y="0" width="2" height="152" fill="#ffffff"/>
-    <circle cx="100" cy="76" r="76" fill="none" stroke="#ffffff" stroke-width="2"/>
-    <path d="M100 0 A76 76 0 0 1 100 152" fill="none" stroke="#ffffff" stroke-width="2.5"/>
-    <circle cx="100" cy="76" r="48" fill="none" stroke="#ffffff" stroke-width="1.5"/>
-    <path d="M100 28 A48 48 0 0 0 100 124" fill="none" stroke="#ffffff" stroke-width="2.5"/>
-  </svg>`;
-
-  const barsHeights = [
-    55, 40, 70, 45, 90, 60, 35, 80, 50, 75, 42, 88, 30, 65, 48, 92, 38, 72, 55,
-    85, 44, 68, 36, 78, 52, 62, 47, 58,
-  ];
-  const devBarsSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">${barsHeights
-    .map((h, i) => {
-      const w = 200 / barsHeights.length;
-      const x = i * w + w * 0.2;
-      const bh = (h / 100) * 104;
-      return `<rect x="${x.toFixed(2)}" y="${(120 - bh).toFixed(2)}" width="${(w * 0.6).toFixed(2)}" height="${bh.toFixed(2)}" rx="1.5" fill="#ffffff"/>`;
-    })
-    .join("")}</svg>`;
-
-  const leakSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 140">
-    <circle cx="74" cy="60" r="36" fill="#ffffff"/>
-    <circle cx="74" cy="60" r="29" fill="#000000" fill-rule="evenodd"/>
-    <path fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linecap="round" d="M58 52H90"/>
-    <path fill="#ffffff" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" d="M58 62H84"/>
-    <path fill="#ffffff" stroke="#ffffff" stroke-width="2" stroke-linecap="round" d="M58 72H76"/>
-    <path d="M100 86 L134 120" stroke="#ffffff" stroke-width="9" stroke-linecap="round"/>
-    <path d="M50 44C55 36 63 32 71 31" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-  </svg>`;
-
-  const chatSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 130">
-    <path fill="#ffffff" d="M22 18H112C118.6 18 124 23.4 124 30V58C124 64.6 118.6 70 112 70H52L34 84V70H22C15.4 70 10 64.6 10 58V30C10 23.4 15.4 18 22 18Z"/>
-    <text x="28" y="51" font-family="ui-monospace, monospace" font-size="22" font-weight="700" fill="#000000">?</text>
-    <path d="M56 36C62 32 68 40 74 36C80 32 86 40 92 36C98 32 104 40 110 36" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-    <path d="M56 52C62 48 68 56 74 52C80 48 86 56 92 52" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-    <path fill="#ffffff" d="M108 62H198C204.6 62 210 67.4 210 74V102C210 108.6 204.6 114 198 114H186V128L168 114H108C101.4 114 96 108.6 96 102V74C96 67.4 101.4 62 108 62Z"/>
-    <path d="M112 80C118 76 124 84 130 80C136 76 142 84 148 80C154 76 160 84 166 80C172 76 178 84 184 80C190 76 194 82 198 80" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-    <path d="M112 96C118 92 124 100 130 96C136 92 142 100 148 96C154 92 160 100 166 96" stroke="#000000" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-  </svg>`;
-
-  const gearSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-    <path fill="#ffffff" d="${gearOuter}"/>
-    <path fill="#000000" fill-rule="evenodd" d="${gearOuter} M100 134 A34 34 0 1 1 100 66 A34 34 0 1 1 100 134 Z"/>
-    <path fill="#ffffff" d="M100 134 A34 34 0 1 1 100 66 A34 34 0 1 1 100 134 Z M100 120 A20 20 0 1 1 100 80 A20 20 0 1 1 100 120 Z"/>
-    <circle cx="100" cy="100" r="7" fill="#ffffff"/>
-  </svg>`;
-
-  const asciiVisuals = {
-    shield: svgSource(shieldSvg),
-    pentest: svgSource(pentestSvg),
-    review: svgSource(devBarsSvg),
-    leak: svgSource(leakSvg),
-    consult: svgSource(chatSvg),
-    gear: svgSource(gearSvg),
-  };
+  const gearInner = buildGearPath(100, 100, 12, 64, 52);
 </script>
 
 <section class="services-grid">
@@ -269,12 +196,60 @@
       .card-tag   { font-size: 0.6rem; }
     }
 
-    /* ═══ ASCII-рендеры иллюстраций (как логотип на главной) ═══ */
-    .ascii-visual {
-      position: absolute;
-      inset: 0;
-      pointer-events: none; /* отключаем вращение мышью — только левитация */
+    /* ═══ PENTEST ═══ */
+    .pt-visual { position: absolute; inset: 0; }
+    .pt-vline {
+      position: absolute; left: 50%; top: 0; bottom: 0; width: 1px;
+      background: color-mix(in srgb, var(--foreground, #fff) 12%, transparent);
     }
+    .pt-arc-outer, .pt-arc-outer-accent {
+      position: absolute; left: -3rem; right: -3rem; top: 1.2rem;
+      aspect-ratio: 1; border-radius: 50%;
+    }
+    .pt-arc-outer {
+      border: 1px solid color-mix(in srgb, var(--foreground, #fff) 10%, transparent);
+    }
+    .pt-arc-outer-accent {
+      border: 1px solid var(--accent, #e8834a);
+      -webkit-mask-image: linear-gradient(90deg, transparent 50%, black 50%);
+      mask-image: linear-gradient(90deg, transparent 50%, black 50%);
+    }
+    .pt-arc-inner, .pt-arc-inner-accent {
+      position: absolute; left: 0; right: 0; top: 3.5rem;
+      aspect-ratio: 1; border-radius: 50%;
+    }
+    .pt-arc-inner {
+      border: 1px solid color-mix(in srgb, var(--foreground, #fff) 10%, transparent);
+    }
+    .pt-arc-inner-accent {
+      border: 1px solid var(--accent, #e8834a);
+      -webkit-mask-image: linear-gradient(90deg, black 50%, transparent 50%);
+      mask-image: linear-gradient(90deg, black 50%, transparent 50%);
+    }
+
+    /* ═══ CODE REVIEW ═══ */
+    .dev-bars {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      height: 100%; padding: 1.25rem 1.25rem 0.5rem;
+    }
+    .dev-bar {
+      flex: 1;
+      background: color-mix(in srgb, var(--foreground, #fff) 12%, transparent);
+      border-radius: 2px 2px 0 0; min-width: 3px; max-width: 7px;
+    }
+    .dev-bar-accent { background: var(--accent, #e8834a) !important; }
+
+    /* ═══ SVG-иллюстрации (общие, без анимаций) ═══ */
+    .svg-visual {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--foreground, #fff);
+    }
+    .svg-visual svg { height: auto; }
+    .leak-visual svg   { width: min(82%, 12rem); }
+    .shield-visual svg { width: min(88%, 14rem); }
+    .chat-visual svg   { width: min(88%, 14rem); }
+    .gear-visual svg   { width: min(70%, 10rem); }
   </style>
 
   <!-- ══════════════════════════════════════════════════════════════════
@@ -294,22 +269,46 @@
       <div class="card-shell card-wide">
         <div class="card-inner">
           <div class="visual-area">
-            <div class="ascii-visual" aria-hidden="true">
-              <AsciiObject
-                src={asciiVisuals.shield}
-                colored={false}
-                color={asciiColor}
-                highlight={asciiColor}
-                class="h-full w-full"
-                background=""
-                cellSize={6}
-                scale={5}
-                orbit={false}
-                autoRotate={false}
-                rotationIntensity={0}
-                floatIntensity={1.2}
-                floatSpeed={1.5}
-              />
+            <div class="svg-visual shield-visual" aria-hidden="true">
+              <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Щит: внешний контур -->
+                <path
+                  d="M100 44
+                     L138 57
+                     L138 95
+                     C138 120 120 138 100 148
+                     C80 138 62 120 62 95
+                     L62 57
+                     Z"
+                  stroke="color-mix(in srgb, var(--foreground, #fff) 80%, transparent)"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+                <!-- Щит: внутренний контур -->
+                <path
+                  d="M100 52
+                     L132 63
+                     L132 95
+                     C132 116 116 132 100 141
+                     C84 132 68 116 68 95
+                     L68 63
+                     Z"
+                  stroke="color-mix(in srgb, var(--foreground, #fff) 55%, transparent)"
+                  stroke-width="1.2"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+                <!-- Галочка -->
+                <path
+                  d="M82 98 L95 112 L120 84"
+                  stroke="var(--accent, #f03e5f)"
+                  stroke-width="4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+              </svg>
             </div>
           </div>
           <div class="card-body">
@@ -336,22 +335,12 @@
   <div class="card-shell card-pentest">
     <div class="card-inner">
       <div class="visual-area">
-        <div class="ascii-visual" aria-hidden="true">
-          <AsciiObject
-            src={asciiVisuals.pentest}
-            colored={false}
-            color={asciiColor}
-            highlight={asciiColor}
-            class="h-full w-full"
-            background=""
-            cellSize={6}
-            scale={5}
-            orbit={false}
-            autoRotate={false}
-            rotationIntensity={0}
-            floatIntensity={1.2}
-            floatSpeed={1.5}
-          />
+        <div class="pt-visual" aria-hidden="true">
+          <div class="pt-vline"></div>
+          <div class="pt-arc-outer"></div>
+          <div class="pt-arc-outer-accent"></div>
+          <div class="pt-arc-inner"></div>
+          <div class="pt-arc-inner-accent"></div>
         </div>
       </div>
       <div class="card-body">
@@ -376,22 +365,18 @@
   <div class="card-shell card-review">
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
-        <div class="ascii-visual">
-          <AsciiObject
-            src={asciiVisuals.review}
-            colored={false}
-            color={asciiColor}
-            highlight={asciiColor}
-            class="h-full w-full"
-            background=""
-            cellSize={6}
-            scale={5}
-            orbit={false}
-            autoRotate={false}
-            rotationIntensity={0}
-            floatIntensity={1.2}
-            floatSpeed={1.5}
-          />
+        <div class="dev-bars">
+          {#each Array(28) as _, i (i)}
+            {@const heights = [
+              55, 40, 70, 45, 90, 60, 35, 80, 50, 75, 42, 88, 30, 65, 48, 92,
+              38, 72, 55, 85, 44, 68, 36, 78, 52, 62, 47, 58,
+            ]}
+            <div
+              class="dev-bar"
+              class:dev-bar-accent={[4, 9, 12, 18, 23, 26].includes(i)}
+              style="height: {heights[i % heights.length]}%"
+            ></div>
+          {/each}
         </div>
       </div>
       <div class="card-body">
@@ -415,22 +400,59 @@
   <div class="card-shell card-leak">
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
-        <div class="ascii-visual">
-          <AsciiObject
-            src={asciiVisuals.leak}
-            colored={false}
-            color={asciiColor}
-            highlight={asciiColor}
-            class="h-full w-full"
-            background=""
-            cellSize={6}
-            scale={5}
-            orbit={false}
-            autoRotate={false}
-            rotationIntensity={0}
-            floatIntensity={1.2}
-            floatSpeed={1.5}
-          />
+        <div class="svg-visual leak-visual">
+          <svg viewBox="0 0 180 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Линза: центр (74, 60), r=36 -->
+            <circle
+              cx="74" cy="60" r="36"
+              fill="color-mix(in srgb, currentColor 8%, transparent)"
+              stroke="currentColor"
+              stroke-width="2.5"
+            />
+            <!-- Внутренний тонкий ободок -->
+            <circle
+              cx="74" cy="60" r="29"
+              stroke="color-mix(in srgb, currentColor 30%, transparent)"
+              stroke-width="1"
+              fill="none"
+            />
+            <!-- Ручка: начинается на внешнем крае линзы
+                 (74+36*cos45, 60+36*sin45) = (99.5, 85.5), внутрь не заходит -->
+            <path
+              d="M100 86 L134 120"
+              stroke="currentColor"
+              stroke-width="9"
+              stroke-linecap="round"
+            />
+            <!-- Строки «данных» внутри линзы -->
+            <path
+              d="M58 52H90"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              opacity="0.7"
+            />
+            <path
+              d="M58 62H84"
+              stroke="var(--accent, #e8834a)"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+            <path
+              d="M58 72H76"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              opacity="0.7"
+            />
+            <!-- Блик на стекле -->
+            <path
+              d="M50 44C55 36 63 32 71 31"
+              stroke="var(--accent, #e8834a)"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+          </svg>
         </div>
       </div>
       <div class="card-body">
@@ -453,22 +475,52 @@
   <div class="card-shell card-consult">
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
-        <div class="ascii-visual">
-          <AsciiObject
-            src={asciiVisuals.consult}
-            colored={false}
-            color={asciiColor}
-            highlight={asciiColor}
-            class="h-full w-full"
-            background=""
-            cellSize={6}
-            scale={5}
-            orbit={false}
-            autoRotate={false}
-            rotationIntensity={0}
-            floatIntensity={1.2}
-            floatSpeed={1.5}
-          />
+        <div class="svg-visual chat-visual">
+          <svg viewBox="0 0 220 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Облачко клиента -->
+            <path
+              d="M22 18H112C118.6 18 124 23.4 124 30V58C124 64.6 118.6 70 112 70H52L34 84V70H22C15.4 70 10 64.6 10 58V30C10 23.4 15.4 18 22 18Z"
+              fill="color-mix(in srgb, currentColor 14%, transparent)"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+            />
+            <text
+              x="28" y="51"
+              font-family="ui-monospace, monospace"
+              font-size="22" font-weight="700"
+              fill="currentColor"
+            >?</text>
+            <path
+              d="M56 36C62 32 68 40 74 36C80 32 86 40 92 36C98 32 104 40 110 36"
+              stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" fill="none"
+            />
+            <path
+              d="M56 52C62 48 68 56 74 52C80 48 86 56 92 52"
+              stroke="currentColor"
+              stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"
+            />
+
+            <!-- Облачко ответа -->
+            <path
+              d="M108 62H198C204.6 62 210 67.4 210 74V102C210 108.6 204.6 114 198 114H186V128L168 114H108C101.4 114 96 108.6 96 102V74C96 67.4 101.4 62 108 62Z"
+              fill="color-mix(in srgb, var(--accent, #e8834a) 15%, transparent)"
+              stroke="var(--accent, #e8834a)"
+              stroke-width="1.8"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M112 80C118 76 124 84 130 80C136 76 142 84 148 80C154 76 160 84 166 80C172 76 178 84 184 80C190 76 194 82 198 80"
+              stroke="var(--accent, #e8834a)"
+              stroke-width="1.8" stroke-linecap="round" fill="none"
+            />
+            <path
+              d="M112 96C118 92 124 100 130 96C136 92 142 100 148 96C154 92 160 100 166 96"
+              stroke="var(--accent, #e8834a)"
+              stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.6"
+            />
+          </svg>
         </div>
       </div>
       <div class="card-body">
@@ -502,22 +554,41 @@
       <div class="card-shell card-wide">
         <div class="card-inner">
           <div class="visual-area">
-            <div class="ascii-visual" aria-hidden="true">
-              <AsciiObject
-                src={asciiVisuals.gear}
-                colored={false}
-                color={asciiColor}
-                highlight={asciiColor}
-                class="h-full w-full"
-                background=""
-                cellSize={6}
-                scale={5}
-                orbit={false}
-                autoRotate={false}
-                rotationIntensity={0}
-                floatIntensity={1.2}
-                floatSpeed={1.5}
-              />
+            <div class="svg-visual gear-visual" aria-hidden="true">
+              <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Внешний контур шестерни (яркий, как внешний контур щита) -->
+                <path
+                  d={gearOuter}
+                  stroke="color-mix(in srgb, var(--foreground, #fff) 80%, transparent)"
+                  stroke-width="2"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+                <!-- Внутренний контур зубьев (приглушённый) -->
+                <path
+                  d={gearInner}
+                  stroke="color-mix(in srgb, var(--foreground, #fff) 55%, transparent)"
+                  stroke-width="1.2"
+                  stroke-linejoin="round"
+                  fill="none"
+                />
+                <!-- Кольцо тела шестерни -->
+                <circle
+                  cx="100" cy="100" r="34"
+                  stroke="color-mix(in srgb, var(--foreground, #fff) 30%, transparent)"
+                  stroke-width="1.5"
+                  fill="none"
+                />
+                <!-- Центральное отверстие -->
+                <circle
+                  cx="100" cy="100" r="20"
+                  stroke="color-mix(in srgb, var(--foreground, #fff) 55%, transparent)"
+                  stroke-width="1.2"
+                  fill="none"
+                />
+                <!-- Акцентная точка в центре -->
+                <circle cx="100" cy="100" r="7" fill="var(--accent, #f03e5f)" />
+              </svg>
             </div>
           </div>
           <div class="card-body">
