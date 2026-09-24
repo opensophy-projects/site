@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
+  import AsciiVisual from "$lib/components/ui/AsciiVisual.svelte";
   import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
 
   const flameColor: [number, number, number] = [0.956, 0.247, 0.369];
@@ -351,7 +351,7 @@
         <div class="card-inner">
           <div class="visual-area">
             <div class="ascii-visual" aria-hidden="true">
-              <AsciiObject
+              <AsciiVisual
                 src={asciiVisuals.shield}
                 colored={false}
                 color={asciiColor}
@@ -395,7 +395,7 @@
         <div class="ascii-visual" aria-hidden="true">
           <!-- серый слой: вертикаль + приглушённые половины дуг -->
           <div class="ascii-layer">
-            <AsciiObject
+            <AsciiVisual
               src={asciiVisuals.pentestGray}
               colored={false}
               color={asciiGray}
@@ -413,7 +413,7 @@
           </div>
           <!-- акцентный слой: яркие половины дуг -->
           <div class="ascii-layer">
-            <AsciiObject
+            <AsciiVisual
               src={asciiVisuals.pentestAccent}
               colored={false}
               color={asciiColor}
@@ -456,7 +456,7 @@
       <div class="visual-area" aria-hidden="true">
         <div class="ascii-visual">
           <div class="ascii-layer">
-            <AsciiObject
+            <AsciiVisual
               src={asciiVisuals.reviewGray}
               colored={false}
               color={asciiGray}
@@ -473,7 +473,7 @@
             />
           </div>
           <div class="ascii-layer">
-            <AsciiObject
+            <AsciiVisual
               src={asciiVisuals.reviewAccent}
               colored={false}
               color={asciiColor}
@@ -513,7 +513,7 @@
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
         <div class="ascii-visual">
-          <AsciiObject
+          <AsciiVisual
             src={asciiVisuals.leak}
             colored={false}
             color={asciiColor}
@@ -553,7 +553,7 @@
         <div class="ascii-visual">
           <!-- серое облачко (вопрос) -->
           <div class="ascii-layer">
-            <AsciiObject
+            <AsciiVisual
               src={asciiVisuals.consultGray}
               colored={false}
               color={asciiGray}
@@ -571,7 +571,7 @@
           </div>
           <!-- акцентное облачко (ответ) -->
           <div class="ascii-layer">
-            <AsciiObject
+            <AsciiVisual
               src={asciiVisuals.consultAccent}
               colored={false}
               color={asciiColor}
@@ -621,7 +621,7 @@
         <div class="card-inner">
           <div class="visual-area">
             <div class="ascii-visual" aria-hidden="true">
-              <AsciiObject
+              <AsciiVisual
                 src={asciiVisuals.gear}
                 colored={false}
                 color={asciiColor}

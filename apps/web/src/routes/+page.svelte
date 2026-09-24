@@ -1,7 +1,7 @@
 <script lang="ts">
   import { brandingConfig } from "$lib";
   import ServicesGrid from "$lib/components/ui/ServicesGrid.svelte";
-  import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
+  import AsciiVisual from "$lib/components/ui/AsciiVisual.svelte";
   import CardProject from "$lib/components/ui/CardProject.svelte";
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui/TextLoop.svelte";
@@ -215,7 +215,7 @@
       для разработчиков и команд.
     </h2>
     <div class="about-ascii" aria-hidden="true">
-      <AsciiObject
+      <AsciiVisual
         src="/logo.png"
         colored={false}
         color="#f43f5e"
