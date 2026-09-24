@@ -3,6 +3,10 @@ title: Главная
 description: Открытые знания — DevSecOps, безопасность и культура команды. Понятные статьи, гайды и опыт.
 keywords: 'Opensophy, Главная, статьи, статьи, open-source'
 ---
+<script>
+	import Admonition from '$lib/components/docs/markdown/Admonition.svelte';
+</script>
+
 
 # Открытые знания
 

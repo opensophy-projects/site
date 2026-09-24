@@ -662,6 +662,7 @@ sed '1i\Заголовок' file.txt                 # Добавить пере
 | `exit` | Выйти из терминала / сессии |
 <script lang="ts">
         import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
+	import Admonition from '$lib/components/docs/markdown/Admonition.svelte';
 </script>
 
 ---
