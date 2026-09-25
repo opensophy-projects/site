@@ -360,7 +360,6 @@
 
 	$effect(() => {
 		const path = currentPath;
-		void path;
 
 		if (lastAutoExpandedPath === path) return;
 
@@ -373,8 +372,9 @@
 	$effect(() => {
 		const path = currentPath;
 		const hash = currentHash;
-		void path;
-		void hash;
+
+		// Reference path and hash to subscribe to their changes
+		if (path === null || hash === null) return;
 
 		scheduleHoverIndicatorRestore();
 		scheduleActiveIndicatorUpdate();
