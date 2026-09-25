@@ -16,6 +16,16 @@
 
   const GITHUB_UI_REGISTRY_URL =
     "https://github.com/opensophy-projects/site/tree/main/apps/web/src/lib/components/ui-registry";
+
+  import { onMount } from "svelte";
+  let accentColor = $state("#ffffff");
+
+  onMount(() => {
+    const raw = getComputedStyle(document.documentElement)
+      .getPropertyValue("--accent")
+      .trim();
+    if (raw) accentColor = raw;
+  });
 </script>
 
 <PageSeo
@@ -35,7 +45,7 @@
   <section
     class="hero-section relative flex w-full items-center justify-center overflow-hidden px-6 py-24 md:py-32"
   >
-    <GhostCursor />
+    <GhostCursor color={accentColor} />
 
     <div
       class="relative z-10 flex w-full max-w-5xl flex-col items-center gap-6 text-center"
