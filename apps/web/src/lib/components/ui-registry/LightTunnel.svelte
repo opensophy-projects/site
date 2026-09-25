@@ -1,14 +1,14 @@
 <script module lang="ts">
 	export type FlowDirection = 'inward' | 'outward';
 
-	const vertex = `#version 300 es
+	const VERT = `
 in vec2 position;
 void main() {
   gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
-	const fragment = `#version 300 es
+	const FRAG = `
 precision highp float;
 uniform vec2 iResolution;
 uniform float iTime;
@@ -130,15 +130,21 @@ void main() {
 }
 `;
 
-	function hexToRgb(hex: string): [number, number, number] {
-		const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-		if (!result) return [1, 1, 1];
-		return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
+	function hexToRGB(hex: string): { r: number; g: number; b: number } {
+		let c = hex.trim();
+		if (c.startsWith('#')) c = c.slice(1);
+		if (c.length === 3)
+			c = c
+				.split('')
+				.map((x) => x + x)
+				.join('');
+		const n = parseInt(c, 16) || 0xffffff;
+		return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
 	}
 </script>
 
 <script lang="ts">
-	import { Renderer, Program, Mesh, Triangle } from 'ogl';
+	import * as THREE from 'three';
 
 	type Props = {
 		class?: string;
@@ -172,6 +178,7 @@ void main() {
 		mouseInteraction?: boolean;
 		mouseStrength?: number;
 		lightMode?: boolean;
+		dpr?: number;
 	};
 
 	let {
@@ -205,52 +212,60 @@ void main() {
 		opacity = 1,
 		mouseInteraction = true,
 		mouseStrength = 0,
-		lightMode = false
+		lightMode = false,
+		dpr
 	}: Props = $props();
 
 	let mount: HTMLDivElement;
-	let programRef: InstanceType<typeof Program> | null = null;
+	let canvasEl: HTMLCanvasElement | undefined = $state(undefined);
+	let materialRef: THREE.RawShaderMaterial | null = null;
 
 	$effect(() => {
-		if (!mount) return;
+		if (!mount || !canvasEl) return;
 		let active = true;
+		const canvas: HTMLCanvasElement = canvasEl;
 
-		const renderer = new Renderer({
-			webgl: 2,
-			alpha: true,
-			premultipliedAlpha: true,
-			antialias: false,
-			dpr: Math.min(window.devicePixelRatio || 1, 2)
-		});
+		let renderer: THREE.WebGLRenderer;
+		let scene: THREE.Scene;
+		let camera: THREE.OrthographicCamera;
+		let geometry: THREE.BufferGeometry;
+		let material: THREE.RawShaderMaterial;
+		let mesh: THREE.Mesh;
+		let uniforms: Record<string, { value: any }>;
+		let curDpr: number;
 
-		const gl = renderer.gl;
-		gl.clearColor(0, 0, 0, 0);
-		const canvas: HTMLCanvasElement = gl.canvas as HTMLCanvasElement;
-		canvas.style.width = '100%';
-		canvas.style.height = '100%';
-		canvas.style.display = 'block';
-		// Явно прибиваем canvas к нижнему слою внутри своего контейнера —
-		// он никогда не должен иметь возможность перекрыть контент,
-		// который рисуется поверх этого компонента.
-		canvas.style.position = 'absolute';
-		canvas.style.inset = '0';
-		canvas.style.zIndex = '0';
-		// Фон декоративный: по умолчанию не должен перехватывать клики,
-		// иначе кнопки/ссылки поверх него могут перестать нажиматься.
-		canvas.style.pointerEvents = mouseInteraction ? 'auto' : 'none';
-		mount.appendChild(canvas);
+		try {
+			renderer = new THREE.WebGLRenderer({
+				canvas,
+				antialias: false,
+				alpha: true,
+				depth: false,
+				stencil: false,
+				powerPreference: 'high-performance',
+				premultipliedAlpha: true
+			});
+			curDpr = Math.min(dpr ?? (window.devicePixelRatio || 1), 2);
+			renderer.setPixelRatio(curDpr);
+			renderer.setClearColor(0x000000, 0);
+			canvas.style.width = '100%';
+			canvas.style.height = '100%';
+			canvas.style.display = 'block';
 
-		const geometry = new Triangle(gl);
-		const cable0 = hexToRgb(cableColor);
-		const pulse0 = hexToRgb(pulseColor);
-		const tunnel0 = hexToRgb(tunnelColor);
+			scene = new THREE.Scene();
+			camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+			geometry = new THREE.BufferGeometry();
+			geometry.setAttribute(
+				'position',
+				new THREE.BufferAttribute(new Float32Array([-1, -1, 3, -1, -1, 3]), 2)
+			);
 
-		const program = new Program(gl, {
-			vertex,
-			fragment,
-			uniforms: {
+			const cable0 = hexToRGB(cableColor);
+			const pulse0 = hexToRGB(pulseColor);
+			const tunnel0 = hexToRGB(tunnelColor);
+
+			uniforms = {
 				iTime: { value: 0 },
-				iResolution: { value: new Float32Array([1, 1]) },
+				iResolution: { value: new THREE.Vector2(1, 1) },
 				uSpeed: { value: speed },
 				uFlowDir: { value: flowDirection === 'outward' ? -1.0 : 1.0 },
 				uPulseSpeed: { value: pulseSpeed },
@@ -263,76 +278,85 @@ void main() {
 				uWaviness: { value: waviness },
 				uSway: { value: sway },
 				uSize: { value: size },
-				uCenter: { value: new Float32Array([centerX, centerY]) },
-				uMouseOffset: { value: new Float32Array([0, 0]) },
+				uCenter: { value: new THREE.Vector2(centerX, centerY) },
+				uMouseOffset: { value: new THREE.Vector2(0, 0) },
 				uGlow: { value: glow },
 				uFadeNear: { value: fadeNear },
 				uFadeFar: { value: fadeFar },
 				uBrightness: { value: brightness },
 				uColorVariance: { value: colorVariance ? 1.0 : 0.0 },
 				uOpacity: { value: opacity },
-				uCableColor: { value: new Float32Array(cable0) },
-				uPulseColor: { value: new Float32Array(pulse0) },
-				uTunnelColor: { value: new Float32Array(tunnel0) },
+				uCableColor: { value: new THREE.Vector3(cable0.r, cable0.g, cable0.b) },
+				uPulseColor: { value: new THREE.Vector3(pulse0.r, pulse0.g, pulse0.b) },
+				uTunnelColor: { value: new THREE.Vector3(tunnel0.r, tunnel0.g, tunnel0.b) },
 				uTunnelOpacity: { value: tunnelOpacity },
 				uGrain: { value: grain ? 1.0 : 0.0 },
 				uGrainIntensity: { value: grainIntensity },
 				uLightMode: { value: lightMode ? 1.0 : 0.0 }
-			}
-		});
+			};
 
-		const mesh = new Mesh(gl, { geometry, program });
-		programRef = program;
+			material = new THREE.RawShaderMaterial({
+				glslVersion: THREE.GLSL3,
+				vertexShader: VERT,
+				fragmentShader: FRAG,
+				uniforms,
+				transparent: true,
+				depthTest: false,
+				depthWrite: false,
+				blending: THREE.NormalBlending
+			});
+			materialRef = material;
+
+			mesh = new THREE.Mesh(geometry, material);
+			mesh.frustumCulled = false;
+			scene.add(mesh);
+		} catch (err) {
+			console.error('[LightTunnel] не удалось инициализировать WebGL-рендерер:', err);
+			return;
+		}
 
 		const setSize = (): void => {
-			const rect = mount.getBoundingClientRect();
-			const w = Math.max(1, Math.floor(rect.width));
-			const h = Math.max(1, Math.floor(rect.height));
-			renderer.setSize(w, h);
-			const res = (program.uniforms.iResolution as { value: Float32Array }).value;
-			res[0] = gl.drawingBufferWidth;
-			res[1] = gl.drawingBufferHeight;
-			renderer.render({ scene: mesh });
+			const w = mount.clientWidth || 1;
+			const h = mount.clientHeight || 1;
+			renderer.setPixelRatio(curDpr);
+			renderer.setSize(w, h, false);
+			uniforms.iResolution.value.set(w * curDpr, h * curDpr);
 		};
-
+		setSize();
 		const ro = new ResizeObserver(setSize);
 		ro.observe(mount);
-		setSize();
 
-		let currentMouse: [number, number] = [0.5, 0.5];
-		let targetMouse: [number, number] = [0.5, 0.5];
+		let rect: DOMRect | null = canvas.getBoundingClientRect();
+		let currentMouse = new THREE.Vector2(0.5, 0.5);
+		let targetMouse = new THREE.Vector2(0.5, 0.5);
 
-		const handleMouseMove = (e: MouseEvent): void => {
-			const rect = canvas.getBoundingClientRect();
-			targetMouse = [(e.clientX - rect.left) / rect.width, 1.0 - (e.clientY - rect.top) / rect.height];
+		const onMove = (e: PointerEvent): void => {
+			if (!rect) rect = canvas.getBoundingClientRect();
+			const x = (e.clientX - rect.left) / rect.width;
+			const y = 1.0 - (e.clientY - rect.top) / rect.height;
+			targetMouse.set(x, y);
 		};
-		const handleMouseLeave = (): void => {
-			targetMouse = [0.5, 0.5];
-		};
-		canvas.addEventListener('mousemove', handleMouseMove);
-		canvas.addEventListener('mouseleave', handleMouseLeave);
+		const onLeave = (): void => targetMouse.set(0.5, 0.5);
+		canvas.addEventListener('pointermove', onMove);
+		canvas.addEventListener('pointerleave', onLeave);
 
-		let raf = 0;
+		const t0 = performance.now();
 		let isVisible = true;
 		let isPageVisible = !document.hidden;
-		const t0 = performance.now();
+		let raf = 0;
 
-		const loop = (t: number): void => {
+		const loop = (now: number): void => {
 			if (!active) return;
-			(program.uniforms.iTime as { value: number }).value = (t - t0) * 0.001;
+			uniforms.iTime.value = (now - t0) * 0.001;
 
-			if (mouseInteraction) {
-				currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
-				currentMouse[1] += 0.05 * (targetMouse[1] - currentMouse[1]);
-			} else {
-				currentMouse[0] += 0.05 * (0.5 - currentMouse[0]);
-				currentMouse[1] += 0.05 * (0.5 - currentMouse[1]);
-			}
-			const off = (program.uniforms.uMouseOffset as { value: Float32Array }).value;
-			off[0] = (currentMouse[0] - 0.5) * mouseStrength;
-			off[1] = (currentMouse[1] - 0.5) * mouseStrength;
+			const target = mouseInteraction ? targetMouse : new THREE.Vector2(0.5, 0.5);
+			currentMouse.lerp(target, 0.05);
+			uniforms.uMouseOffset.value.set(
+				(currentMouse.x - 0.5) * mouseStrength,
+				(currentMouse.y - 0.5) * mouseStrength
+			);
 
-			renderer.render({ scene: mesh });
+			renderer.render(scene, camera);
 			if (active) raf = requestAnimationFrame(loop);
 		};
 
@@ -365,25 +389,25 @@ void main() {
 
 		return () => {
 			active = false;
-			programRef = null;
+			materialRef = null;
 			tryStop();
 			ro.disconnect();
 			io.disconnect();
 			document.removeEventListener('visibilitychange', onVisibility);
-			canvas.removeEventListener('mousemove', handleMouseMove);
-			canvas.removeEventListener('mouseleave', handleMouseLeave);
-			try {
-				mount.removeChild(canvas);
-			} catch {}
-			gl.getExtension('WEBGL_lose_context')?.loseContext();
+			canvas.removeEventListener('pointermove', onMove);
+			canvas.removeEventListener('pointerleave', onLeave);
+			scene.clear();
+			geometry.dispose();
+			material.dispose();
+			renderer.dispose();
 		};
 	});
 
 	// Реактивно обновляем униформы при изменении пропсов (без пересоздания рендерера)
 	$effect(() => {
-		const program = programRef;
-		if (!program) return;
-		const u = program.uniforms as Record<string, { value: any }>;
+		const material = materialRef;
+		if (!material) return;
+		const u = material.uniforms as Record<string, { value: any }>;
 
 		u.uSpeed.value = speed;
 		u.uFlowDir.value = flowDirection === 'outward' ? -1.0 : 1.0;
@@ -397,9 +421,7 @@ void main() {
 		u.uWaviness.value = waviness;
 		u.uSway.value = sway;
 		u.uSize.value = size;
-		const center = u.uCenter.value as Float32Array;
-		center[0] = centerX;
-		center[1] = centerY;
+		(u.uCenter.value as THREE.Vector2).set(centerX, centerY);
 		u.uGlow.value = glow;
 		u.uFadeNear.value = fadeNear;
 		u.uFadeFar.value = fadeFar;
@@ -410,26 +432,16 @@ void main() {
 		u.uOpacity.value = opacity;
 		u.uLightMode.value = lightMode ? 1.0 : 0.0;
 
-		const cable = hexToRgb(cableColor);
-		const cableU = u.uCableColor.value as Float32Array;
-		cableU[0] = cable[0];
-		cableU[1] = cable[1];
-		cableU[2] = cable[2];
-
-		const pulse = hexToRgb(pulseColor);
-		const pulseU = u.uPulseColor.value as Float32Array;
-		pulseU[0] = pulse[0];
-		pulseU[1] = pulse[1];
-		pulseU[2] = pulse[2];
-
-		const tunnel = hexToRgb(tunnelColor);
-		const tunnelU = u.uTunnelColor.value as Float32Array;
-		tunnelU[0] = tunnel[0];
-		tunnelU[1] = tunnel[1];
-		tunnelU[2] = tunnel[2];
-
+		const cable = hexToRGB(cableColor);
+		(u.uCableColor.value as THREE.Vector3).set(cable.r, cable.g, cable.b);
+		const pulse = hexToRGB(pulseColor);
+		(u.uPulseColor.value as THREE.Vector3).set(pulse.r, pulse.g, pulse.b);
+		const tunnel = hexToRGB(tunnelColor);
+		(u.uTunnelColor.value as THREE.Vector3).set(tunnel.r, tunnel.g, tunnel.b);
 		u.uTunnelOpacity.value = tunnelOpacity;
 	});
 </script>
 
-<div bind:this={mount} class="relative h-full w-full overflow-hidden {className}" {style}></div>
+<div bind:this={mount} class="w-full h-full relative {className}" {style}>
+	<canvas bind:this={canvasEl}></canvas>
+</div>
