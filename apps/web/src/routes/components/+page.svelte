@@ -2,7 +2,7 @@
   import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui/TextLoop.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
-  import LightTunnel from "$lib/components/ui-registry/LightTunnel.svelte";
+  import GhostCursor from "$lib/components/ui-registry/GhostCursor.svelte";
   import PageSeo from "$lib/components/seo/PageSeo.svelte";
 
   const heroLoopTexts = [
@@ -35,9 +35,7 @@
   <section
     class="hero-section relative flex w-full items-center justify-center overflow-hidden px-6 py-24 md:py-32"
   >
-    <div class="tunnel-bg" aria-hidden="true">
-      <LightTunnel size={1.2} cableCount={60} thickness={0.6} glow={1.8} />
-    </div>
+    <GhostCursor />
 
     <div
       class="relative z-10 flex w-full max-w-5xl flex-col items-center gap-6 text-center"
@@ -68,13 +66,6 @@
   .hero-section {
     min-height: 100dvh;
     position: relative;
-  }
-
-  /* ─── Фон секции (световой тоннель на весь блок) ───────────── */
-  .tunnel-bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
   }
 
   /* ─── Hero Typography ──────────────────────────────────────── */
