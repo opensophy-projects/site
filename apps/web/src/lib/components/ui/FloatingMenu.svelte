@@ -43,12 +43,13 @@
 		menuWrapper?: ClassValue;
 		trigger?: ClassValue;
 		panel?: ClassValue;
+		navLink?: ClassValue;
 	};
 
 	type Props = {
 		triggers: MenuTrigger[];
-	/** Direct links rendered after the trigger buttons (no dropdown). */
-	navLinks?: MenuNavLink[];
+		/** Direct links rendered after the trigger buttons (no dropdown). */
+		navLinks?: MenuNavLink[];
 		logo?: Snippet;
 		actionsStart?: Snippet;
 		actionsEnd?: Snippet;
@@ -236,6 +237,18 @@
 							/>
 						</button>
 					{/each}
+					{#each navLinks as link (link.id)}
+						<a
+							href={link.href}
+							data-slot="nav-link"
+							class={cn(
+								"rounded-sm px-3 py-2 text-sm font-medium text-foreground-muted transition-colors duration-150 hover:bg-background-inset hover:text-foreground",
+								classes?.navLink,
+							)}
+						>
+							{link.label}
+						</a>
+					{/each}
 				</nav>
 			{:else}
 				<div class="flex-1"></div>
@@ -332,6 +345,18 @@
 									{@render trigger.panel(true)}
 								</div>
 							{/if}
+						</div>
+					{/each}
+					{#each navLinks as link (link.id)}
+						<div data-slot="accordion-item" class="accordion-item">
+							<a
+								href={link.href}
+								data-slot="mobile-nav-link"
+								class="flex w-full items-center justify-between px-5 py-6 text-left text-lg font-medium text-foreground"
+								onclick={closeMobile}
+							>
+								{link.label}
+							</a>
 						</div>
 					{/each}
 				</div>
