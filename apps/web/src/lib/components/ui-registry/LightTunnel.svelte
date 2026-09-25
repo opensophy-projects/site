@@ -229,6 +229,15 @@ void main() {
 		canvas.style.width = '100%';
 		canvas.style.height = '100%';
 		canvas.style.display = 'block';
+		// Явно прибиваем canvas к нижнему слою внутри своего контейнера —
+		// он никогда не должен иметь возможность перекрыть контент,
+		// который рисуется поверх этого компонента.
+		canvas.style.position = 'absolute';
+		canvas.style.inset = '0';
+		canvas.style.zIndex = '0';
+		// Фон декоративный: по умолчанию не должен перехватывать клики,
+		// иначе кнопки/ссылки поверх него могут перестать нажиматься.
+		canvas.style.pointerEvents = mouseInteraction ? 'auto' : 'none';
 		mount.appendChild(canvas);
 
 		const geometry = new Triangle(gl);
