@@ -322,7 +322,7 @@
   // re-layout whenever visual config props change
   $: if (rootEl) {
     // touch every dependency explicitly so Svelte tracks them
-    void (depth, spread, tilt, tiltDirection, visibleCards, falloff, blur, cardWidth, cardHeight, radius, count);
+    void [depth, spread, tilt, tiltDirection, visibleCards, falloff, blur, cardWidth, cardHeight, radius, count];
     layout(posRef);
   }
 </script>

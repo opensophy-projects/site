@@ -75,7 +75,7 @@
   ];
 
   // ---- Компоненты: прямая ссылка в навигации (без выпадающей панели) ----
-  const componentsLink = {
+  const _componentsLink = {
     id: "components",
     label: "Компоненты",
     href: "/components",

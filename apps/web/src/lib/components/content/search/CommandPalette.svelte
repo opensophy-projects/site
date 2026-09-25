@@ -77,10 +77,7 @@
   });
 
   $effect(() => {
-    // Subscribe to results changes to reset selected index
-    if (results.length >= 0) {
-      selectedIndex = 0;
-    }
+    if (results) selectedIndex = 0;
   });
 
   function updateSelectedIndicators() {
@@ -155,8 +152,7 @@
     const index = selectedIndex;
     const resultCount = results.length;
 
-    // Reference index and resultCount to subscribe to their changes
-    if (index >= 0 && resultCount >= 0) {
+    if (index >= 0 || resultCount >= 0) {
       scheduleSelectedIndicatorUpdate();
     }
 

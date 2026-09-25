@@ -370,14 +370,11 @@
 	});
 
 	$effect(() => {
-		const path = currentPath;
-		const hash = currentHash;
-
-		// Reference path and hash to subscribe to their changes
-		if (path === null || hash === null) return;
-
-		scheduleHoverIndicatorRestore();
-		scheduleActiveIndicatorUpdate();
+		if (currentPath || currentHash) {
+			updateActiveIndicator();
+			scheduleHoverIndicatorRestore();
+			scheduleActiveIndicatorUpdate();
+		}
 
 		if (typeof window === 'undefined') return;
 

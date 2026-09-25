@@ -43,9 +43,10 @@
 	});
 
 	$effect(() => {
-		void tabs;
-		if (activeTab > tabs.length - 1) {
-			activeTab = 0;
+		if (tabs) {
+			if (activeTab > tabs.length - 1) {
+				activeTab = 0;
+			}
 		}
 	});
 
@@ -98,11 +99,10 @@
 		const currentActiveTab = activeTab;
 		const currentTabList = tabList;
 		const currentTabsLength = tabs.length;
-		void currentActiveTab;
-		void currentTabList;
-		void currentTabsLength;
 
-		scheduleActiveIndicatorUpdate();
+		if (currentActiveTab >= 0 || currentTabList || currentTabsLength >= 0) {
+			scheduleActiveIndicatorUpdate();
+		}
 
 		if (typeof window === 'undefined') return;
 

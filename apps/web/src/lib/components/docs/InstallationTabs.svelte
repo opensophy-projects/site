@@ -93,10 +93,7 @@
 		const activePackageManager = packageManagerStore.active;
 		const currentTabList = tabList;
 
-		// Reference both to subscribe to their changes
-		if (activePackageManager && currentTabList !== undefined) {
-			scheduleActiveIndicatorUpdate();
-		} else {
+		if (activePackageManager || currentTabList) {
 			scheduleActiveIndicatorUpdate();
 		}
 
