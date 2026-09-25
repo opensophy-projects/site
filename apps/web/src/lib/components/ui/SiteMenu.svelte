@@ -74,6 +74,13 @@
     },
   ];
 
+  // ---- Компоненты: прямая ссылка в навигации (без выпадающей панели) ----
+  const _componentsLink = {
+    id: "components",
+    label: "Компоненты",
+    href: "/components",
+  };
+
   // ---- Решения: плоский ряд карточек ----
   const solutionLinks = [
     {

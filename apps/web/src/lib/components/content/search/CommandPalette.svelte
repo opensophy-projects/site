@@ -77,8 +77,7 @@
   });
 
   $effect(() => {
-    void results;
-    selectedIndex = 0;
+    if (results) selectedIndex = 0;
   });
 
   function updateSelectedIndicators() {
@@ -152,10 +151,10 @@
   $effect(() => {
     const index = selectedIndex;
     const resultCount = results.length;
-    void index;
-    void resultCount;
 
-    scheduleSelectedIndicatorUpdate();
+    if (index >= 0 || resultCount >= 0) {
+      scheduleSelectedIndicatorUpdate();
+    }
 
     if (typeof window === "undefined") return;
 
