@@ -92,10 +92,13 @@
 	$effect(() => {
 		const activePackageManager = packageManagerStore.active;
 		const currentTabList = tabList;
-		void activePackageManager;
-		void currentTabList;
 
-		scheduleActiveIndicatorUpdate();
+		// Reference both to subscribe to their changes
+		if (activePackageManager && currentTabList !== undefined) {
+			scheduleActiveIndicatorUpdate();
+		} else {
+			scheduleActiveIndicatorUpdate();
+		}
 
 		if (typeof window === 'undefined') return;
 
