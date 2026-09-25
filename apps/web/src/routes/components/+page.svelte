@@ -35,13 +35,31 @@
   <section
     class="hero-section relative flex w-full items-center justify-center overflow-hidden px-6 py-24 md:py-32"
   >
-    <div class="hero-card" aria-hidden="true">
-      <div class="laser-edge laser-edge-left">
-        <LaserFlow color="#f43f5e" horizontalBeamOffset={-0.5} verticalBeamOffset={0} />
-      </div>
-      <div class="laser-edge laser-edge-right">
-        <LaserFlow color="#f43f5e" horizontalBeamOffset={-0.5} verticalBeamOffset={0} />
-      </div>
+    <div class="laser-edge laser-edge-left" aria-hidden="true">
+      <LaserFlow
+        color="#f43f5e"
+        horizontalBeamOffset={-0.5}
+        verticalBeamOffset={0}
+        horizontalSizing={1.6}
+        verticalSizing={3.2}
+        wispIntensity={9}
+        wispDensity={1.4}
+        fogIntensity={0.6}
+        decay={1.4}
+      />
+    </div>
+    <div class="laser-edge laser-edge-right" aria-hidden="true">
+      <LaserFlow
+        color="#f43f5e"
+        horizontalBeamOffset={-0.5}
+        verticalBeamOffset={0}
+        horizontalSizing={1.6}
+        verticalSizing={3.2}
+        wispIntensity={9}
+        wispDensity={1.4}
+        fogIntensity={0.6}
+        decay={1.4}
+      />
     </div>
 
     <div
@@ -75,26 +93,12 @@
     position: relative;
   }
 
-  .hero-card {
-    position: absolute;
-    inset: 0;
-    max-width: 80rem;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    overflow: hidden;
-    border-bottom-left-radius: var(--radius-3xl, 3.3rem);
-    border-bottom-right-radius: var(--radius-3xl, 3.3rem);
-    box-shadow: none;
-  }
-
-  /* ─── Laser edges (слева и справа по бокам) ────────────────── */
+  /* ─── Laser edges (слева и справа, прижаты к реальным краям экрана) ── */
   .laser-edge {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: clamp(9rem, 22vw, 20rem);
+    width: clamp(20rem, 34vw, 42rem);
     pointer-events: none;
   }
 
