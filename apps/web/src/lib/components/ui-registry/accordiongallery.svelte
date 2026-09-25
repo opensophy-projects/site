@@ -172,16 +172,29 @@
   });
 
   // re-run layout whenever active index or any layout-affecting prop changes
-  $: if (rootEl) {
-    // touch dependencies explicitly so Svelte tracks them
-    void [active, count, expandRatio, duration, ease, vertical, tilt, parallax, grayscale, showLabels, stagger];
-    applyLayout(!firstRun);
+  $: {
+    // явные зависимости для реактивности Svelte (без useless void)
+    active;
+    count;
+    expandRatio;
+    duration;
+    ease;
+    vertical;
+    tilt;
+    parallax;
+    grayscale;
+    showLabels;
+    stagger;
+    if (rootEl) applyLayout(!firstRun);
   }
 
   // re-measure whenever gap/expandRatio/orientation/count changes the usable space
-  $: if (rootEl) {
-    void [gap, expandRatio, vertical, count];
-    measure();
+  $: {
+    gap;
+    expandRatio;
+    vertical;
+    count;
+    if (rootEl) measure();
   }
 </script>
 
