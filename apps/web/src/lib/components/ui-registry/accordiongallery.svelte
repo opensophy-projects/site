@@ -173,28 +173,27 @@
 
   // re-run layout whenever active index or any layout-affecting prop changes
   $: {
-    // явные зависимости для реактивности Svelte (без useless void)
-    active;
-    count;
-    expandRatio;
-    duration;
-    ease;
-    vertical;
-    tilt;
-    parallax;
-    grayscale;
-    showLabels;
-    stagger;
-    if (rootEl) applyLayout(!firstRun);
+    // явные зависимости для реактивности Svelte
+    const _layoutDeps = [
+      active,
+      count,
+      expandRatio,
+      duration,
+      ease,
+      vertical,
+      tilt,
+      parallax,
+      grayscale,
+      showLabels,
+      stagger
+    ];
+    if (rootEl && _layoutDeps.length) applyLayout(!firstRun);
   }
 
   // re-measure whenever gap/expandRatio/orientation/count changes the usable space
   $: {
-    gap;
-    expandRatio;
-    vertical;
-    count;
-    if (rootEl) measure();
+    const _measureDeps = [gap, expandRatio, vertical, count];
+    if (rootEl && _measureDeps.length) measure();
   }
 </script>
 
