@@ -22,6 +22,16 @@
 		panel: Snippet<[boolean]>;
 	};
 
+	/**
+	 * A plain top-level nav link (no dropdown panel), rendered alongside the
+	 * hover-trigger items in the desktop nav and as a direct link on mobile.
+	 */
+	type MenuNavLink = {
+		id: string;
+		label: string;
+		href: string;
+	};
+
 	type FloatingMenuClasses = {
 		root?: ClassValue;
 		overlay?: ClassValue;
@@ -37,6 +47,8 @@
 
 	type Props = {
 		triggers: MenuTrigger[];
+	/** Direct links rendered after the trigger buttons (no dropdown). */
+	navLinks?: MenuNavLink[];
 		logo?: Snippet;
 		actionsStart?: Snippet;
 		actionsEnd?: Snippet;
@@ -53,6 +65,7 @@
 
 	let {
 		triggers,
+		navLinks = [],
 		logo,
 		actionsStart,
 		actionsEnd,
