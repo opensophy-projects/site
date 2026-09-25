@@ -36,7 +36,7 @@
     class="hero-section relative flex w-full items-center justify-center overflow-hidden px-6 py-24 md:py-32"
   >
     <div class="tunnel-bg" aria-hidden="true">
-      <LightTunnel size={6} cableCount={140} />
+      <LightTunnel size={1.2} cableCount={60} thickness={0.6} glow={1.8} />
     </div>
 
     <div
