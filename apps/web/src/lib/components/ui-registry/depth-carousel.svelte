@@ -321,19 +321,21 @@
 
   // re-layout whenever visual config props change
   $: {
-    // явные зависимости для реактивности Svelte (без useless void)
-    depth;
-    spread;
-    tilt;
-    tiltDirection;
-    visibleCards;
-    falloff;
-    blur;
-    cardWidth;
-    cardHeight;
-    radius;
-    count;
-    if (rootEl) layout(posRef);
+    // явные зависимости для реактивности Svelte
+    const _layoutDeps = [
+      depth,
+      spread,
+      tilt,
+      tiltDirection,
+      visibleCards,
+      falloff,
+      blur,
+      cardWidth,
+      cardHeight,
+      radius,
+      count
+    ];
+    if (rootEl && _layoutDeps.length) layout(posRef);
   }
 </script>
 
