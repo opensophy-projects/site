@@ -1,1 +1,8 @@
+---
+title: 'Linux: Hardening'
+description: "Обзор инструментов для быстрой проверки Linux-сервера на соответствие compliance-требованиям (CIS, ISO 27001, PCI DSS, ФСТЭК): Lynis, OpenSCAP, systemd-analyze, DevSec Hardening Framework и InSpec/Cinc."
+priority: 5
+keywords: 'Opensophy, Linux: Hardening, compliance, харденинг, linux, статьи, open-source'
+---
 
+soon
