@@ -1,0 +1,6 @@
+---
+title: "Linux: Логи. Что это такое и справочник по базовым утилитам"
+description: "Пятая часть серии о Linux для DevOps и DevSecOps — что такое логи и справочник по базовым утилитам."
+priority: 5
+keywords: 'Opensophy, "Linux: Логи", linux, статьи, open-source'
+---
