@@ -7,7 +7,7 @@ keywords: 'Opensophy, Liquid, WebGL, fluid, texture, UI components'
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import Liquid from '$lib/components/ui-registry/Liquid.svelte';
-	import { LiquidSource } from '$lib/components/ui-registry/demo-sources';
+	import { LiquidSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

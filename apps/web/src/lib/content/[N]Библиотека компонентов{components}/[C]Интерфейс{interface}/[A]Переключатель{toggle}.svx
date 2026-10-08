@@ -7,7 +7,7 @@ keywords: 'Opensophy, Переключатель, UI, UI components, библи�
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import Toggle from '$lib/components/ui-registry/Toggle.svelte';
-	import { ToggleSource } from '$lib/components/ui-registry/demo-sources';
+	import { ToggleSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

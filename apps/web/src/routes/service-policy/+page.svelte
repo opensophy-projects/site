@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PageSeo from '$lib/components/seo/PageSeo.svelte';
-  import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
+  import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
 
   const sections = [
     {

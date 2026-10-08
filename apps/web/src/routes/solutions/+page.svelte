@@ -1,7 +1,7 @@
 <script lang="ts">
   import PageSeo from "$lib/components/seo/PageSeo.svelte";
-  import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
-  import ServicesGrid from "$lib/components/ui/ServicesGrid.svelte";
+  import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
+  import ServicesGrid from "$lib/components/ui-registry/ServicesGrid.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 </script>
 

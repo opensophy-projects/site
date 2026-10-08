@@ -7,7 +7,7 @@ keywords: 'Opensophy, Laser, WebGL, shader, texture, UI components'
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import Laser from '$lib/components/ui-registry/Laser.svelte';
-	import { LaserSource } from '$lib/components/ui-registry/demo-sources';
+	import { LaserSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

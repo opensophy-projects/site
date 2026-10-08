@@ -1,6 +1,6 @@
 <script lang="ts">
-  import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
-  import TextLoop from "$lib/components/ui/TextLoop.svelte";
+  import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
+  import TextLoop from "$lib/components/ui-registry/TextLoop.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
   import GhostCursor from "$lib/components/ui-registry/GhostCursor.svelte";
   import PageSeo from "$lib/components/seo/PageSeo.svelte";

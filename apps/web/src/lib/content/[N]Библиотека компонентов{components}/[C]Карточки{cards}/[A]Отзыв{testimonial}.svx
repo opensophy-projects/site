@@ -7,7 +7,7 @@ keywords: 'Opensophy, Отзыв, UI, UI components, библиотека ком
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import Testimonial from '$lib/components/ui-registry/Testimonial.svelte';
-	import { TestimonialSource } from '$lib/components/ui-registry/demo-sources';
+	import { TestimonialSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

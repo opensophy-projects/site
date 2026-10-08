@@ -6,8 +6,8 @@ keywords: 'Opensophy, Предпросмотр компонента, os.docs, д
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
-	import { themeToggleSource, themeStoreSource } from '$lib/components/ui/demo-sources';
+	import ThemeToggle from '$lib/components/ui-registry/ThemeToggle.svelte';
+	import { themeToggleSource, themeStoreSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import Admonition from '$lib/components/docs/markdown/Admonition.svelte';
 </script>
 
@@ -45,8 +45,8 @@ title: Моя страница
 
 блок script (lang ts):
   import { ComponentPreview } from '$lib';
-  import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
-  import { themeToggleSource } from '$lib/components/ui/demo-sources';
+  import ThemeToggle from '$lib/components/ui-registry/ThemeToggle.svelte';
+  import { themeToggleSource } from '$lib/components/ui-registry/ui-demo-sources';
 конец блока script
 ```
 

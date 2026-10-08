@@ -4,7 +4,7 @@
 		ComponentPreviewValues
 	} from './types';
 	import { cn } from '$lib/utils/cn';
-	import ScrollArea from '$lib/components/ui/ScrollArea.svelte';
+	import ScrollArea from '$lib/components/ui-registry/ScrollArea.svelte';
 	import Maximize from 'carbon-icons-svelte/lib/Maximize.svelte';
 	import Minimize from 'carbon-icons-svelte/lib/Minimize.svelte';
 	import Reset from 'carbon-icons-svelte/lib/Reset.svelte';

@@ -7,7 +7,7 @@ keywords: 'Opensophy, Видеоплеер, UI, UI components, библиоте�
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import VideoPlayer from '$lib/components/ui-registry/VideoPlayer.svelte';
-	import { VideoPlayerSource } from '$lib/components/ui-registry/demo-sources';
+	import { VideoPlayerSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

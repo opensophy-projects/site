@@ -7,7 +7,7 @@ keywords: 'Opensophy, FlameWrap, WebGL, card, flame, UI components'
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import FlameWrap from '$lib/components/ui-registry/FlameWrap.svelte';
-	import { FlameWrapSource } from '$lib/components/ui-registry/demo-sources';
+	import { FlameWrapSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

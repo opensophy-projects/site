@@ -7,7 +7,7 @@ keywords: 'Opensophy, Аккордеонная галерея, UI, UI components
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import AccordionGallery from '$lib/components/ui-registry/accordiongallery.svelte';
-	import { AccordionGallerySource } from '$lib/components/ui-registry/demo-sources';
+	import { AccordionGallerySource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 	import type { AccordionGalleryItem } from '$lib/components/ui-registry/accordiongallery.svelte';
 

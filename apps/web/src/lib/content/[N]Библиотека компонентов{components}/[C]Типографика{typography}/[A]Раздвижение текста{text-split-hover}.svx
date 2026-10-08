@@ -7,7 +7,7 @@ keywords: 'Opensophy, Раздвижение текста, UI, UI components, б
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import SplitHover from '$lib/components/ui-registry/SplitHover.svelte';
-	import { SplitHoverSource } from '$lib/components/ui-registry/demo-sources';
+	import { SplitHoverSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 </script>
 

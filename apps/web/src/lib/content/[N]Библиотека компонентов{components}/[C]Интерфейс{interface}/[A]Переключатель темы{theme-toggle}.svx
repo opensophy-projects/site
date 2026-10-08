@@ -6,8 +6,8 @@ keywords: 'Opensophy, Переключатель темы, UI, UI components, б
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
-	import { themeToggleSource, themeStoreSource } from '$lib/components/ui/demo-sources';
+	import ThemeToggle from '$lib/components/ui-registry/ThemeToggle.svelte';
+	import { themeToggleSource, themeStoreSource } from '$lib/components/ui-registry/ui-demo-sources';
 </script>
 
 # Переключатель темы
@@ -37,7 +37,7 @@ keywords: 'Opensophy, Переключатель темы, UI, UI components, б
 
 ```svelte
 <script>
-	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
+	import ThemeToggle from '$lib/components/ui-registry/ThemeToggle.svelte';
 </script>
 
 <ThemeToggle />

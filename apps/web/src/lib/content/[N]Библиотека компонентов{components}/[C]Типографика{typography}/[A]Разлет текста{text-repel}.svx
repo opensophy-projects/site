@@ -7,7 +7,7 @@ keywords: 'Opensophy, Разлёт текста, UI, UI components, библио
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import TextRepel from '$lib/components/ui-registry/TextRepel.svelte';
-	import { TextRepelSource } from '$lib/components/ui-registry/demo-sources';
+	import { TextRepelSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

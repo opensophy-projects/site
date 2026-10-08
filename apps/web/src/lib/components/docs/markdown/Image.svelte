@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { cn } from '$lib/utils/cn';
-	import Overlay from '$lib/components/ui/Overlay.svelte';
+	import Overlay from '$lib/components/ui-registry/Overlay.svelte';
 	import Close from 'carbon-icons-svelte/lib/Close.svelte';
 
 	let {

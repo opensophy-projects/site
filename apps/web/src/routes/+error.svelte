@@ -3,7 +3,7 @@
 	import { resolve } from '$app/paths';
 	import { siteConfig } from '$lib';
 	import { searchState } from '$lib/stores/search.svelte';
-	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
+	import SiteMenu from '$lib/components/ui-registry/SiteMenu.svelte';
 	import Search from 'carbon-icons-svelte/lib/Search.svelte';
 	import ArrowLeft from 'carbon-icons-svelte/lib/ArrowLeft.svelte';
 

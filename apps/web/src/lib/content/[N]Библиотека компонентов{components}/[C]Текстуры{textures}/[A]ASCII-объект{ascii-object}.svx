@@ -7,7 +7,7 @@ keywords: 'Opensophy, AsciiObject, UI, UI components, библиотека ко�
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import AsciiObject from '$lib/components/ui-registry/AsciiObject.svelte';
-	import { AsciiObjectSource } from '$lib/components/ui-registry/demo-sources';
+	import { AsciiObjectSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

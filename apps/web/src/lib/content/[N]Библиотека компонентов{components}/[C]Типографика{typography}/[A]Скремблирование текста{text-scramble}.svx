@@ -7,7 +7,7 @@ keywords: 'Opensophy, Скремблирование текста, UI, UI compon
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import TextScramble from '$lib/components/ui-registry/TextScramble.svelte';
-	import { TextScrambleSource } from '$lib/components/ui-registry/demo-sources';
+	import { TextScrambleSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

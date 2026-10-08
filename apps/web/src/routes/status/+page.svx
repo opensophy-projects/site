@@ -6,7 +6,7 @@ keywords: 'Opensophy, Статус, status page, мониторинг, open-sour
 
 <script lang="ts">
 	import PageSeo from '$lib/components/seo/PageSeo.svelte';
-	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
+	import SiteMenu from '$lib/components/ui-registry/SiteMenu.svelte';
 	import Badge from '$lib/components/ui-registry/Badge.svelte';
 	import Button from '$lib/components/ui-registry/Button.svelte';
 	import Progress from '$lib/components/ui-registry/Progress.svelte';

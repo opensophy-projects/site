@@ -5,11 +5,11 @@
 	import { contentUiDefaults, type SectionUiConfig } from '$lib/config/content-ui';
 	import { siteConfig } from '$lib/config/site';
 	import { cn } from '$lib/utils/cn';
-	import ScrollArea from '$lib/components/ui/ScrollArea.svelte';
-	import Dropdown from '$lib/components/ui/Dropdown.svelte';
-	import ThemeToggle from '$lib/components/ui/ThemeToggle.svelte';
+	import ScrollArea from '$lib/components/ui-registry/ScrollArea.svelte';
+	import Dropdown from '$lib/components/ui-registry/Dropdown.svelte';
+	import ThemeToggle from '$lib/components/ui-registry/ThemeToggle.svelte';
 	import SearchTrigger from '$lib/components/content/search/SearchTrigger.svelte';
-	import Logo from '$lib/components/ui/Logo.svelte';
+	import Logo from '$lib/components/ui-registry/Logo.svelte';
 	import ChevronRight from 'carbon-icons-svelte/lib/ChevronRight.svelte';
 	import LogoGithub from 'carbon-icons-svelte/lib/LogoGithub.svelte';
 	import { getHref } from '$lib/content/manifest';

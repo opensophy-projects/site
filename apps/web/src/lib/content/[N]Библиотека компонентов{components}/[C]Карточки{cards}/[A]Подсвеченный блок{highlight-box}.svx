@@ -7,7 +7,7 @@ keywords: 'Opensophy, Подсвеченный блок, UI, UI components, би
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import HighlightBox from '$lib/components/ui-registry/HighlightBox.svelte';
-	import { HighlightBoxSource } from '$lib/components/ui-registry/demo-sources';
+	import { HighlightBoxSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

@@ -10,14 +10,14 @@
   import { goto, onNavigate } from "$app/navigation";
   import { resolve } from "$app/paths";
   import { cn } from "$lib/utils/cn";
-  import ScrollArea from "$lib/components/ui/ScrollArea.svelte";
-  import Overlay from "$lib/components/ui/Overlay.svelte";
+  import ScrollArea from "$lib/components/ui-registry/ScrollArea.svelte";
+  import Overlay from "$lib/components/ui-registry/Overlay.svelte";
   import { onMount } from "svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
   import Return from "carbon-icons-svelte/lib/Return.svelte";
   import Book from "carbon-icons-svelte/lib/Book.svelte";
   import Wikis from "carbon-icons-svelte/lib/Wikis.svelte";
-  import DockerLogo from "$lib/components/ui/DockerLogo.svelte";
+  import DockerLogo from "$lib/components/ui-registry/DockerLogo.svelte";
 
   const {
     searchConfig = contentUiDefaults.search,

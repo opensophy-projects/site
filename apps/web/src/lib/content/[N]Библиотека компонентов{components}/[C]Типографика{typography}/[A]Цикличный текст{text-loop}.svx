@@ -6,8 +6,8 @@ keywords: 'Opensophy, Цикличный текст, UI, UI components, библ
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import TextLoop from '$lib/components/ui/TextLoop.svelte';
-	import textLoopSource from '$lib/components/ui/TextLoop.svelte?raw';
+	import TextLoop from '$lib/components/ui-registry/TextLoop.svelte';
+	import textLoopSource from '$lib/components/ui-registry/TextLoop.svelte?raw';
 </script>
 
 # Цикличный текст
@@ -40,7 +40,7 @@ keywords: 'Opensophy, Цикличный текст, UI, UI components, библ
 
 ```svelte
 <script>
-	import TextLoop from '$lib/components/ui/TextLoop.svelte';
+	import TextLoop from '$lib/components/ui-registry/TextLoop.svelte';
 </script>
 
 <p>

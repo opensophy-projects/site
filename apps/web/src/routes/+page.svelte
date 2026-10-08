@@ -1,12 +1,12 @@
 <script lang="ts">
   import { brandingConfig } from "$lib";
-  import ServicesGrid from "$lib/components/ui/ServicesGrid.svelte";
-  import AsciiVisual from "$lib/components/ui/AsciiVisual.svelte";
-  import CardProject from "$lib/components/ui/CardProject.svelte";
-  import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
-  import TextLoop from "$lib/components/ui/TextLoop.svelte";
+  import ServicesGrid from "$lib/components/ui-registry/ServicesGrid.svelte";
+  import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
+  import CardProject from "$lib/components/ui-registry/CardProject.svelte";
+  import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
+  import TextLoop from "$lib/components/ui-registry/TextLoop.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
-  import Faq from "$lib/components/ui/Faq.svelte";
+  import Faq from "$lib/components/ui-registry/Faq.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 

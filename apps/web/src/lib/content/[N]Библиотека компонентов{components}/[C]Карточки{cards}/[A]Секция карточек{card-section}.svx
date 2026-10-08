@@ -6,8 +6,8 @@ keywords: 'Opensophy, Секция карточек, UI, UI components, библ
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import CardSection from '$lib/components/ui/CardSection.svelte';
-	import cardSectionSource from '$lib/components/ui/CardSection.svelte?raw';
+	import CardSection from '$lib/components/ui-registry/CardSection.svelte';
+	import cardSectionSource from '$lib/components/ui-registry/CardSection.svelte?raw';
 </script>
 
 # Секция карточек
@@ -49,7 +49,7 @@ keywords: 'Opensophy, Секция карточек, UI, UI components, библ
 
 ```svelte
 <script>
-	import CardSection from '$lib/components/ui/CardSection.svelte';
+	import CardSection from '$lib/components/ui-registry/CardSection.svelte';
 </script>
 
 <CardSection />

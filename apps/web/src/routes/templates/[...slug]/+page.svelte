@@ -1,7 +1,7 @@
 <script lang="ts">
 	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import type { PageData } from './$types';
-	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
+	import SiteMenu from '$lib/components/ui-registry/SiteMenu.svelte';
 	import { siteConfig } from '$lib/config/site';
 	import { resolve } from '$app/paths';
 	import ArrowLeft from 'carbon-icons-svelte/lib/ArrowLeft.svelte';

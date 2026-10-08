@@ -1,9 +1,9 @@
 <script lang="ts">
 	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import { siteConfig } from '$lib/config/site';
-  import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
+  import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import Card from "$lib/components/docs/markdown/Card.svelte";
-  import CardProject from "$lib/components/ui/CardProject.svelte";
+  import CardProject from "$lib/components/ui-registry/CardProject.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
   import ChevronLeft from "carbon-icons-svelte/lib/ChevronLeft.svelte";
   import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
