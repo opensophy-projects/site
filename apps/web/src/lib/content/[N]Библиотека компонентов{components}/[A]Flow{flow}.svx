@@ -1,7 +1,7 @@
 ---
-title: Flow
-description: Композиция узлов и связей для визуализации последовательностей, процессов и зависимостей.
-keywords: 'Opensophy, Flow, Svelte, UI components, диаграммы'
+title: Диаграммы
+description: Полноценный компонент для интерактивных схем, процессов и зависимостей.
+keywords: 'Opensophy, Flow, Svelte, UI components, диаграммы, схемы'
 ---
 
 <script lang="ts">
@@ -14,32 +14,54 @@ keywords: 'Opensophy, Flow, Svelte, UI components, диаграммы'
 	import parallelSource from '$lib/components/ui-registry/flow/Parallel.svelte?raw';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
+	type DiagramNode = { id: number; label: string; type: 'start' | 'default' | 'decision' | 'warning' | 'result'; meta: string };
+	let nodes: DiagramNode[] = [
+		{ id: 1, label: 'Запрос получен', type: 'start', meta: 'Входящий поток' },
+		{ id: 2, label: 'Проверка данных', type: 'decision', meta: 'Валидация' },
+		{ id: 3, label: 'Подготовка ответа', type: 'default', meta: 'Обработка' },
+		{ id: 4, label: 'Результат готов', type: 'result', meta: 'Успешно' }
+	];
+	let selectedId = 2;
+	let nextId = 5;
 	const controls: ComponentPreviewControl[] = [
-		{ type: 'select', name: 'orientation', label: 'Ориентация', defaultValue: 'vertical', options: [{ label: 'Вертикальная', value: 'vertical' }, { label: 'Горизонтальная', value: 'horizontal' }] },
+		{ type: 'select', name: 'orientation', label: 'Направление', defaultValue: 'vertical', options: [{ label: 'Вертикальное', value: 'vertical' }, { label: 'Горизонтальное', value: 'horizontal' }] },
 		{ type: 'select', name: 'align', label: 'Выравнивание', defaultValue: 'center', options: [{ label: 'По центру', value: 'center' }, { label: 'Слева', value: 'start' }] }
 	];
+	function addNode() { const id = nextId++; nodes = [...nodes, { id, label: 'Новый шаг', type: 'default', meta: 'Настройте узел' }]; selectedId = id; }
+	function removeNode() { if (nodes.length <= 2) return; nodes = nodes.filter((node) => node.id !== selectedId); selectedId = nodes.at(-1)?.id ?? 1; }
+	function reset() { nodes = [{ id: 1, label: 'Запрос получен', type: 'start', meta: 'Входящий поток' }, { id: 2, label: 'Проверка данных', type: 'decision', meta: 'Валидация' }, { id: 3, label: 'Подготовка ответа', type: 'default', meta: 'Обработка' }, { id: 4, label: 'Результат готов', type: 'result', meta: 'Успешно' }]; selectedId = 2; nextId = 5; }
 </script>
 
-# Flow
+# Диаграммы
 
-Компонент для построения простых схем из узлов и последовательных связей. Поддерживает вертикальную и горизонтальную ориентацию, параллельные группы и адаптируется к изменению размера контейнера.
+Flow — это набор Svelte-компонентов для создания понятных диаграмм процессов: карточки-узлы, последовательные связи, параллельные ветки и разные визуальные состояния. Компонент измеряет расположение узлов и рисует адаптивные SVG-соединители поверх схемы.
 
-## Интерактивное демо
+## Интерактивная демо-студия
 
 <ComponentPreview controls={controls} sources={[{ name: 'Flow.svelte', code: flowSource, language: 'svelte' }, { name: 'Node.svelte', code: nodeSource, language: 'svelte' }, { name: 'Parallel.svelte', code: parallelSource, language: 'svelte' }]}>
 	{#snippet children(values)}
-		<div class="min-h-[280px] rounded-lg border border-kumo-line bg-kumo-base/30 p-8">
-			<Flow orientation={values.orientation as 'vertical' | 'horizontal'} align={values.align as 'center' | 'start'}>
-				<Node>Запрос получен</Node>
-				<Parallel>
-					<Node>Проверка данных</Node>
-					<Node>Подготовка ответа</Node>
-				</Parallel>
-				<Node>Результат готов</Node>
-			</Flow>
+		<div class="diagram-studio">
+			<div class="diagram-toolbar">
+				<div><strong>Редактор диаграммы</strong><span>{nodes.length} узлов · последовательный поток</span></div>
+				<div class="diagram-actions"><button onclick={addNode}>Добавить узел</button><button onclick={removeNode} disabled={nodes.length <= 2}>Удалить</button><button class="secondary" onclick={reset}>Сбросить</button></div>
+			</div>
+			<div class="diagram-workspace">
+				<Flow orientation={values.orientation as 'vertical' | 'horizontal'} align={values.align as 'center' | 'start'} canvas>
+					{#each nodes as node}
+						<button class:node-selected={selectedId === node.id} class="node-button" onclick={() => selectedId = node.id} aria-label={`Выбрать узел ${node.label}`}>
+							<Node variant={node.type} title={node.type === 'decision' ? 'Условие' : node.type === 'start' ? 'Старт' : node.type === 'result' ? 'Финиш' : 'Шаг'} meta={node.meta}>{node.label}</Node>
+						</button>
+					{/each}
+				</Flow>
+			</div>
+			<div class="diagram-inspector"><span class="inspector-dot"></span><strong>Выбран узел:</strong> {nodes.find((node) => node.id === selectedId)?.label ?? '—'}<span class="hint">Нажмите на карточку, чтобы выбрать её</span></div>
 		</div>
 	{/snippet}
 </ComponentPreview>
+
+## Параллельные ветки
+
+Используйте `Parallel`, чтобы показать несколько действий, выполняющихся одновременно. Внутри можно размещать любые `Node` с собственным состоянием и метаданными.
 
 ## Использование
 
@@ -51,29 +73,39 @@ keywords: 'Opensophy, Flow, Svelte, UI components, диаграммы'
 </script>
 
 <Flow orientation="vertical">
-	<Node>Запрос получен</Node>
-	<Parallel>
-		<Node>Проверка данных</Node>
-		<Node>Подготовка ответа</Node>
+	<Node variant="start" title="Старт">Запрос получен</Node>
+	<Node variant="decision" title="Условие">Данные корректны?</Node>
+	<Parallel label="Параллельная обработка">
+		<Node>Сохранить результат</Node>
+		<Node>Отправить уведомление</Node>
 	</Parallel>
-	<Node>Результат готов</Node>
+	<Node variant="result" title="Финиш">Процесс завершён</Node>
 </Flow>
 ```
 
-## Компоненты
+## API
 
-- `Flow` — корневой контейнер, который измеряет узлы и рисует SVG-связи.
-- `Node` — отдельный узел последовательности.
-- `Parallel` — группа узлов, расположенных рядом внутри схемы.
+- `Flow` — контейнер схемы; `orientation`, `align`, `canvas`, `junctionMarker`.
+- `Node` — карточка; `variant`: `default`, `start`, `decision`, `warning`, `result`; `title`, `meta`, `disabled`.
+- `Parallel` — группирует связанные параллельные шаги; `label` и `className`.
 
-## Пропсы Flow
-
-| Пропс | Тип | По умолчанию | Описание |
-| --- | --- | --- | --- |
-| `orientation` | `vertical \| horizontal` | `vertical` | Направление схемы |
-| `align` | `center \| start` | `center` | Выравнивание содержимого |
-| `canvas` | `boolean` | `false` | Включает курсор перетаскивания |
-
-## Пропсы Node и Parallel
-
-Оба компонента принимают `children` и `className`. `Node` также поддерживает `disabled`, чтобы показать недоступный шаг.
+<style>
+	.diagram-studio { overflow: hidden; border: 1px solid var(--kumo-line, #262626); border-radius: 1rem; background: #0d0d0d; }
+	.diagram-toolbar { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid #242424; }
+	.diagram-toolbar strong, .diagram-toolbar span { display: block; }
+	.diagram-toolbar span, .hint { margin-top: .3rem; color: #858585; font-size: .76rem; }
+	.diagram-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+	.diagram-actions button, .node-button { font: inherit; }
+	.diagram-actions button { padding: .55rem .8rem; border: 1px solid #383838; border-radius: .55rem; color: #f4f4f4; background: #181818; cursor: pointer; }
+	.diagram-actions button:hover { border-color: #a3e635; }
+	.diagram-actions .secondary { color: #aaa; }
+	.diagram-actions button:disabled { opacity: .4; cursor: not-allowed; }
+	.diagram-workspace { min-height: 600px; background: radial-gradient(circle at center, #171b12 0, #0d0d0d 48%); }
+	.node-button { padding: 0; border: 2px solid transparent; border-radius: 1.1rem; background: transparent; cursor: pointer; }
+	.node-button:hover { border-color: #6b8d32; }
+	.node-selected { border-color: #a3e635; box-shadow: 0 0 0 4px rgb(163 230 53 / .12); }
+	.diagram-inspector { display: flex; align-items: center; gap: .5rem; padding: .85rem 1.25rem; border-top: 1px solid #242424; color: #d6d6d6; font-size: .84rem; }
+	.inspector-dot { width: .5rem; height: .5rem; border-radius: 50%; background: #a3e635; }
+	.hint { margin: 0 0 0 auto; }
+	@media (max-width: 700px) { .diagram-toolbar { align-items: flex-start; flex-direction: column; } .hint { display: none; } .diagram-workspace { min-height: 520px; } }
+</style>

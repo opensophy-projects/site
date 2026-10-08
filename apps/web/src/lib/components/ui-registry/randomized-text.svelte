@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { tick } from 'svelte';
 	import { cn } from '$lib/utils';
 	import { readNormalizedTextContent, segmentText, splitGraphemes } from '$lib/utils/text-utils';
 	import type { Snippet } from 'svelte';
@@ -11,7 +12,10 @@
 	let hasBeenViewed = $state(false);
 	let observer: IntersectionObserver | undefined;
 
-	function sync() { sourceText = readNormalizedTextContent(sourceElement); }
+	async function sync() {
+		await tick();
+		sourceText = readNormalizedTextContent(sourceElement);
+	}
 	function onMount(node: HTMLElement) {
 		const frame = requestAnimationFrame(sync);
 		const mutationObserver = new MutationObserver(sync);
