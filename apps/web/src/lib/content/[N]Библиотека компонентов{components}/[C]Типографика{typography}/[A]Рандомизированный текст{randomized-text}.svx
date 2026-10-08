@@ -1,0 +1,60 @@
+---
+title: Рандомизированный текст
+description: Плавное появление текста по словам или символам с детерминированной задержкой.
+keywords: 'Opensophy, типографика, randomized text, Svelte'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import RandomizedText from '$lib/components/ui-registry/randomized-text.svelte';
+	import source from '$lib/components/ui-registry/randomized-text.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'select', name: 'split', label: 'Разбиение', defaultValue: 'words', options: [{ label: 'Слова', value: 'words' }, { label: 'Символы', value: 'chars' }] },
+		{ type: 'number', name: 'delay', label: 'Задержка', defaultValue: 0.2, min: 0, max: 1, step: 0.05 },
+		{ type: 'number', name: 'duration', label: 'Длительность', defaultValue: 0.8, min: 0.1, max: 2, step: 0.1 }
+	];
+</script>
+
+# Рандомизированный текст
+
+Компонент показывает текст с последовательным появлением слов или символов. Исходный текст сохраняется в DOM для доступности, анимация не требует дополнительных зависимостей.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={[{ name: 'randomized-text.svelte', code: source, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<RandomizedText split={values.split as 'words' | 'chars'} delay={values.delay as number} duration={values.duration as number} as="h2" class="text-3xl font-semibold text-foreground">
+			{#snippet children()}Новые идеи начинаются с простых слов.{/snippet}
+		</RandomizedText>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script>
+	import RandomizedText from '$lib/components/ui-registry/randomized-text.svelte';
+</script>
+
+<RandomizedText split="words" triggerOnView>
+	{#snippet children()}Текст появляется по словам.{/snippet}
+</RandomizedText>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `children` | `Snippet` | — | Текстовый контент |
+| `as` | `span \| div \| p \| h1-h6` | `span` | Корневой HTML-элемент |
+| `split` | `words \| chars` | `words` | Единица анимации |
+| `delay` | `number` | `0.2` | Базовая задержка |
+| `duration` | `number` | `1.2` | Длительность появления |
+| `trigger` | `boolean` | `true` | Включает анимацию |
+| `triggerOnView` | `boolean` | `false` | Запуск при появлении во viewport |
+| `once` | `boolean` | `true` | Не повторять запуск при прокрутке |
+
+---
+

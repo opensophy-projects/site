@@ -67,6 +67,7 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="23" title="Разделённое появление" href="/components/split-reveal">Появление текста с разделением на части.</Card>
 <Card eyebrow="24" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
 <Card eyebrow="25" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
+<Card eyebrow="26" title="Рандомизированный текст" href="/components/randomized-text">Плавное появление текста по словам или символам.</Card>
 </Cards>
 
 ### Медиа

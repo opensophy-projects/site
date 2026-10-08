@@ -895,7 +895,7 @@ function disposeObject(root: THREE.Object3D) {
       const values: unknown[] = Object.values(material);
       for (const value of values) {
         if (!value || typeof value !== 'object' || !('isTexture' in value) || !value.isTexture) continue;
-        (value as { dispose: () => void }).dispose();
+		(value as unknown as { dispose: () => void }).dispose();
       }
       material.dispose();
     }
