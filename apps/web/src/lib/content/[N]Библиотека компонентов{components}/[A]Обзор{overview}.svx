@@ -107,5 +107,4 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="41" title="Призрачный курсор" href="/components/ghost-cursor">Декоративный курсорный эффект.</Card>
 <Card eyebrow="42" title="Лазерный поток" href="/components/laser-flow">Декоративный эффект лазерного потока.</Card>
 <Card eyebrow="43" title="ASCII-объект" href="/components/ascii-object">Интерактивный ASCII-объект.</Card>
-<Card eyebrow="44" title="Flow" href="/components/flow">Схемы из узлов и последовательных связей.</Card>
 </Cards>
