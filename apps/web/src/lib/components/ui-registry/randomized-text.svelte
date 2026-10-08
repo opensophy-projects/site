@@ -13,14 +13,14 @@
 
 	function sync() { sourceText = readNormalizedTextContent(sourceElement); }
 	function onMount(node: HTMLElement) {
-		sync();
+		const frame = requestAnimationFrame(sync);
 		const mutationObserver = new MutationObserver(sync);
 		mutationObserver.observe(node, { childList: true, subtree: true, characterData: true });
 		if (triggerOnView) {
 			observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { hasBeenViewed = true; if (once) observer?.disconnect(); } }, { threshold: 0.2 });
 			observer.observe(node);
 		}
-		return { destroy() { mutationObserver.disconnect(); observer?.disconnect(); } };
+		return { destroy() { cancelAnimationFrame(frame); mutationObserver.disconnect(); observer?.disconnect(); } };
 	}
 	const isVisible = $derived(trigger && (!triggerOnView || hasBeenViewed));
 	const tokens = $derived(split === 'chars' ? splitGraphemes(sourceText).map((value, index) => ({ value, whitespace: /^\s+$/.test(value), index })) : segmentText(sourceText).map((token, index) => ({ value: token.value, whitespace: token.kind === 'whitespace', index })));

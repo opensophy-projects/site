@@ -1,0 +1,79 @@
+---
+title: Flow
+description: Композиция узлов и связей для визуализации последовательностей, процессов и зависимостей.
+keywords: 'Opensophy, Flow, Svelte, UI components, диаграммы'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Flow from '$lib/components/ui-registry/flow/Flow.svelte';
+	import Node from '$lib/components/ui-registry/flow/Node.svelte';
+	import Parallel from '$lib/components/ui-registry/flow/Parallel.svelte';
+	import flowSource from '$lib/components/ui-registry/flow/Flow.svelte?raw';
+	import nodeSource from '$lib/components/ui-registry/flow/Node.svelte?raw';
+	import parallelSource from '$lib/components/ui-registry/flow/Parallel.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'select', name: 'orientation', label: 'Ориентация', defaultValue: 'vertical', options: [{ label: 'Вертикальная', value: 'vertical' }, { label: 'Горизонтальная', value: 'horizontal' }] },
+		{ type: 'select', name: 'align', label: 'Выравнивание', defaultValue: 'center', options: [{ label: 'По центру', value: 'center' }, { label: 'Слева', value: 'start' }] }
+	];
+</script>
+
+# Flow
+
+Компонент для построения простых схем из узлов и последовательных связей. Поддерживает вертикальную и горизонтальную ориентацию, параллельные группы и адаптируется к изменению размера контейнера.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={[{ name: 'Flow.svelte', code: flowSource, language: 'svelte' }, { name: 'Node.svelte', code: nodeSource, language: 'svelte' }, { name: 'Parallel.svelte', code: parallelSource, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<div class="min-h-[280px] rounded-lg border border-kumo-line bg-kumo-base/30 p-8">
+			<Flow orientation={values.orientation as 'vertical' | 'horizontal'} align={values.align as 'center' | 'start'}>
+				<Node>Запрос получен</Node>
+				<Parallel>
+					<Node>Проверка данных</Node>
+					<Node>Подготовка ответа</Node>
+				</Parallel>
+				<Node>Результат готов</Node>
+			</Flow>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script>
+	import Flow from '$lib/components/ui-registry/flow/Flow.svelte';
+	import Node from '$lib/components/ui-registry/flow/Node.svelte';
+	import Parallel from '$lib/components/ui-registry/flow/Parallel.svelte';
+</script>
+
+<Flow orientation="vertical">
+	<Node>Запрос получен</Node>
+	<Parallel>
+		<Node>Проверка данных</Node>
+		<Node>Подготовка ответа</Node>
+	</Parallel>
+	<Node>Результат готов</Node>
+</Flow>
+```
+
+## Компоненты
+
+- `Flow` — корневой контейнер, который измеряет узлы и рисует SVG-связи.
+- `Node` — отдельный узел последовательности.
+- `Parallel` — группа узлов, расположенных рядом внутри схемы.
+
+## Пропсы Flow
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `orientation` | `vertical \| horizontal` | `vertical` | Направление схемы |
+| `align` | `center \| start` | `center` | Выравнивание содержимого |
+| `canvas` | `boolean` | `false` | Включает курсор перетаскивания |
+
+## Пропсы Node и Parallel
+
+Оба компонента принимают `children` и `className`. `Node` также поддерживает `disabled`, чтобы показать недоступный шаг.
