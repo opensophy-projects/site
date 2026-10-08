@@ -4,7 +4,7 @@ export { default as ContentSidebar } from './components/content/ContentSidebar.s
 export { default as DocShareActions } from './components/docs/DocShareActions.svelte';
 export { default as MobileDocShareActions } from './components/docs/MobileDocShareActions.svelte';
 export { default as CommandPalette } from './components/content/search/CommandPalette.svelte';
-export { default as ScrollArea } from './components/ui/ScrollArea.svelte';
+export { default as ScrollArea } from './components/ui-registry/ScrollArea.svelte';
 export { default as InstallationTabs } from './components/docs/InstallationTabs.svelte';
 export { default as Step } from './components/docs/markdown/Step.svelte';
 export { default as Steps } from './components/docs/markdown/Steps.svelte';
@@ -28,22 +28,5 @@ export {
 	type ContentUiConfig,
 	type PackageManagerOption
 } from './config/content-ui';
-
-export {
-	getContentSectionAdjacentItems,
-	getContentSectionByPathname,
-	getContentSectionConfig,
-	getContentSectionHref,
-	getContentSectionItemBySlug,
-	getContentSectionManifest,
-	getContentSectionMetadata,
-	getContentSectionModule,
-	getContentSectionRawHref,
-	getContentSectionRawSource,
-	getContentSectionSlug,
-	type ContentMetadata,
-	type ContentModule,
-	type ContentSectionId
-} from './content/sections';
 
 export { themeStore, type Theme } from './stores/theme.svelte';

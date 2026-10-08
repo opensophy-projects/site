@@ -7,7 +7,7 @@ keywords: 'Opensophy, Карусель с глубиной, UI, UI components, �
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import DepthCarousel from '$lib/components/ui-registry/depth-carousel.svelte';
-	import { DepthCarouselSource } from '$lib/components/ui-registry/demo-sources';
+	import { DepthCarouselSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 	import type { DepthCarouselItem } from '$lib/components/ui-registry/depth-carousel.svelte';
 

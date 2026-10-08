@@ -5,7 +5,7 @@
 	import { SvelteMap } from 'svelte/reactivity';
 	import ContentSidebar from '$lib/components/content/ContentSidebar.svelte';
 	import MobileSidebar from '$lib/components/content/MobileSidebar.svelte';
-	import ScrollArea from '$lib/components/ui/ScrollArea.svelte';
+	import ScrollArea from '$lib/components/ui-registry/ScrollArea.svelte';
 	import { type SectionUiConfig } from '$lib/config/content-ui';
 	import type { ContentItem, ContentSectionLink } from '$lib/config/navigation';
 	import type { ContentTocHeading } from '$lib/content/sections';

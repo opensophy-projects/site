@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { brandingConfig, siteConfig } from "$lib";
-  import FloatingMenu from "$lib/components/ui/FloatingMenu.svelte";
+  import { brandingConfig } from "$lib/config/branding";
+  import { siteConfig } from "$lib/config/site";
+  import FloatingMenu from "$lib/components/ui-registry/FloatingMenu.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
-  import ThemeToggle from "$lib/components/ui/ThemeToggle.svelte";
-  import DockerLogo from "$lib/components/ui/DockerLogo.svelte";
+  import ThemeToggle from "$lib/components/ui-registry/ThemeToggle.svelte";
+  import DockerLogo from "$lib/components/ui-registry/DockerLogo.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
   import { searchState } from "$lib/stores/search.svelte";
   import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";

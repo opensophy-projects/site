@@ -6,8 +6,8 @@ keywords: 'Opensophy, Плавающее меню, UI, UI components, библи
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import FloatingMenuDemo from '$lib/components/ui/FloatingMenuDemo.svelte';
-	import floatingMenuDemoSource from '$lib/components/ui/FloatingMenuDemo.svelte?raw';
+	import FloatingMenuDemo from '$lib/components/ui-registry/FloatingMenuDemo.svelte';
+	import floatingMenuDemoSource from '$lib/components/ui-registry/FloatingMenuDemo.svelte?raw';
 	import { brandingConfig } from '$lib/config/branding';
 
 	const menuGroups = [
@@ -86,7 +86,7 @@ keywords: 'Opensophy, Плавающее меню, UI, UI components, библи
 
 ```svelte
 <script lang="ts">
-	import FloatingMenuDemo from '$lib/components/ui/FloatingMenuDemo.svelte';
+	import FloatingMenuDemo from '$lib/components/ui-registry/FloatingMenuDemo.svelte';
 
 	const menuGroups = [
 		{

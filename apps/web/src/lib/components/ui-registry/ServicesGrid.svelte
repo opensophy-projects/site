@@ -1,5 +1,5 @@
 <script lang="ts">
-  import AsciiVisual from "$lib/components/ui/AsciiVisual.svelte";
+  import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
   import { onMount } from "svelte";
   import { canRunHeavyEffects } from "$lib/utils/perf";

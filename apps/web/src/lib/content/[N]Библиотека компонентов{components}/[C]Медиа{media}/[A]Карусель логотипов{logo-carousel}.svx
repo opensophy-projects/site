@@ -1,0 +1,62 @@
+---
+title: Карусель логотипов
+description: Групповая карусель с плавной сменой логотипов и настраиваемым количеством элементов.
+keywords: 'Opensophy, медиа, logo carousel, Svelte'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import LogoCarousel from '$lib/components/ui-registry/logo-carousel.svelte';
+	import source from '$lib/components/ui-registry/logo-carousel.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const logos = ['NORTH', 'OPEN', 'FIELD', 'FORM', 'GRID', 'NOVA'];
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'number', name: 'count', label: 'Логотипов в группе', defaultValue: 3, min: 1, max: 6, step: 1 },
+		{ type: 'number', name: 'interval', label: 'Интервал (мс)', defaultValue: 2200, min: 800, max: 5000, step: 100 }
+	];
+</script>
+
+# Карусель логотипов
+
+Небольшая карусель для партнёров, клиентов и наборов брендов. Элементы разбиваются на группы и сменяются вертикальным переходом.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={[{ name: 'logo-carousel.svelte', code: source, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<div class="w-full rounded-xl border border-border bg-background-inset p-10">
+			<LogoCarousel items={logos} count={values.count as number} interval={values.interval as number}>
+				{#snippet children(item)}<span class="text-lg font-semibold tracking-[0.2em] text-foreground">{item}</span>{/snippet}
+			</LogoCarousel>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script>
+	import LogoCarousel from '$lib/components/ui-registry/logo-carousel.svelte';
+	const logos = ['NORTH', 'OPEN', 'FIELD', 'FORM'];
+</script>
+
+<LogoCarousel items={logos} count={2}>
+	{#snippet children(logo)}<span>{logo}</span>{/snippet}
+</LogoCarousel>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `items` | `T[]` | — | Массив элементов |
+| `children` | `Snippet<[T, number]>` | — | Рендер элемента |
+| `count` | `number` | `items.length` | Количество элементов в группе |
+| `stagger` | `number` | `0.14` | Задержка между элементами (сек.) |
+| `duration` | `number` | `600` | Длительность анимации (мс) |
+| `interval` | `number` | `2500` | Интервал смены групп (мс) |
+| `initialDelay` | `number` | `500` | Задержка первого запуска (мс) |
+
+---
+

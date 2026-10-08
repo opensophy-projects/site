@@ -6,8 +6,8 @@ keywords: 'Opensophy, FAQ аккордеон, UI, UI components, библиот�
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import Faq from '$lib/components/ui/Faq.svelte';
-	import faqSource from '$lib/components/ui/Faq.svelte?raw';
+	import Faq from '$lib/components/ui-registry/Faq.svelte';
+	import faqSource from '$lib/components/ui-registry/Faq.svelte?raw';
 </script>
 
 # FAQ аккордеон
@@ -40,7 +40,7 @@ keywords: 'Opensophy, FAQ аккордеон, UI, UI components, библиот�
 
 ```svelte
 <script>
-	import Faq from '$lib/components/ui/Faq.svelte';
+	import Faq from '$lib/components/ui-registry/Faq.svelte';
 </script>
 
 <Faq />

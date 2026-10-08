@@ -6,8 +6,8 @@ keywords: 'Opensophy, Светящаяся карточка, UI, UI components, 
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import CardProject from '$lib/components/ui/CardProject.svelte';
-	import cardProjectSource from '$lib/components/ui/CardProject.svelte?raw';
+	import CardProject from '$lib/components/ui-registry/CardProject.svelte';
+	import cardProjectSource from '$lib/components/ui-registry/CardProject.svelte?raw';
 </script>
 
 # Светящаяся карточка
@@ -79,7 +79,7 @@ keywords: 'Opensophy, Светящаяся карточка, UI, UI components, 
 
 ```svelte
 <script>
-	import CardProject from '$lib/components/ui/CardProject.svelte';
+	import CardProject from '$lib/components/ui-registry/CardProject.svelte';
 </script>
 
 <CardProject

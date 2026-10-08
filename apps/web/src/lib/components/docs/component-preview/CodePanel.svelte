@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 	import { getHighlighter } from '$lib/utils/highlighter';
-	import ScrollArea from '$lib/components/ui/ScrollArea.svelte';
+	import ScrollArea from '$lib/components/ui-registry/ScrollArea.svelte';
 	import ShikiCodeBlock from '../ShikiCodeBlock.svelte';
 	import CopyCodeButton from '../markdown/CopyCodeButton.svelte';
 	import type { SourceTab } from './types';

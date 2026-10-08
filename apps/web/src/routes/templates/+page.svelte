@@ -1,7 +1,7 @@
 <script lang="ts">
 	import PageSeo from '$lib/components/seo/PageSeo.svelte';
 	import type { PageData } from './$types';
-	import SiteMenu from '$lib/components/ui/SiteMenu.svelte';
+	import SiteMenu from '$lib/components/ui-registry/SiteMenu.svelte';
 	import Card from '$lib/components/docs/markdown/Card.svelte';
 	import SearchTrigger from '$lib/components/content/search/SearchTrigger.svelte';
 	import { page } from '$app/state';

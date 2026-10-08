@@ -7,7 +7,7 @@ keywords: 'Opensophy, Бейдж статуса, UI, UI components, библио
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import StatusBadge from '$lib/components/ui-registry/StatusBadge.svelte';
-	import { StatusBadgeSource } from '$lib/components/ui-registry/demo-sources';
+	import { StatusBadgeSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

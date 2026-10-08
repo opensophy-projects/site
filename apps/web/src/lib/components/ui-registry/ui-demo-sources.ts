@@ -1,3 +1,5 @@
+export * from './demo-sources';
+
 import themeToggleSource from './ThemeToggle.svelte?raw';
 import themeStoreSource from '../../stores/theme.svelte.ts?raw';
 

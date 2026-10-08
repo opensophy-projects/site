@@ -7,7 +7,7 @@ keywords: 'Opensophy, Бегущая строка, UI, UI components, библи
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import Marquee from '$lib/components/ui-registry/Marquee.svelte';
-	import { MarqueeSource } from '$lib/components/ui-registry/demo-sources';
+	import { MarqueeSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

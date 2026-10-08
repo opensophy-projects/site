@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PageSeo from '$lib/components/seo/PageSeo.svelte';
-  import SiteMenu from "$lib/components/ui/SiteMenu.svelte";
+  import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import Faq from "$lib/components/docs/markdown/Faq.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";

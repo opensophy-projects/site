@@ -7,7 +7,7 @@ keywords: 'Opensophy, Latticeloader, loader, UI, UI components, библиоте
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import Latticeloader from '$lib/components/ui-registry/Latticeloader.svelte';
-	import { LatticeloaderSource } from '$lib/components/ui-registry/demo-sources';
+	import { LatticeloaderSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

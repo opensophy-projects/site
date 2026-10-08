@@ -9,7 +9,7 @@
 	import { getContentSectionLinks, type ContentTocHeading } from '$lib/content/sections';
 	import { siteConfig } from '$lib/config/site';
 	import { searchState } from '$lib/stores/search.svelte';
-	import Logo from '$lib/components/ui/Logo.svelte';
+	import Logo from '$lib/components/ui-registry/Logo.svelte';
 	import Close from 'carbon-icons-svelte/lib/Close.svelte';
 	import List from 'carbon-icons-svelte/lib/List.svelte';
 	import OpenPanelFilledRight from 'carbon-icons-svelte/lib/OpenPanelFilledRight.svelte';

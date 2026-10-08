@@ -7,7 +7,7 @@ keywords: 'Opensophy, Прогресс-бар, UI, UI components, библиот
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import Progress from '$lib/components/ui-registry/Progress.svelte';
-	import { ProgressSource } from '$lib/components/ui-registry/demo-sources';
+	import { ProgressSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

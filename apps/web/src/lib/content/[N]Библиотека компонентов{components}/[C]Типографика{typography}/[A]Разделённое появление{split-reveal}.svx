@@ -7,7 +7,7 @@ keywords: 'Opensophy, Разделённое появление, UI, UI componen
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import SplitReveal from '$lib/components/ui-registry/SplitReveal.svelte';
-	import { SplitRevealSource } from '$lib/components/ui-registry/demo-sources';
+	import { SplitRevealSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [

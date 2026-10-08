@@ -67,6 +67,7 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="23" title="Разделённое появление" href="/components/split-reveal">Появление текста с разделением на части.</Card>
 <Card eyebrow="24" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
 <Card eyebrow="25" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
+<Card eyebrow="26" title="Рандомизированный текст" href="/components/randomized-text">Плавное появление текста по словам или символам.</Card>
 </Cards>
 
 ### Медиа
@@ -106,4 +107,5 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="41" title="Призрачный курсор" href="/components/ghost-cursor">Декоративный курсорный эффект.</Card>
 <Card eyebrow="42" title="Лазерный поток" href="/components/laser-flow">Декоративный эффект лазерного потока.</Card>
 <Card eyebrow="43" title="ASCII-объект" href="/components/ascii-object">Интерактивный ASCII-объект.</Card>
+<Card eyebrow="44" title="Flow" href="/components/flow">Схемы из узлов и последовательных связей.</Card>
 </Cards>

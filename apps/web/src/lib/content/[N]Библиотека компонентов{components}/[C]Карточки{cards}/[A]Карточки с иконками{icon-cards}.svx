@@ -7,7 +7,7 @@ keywords: 'Opensophy, Карточки с иконками, UI, UI components, �
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import FeatureCards from '$lib/components/ui-registry/FeatureCards.svelte';
-	import { FeatureCardsSource } from '$lib/components/ui-registry/demo-sources';
+	import { FeatureCardsSource } from '$lib/components/ui-registry/ui-demo-sources';
 </script>
 
 # Карточки с иконками
