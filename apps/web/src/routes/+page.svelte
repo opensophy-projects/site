@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { brandingConfig } from "$lib";
+  import { brandingConfig } from "$lib/config/branding";
   import ServicesGrid from "$lib/components/ui-registry/ServicesGrid.svelte";
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import CardProject from "$lib/components/ui-registry/CardProject.svelte";

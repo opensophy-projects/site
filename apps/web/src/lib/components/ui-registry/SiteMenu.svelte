@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { brandingConfig, siteConfig } from "$lib";
+  import { brandingConfig } from "$lib/config/branding";
+  import { siteConfig } from "$lib/config/site";
   import FloatingMenu from "$lib/components/ui-registry/FloatingMenu.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
   import ThemeToggle from "$lib/components/ui-registry/ThemeToggle.svelte";

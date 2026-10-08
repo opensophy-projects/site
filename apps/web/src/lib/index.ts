@@ -29,21 +29,4 @@ export {
 	type PackageManagerOption
 } from './config/content-ui';
 
-export {
-	getContentSectionAdjacentItems,
-	getContentSectionByPathname,
-	getContentSectionConfig,
-	getContentSectionHref,
-	getContentSectionItemBySlug,
-	getContentSectionManifest,
-	getContentSectionMetadata,
-	getContentSectionModule,
-	getContentSectionRawHref,
-	getContentSectionRawSource,
-	getContentSectionSlug,
-	type ContentMetadata,
-	type ContentModule,
-	type ContentSectionId
-} from './content/sections';
-
 export { themeStore, type Theme } from './stores/theme.svelte';
