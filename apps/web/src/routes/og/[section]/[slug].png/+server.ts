@@ -1,8 +1,12 @@
 import { error } from '@sveltejs/kit';
 import ImageResponse from '@takumi-rs/image-response';
 import type { RequestHandler } from './$types';
-import { getContentSectionMetadata, siteConfig } from '$lib';
-import { contentSections, getContentSectionManifest } from '$lib/content/sections';
+import { siteConfig } from '$lib';
+import {
+	contentSections,
+	getContentSectionManifest,
+	getContentSectionMetadata
+} from '$lib/content/sections';
 
 export const prerender = true;
 
