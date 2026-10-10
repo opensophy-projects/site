@@ -1,6 +1,6 @@
 ---
 title: Лазерный поток
-description: Интерактивный WebGL-фон с лазерными лучами, туманом и световыми нитями.
+description: Интерактивный WebGL-фон с лазерным лучом, падающим на поверхность: свечение, туман, пыль и световые нити.
 keywords: 'Opensophy, LaserFlow, WebGL, shader, laser, UI components, библиотека компонентов'
 ---
 
@@ -10,44 +10,63 @@ keywords: 'Opensophy, LaserFlow, WebGL, shader, laser, UI components, библи
 	import { LaserFlowSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
+	let demoCard = $state<HTMLElement | null>(null);
+
 	const controls: ComponentPreviewControl[] = [
 		{ type: 'color', name: 'color', label: 'Цвет', defaultValue: '#f43f5e' },
-		{ type: 'number', name: 'flowSpeed', label: 'Скорость потока', defaultValue: 0.35, min: 0, max: 2, step: 0.05 },
-		{ type: 'number', name: 'fogIntensity', label: 'Интенсивность тумана', defaultValue: 0.45, min: 0, max: 1.5, step: 0.05 },
-		{ type: 'number', name: 'wispDensity', label: 'Плотность нитей', defaultValue: 1, min: 0, max: 2, step: 0.1 },
-		{ type: 'number', name: 'mouseTiltStrength', label: 'Реакция на курсор', defaultValue: 0.01, min: 0, max: 0.1, step: 0.005 }
+		{ type: 'number', name: 'intensity', label: 'Яркость', defaultValue: 1.8, min: 0, max: 4, step: 0.1 },
+		{ type: 'number', name: 'beamWidth', label: 'Толщина луча', defaultValue: 1.5, min: 0.2, max: 5, step: 0.1 },
+		{ type: 'number', name: 'beamPosition', label: 'Позиция луча', defaultValue: 0.6, min: 0, max: 1, step: 0.05 },
+		{ type: 'number', name: 'flare', label: 'Вспышка у поверхности', defaultValue: 1.5, min: 0.2, max: 4, step: 0.1 },
+		{ type: 'number', name: 'spread', label: 'Растекание', defaultValue: 1.5, min: 0.1, max: 4, step: 0.1 },
+		{ type: 'number', name: 'spill', label: 'Перелив через край', defaultValue: 1, min: 0, max: 3, step: 0.1 },
+		{ type: 'number', name: 'fog', label: 'Туман', defaultValue: 0.2, min: 0, max: 1, step: 0.05 },
+		{ type: 'number', name: 'dust', label: 'Пыль', defaultValue: 1.6, min: 0, max: 4, step: 0.1 },
+		{ type: 'number', name: 'streaks', label: 'Световые нити', defaultValue: 1.5, min: 0, max: 4, step: 0.1 },
+		{ type: 'number', name: 'speed', label: 'Скорость', defaultValue: 1.5, min: 0, max: 4, step: 0.1 },
+		{ type: 'boolean', name: 'mouseInteraction', label: 'Реакция на курсор', defaultValue: true }
 	];
 </script>
 
 # Лазерный поток
 
-`LaserFlow` — полноразмерный WebGL-фон с движущимся лазерным крестом, туманом и вертикальными световыми нитями. Эффект реагирует на положение указателя и подходит для hero-секций, карточек и декоративных панелей. Компонент является декоративным и скрыт от скринридеров.
+`LaserFlow` — WebGL-фон с лазерным лучом, который падает сверху на поверхность, растекается по её краю световыми нитями и переливается через углы. Поверх добавляются туман, пылинки и сетка точек. Эффект следит за курсором «линзой» и подходит для hero-секций, карточек и декоративных панелей. Компонент декоративный и скрыт от скринридеров.
 
 ## Интерактивное демо
 
 <ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'LaserFlow.svelte', code: LaserFlowSource, language: 'svelte' }]}>
 	{#snippet children(values)}
-		<div class="h-[420px] w-full overflow-hidden rounded-lg">
+		<div class="relative h-[460px] w-full overflow-hidden rounded-lg bg-[#08070b]">
 			<LaserFlow
+				surface={demoCard}
 				color={values.color as string}
-				flowSpeed={values.flowSpeed as number}
-				fogIntensity={values.fogIntensity as number}
-				wispDensity={values.wispDensity as number}
-				mouseTiltStrength={values.mouseTiltStrength as number}
+				intensity={values.intensity as number}
+				beamWidth={values.beamWidth as number}
+				beamPosition={values.beamPosition as number}
+				flare={values.flare as number}
+				spread={values.spread as number}
+				spill={values.spill as number}
+				fog={values.fog as number}
+				dust={values.dust as number}
+				streaks={values.streaks as number}
+				speed={values.speed as number}
+				mouseInteraction={values.mouseInteraction as boolean}
 			/>
+			<div
+				bind:this={demoCard}
+				class="absolute inset-x-8 top-[55%] bottom-8 flex items-center justify-center rounded-2xl border border-white/10 bg-[#0d0b12] text-sm text-white/60"
+			>
+				Луч падает на этот блок
+			</div>
 		</div>
 	{/snippet}
 </ComponentPreview>
 
 ## Использование
 
-### Установка
-
-```bash
-npm install three
-```
-
 ### Базовый пример
+
+Без `surface` луч падает на виртуальную линию на уровне `surfaceLevel` (доля высоты контейнера).
 
 ```svelte
 <script>
@@ -55,42 +74,135 @@ npm install three
 </script>
 
 <div class="h-[420px] overflow-hidden rounded-lg">
-	<LaserFlow color="#f43f5e" flowSpeed={0.35} fogIntensity={0.45} wispDensity={1} />
+	<LaserFlow color="#f43f5e" surfaceLevel={0.6} />
 </div>
 ```
 
-Поместите компонент в контейнер с заданной высотой: `LaserFlow` занимает всю ширину и высоту родителя. Для читаемого текста располагайте контент поверх эффекта с `relative z-10`.
+Компонент занимает всю ширину и высоту родителя, поэтому задайте контейнеру высоту.
+
+### Луч на карточку
+
+Передайте элемент через `bind:this` — компонент сам измерит его положение, размер и скругление углов и будет следить за изменениями через `ResizeObserver`.
+
+```svelte
+<script>
+	import LaserFlow from '$lib/components/ui-registry/LaserFlow.svelte';
+
+	let card = $state(null);
+</script>
+
+<div class="relative h-[460px] overflow-hidden rounded-lg">
+	<LaserFlow surface={card} color="#f43f5e" beamPosition={0.5} />
+
+	<div
+		bind:this={card}
+		class="absolute inset-x-8 top-[55%] bottom-8 rounded-2xl border border-border bg-background-inset p-6"
+	>
+		Контент карточки
+	</div>
+</div>
+```
+
+Если `beamPosition` выходит за границы элемента, луч падает на виртуальную линию, а внутри элемента позиция ограничивается так, чтобы не попасть на скруглённый угол.
+
+### Светлая тема
+
+```svelte
+<LaserFlow theme="light" color="#f43f5e" intensity={1.4} />
+```
+
+### Изображение под курсором
+
+`revealImage` проявляется внутри света, около курсора. Картинка растягивается по принципу `cover`, а проявляется только там, где уже есть свечение.
+
+```svelte
+<LaserFlow
+	surface={card}
+	revealImage="/ui-screenshot.png"
+	revealRadius={220}
+	revealOpacity={0.6}
+/>
+```
+
+### Без интро и с паузой
+
+```svelte
+<LaserFlow intro={false} paused={isHidden} />
+```
 
 ## Особенности
 
-- WebGL-отрисовка через canvas без DOM-анимаций
-- Плавная реакция луча на движение указателя
-- Настройка цвета, скорости потока, тумана и световых нитей
-- Подстраивается под размер контейнера через `ResizeObserver`
-- Ограничивает DPR до `2` для предсказуемой производительности
+- Требуется WebGL2, внешние библиотеки (например, `three`) не нужны
+- Интро-анимация: луч падает, свет «вспыхивает» на поверхности и растекается
+- Реагирует на курсор через пружинную линзу, которая усиливает свет, туман и искры рядом с указателем
+- Любой цвет в CSS-формате: палитра лучей, свечений и тумана строится от одного `color`
+- Тёмная и светлая темы
+- Останавливает отрисовку вне viewport и на скрытой вкладке
+- Учитывает `prefers-reduced-motion`: интро пропускается, анимация и линза отключаются
+- Ограничивает `dpr` до `2` и размер canvas до 2048 px по большей стороне
 - Корректно освобождает WebGL-ресурсы, observers и animation frame при размонтировании
 
 ## Пропсы
 
+### Положение
+
 | Пропс | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `color` | `string` | `'#FF79C6'` | Цвет лазерного света в формате HEX |
-| `flowSpeed` | `number` | `0.35` | Скорость движения потока |
-| `fogIntensity` | `number` | `0.45` | Интенсивность шума-тумана |
-| `wispDensity` | `number` | `1` | Плотность вертикальных световых нитей (0–2) |
-| `wispSpeed` | `number` | `15` | Скорость движения нитей |
-| `wispIntensity` | `number` | `5` | Яркость нитей |
-| `mouseTiltStrength` | `number` | `0.01` | Сила смещения от курсора |
-| `mouseSmoothTime` | `number` | `0` | Время сглаживания курсора в секундах |
-| `horizontalBeamOffset` | `number` | `0.1` | Горизонтальное смещение луча |
-| `verticalBeamOffset` | `number` | `0` | Вертикальное смещение луча |
-| `verticalSizing` | `number` | `2` | Длина вертикального луча |
-| `horizontalSizing` | `number` | `0.5` | Длина горизонтального луча |
-| `flowStrength` | `number` | `0.25` | Контраст пульсации потока |
-| `fogScale` | `number` | `0.3` | Масштаб шума тумана |
-| `fogFallSpeed` | `number` | `0.6` | Скорость движения тумана |
-| `falloffStart` | `number` | `1.2` | Яркость и затухание луча |
-| `decay` | `number` | `1.1` | Длина видимого участка лазерного луча |
+| `surface` | `HTMLElement \| null` | `null` | Элемент, на который падает луч. Передаётся через `bind:this` |
+| `beamPosition` | `number` | `0.6` | Горизонтальная позиция луча (0–1 от ширины) |
+| `surfaceLevel` | `number` | `1` | Уровень виртуальной поверхности (0–1 от высоты), если `surface` не задан |
+
+### Внешний вид
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `color` | `string` | `'#3847ff'` | Основной цвет света (любой CSS-цвет) |
+| `theme` | `'dark' \| 'light'` | `'dark'` | Режим смешивания: для тёмного или светлого фона |
+| `intensity` | `number` | `1.8` | Общая яркость |
+| `beamWidth` | `number` | `1.5` | Толщина луча (0.2–5) |
+| `flare` | `number` | `1.5` | Размер вспышки у поверхности (0.2–4) |
+| `spread` | `number` | `1.5` | Дальность растекания света по поверхности (0.1–4) |
+| `spill` | `number` | `1` | Сила перелива света через боковые края |
+
+### Атмосфера
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `fog` | `number` | `0.2` | Плотность тумана вокруг луча |
+| `dust` | `number` | `1.6` | Количество мерцающих пылинок и искр |
+| `streaks` | `number` | `1.5` | Яркость световых нитей на поверхности |
+| `dots` | `number` | `1` | Сила сетки точек в свечении |
+| `pulse` | `number` | `1.5` | Амплитуда «дыхания» света |
+| `seed` | `number` | `3` | Зерно шума: меняет рисунок тумана |
+
+### Анимация и взаимодействие
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `speed` | `number` | `1.5` | Множитель скорости анимации |
+| `intro` | `boolean` | `true` | Проигрывать вступительное падение луча |
+| `paused` | `boolean` | `false` | Остановить анимацию |
+| `mouseInteraction` | `boolean` | `true` | Включить линзу, следующую за курсором |
+
+### Проявление изображения
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `revealImage` | `string` | — | URL изображения, проявляющегося под курсором |
+| `revealRadius` | `number` | `220` | Радиус проявления (px) |
+| `revealOpacity` | `number` | `0.6` | Яркость проявленного изображения (0–1) |
+
+### Прочее
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
 | `dpr` | `number` | `window.devicePixelRatio` (до 2) | Плотность пикселей canvas |
 | `class` | `string` | `''` | Дополнительные CSS-классы контейнера |
-| `style` | `string` | `''` | Inline-стили контейнера |
+
+Остальные атрибуты (`style`, `id`, `data-*`, `aria-*`) передаются на корневой `div`.
+
+## Доступность
+
+- Canvas помечен `aria-hidden`, контейнер не перехватывает события мыши (`pointer-events: none`)
+- Для читаемого текста располагайте контент поверх эффекта с `relative z-10`
+- При `prefers-reduced-motion` движение и интро отключаются, остаётся статичный кадр
