@@ -404,8 +404,8 @@
         <div class="card-inner">
           <div class="visual-area">
             {#if mounted}
-            {#if heavy}
-<div class="ascii-visual" aria-hidden="true">
+{#if false}
+						<div class="ascii-visual" aria-hidden="true">
               <AsciiVisual
                 src={asciiVisuals.shield}
                 colored={false}
@@ -456,8 +456,8 @@
     <div class="card-inner">
       <div class="visual-area">
         {#if mounted}
-            {#if heavy}
-<div class="ascii-visual" aria-hidden="true">
+{#if false}
+						<div class="ascii-visual" aria-hidden="true">
           <!-- серый слой (на слабых устройствах здесь целая цветная картинка) -->
           <div class="ascii-layer">
             <AsciiVisual
@@ -527,7 +527,7 @@
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
         {#if mounted}
-            {#if heavy}
+            {#if false}
 <div class="ascii-visual">
           <div class="ascii-layer">
             <AsciiVisual
@@ -593,7 +593,7 @@
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
         {#if mounted}
-            {#if heavy}
+            {#if false}
 <div class="ascii-visual">
           <AsciiVisual
             src={asciiVisuals.leak}
@@ -645,7 +645,7 @@
     <div class="card-inner">
       <div class="visual-area" aria-hidden="true">
         {#if mounted}
-            {#if heavy}
+            {#if false}
 <div class="ascii-visual">
           <!-- серое облачко (вопрос) -->
           <div class="ascii-layer">
@@ -729,8 +729,8 @@
         <div class="card-inner">
           <div class="visual-area">
             {#if mounted}
-            {#if heavy}
-<div class="ascii-visual" aria-hidden="true">
+{#if false}
+						<div class="ascii-visual" aria-hidden="true">
               <AsciiVisual
                 src={asciiVisuals.gear}
                 colored={false}
