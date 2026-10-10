@@ -13,7 +13,7 @@
   /** CSS-цвет или {r,g,b}: 0..1 либо 0..255 */
   export type IMeshGradientColor = string | { r: number; g: number; b: number };
 
-  export interface IAnimatedMeshGradient {
+  export type IAnimatedMeshGradient = {
     /** До 4 цветов; если меньше, добираются из дефолтных */
     colors?: IMeshGradientColor[];
     speed?: number;
@@ -37,7 +37,7 @@
     style?: string;
     class?: string;
     children?: Snippet;
-  }
+  };
 
   // Собственный GLSL-шейдер: SkSL из ./conf в WebGL напрямую не переносится.
   const VERTEX = `
@@ -326,10 +326,6 @@
 
   // 4) Перерисовка при смене параметров (важно, когда animated=false)
   $effect(() => {
-    noise;
-    blur;
-    contrast;
-    rgbColors;
     draw();
   });
 </script>

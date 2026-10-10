@@ -13,7 +13,7 @@
   export const SWAP_EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
   export const SWEEP_EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
 
-  export interface IDiaText {
+  export type IDiaText = {
     text: string | string[];
     sweepColors?: string[];
     baseColor?: string;
@@ -32,7 +32,7 @@
     /** Класс текста */
     textClass?: string;
     onSweepEnd?: (finishedIndex: number) => void;
-  }
+  };
 </script>
 
 <script lang="ts">
@@ -68,9 +68,12 @@
   let timer: ReturnType<typeof setTimeout> | undefined;
 
   // Сброс на первый текст при смене набора текстов
+  let previousTextKey = "";
   $effect(() => {
-    textKey;
-    index = 0;
+    if (previousTextKey !== textKey) {
+      previousTextKey = textKey;
+      index = 0;
+    }
   });
 
   const band = $derived(width * bandRatio);
@@ -112,17 +115,11 @@
         { duration: EXIT_DURATION, easing: SWAP_EASING, fill: "forwards" },
       );
       if (!exit) return commitNext();
-      exit.finished.then(commitNext).catch(() => {});
+      exit.finished.then(commitNext).catch(() => undefined);
     }, loopDelay);
   }
 
   $effect(() => {
-    // зависимости
-    index;
-    cycle;
-    duration;
-    delay;
-    isMulti;
     if (!ready || !autoPlay || !sweepEl) return;
 
     const playing = index;
@@ -154,9 +151,10 @@
       ],
       { duration, delay, easing: SWEEP_EASING, fill: "both" },
     );
+    sweep.id = String(cycle);
     animations.push(sweep);
 
-    sweep.finished.then(() => handleSweepEnd(playing)).catch(() => {});
+    sweep.finished.then(() => handleSweepEnd(playing)).catch(() => undefined);
 
     return () => {
       clearTimeout(timer);
