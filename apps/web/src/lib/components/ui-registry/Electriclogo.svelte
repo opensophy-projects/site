@@ -1,9 +1,7 @@
 <script module lang="ts">
   import { Renderer, Program, Mesh, Triangle, Texture } from 'ogl';
 
-  const BOLT = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><path d="M39 3 12 37h17l-4 24 27-34H35z" fill="#fff"/></svg>'
-  )}`;
+  const PROJECT_LOGO = '/logo.png';
   const RASTER = 560;
   const CELL = 4;
   const FAR = 1e20;
@@ -655,7 +653,7 @@ void main() {
   import { onMount } from 'svelte';
 
   let {
-    src = BOLT,
+    src = PROJECT_LOGO,
     color = '#ecc7ff',
     glowColor = '#ad6dff',
     scale = 0.7,
@@ -707,7 +705,7 @@ void main() {
 
   // Трассировка контура при смене src
   $effect(() => {
-    const source = src || BOLT;
+    const source = src || PROJECT_LOGO;
     let alive = true;
     const image = new Image();
     image.crossOrigin = 'anonymous';
