@@ -13,7 +13,7 @@
   /** CSS-цвет или {r,g,b}: 0..1 либо 0..255 */
   export type IMeshGradientColor = string | { r: number; g: number; b: number };
 
-  export interface IAnimatedMeshGradient {
+  export type IAnimatedMeshGradient = {
     /** До 4 цветов; если меньше, добираются из дефолтных */
     colors?: IMeshGradientColor[];
     speed?: number;
@@ -37,7 +37,7 @@
     style?: string;
     class?: string;
     children?: Snippet;
-  }
+  };
 
   // Собственный GLSL-шейдер: SkSL из ./conf в WebGL напрямую не переносится.
   const VERTEX = `
@@ -191,17 +191,17 @@
   let u: Record<string, WebGLUniformLocation | null> = {};
   let time = 0;
 
-  function draw() {
+  function draw(noiseValue = noise, blurValue = blur, contrastValue = contrast, colorsValue = rgbColors) {
     if (!gl || !canvas) return;
     const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
-    const [c1, c2, c3, c4] = rgbColors;
+    const [c1, c2, c3, c4] = colorsValue;
 
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.uniform2f(u.resolution, canvas.width, canvas.height);
     gl.uniform1f(u.time, time);
-    gl.uniform1f(u.noise, clamp(noise, 0, 1));
-    gl.uniform1f(u.blur, clamp(blur, 0, 1));
-    gl.uniform1f(u.contrast, clamp(contrast, 0, 2));
+    gl.uniform1f(u.noise, clamp(noiseValue, 0, 1));
+    gl.uniform1f(u.blur, clamp(blurValue, 0, 1));
+    gl.uniform1f(u.contrast, clamp(contrastValue, 0, 2));
     gl.uniform3f(u.c1, c1[0], c1[1], c1[2]);
     gl.uniform3f(u.c2, c2[0], c2[1], c2[2]);
     gl.uniform3f(u.c3, c3[0], c3[1], c3[2]);
@@ -326,11 +326,7 @@
 
   // 4) Перерисовка при смене параметров (важно, когда animated=false)
   $effect(() => {
-    noise;
-    blur;
-    contrast;
-    rgbColors;
-    draw();
+    draw(noise, blur, contrast, rgbColors);
   });
 </script>
 
