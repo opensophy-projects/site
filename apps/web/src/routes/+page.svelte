@@ -217,15 +217,14 @@
   </section>
 
   <div class="ascii-logo" aria-label="Opensophy ASCII logo">
-    <img class="ascii-logo-fallback" src="/logo.png" alt="" aria-hidden="true" />
     <AsciiObject
       src="/logo.png"
       ascii={true}
-      colored={false}
-      color="#f43f5e"
-      highlight="#f43f5e"
+      colored={true}
       background=""
-      cellSize={6}
+      cellSize={10}
+      contrast={1.5}
+      exposure={1}
       scale={5}
       orbit={true}
       autoRotate={true}
@@ -310,7 +309,7 @@
       <button
         type="button"
         class="services-action services-action-primary"
-        onclick={() => contactsState.open()}>Заказать услуги</button
+        onclick={() => contactsState.open()}>Заказать у��луги</button
       >
       <a class="services-action" href="/service-policy"
         >П��литика оказания услуг</a
@@ -532,23 +531,16 @@
     overflow: hidden;
   }
 
-  .ascii-logo-fallback {
-    position: absolute;
-    inset: 10% 25%;
-    width: 50%;
-    height: 80%;
-    object-fit: contain;
-    opacity: 0.16;
-    filter: saturate(1.2);
-    pointer-events: none;
-  }
 
-  .ascii-logo-canvas {
-    position: relative;
-    z-index: 1;
-    display: block;
-    width: min(100%, 56rem);
-    height: 100%;
+  :global(.ascii-logo-canvas) {
+  position: relative;
+  z-index: 1;
+  display: block;
+  flex: 1 1 56rem;
+  width: 100%;
+  max-width: 56rem;
+  min-width: 0;
+  height: 100%;
   }
 
   .section-block {
