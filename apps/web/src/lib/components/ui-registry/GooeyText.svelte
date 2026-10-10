@@ -11,7 +11,7 @@
     return visibility > 0 ? Math.pow(visibility, 0.4) : 0;
   }
 
-  export interface IGooeyText {
+  export type IGooeyText = {
     texts: string[];
     /** Длительность морфинга, сек */
     morphTime?: number;
@@ -27,7 +27,7 @@
     style?: string;
     class?: string;
     textClass?: string;
-  }
+  };
 </script>
 
 <script lang="ts">
