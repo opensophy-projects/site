@@ -70,7 +70,7 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="26" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
 <Card eyebrow="27" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
 <Card eyebrow="28" title="Рандомизированный текст" href="/components/randomized-text">Плавное появление текста по словам или символам.</Card>
-<Card eyebrow="29" title="Диамант текст" href="/components/dia-text">Световой sweep по буквам с плавной циклической сменой текста.</Card>
+<Card eyebrow="29" title="Диагональный текст" href="/components/dia-text">Световая полоса проходит по тексту с поддержкой циклической смены строк.</Card>
 </Cards>
 
 ### Медиа
