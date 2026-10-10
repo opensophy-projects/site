@@ -1,7 +1,6 @@
 <script lang="ts">
   import { brandingConfig } from "$lib/config/branding";
   import ServicesGrid from "$lib/components/ui-registry/ServicesGrid.svelte";
-  import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import CardProject from "$lib/components/ui-registry/CardProject.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui-registry/TextLoop.svelte";
@@ -214,21 +213,6 @@
       <span class="text-accent">DevSecOps и Open Source</span> и делает их доступнее
       для разработчиков и команд.
     </h2>
-    <div class="about-ascii" aria-hidden="true">
-      <AsciiVisual
-        src="/logo.png"
-        colored={false}
-        color="#f43f5e"
-        highlight="#f43f5e"
-        class="h-full w-full"
-        background=""
-        cellSize={6}
-        scale={5}
-        orbit={true}
-        autoRotate={true}
-        autoRotateSpeed={0.5}
-      />
-    </div>
   </section>
 
   <!-- What We Do Section -->
@@ -310,7 +294,7 @@
         onclick={() => contactsState.open()}>Заказать услуги</button
       >
       <a class="services-action" href="/service-policy"
-        >Политика оказания услуг</a
+        >П��литика оказания услуг</a
       >
     </div>
   </section>
@@ -572,14 +556,6 @@
     opacity: 1;
   }
 
-  /* Логотип: без overflow:hidden, чтобы контейнер его не обрезал.
-     Высота и верхний отступ уменьшены под компактную вёрстку. */
-  .about-ascii {
-    height: 17rem;
-    margin-top: 0.5rem;
-    overflow: visible;
-  }
-
   /* ─── Products Section Glow ────────────────────────────────── */
   .products-section {
     position: relative;
@@ -624,9 +600,6 @@
       right: auto;
       left: -0.5rem;
       width: 13rem;
-    }
-    .about-ascii {
-      height: 13rem;
     }
     .products-glow {
       width: 160%;

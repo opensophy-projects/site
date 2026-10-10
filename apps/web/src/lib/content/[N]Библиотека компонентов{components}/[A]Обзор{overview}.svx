@@ -41,6 +41,7 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="11" title="FAQ аккордеон" href="/components/faq">Раскрывающиеся блоки вопросов и ответов с плавной анимацией.</Card>
 <Card eyebrow="12" title="Индикатор загрузки" href="/components/lattice-loader">Анимированный индикатор загрузки из ячеек решётки с состояниями выполнения и ошибки.</Card>
 <Card eyebrow="13" title="Призрачный курсор" href="/components/ghost-cursor">Декоративный светящийся след, который следует за курсором и постепенно затухает.</Card>
+<Card eyebrow="14" title="Дуговая временная шкала" href="/components/arc-timeline">Интерактивная временная шкала с активными этапами и описаниями.</Card>
 </Cards>
 
 ### Карточки
