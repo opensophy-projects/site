@@ -1,192 +1,210 @@
-<script lang="ts">
-	type Props = {
-		/** Text or texts to sweep through. */
-		text: string | string[];
-		/** Colors used by the moving highlight. */
-		sweepColors?: string[];
-		/** Base text color. */
-		baseColor?: string;
-		/** Sweep duration in milliseconds. */
-		duration?: number;
-		/** Delay before the sweep starts, in milliseconds. */
-		delay?: number;
-		/** Repeat the sweep (and advance through text[]). */
-		loop?: boolean;
-		/** Delay between completed sweeps, in milliseconds. */
-		loopDelay?: number;
-		/** Highlight width as a fraction of the text width. */
-		bandRatio?: number;
-		/** Start the animation automatically. */
-		autoPlay?: boolean;
-		/** CSS class applied to the root element. */
-		class?: string;
-		/** CSS class applied to the text. */
-		textClass?: string;
-		/** Inline styles for the root element. */
-		style?: string;
-		/** Inline styles for the text. */
-		textStyle?: string;
-		onSweepEnd?: (index: number) => void;
-	};
+<script lang="ts" module>
+  // Значения по умолчанию (замените на свои из ./const, если они у вас есть).
+  // Easing из reanimated не переносится, поэтому здесь CSS-аналоги.
+  export const DEFAULT_SWEEP_COLORS = ["#7c5cff", "#ff5c8a", "#ffb85c"];
+  export const DEFAULT_BASE_COLOR = "#111111";
+  export const DEFAULT_DURATION = 1400;
+  export const DEFAULT_DELAY = 0;
+  export const DEFAULT_LOOP_DELAY = 1200;
+  export const DEFAULT_BAND_RATIO = 0.6;
+  export const ENTER_DURATION = 350;
+  export const EXIT_DURATION = 250;
+  export const SWAP_SHIFT = 8; // px
+  export const SWAP_EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
+  export const SWEEP_EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
 
-	let {
-		text,
-		sweepColors = ["#ffffff", "#ffffff", "#ffffff"],
-		baseColor = "currentColor",
-		duration = 1200,
-		delay = 0,
-		loop = false,
-		loopDelay = 0,
-		bandRatio = 0.22,
-		autoPlay = true,
-		class: className = "",
-		textClass = "",
-		style = "",
-		textStyle = "",
-		onSweepEnd,
-	}: Props = $props();
-
-	let index = $state(0);
-	let playing = $state(false);
-	let timer: ReturnType<typeof setTimeout> | undefined;
-	let animationId = $state(0);
-
-	const texts = $derived(Array.isArray(text) ? text : [text]);
-	const currentText = $derived(texts[index] ?? "");
-	const isMulti = $derived(texts.length > 1);
-
-	const gradient = $derived.by(() => {
-		const colors = sweepColors.length > 0 ? sweepColors : [baseColor];
-		const stops = colors.length === 1
-			? `${baseColor} 0%, ${colors[0]} 50%, ${baseColor} 100%`
-			: [baseColor, ...colors, baseColor]
-					.map((color, i, all) => `${color} ${(i / (all.length - 1)) * 100}%`)
-					.join(", ");
-		return `linear-gradient(90deg, ${stops})`;
-	});
-
-	function clearTimer() {
-		if (timer !== undefined) {
-			clearTimeout(timer);
-			timer = undefined;
-		}
-	}
-
-	function finishSweep(finishedIndex: number) {
-		playing = false;
-		onSweepEnd?.(finishedIndex);
-
-		if (!loop) return;
-
-		timer = setTimeout(() => {
-			if (isMulti) index = (index + 1) % texts.length;
-			animationId += 1;
-			playing = true;
-		}, loopDelay);
-	}
-
-	function play() {
-		clearTimer();
-		if (!autoPlay || !texts.length) return;
-
-		playing = true;
-		animationId += 1;
-	}
-
-	$effect(() => {
-		if (texts.length === 0) {
-			index = 0;
-			playing = false;
-			clearTimer();
-			return;
-		}
-
-		index = 0;
-		if (autoPlay) play();
-		return clearTimer;
-	});
-
-	$effect(() => {
-		if (!playing) return;
-		const id = animationId;
-		const timeout = setTimeout(() => {
-			if (id === animationId) finishSweep(index);
-		}, Math.max(0, delay) + Math.max(0, duration));
-		return () => clearTimeout(timeout);
-	});
+  export interface IDiaText {
+    text: string | string[];
+    sweepColors?: string[];
+    baseColor?: string;
+    duration?: number;
+    delay?: number;
+    loop?: boolean;
+    loopDelay?: number;
+    bandRatio?: number;
+    autoPlay?: boolean;
+    /** CSS-строка со стилями шрифта: "font-size: 24px; font-weight: 700" */
+    textStyle?: string;
+    /** CSS-строка для корневого элемента */
+    style?: string;
+    class?: string;
+    onSweepEnd?: (finishedIndex: number) => void;
+  }
 </script>
 
-<span
-	class={`dia-text ${className}`}
-	style={`${style} --dia-base:${baseColor}; --dia-gradient:${gradient}; --dia-duration:${Math.max(0, duration)}ms; --dia-delay:${Math.max(0, delay)}ms; --dia-band:${Math.max(0.05, bandRatio) * 100}%;`}
->
-	<span class="dia-text__sizer" aria-hidden="true">{currentText || "\u00a0"}</span>
-	{#key `${index}:${animationId}`}
-		<span
-			class={`dia-text__label ${textClass} ${playing ? "dia-text__label--playing" : ""}`}
-			style={textStyle}
-			aria-label={currentText}
-		>
-			{currentText}
-		</span>
-	{/key}
+<script lang="ts">
+  import { onDestroy } from "svelte";
+
+  let {
+    text,
+    sweepColors = DEFAULT_SWEEP_COLORS,
+    baseColor = DEFAULT_BASE_COLOR,
+    duration = DEFAULT_DURATION,
+    delay = DEFAULT_DELAY,
+    loop = false,
+    loopDelay = DEFAULT_LOOP_DELAY,
+    bandRatio = DEFAULT_BAND_RATIO,
+    autoPlay = true,
+    textStyle = "",
+    style = "",
+    class: className = "",
+    onSweepEnd,
+  }: IDiaText = $props();
+
+  const texts = $derived<string[]>(Array.isArray(text) ? [...text] : [text]);
+  const textKey = $derived(texts.join(""));
+  const isMulti = $derived(texts.length > 1);
+
+  let index = $state(0);
+  let cycle = $state(0);
+  let width = $state(0);
+
+  let contentEl: HTMLElement | undefined = $state();
+  let sweepEl: HTMLElement | undefined = $state();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+
+  // Сброс на первый текст при смене набора текстов
+  $effect(() => {
+    textKey;
+    index = 0;
+  });
+
+  const band = $derived(width * bandRatio);
+  const strip = $derived(width + band);
+  const ready = $derived(width > 0);
+  const label = $derived(texts[index] ?? "");
+
+  // Градиент: базовый цвет, затем полоса sweepColors на ведущем краю, затем прозрачность
+  const gradient = $derived.by(() => {
+    if (!ready) return "none";
+    const start = (width / strip) * 100;
+    const colors = [...sweepColors, "transparent"];
+    const step = (100 - start) / (colors.length - 1);
+    const stops = colors
+      .map((c, i) => `${c} ${(start + step * i).toFixed(2)}%`)
+      .join(", ");
+    return `linear-gradient(90deg, ${baseColor} 0%, ${baseColor} ${start.toFixed(2)}%, ${stops})`;
+  });
+
+  function commitNext() {
+    index = (index + 1) % texts.length;
+    cycle += 1;
+  }
+
+  function handleSweepEnd(finishedIndex: number) {
+    onSweepEnd?.(finishedIndex);
+    if (!loop) return;
+
+    timer = setTimeout(() => {
+      if (!isMulti) {
+        cycle += 1;
+        return;
+      }
+      const exit = contentEl?.animate(
+        [
+          { opacity: 1, transform: "translateY(0)" },
+          { opacity: 0, transform: `translateY(${-SWAP_SHIFT}px)` },
+        ],
+        { duration: EXIT_DURATION, easing: SWAP_EASING, fill: "forwards" },
+      );
+      if (!exit) return commitNext();
+      exit.finished.then(commitNext).catch(() => {});
+    }, loopDelay);
+  }
+
+  $effect(() => {
+    // зависимости
+    index;
+    cycle;
+    duration;
+    delay;
+    isMulti;
+    if (!ready || !autoPlay || !sweepEl) return;
+
+    const playing = index;
+    const animations: Animation[] = [];
+
+    if (isMulti && contentEl) {
+      animations.push(
+        contentEl.animate(
+          [
+            { opacity: 0, transform: `translateY(${SWAP_SHIFT}px)` },
+            { opacity: 1, transform: "translateY(0)" },
+          ],
+          { duration: ENTER_DURATION, easing: SWAP_EASING, fill: "both" },
+        ),
+      );
+    }
+
+    const sweep = sweepEl.animate(
+      [
+        { backgroundPositionX: "calc(var(--travel) * -1)" },
+        { backgroundPositionX: "0px" },
+      ],
+      { duration, delay, easing: SWEEP_EASING, fill: "both" },
+    );
+    animations.push(sweep);
+
+    sweep.finished.then(() => handleSweepEnd(playing)).catch(() => {});
+
+    return () => {
+      clearTimeout(timer);
+      animations.forEach((a) => a.cancel());
+    };
+  });
+
+  onDestroy(() => clearTimeout(timer));
+</script>
+
+<span class="dia-text {className}" {style}>
+  <!-- Невидимый «измеритель» размера (и текст для скринридеров) -->
+  <span class="sizer" style={textStyle} bind:clientWidth={width}>{label}</span>
+
+  {#if ready}
+    <span
+      class="content"
+      aria-hidden="true"
+      bind:this={contentEl}
+      style:opacity={isMulti ? 0 : 1}
+    >
+      <span
+        class="sweep"
+        bind:this={sweepEl}
+        style="{textStyle}; --strip: {strip}px; --travel: {strip}px; background-image: {gradient};"
+      >{label}</span>
+    </span>
+  {/if}
 </span>
 
 <style>
-	.dia-text {
-		position: relative;
-		display: inline-grid;
-		vertical-align: middle;
-		line-height: inherit;
-		color: var(--dia-base);
-	}
+  .dia-text {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
 
-	.dia-text__sizer,
-	.dia-text__label {
-		grid-area: 1 / 1;
-		white-space: nowrap;
-		font: inherit;
-		letter-spacing: inherit;
-		line-height: inherit;
-	}
+  .sizer {
+    display: inline-block;
+    white-space: nowrap;
+    opacity: 0;
+  }
 
-	.dia-text__sizer {
-		visibility: hidden;
-		pointer-events: none;
-		user-select: none;
-	}
+  .content {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+  }
 
-	.dia-text__label {
-		background: var(--dia-base);
-		background-image: none;
-		background-repeat: no-repeat;
-		background-size: 200% 100%;
-		background-clip: text;
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: currentColor;
-		color: var(--dia-base);
-	}
-
-	.dia-text__label--playing {
-		background-image: var(--dia-gradient);
-		-webkit-text-fill-color: transparent;
-		animation: dia-text-sweep var(--dia-duration) ease-in-out var(--dia-delay) both;
-	}
-
-	@keyframes dia-text-sweep {
-		0% {
-			background-position: 100% 0;
-		}
-		100% {
-			background-position: -100% 0;
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.dia-text__label--playing {
-			animation: none;
-			background-image: none;
-			-webkit-text-fill-color: currentColor;
-		}
-	}
+  .sweep {
+    display: inline-block;
+    white-space: nowrap;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-repeat: no-repeat;
+    background-size: var(--strip) 100%;
+    background-position-x: calc(var(--travel) * -1);
+  }
 </style>
