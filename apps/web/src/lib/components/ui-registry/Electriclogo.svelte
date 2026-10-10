@@ -739,9 +739,13 @@ void main() {
     const gl = renderer.gl;
     const gl2 = gl as WebGL2RenderingContext;
     if (!renderer.isWebgl2) {
+      // OGL's WebGL context methods are untyped in this workspace.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       gl.getExtension('WEBGL_lose_context')?.loseContext();
       return undefined;
     }
+    // OGL's WebGL context methods are untyped in this workspace.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     gl.clearColor(0, 0, 0, 0);
     const canvas = gl.canvas as HTMLCanvasElement;
     canvas.style.display = 'block';
@@ -1084,6 +1088,8 @@ void main() {
       container.removeEventListener('pointerdown', onDown);
       container.removeEventListener('pointerleave', onLeave);
       container.removeEventListener('pointercancel', onLeave);
+      // OGL's WebGL context methods are untyped in this workspace.
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       gl.getExtension('WEBGL_lose_context')?.loseContext();
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
     };
