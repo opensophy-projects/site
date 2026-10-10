@@ -88,11 +88,3 @@ keywords: 'Opensophy, Диагональный текст, DiaText, UI, UI compo
 | `style` | `string` | `''` | Inline-стили корневого элемента |
 | `textStyle` | `string` | `''` | Inline-стили текста |
 | `onSweepEnd` | `(index: number) => void` | — | Callback после завершения прохода |
-
-## Особенности
-
-- Не требует React Native, Reanimated или MaskedView — градиент накладывается через `background-clip: text`, а анимация работает на Web Animations API.
-- Цвет текста берётся из `color` родителя: `baseColor="currentColor"` подхватывает `class="text-accent"` и тему.
-- Поддерживает `prefers-reduced-motion`: при включённом режиме текст сразу показывается в итоговом состоянии, без прохода и смены строк.
-- Подходит для SSR в SvelteKit: на сервере рендерится только невидимый измеряющий текст, а размеры и анимация запускаются в браузере через `$effect`.
-- При смене массива `text` показ начинается с первой строки.
