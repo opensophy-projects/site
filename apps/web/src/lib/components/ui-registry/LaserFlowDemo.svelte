@@ -50,7 +50,8 @@
   />
   <div
     bind:this={card}
-    class="absolute inset-x-[22%] top-[58%] bottom-[14%] flex items-center justify-center rounded-2xl border border-white/10 bg-[#0d0b12] text-sm text-white/60"
+    style="left: 15%; right: 15%; top: 58%; bottom: 10%;"
+    class="absolute flex items-center justify-center rounded-2xl border border-white/10 bg-[#0d0b12] text-sm text-white/60"
   >
     Луч падает на этот блок
   </div>
