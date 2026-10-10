@@ -729,7 +729,7 @@ void main() {
 
   onMount(() => {
     // OGL is currently resolved as an untyped module in this workspace.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+     
     const renderer = new Renderer({
       dpr: Math.min(window.devicePixelRatio || 1, 2),
       alpha: true,
@@ -740,14 +740,14 @@ void main() {
     const gl2 = gl as WebGL2RenderingContext;
     if (!renderer.isWebgl2) {
       // OGL's WebGL context methods are untyped in this workspace.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+       
       gl.getExtension('WEBGL_lose_context')?.loseContext();
       return undefined;
     }
     // OGL's WebGL context methods are untyped in this workspace.
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+     
     gl.clearColor(0, 0, 0, 0);
-    const canvas = gl.canvas as HTMLCanvasElement;
+    const canvas = gl.canvas;
     canvas.style.display = 'block';
     canvas.style.width = '100%';
     canvas.style.height = '100%';
@@ -757,7 +757,7 @@ void main() {
 
     const makeSlot = (): Slot => ({
       shape: null,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+       
       field: new Texture(gl, {
         image: new Float32Array([1000]),
         width: 1,
@@ -771,7 +771,7 @@ void main() {
         flipY: false,
         unpackAlignment: 1
       }),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+       
       glow: new Texture(gl, {
         image: new Float32Array([0, 0]),
         width: 1,
@@ -824,11 +824,11 @@ void main() {
       uArcEnds: { value: arcEnds },
       uArcShape: { value: arcShape }
     };
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+     
     const mesh = new Mesh(gl, {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+       
       geometry: new Triangle(gl),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+       
       program: new Program(gl, { vertex, fragment, uniforms, depthTest: false, depthWrite: false })
     });
 
@@ -881,7 +881,7 @@ void main() {
       width = Math.max(1, container.clientWidth);
       height = Math.max(1, container.clientHeight);
       renderer.dpr = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(PIXEL_BUDGET / (width * height)));
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+       
       renderer.setSize(width, height);
       uniforms.uResolution.value = [width, height];
     };
@@ -1033,7 +1033,7 @@ void main() {
         ink += ((s.theme === 'light' ? 1 : 0) - ink) * (1 - Math.exp(-dt / 0.25));
         uniforms.uFill.value = s.fill;
         uniforms.uInk.value = ink;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+         
         renderer.render({ scene: mesh });
         s.onRender?.(canvas);
       }
@@ -1089,7 +1089,7 @@ void main() {
       container.removeEventListener('pointerleave', onLeave);
       container.removeEventListener('pointercancel', onLeave);
       // OGL's WebGL context methods are untyped in this workspace.
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+       
       gl.getExtension('WEBGL_lose_context')?.loseContext();
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
     };
