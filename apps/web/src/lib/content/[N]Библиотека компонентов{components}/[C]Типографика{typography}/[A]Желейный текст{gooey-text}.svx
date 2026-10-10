@@ -1,0 +1,139 @@
+---
+title: Желейный текст
+description: SVG-фильтр порога по альфа-каналу и блюр создают «желейный» морфинг между словами.
+keywords: 'Opensophy, Желейный текст, Gooey Text, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import GooeyText from '$lib/components/ui-registry/GooeyText.svelte';
+	import gooeyTextSource from '$lib/components/ui-registry/GooeyText.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'number',
+			name: 'morphTime',
+			label: 'Длительность морфинга (с)',
+			defaultValue: 1,
+			min: 0.2,
+			max: 3,
+			step: 0.1
+		},
+		{
+			type: 'number',
+			name: 'cooldownTime',
+			label: 'Пауза (с)',
+			defaultValue: 0.25,
+			min: 0,
+			max: 2,
+			step: 0.05
+		},
+		{
+			type: 'number',
+			name: 'fontSize',
+			label: 'Размер шрифта (px)',
+			defaultValue: 48,
+			min: 16,
+			max: 96,
+			step: 4
+		},
+		{
+			type: 'color',
+			name: 'color',
+			label: 'Цвет текста',
+			defaultValue: '#f43f5e'
+		}
+	];
+</script>
+
+# Желейный текст
+
+Компонент циклически «перетекает» между словами: слои текста размываются и слипаются, как капли желе. Эффект построен на SVG-фильтре `feColorMatrix` с порогом по альфа-каналу и CSS-блюре — без сторонних зависимостей.
+
+## Интерактивное демо
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'GooeyText.svelte', code: gooeyTextSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<GooeyText
+			texts={['Привет', 'Мир', 'Opensophy']}
+			morphTime={values.morphTime as number}
+			cooldownTime={values.cooldownTime as number}
+			fontSize={values.fontSize as number}
+			color={values.color as string}
+			width={420}
+			height={120}
+		/>
+	{/snippet}
+</ComponentPreview>
+
+## Как это работает
+
+- Каждое слово — отдельный слой с вычисленными `opacity` и `blur`.
+- «Главные часы» (`requestAnimationFrame`) определяют текущий цикл и прогресс морфинга.
+- Пороговая матрица по альфа-каналу склеивает полупрозрачные слои в единую «каплю».
+- При `prefers-reduced-motion: reduce` анимация отключается, показывается первый текст.
+
+## Использование
+
+### Базовое использование
+
+```svelte
+<script>
+	import GooeyText from '$lib/components/ui-registry/GooeyText.svelte';
+</script>
+
+<GooeyText texts={['Быстро', 'Красиво', 'Надёжно']} />
+```
+
+### Настройка таймингов
+
+```svelte
+<GooeyText
+	texts={['сайты', 'приложения', 'инструменты']}
+	morphTime={1.5}
+	cooldownTime={0.5}
+/>
+```
+
+### Кастомный стиль и размеры
+
+```svelte
+<GooeyText
+	texts={['Hero', 'Title']}
+	fontSize={72}
+	color="#c4b5fd"
+	fontFamily="Inter, sans-serif"
+	fontWeight={800}
+	width={500}
+	height={140}
+	textClass="uppercase tracking-tight"
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `texts` | `string[]` | — | Массив строк для морфинга (обязательный) |
+| `morphTime` | `number` | `1` | Длительность морфинга между словами (с) |
+| `cooldownTime` | `number` | `0.25` | Пауза между морфингами (с) |
+| `fontSize` | `number` | `48` | Размер шрифта в px |
+| `color` | `string` | `"black"` | Цвет текста |
+| `fontFamily` | `string` | — | Семейство шрифта (наследуется, если не задано) |
+| `fontWeight` | `string \| number` | `"bold"` | Насыщенность шрифта |
+| `width` | `number` | `300` | Ширина контейнера в px |
+| `height` | `number` | `100` | Высота контейнера в px |
+| `style` | `string` | `""` | Inline-стили корневого элемента |
+| `class` | `string` | `""` | Дополнительные классы контейнера |
+| `textClass` | `string` | `""` | Дополнительные классы текста |
+
+## Особенности
+
+- Полностью на CSS/SVG-фильтрах — не требует внешних библиотек анимаций
+- Доступность: скрытый `sr-only` список всех текстов, `aria-hidden` для слоёв
+- Уважает системную настройку `prefers-reduced-motion`
+- При массиве из одного слова анимация не запускается
