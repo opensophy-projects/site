@@ -10,7 +10,7 @@ keywords: 'Opensophy, LaserFlow, WebGL, shader, laser, UI components, библи
 	import { LaserFlowSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
-	let demoCard = $state<HTMLElement | null>(null);
+	let demoCard: HTMLElement | null = null;
 
 	const controls: ComponentPreviewControl[] = [
 		{ type: 'color', name: 'color', label: 'Цвет', defaultValue: '#f43f5e' },
