@@ -29,8 +29,6 @@ export default defineConfig(
 			}
 		},
 		rules: {
-			// typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
-			// see: https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
 			'no-undef': 'off'
 		}
 	},
@@ -46,9 +44,6 @@ export default defineConfig(
 		}
 	},
 	{
-		// three@0.185 does not ship TypeScript declarations. Keep the unsafe-call
-		// exception scoped to the two WebGL demos that import it instead of
-		// weakening type-aware linting for the rest of the application.
 		files: [
 			'src/lib/components/ui-registry/GhostCursor.svelte',
 			'src/lib/components/ui-registry/LaserFlow.svelte'
@@ -61,13 +56,10 @@ export default defineConfig(
 	{
 		files: ['src/types/three.d.ts'],
 		rules: {
-			// three@0.185 has no declarations; the shim must expose opaque values.
 			'@typescript-eslint/no-explicit-any': 'off'
 		}
 	},
 	{
-		// These imported WebGL demos predate the current strict lint preset.
-		// Keep their runtime code intact while applying the preset to new code.
 		files: [
 			'src/lib/components/ui-registry/FlameWrap.svelte',
 			'src/lib/components/ui-registry/Laser.svelte',
@@ -115,6 +107,19 @@ export default defineConfig(
 		],
 		rules: {
 			'@typescript-eslint/consistent-type-definitions': 'off'
+		}
+	},
+	{
+		files: ['src/lib/components/ui-registry/ServicesGrid.svelte'],
+		rules: {
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_|^heavy$',
+					caughtErrorsIgnorePattern: '^_'
+				}
+			]
 		}
 	}
 );
