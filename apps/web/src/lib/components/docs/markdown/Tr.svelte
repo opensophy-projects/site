@@ -13,7 +13,7 @@
 
 <tr
 	{...restProps}
-	class={cn('text-base leading-loose font-normal [&_code]:text-sm [&strong]:text-base', className)}
+	class={cn('text-base leading-loose font-normal [&_code]:text-sm [&_strong]:text-base', className)}
 >
 	{@render children?.()}
 </tr>
