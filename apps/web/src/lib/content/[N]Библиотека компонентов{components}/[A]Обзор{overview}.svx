@@ -99,7 +99,7 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="41" title="Жидкость" href="/components/liquid">Интерактивная WebGL-текстура с акцентным жидкостным следом от движения курсора.</Card>
 <Card eyebrow="42" title="Лазерный поток" href="/components/laser-flow">Интерактивный WebGL-фон с лазерными лучами, туманом и световыми нитями.</Card>
 <Card eyebrow="43" title="ASCII-объект" href="/components/ascii-object">3D-объект и изображения, отрисованные ASCII-символами через WebGL.</Card>
-<Card eyebrow="44" title="Анимированный Mesh Gradient" href="/components/animated-mesh-gradient">Живой WebGL-градиент с четырьмя цветами, мягким шумом и настройкой производительности.</Card>
+<Card eyebrow="44" title="Анимированный сеточный градиент" href="/components/animated-mesh-gradient">Живой WebGL-градиент с четырьмя цветами, мягким шумом и настройкой производительности.</Card>
 </Cards>
 
 ### Документация
