@@ -6,11 +6,9 @@ keywords: 'Opensophy, LaserFlow, WebGL, shader, laser, UI components, библи
 
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
-	import LaserFlow from '$lib/components/ui-registry/LaserFlow.svelte';
+	import LaserFlowDemo from '$lib/components/ui-registry/LaserFlowDemo.svelte';
 	import { LaserFlowSource } from '$lib/components/ui-registry/ui-demo-sources';
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
-
-	let demoCard: HTMLElement | null = null;
 
 	const controls: ComponentPreviewControl[] = [
 		{ type: 'color', name: 'color', label: 'Цвет', defaultValue: '#f43f5e' },
@@ -36,29 +34,20 @@ keywords: 'Opensophy, LaserFlow, WebGL, shader, laser, UI components, библи
 
 <ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'LaserFlow.svelte', code: LaserFlowSource, language: 'svelte' }]}>
 	{#snippet children(values)}
-		<div class="relative h-[460px] w-full overflow-hidden rounded-lg bg-[#08070b]">
-			<LaserFlow
-				surface={demoCard}
-				color={values.color as string}
-				intensity={values.intensity as number}
-				beamWidth={values.beamWidth as number}
-				beamPosition={values.beamPosition as number}
-				flare={values.flare as number}
-				spread={values.spread as number}
-				spill={values.spill as number}
-				fog={values.fog as number}
-				dust={values.dust as number}
-				streaks={values.streaks as number}
-				speed={values.speed as number}
-				mouseInteraction={values.mouseInteraction as boolean}
-			/>
-			<div
-				bind:this={demoCard}
-				class="absolute inset-x-8 top-[55%] bottom-8 flex items-center justify-center rounded-2xl border border-white/10 bg-[#0d0b12] text-sm text-white/60"
-			>
-				Луч падает на этот блок
-			</div>
-		</div>
+		<LaserFlowDemo
+			color={values.color as string}
+			intensity={values.intensity as number}
+			beamWidth={values.beamWidth as number}
+			beamPosition={values.beamPosition as number}
+			flare={values.flare as number}
+			spread={values.spread as number}
+			spill={values.spill as number}
+			fog={values.fog as number}
+			dust={values.dust as number}
+			streaks={values.streaks as number}
+			speed={values.speed as number}
+			mouseInteraction={values.mouseInteraction as boolean}
+		/>
 	{/snippet}
 </ComponentPreview>
 
