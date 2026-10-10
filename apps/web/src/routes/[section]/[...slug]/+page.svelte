@@ -3,9 +3,8 @@
 
 	const { data }: { data: PageData } = $props();
 	const Component = $derived(data.component);
-	const slug = $derived(data.slug);
 </script>
 
-{#key slug}
+{#key Component}
 	<Component />
 {/key}
