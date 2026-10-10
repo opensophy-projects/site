@@ -538,7 +538,7 @@ void main() {
     surface,
     beamPosition: clamp(beamPosition, 0, 1),
     surfaceLevel: clamp(surfaceLevel, 0, 1),
-    color: String(color),
+    color,
     intensity: Math.max(0, intensity),
     beamWidth: clamp(beamWidth, 0.2, 5),
     flare: clamp(flare, 0.2, 4),
@@ -570,7 +570,7 @@ void main() {
 
   // Любое изменение пропсов будит рендер-цикл.
   $effect(() => {
-    void settings;
+    settingsRef.current = settings;
     wake?.();
   });
 
@@ -686,7 +686,7 @@ void main() {
     };
 
     const resolveReveal = (s: Settings) => {
-      const src = s.revealImage ? String(s.revealImage) : '';
+      const src = s.revealImage ?? '';
       const reveal = state.reveal;
       if (src === reveal.src) return;
       reveal.src = src;
@@ -830,7 +830,7 @@ void main() {
         : tau <= 0
           ? 0.3 * easeOut(it / INTRO_DROP)
           : 0.3 + 0.7 * (1 - Math.exp(-1.3 * tau));
-      const seedValue = Number(s.seed) || 0;
+      const seedValue = s.seed || 0;
 
       gl.viewport(0, 0, canvasEl.width, canvasEl.height);
       gl.clearColor(0, 0, 0, 0);
