@@ -94,8 +94,13 @@
 	}
 
 	$effect(() => {
-		const currentTextKey = texts.join("\u0000");
-		void currentTextKey;
+		if (texts.length === 0) {
+			index = 0;
+			playing = false;
+			clearTimer();
+			return;
+		}
+
 		index = 0;
 		if (autoPlay) play();
 		return clearTimer;
