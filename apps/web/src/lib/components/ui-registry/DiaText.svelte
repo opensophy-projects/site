@@ -1,12 +1,12 @@
 <script lang="ts" module>
   // Значения по умолчанию (замените на свои из ./const, если они у вас есть).
   // Easing из reanimated не переносится, поэтому здесь CSS-аналоги.
-  export const DEFAULT_SWEEP_COLORS = ["#7c5cff", "#ff5c8a", "#ffb85c"];
-  export const DEFAULT_BASE_COLOR = "#111111";
-  export const DEFAULT_DURATION = 1400;
+  export const DEFAULT_SWEEP_COLORS = ["#ffffff", "#c4b5fd", "#ffffff"];
+  export const DEFAULT_BASE_COLOR = "currentColor";
+  export const DEFAULT_DURATION = 1200;
   export const DEFAULT_DELAY = 0;
-  export const DEFAULT_LOOP_DELAY = 1200;
-  export const DEFAULT_BAND_RATIO = 0.6;
+  export const DEFAULT_LOOP_DELAY = 0;
+  export const DEFAULT_BAND_RATIO = 0.22;
   export const ENTER_DURATION = 350;
   export const EXIT_DURATION = 250;
   export const SWAP_SHIFT = 8; // px
@@ -27,7 +27,10 @@
     textStyle?: string;
     /** CSS-строка для корневого элемента */
     style?: string;
+    /** Класс корневого элемента */
     class?: string;
+    /** Класс текста */
+    textClass?: string;
     onSweepEnd?: (finishedIndex: number) => void;
   }
 </script>
@@ -48,6 +51,7 @@
     textStyle = "",
     style = "",
     class: className = "",
+    textClass = "",
     onSweepEnd,
   }: IDiaText = $props();
 
@@ -122,6 +126,13 @@
     if (!ready || !autoPlay || !sweepEl) return;
 
     const playing = index;
+
+    // prefers-reduced-motion: без анимации, сразу итоговое состояние
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      onSweepEnd?.(playing);
+      return;
+    }
+
     const animations: Animation[] = [];
 
     if (isMulti && contentEl) {
@@ -158,7 +169,7 @@
 
 <span class="dia-text {className}" {style}>
   <!-- Невидимый «измеритель» размера (и текст для скринридеров) -->
-  <span class="sizer" style={textStyle} bind:clientWidth={width}>{label}</span>
+  <span class="sizer {textClass}" style={textStyle} bind:clientWidth={width}>{label}</span>
 
   {#if ready}
     <span
@@ -168,7 +179,7 @@
       style:opacity={isMulti ? 0 : 1}
     >
       <span
-        class="sweep"
+        class="sweep {textClass}"
         bind:this={sweepEl}
         style="{textStyle}; --strip: {strip}px; --travel: {strip}px; background-image: {gradient};"
       >{label}</span>
@@ -200,11 +211,21 @@
   .sweep {
     display: inline-block;
     white-space: nowrap;
-    color: transparent;
+    /* color не трогаем, чтобы currentColor в градиенте работал */
+    -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
     background-repeat: no-repeat;
     background-size: var(--strip) 100%;
     background-position-x: calc(var(--travel) * -1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .content {
+      opacity: 1 !important;
+    }
+    .sweep {
+      background-position-x: 0 !important;
+    }
   }
 </style>
