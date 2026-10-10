@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "carbon-icons-svelte": "^13.13.0",
+    "ogl": "^1.0.11",
     "three": "^0.185.1"
   },
   "overrides": {
