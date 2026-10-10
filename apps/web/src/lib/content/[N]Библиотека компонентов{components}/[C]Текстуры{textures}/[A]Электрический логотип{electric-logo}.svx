@@ -1,0 +1,102 @@
+---
+title: Электрический логотип
+description: Логотип Opensophy с электрическими дугами, свечением и интерактивной реакцией на указатель.
+keywords: 'Opensophy, ElectricLogo, logo animation, WebGL, branding, UI components'
+---
+
+<script lang="ts">
+  import { ComponentPreview } from '$lib';
+  import ElectricLogo from '$lib/components/ui-registry/Electriclogo.svelte';
+  import { ElectriclogoSource } from '$lib/components/ui-registry/ui-demo-sources';
+  import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+  const controls: ComponentPreviewControl[] = [
+    { type: 'color', name: 'color', label: 'Цвет разрядов', defaultValue: '#ecc7ff' },
+    { type: 'color', name: 'glowColor', label: 'Цвет свечения', defaultValue: '#ad6dff' },
+    { type: 'number', name: 'speed', label: 'Скорость', defaultValue: 2.5, min: 0, max: 5, step: 0.1 },
+    { type: 'number', name: 'intensity', label: 'Интенсивность', defaultValue: 1, min: 0, max: 3, step: 0.1 },
+    { type: 'number', name: 'glow', label: 'Свечение', defaultValue: 1, min: 0, max: 3, step: 0.1 },
+    { type: 'number', name: 'strands', label: 'Количество нитей', defaultValue: 4, min: 1, max: 6, step: 1 },
+    { type: 'number', name: 'arcs', label: 'Частота дуг', defaultValue: 1, min: 0, max: 5, step: 1 },
+    { type: 'boolean', name: 'interactive', label: 'Реакция на курсор', defaultValue: true },
+    { type: 'select', name: 'theme', label: 'Тема', defaultValue: 'dark', options: [{ label: 'Тёмная', value: 'dark' }, { label: 'Светлая', value: 'light' }] }
+  ];
+</script>
+
+# Электрический логотип
+
+`Electriclogo` превращает логотип проекта в световой контур с электрическими разрядами и мягким ореолом. По умолчанию используется логотип Opensophy из `/logo.png`; укажите `src`, чтобы анимировать другое изображение с читаемым контуром.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'Electriclogo.svelte', code: ElectriclogoSource, language: 'svelte' }]}>
+  {#snippet children(values)}
+    <div class="flex h-[360px] w-full items-center justify-center overflow-hidden rounded-lg bg-[#09090b] p-8">
+      <ElectricLogo
+        class="h-full w-full"
+        src="/logo.png"
+        color={values.color as string}
+        glowColor={values.glowColor as string}
+        speed={values.speed as number}
+        intensity={values.intensity as number}
+        glow={values.glow as number}
+        strands={values.strands as number}
+        arcs={values.arcs as number}
+        interactive={values.interactive as boolean}
+        theme={values.theme as 'dark' | 'light'}
+      />
+    </div>
+  {/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+  import ElectricLogo from '$lib/components/ui-registry/Electriclogo.svelte';
+</script>
+
+<div class="h-64 w-64">
+  <ElectricLogo
+    class="h-full w-full"
+    src="/logo.png"
+    color="#ecc7ff"
+    glowColor="#ad6dff"
+    interactive
+  />
+</div>
+```
+
+## Особенности
+
+- По умолчанию анимирует логотип проекта `/logo.png`
+- Электрические нити, короткие дуги, свечение и мерцание
+- Интерактивное усиление эффекта при наведении и клике
+- Поддержка тёмной и светлой визуальной темы
+- Адаптируется к размерам контейнера и приостанавливает рендеринг вне области видимости
+- Учитывает `prefers-reduced-motion`
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `src` | `string` | `'/logo.png'` | URL изображения логотипа или другого силуэта |
+| `color` | `string` | `'#ecc7ff'` | Основной цвет электрических нитей в HEX |
+| `glowColor` | `string` | `'#ad6dff'` | Цвет внешнего свечения в HEX |
+| `scale` | `number` | `0.7` | Масштаб логотипа внутри контейнера |
+| `intensity` | `number` | `1` | Общая яркость эффекта |
+| `glow` | `number` | `1` | Интенсивность ореола |
+| `thickness` | `number` | `1.5` | Толщина электрических линий |
+| `strands` | `number` | `4` | Количество электрических нитей |
+| `bend` | `number` | `0.6` | Изгиб и отклонение нитей |
+| `crackle` | `number` | `1.5` | Неровность и мелкие ответвления разрядов |
+| `arcs` | `number` | `1` | Частота появления отдельных дуг |
+| `flicker` | `number` | `0.6` | Сила мерцания |
+| `fill` | `number` | `0` | Заполнение внутренней области свечением |
+| `speed` | `number` | `2.5` | Скорость анимации |
+| `interactive` | `boolean` | `true` | Реакция на перемещение указателя и клики |
+| `cursorIntensity` | `number` | `0.75` | Сила усиления эффекта у курсора |
+| `cursorRadius` | `number` | `100` | Радиус реакции курсора в пикселях |
+| `theme` | `'dark' \| 'light'` | `'dark'` | Режим рендеринга логотипа |
+| `onRender` | `(canvas: HTMLCanvasElement) => void` | — | Колбэк после отрисовки каждого кадра |
+| `class` / `style` | `string` | `''` / — | CSS-классы и inline-стили контейнера |
