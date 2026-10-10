@@ -220,7 +220,9 @@
     <AsciiObject
       src="/logo.png"
       ascii={true}
-      colored={true}
+      colored={false}
+      color="var(--accent)"
+      highlight="var(--accent)"
       background=""
       cellSize={10}
       contrast={1.5}
@@ -312,7 +314,7 @@
         onclick={() => contactsState.open()}>Заказать у��луги</button
       >
       <a class="services-action" href="/service-policy"
-        >П��литика оказания услуг</a
+        >����литика оказания услуг</a
       >
     </div>
   </section>
