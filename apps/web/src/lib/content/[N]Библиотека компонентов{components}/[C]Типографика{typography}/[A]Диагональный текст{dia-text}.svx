@@ -1,0 +1,84 @@
+---
+title: Диагональный текст
+description: Анимированный текст с проходящей градиентной полосой и поддержкой циклической смены строк.
+keywords: 'Opensophy, Диагональный текст, DiaText, UI, UI components, библиотека компонентов, open-source'
+---
+
+<script lang="ts">
+\timport { ComponentPreview } from '$lib';
+\timport DiaText from '$lib/components/ui-registry/DiaText.svelte';
+\timport diaTextSource from '$lib/components/ui-registry/DiaText.svelte?raw';
+</script>
+
+# Диагональный текст
+
+Компонент для акцентного текста с проходящей градиентной полосой. Поддерживает одиночную строку, массив строк, задержку, длительность, циклическое воспроизведение и callback завершения прохода.
+
+## Превью
+
+<ComponentPreview
+\tsources={[
+\t\t{ name: 'DiaText.svelte', code: diaTextSource, language: 'svelte' }
+\t]}
+>
+\t<div class="text-3xl font-medium text-foreground">
+\t\tМы создаём <DiaText
+\t\t\ttext={['сайты', 'продукты', 'инструменты']}
+\t\t\tloop
+\t\t\tloopDelay={500}
+\t\t\tduration={1200}
+\t\t\tclass="text-accent"
+\t\t/>
+\t</div>
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+\timport DiaText from '$lib/components/ui-registry/DiaText.svelte';
+</script>
+
+<p>
+\tМы создаём <DiaText text="цифровые продукты" />
+</p>
+```
+
+## Циклическая смена
+
+```svelte
+<DiaText
+\ttext={['сайты', 'приложения', 'инструменты']}
+\tloop
+\tduration={1400}
+\tdelay={200}
+\tloopDelay={800}
+\tsweepColors={['#ffffff', '#8b5cf6', '#ffffff']}
+\tbaseColor="currentColor"
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `text` | `string \| string[]` | — | Текст или массив текстов |
+| `sweepColors` | `string[]` | светлые оттенки | Цвета проходящей полосы |
+| `baseColor` | `string` | `currentColor` | Базовый цвет текста |
+| `duration` | `number` | `1200` | Длительность прохода в мс |
+| `delay` | `number` | `0` | Задержка перед проходом в мс |
+| `loop` | `boolean` | `false` | Повторять анимацию и переключать строки |
+| `loopDelay` | `number` | `0` | Пауза между проходами в мс |
+| `bandRatio` | `number` | `0.22` | Относительная ширина градиентной полосы |
+| `autoPlay` | `boolean` | `true` | Запускать анимацию автоматически |
+| `class` | `string` | `''` | Класс корневого элемента |
+| `textClass` | `string` | `''` | Класс текста |
+| `style` | `string` | `''` | Inline-стили корневого элемента |
+| `textStyle` | `string` | `''` | Inline-стили текста |
+| `onSweepEnd` | `(index: number) => void` | — | Callback после завершения прохода |
+
+## Особенности
+
+- Не требует React Native, Reanimated или MaskedView — анимация работает через CSS и Svelte.
+- Поддерживает `prefers-reduced-motion`.
+- Подходит для SSR в SvelteKit: таймеры запускаются только в браузере через `$effect`.
