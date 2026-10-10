@@ -217,6 +217,7 @@
   </section>
 
   <div class="ascii-logo" aria-label="Opensophy ASCII logo">
+    <img class="ascii-logo-fallback" src="/logo.png" alt="" aria-hidden="true" />
     <AsciiObject
       src="/logo.png"
       ascii={true}
@@ -520,6 +521,7 @@
   /* Уменьшены отступы между секциями, чтобы блоки "Что такое Opensophy?"
      и "Чем занимается" помещались в один экран */
   .ascii-logo {
+    position: relative;
     display: flex;
     justify-content: center;
     width: 100%;
@@ -530,7 +532,20 @@
     overflow: hidden;
   }
 
+  .ascii-logo-fallback {
+    position: absolute;
+    inset: 10% 25%;
+    width: 50%;
+    height: 80%;
+    object-fit: contain;
+    opacity: 0.16;
+    filter: saturate(1.2);
+    pointer-events: none;
+  }
+
   .ascii-logo-canvas {
+    position: relative;
+    z-index: 1;
     display: block;
     width: min(100%, 56rem);
     height: 100%;
