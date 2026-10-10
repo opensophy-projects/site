@@ -5,28 +5,29 @@ export { default as DocShareActions } from './components/docs/DocShareActions.sv
 export { default as MobileDocShareActions } from './components/docs/MobileDocShareActions.svelte';
 export { default as CommandPalette } from './components/content/search/CommandPalette.svelte';
 export { default as ScrollArea } from './components/ui-registry/ScrollArea.svelte';
+export { default as DiaText } from './components/ui-registry/DiaText.svelte';
 export { default as InstallationTabs } from './components/docs/InstallationTabs.svelte';
 export { default as Step } from './components/docs/markdown/Step.svelte';
 export { default as Steps } from './components/docs/markdown/Steps.svelte';
 export { default as ComponentPreview } from './components/docs/ComponentPreview.svelte';
 export {
-	type ComponentPreviewControl,
-	type ComponentPreviewValue,
-	type ComponentPreviewValues,
-	type SourceTab
+\ttype ComponentPreviewControl,
+\ttype ComponentPreviewValue,
+\ttype ComponentPreviewValues,
+\ttype SourceTab
 } from './components/docs/component-preview/types';
 
 export { brandingConfig } from './config/branding';
 export { siteConfig, type SiteConfig } from './config/site';
 export {
-	availablePackageManagers,
-	contentUiDefaults,
-	mergeSectionUiConfig,
-	resolveAssistantUrls,
-	resolveRepositoryFileUrl,
-	resolveTocSelector,
-	type ContentUiConfig,
-	type PackageManagerOption
+\tavailablePackageManagers,
+\tcontentUiDefaults,
+\tmergeSectionUiConfig,
+\tresolveAssistantUrls,
+\tresolveRepositoryFileUrl,
+\tresolveTocSelector,
+\ttype ContentUiConfig,
+\ttype PackageManagerOption
 } from './config/content-ui';
 
 export { themeStore, type Theme } from './stores/theme.svelte';
