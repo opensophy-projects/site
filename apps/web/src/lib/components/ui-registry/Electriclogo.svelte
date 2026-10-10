@@ -11,7 +11,7 @@
 
   type Rgb = [number, number, number];
 
-  export interface ElectricLogoProps {
+  export type ElectricLogoProps = {
     src?: string;
     color?: string;
     glowColor?: string;
@@ -33,12 +33,12 @@
     onRender?: (canvas: HTMLCanvasElement) => void;
     class?: string;
     style?: string;
-  }
+  };
 
   type Settings = Required<Omit<ElectricLogoProps, 'src' | 'class' | 'style' | 'onRender'>> &
     Pick<ElectricLogoProps, 'onRender'>;
 
-  interface Shape {
+  type Shape = {
     field: Float32Array;
     edges: number[];
     width: number;
@@ -50,32 +50,32 @@
     glowWidth: number;
     glowHeight: number;
     glowOffset: number;
-  }
+  };
 
-  interface Slot {
+  type Slot = {
     shape: Shape | null;
     field: Texture;
     glow: Texture;
-  }
+  };
 
-  interface Pulse {
+  type Pulse = {
     x: number;
     y: number;
     born: number;
-  }
+  };
 
-  interface Point {
+  type Point = {
     x: number;
     y: number;
-  }
+  };
 
-  interface Focus {
+  type Focus = {
     x: number;
     y: number;
     radius: number;
-  }
+  };
 
-  interface Spark {
+  type Spark = {
     ax: number;
     ay: number;
     bx: number;
@@ -84,10 +84,10 @@
     seed: number;
     born: number;
     life: number;
-  }
+  };
 
   const hexToRgb = (hex: string): Rgb => {
-    let h = String(hex || '').replace('#', '');
+    let h = (hex || '').replace('#', '');
     if (h.length === 3) h = h.replace(/./g, (c) => c + c);
     const n = parseInt(h.slice(0, 6), 16);
     return Number.isNaN(n) ? [1, 1, 1] : [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
@@ -728,6 +728,8 @@ void main() {
   });
 
   onMount(() => {
+    // OGL is currently resolved as an untyped module in this workspace.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const renderer = new Renderer({
       dpr: Math.min(window.devicePixelRatio || 1, 2),
       alpha: true,
@@ -745,10 +747,13 @@ void main() {
     canvas.style.display = 'block';
     canvas.style.width = '100%';
     canvas.style.height = '100%';
+    // OGL creates its canvas imperatively and cleanup is handled in onMount.
+    // eslint-disable-next-line svelte/no-dom-manipulating
     container.appendChild(canvas);
 
     const makeSlot = (): Slot => ({
       shape: null,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       field: new Texture(gl, {
         image: new Float32Array([1000]),
         width: 1,
@@ -762,6 +767,7 @@ void main() {
         flipY: false,
         unpackAlignment: 1
       }),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       glow: new Texture(gl, {
         image: new Float32Array([0, 0]),
         width: 1,
@@ -814,8 +820,11 @@ void main() {
       uArcEnds: { value: arcEnds },
       uArcShape: { value: arcShape }
     };
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const mesh = new Mesh(gl, {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       geometry: new Triangle(gl),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       program: new Program(gl, { vertex, fragment, uniforms, depthTest: false, depthWrite: false })
     });
 
@@ -868,6 +877,7 @@ void main() {
       width = Math.max(1, container.clientWidth);
       height = Math.max(1, container.clientHeight);
       renderer.dpr = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(PIXEL_BUDGET / (width * height)));
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       renderer.setSize(width, height);
       uniforms.uResolution.value = [width, height];
     };
@@ -1019,6 +1029,7 @@ void main() {
         ink += ((s.theme === 'light' ? 1 : 0) - ink) * (1 - Math.exp(-dt / 0.25));
         uniforms.uFill.value = s.fill;
         uniforms.uInk.value = ink;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         renderer.render({ scene: mesh });
         s.onRender?.(canvas);
       }
