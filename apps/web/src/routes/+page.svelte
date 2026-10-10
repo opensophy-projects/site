@@ -1,6 +1,7 @@
 <script lang="ts">
   import { brandingConfig } from "$lib/config/branding";
   import ServicesGrid from "$lib/components/ui-registry/ServicesGrid.svelte";
+  import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
   import CardProject from "$lib/components/ui-registry/CardProject.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui-registry/TextLoop.svelte";
@@ -216,12 +217,20 @@
   </section>
 
   <div class="ascii-logo" aria-label="Opensophy ASCII logo">
-    <pre aria-hidden="true">   ___  ____  _____ _   _ ____   ___  ____  _   _
-  / _ \/ ___|| ____| \ | |  _ \ / _ \|  _ \| | | |
- | | | \___ \|  _| |  \| | | | | | | | |_) | |_| |
- | |_| |___) | |___| |\  | |_| | |_| |  _ &lt;|  _  |
-  \___/|____/|_____|_| \_|____/ \___/|_| \_\_| |_|
-    </pre>
+    <AsciiObject
+      src="/logo.png"
+      ascii={true}
+      colored={false}
+      color="#f43f5e"
+      highlight="#f43f5e"
+      background=""
+      cellSize={6}
+      scale={5}
+      orbit={true}
+      autoRotate={true}
+      autoRotateSpeed={0.5}
+      class="ascii-logo-canvas"
+    />
   </div>
 
   <!-- What We Do Section -->
@@ -514,16 +523,17 @@
     display: flex;
     justify-content: center;
     width: 100%;
+    height: clamp(12rem, 28vw, 20rem);
     margin: 0.5rem 0 1rem;
     color: var(--accent);
     text-align: center;
     overflow: hidden;
   }
 
-  .ascii-logo pre {
-    margin: 0;
-    font: 500 clamp(0.38rem, 1vw, 0.72rem)/1.15 ui-monospace, SFMono-Regular, Menlo, monospace;
-    white-space: pre;
+  .ascii-logo-canvas {
+    display: block;
+    width: min(100%, 56rem);
+    height: 100%;
   }
 
   .section-block {
