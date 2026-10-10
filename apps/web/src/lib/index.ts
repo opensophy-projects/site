@@ -6,7 +6,6 @@ export { default as MobileDocShareActions } from './components/docs/MobileDocSha
 export { default as CommandPalette } from './components/content/search/CommandPalette.svelte';
 export { default as ScrollArea } from './components/ui-registry/ScrollArea.svelte';
 export { default as DiaText } from './components/ui-registry/DiaText.svelte';
-export { default as AnimatedMeshGradient } from './components/ui-registry/Animatedmeshgradient.svelte';
 export { default as InstallationTabs } from './components/docs/InstallationTabs.svelte';
 export { default as Step } from './components/docs/markdown/Step.svelte';
 export { default as Steps } from './components/docs/markdown/Steps.svelte';
