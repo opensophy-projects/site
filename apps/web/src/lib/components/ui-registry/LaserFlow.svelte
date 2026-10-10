@@ -1,7 +1,7 @@
 <script lang="ts" module>
   import type { HTMLAttributes } from 'svelte/elements';
 
-  export interface LaserFlowProps extends Omit<HTMLAttributes<HTMLDivElement>, 'color'> {
+  export type LaserFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'color'> & {
     /** Элемент-поверхность, на которую падает луч (передавайте через bind:this родителя). */
     surface?: HTMLElement | null;
     beamPosition?: number;
@@ -27,7 +27,7 @@
     theme?: 'dark' | 'light';
     paused?: boolean;
     dpr?: number;
-  }
+  };
 
   type Settings = {
     surface: HTMLElement | null;
