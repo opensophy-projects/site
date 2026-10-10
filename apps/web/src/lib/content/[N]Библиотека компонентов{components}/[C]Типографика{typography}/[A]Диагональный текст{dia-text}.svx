@@ -58,12 +58,24 @@ keywords: 'Opensophy, Диагональный текст, DiaText, UI, UI compo
 />
 ```
 
+## Стилизация шрифта
+
+Шрифт и размер наследуются от родителя. Для точной настройки используйте `textClass` или `textStyle` — они применяются и к измеряющему, и к анимируемому тексту, поэтому размеры совпадают.
+
+```svelte
+<DiaText
+	text="Заголовок"
+	textClass="text-4xl font-bold"
+	textStyle="letter-spacing: -0.02em"
+/>
+```
+
 ## Пропсы
 
 | Пропс | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | `text` | `string \| string[]` | — | Текст или массив текстов |
-| `sweepColors` | `string[]` | светлые оттенки | Цвета проходящей полосы |
+| `sweepColors` | `string[]` | `['#ffffff', '#c4b5fd', '#ffffff']` | Цвета проходящей полосы |
 | `baseColor` | `string` | `currentColor` | Базовый цвет текста |
 | `duration` | `number` | `1200` | Длительность прохода в мс |
 | `delay` | `number` | `0` | Задержка перед проходом в мс |
@@ -79,6 +91,8 @@ keywords: 'Opensophy, Диагональный текст, DiaText, UI, UI compo
 
 ## Особенности
 
-- Не требует React Native, Reanimated или MaskedView — анимация работает через CSS и Svelte.
-- Поддерживает `prefers-reduced-motion`.
-- Подходит для SSR в SvelteKit: таймеры запускаются только в браузере через `$effect`.
+- Не требует React Native, Reanimated или MaskedView — градиент накладывается через `background-clip: text`, а анимация работает на Web Animations API.
+- Цвет текста берётся из `color` родителя: `baseColor="currentColor"` подхватывает `class="text-accent"` и тему.
+- Поддерживает `prefers-reduced-motion`: при включённом режиме текст сразу показывается в итоговом состоянии, без прохода и смены строк.
+- Подходит для SSR в SvelteKit: на сервере рендерится только невидимый измеряющий текст, а размеры и анимация запускаются в браузере через `$effect`.
+- При смене массива `text` показ начинается с первой строки.
