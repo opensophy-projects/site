@@ -26,6 +26,7 @@ import FlameWrapSource from './FlameWrap.svelte?raw';
 import LiquidSource from './Liquid.svelte?raw';
 import AsciiObjectSource from './AsciiObject.svelte?raw';
 import LatticeloaderSource from './Latticeloader.svelte?raw';
+import GooeyTextSource from './GooeyText.svelte?raw';
 import AnimatedMeshGradientSource from './AnimatedMeshGradient.svelte?raw';
 
 export {
@@ -57,5 +58,6 @@ export {
 	LiquidSource,
 	AsciiObjectSource,
 	LatticeloaderSource,
+	GooeyTextSource,
 	AnimatedMeshGradientSource,
 };
