@@ -27,6 +27,8 @@ import LiquidSource from './Liquid.svelte?raw';
 import AsciiObjectSource from './AsciiObject.svelte?raw';
 import LatticeloaderSource from './Latticeloader.svelte?raw';
 import GooeyTextSource from './GooeyText.svelte?raw';
+import AnimatedmeshgradientSource from './Animatedmeshgradient.svelte?raw';
+import ElectriclogoSource from './Electriclogo.svelte?raw';
 
 export {
 	ButtonSource,
@@ -58,4 +60,6 @@ export {
 	AsciiObjectSource,
 	LatticeloaderSource,
 	GooeyTextSource,
+	AnimatedmeshgradientSource,
+	ElectriclogoSource,
 };
