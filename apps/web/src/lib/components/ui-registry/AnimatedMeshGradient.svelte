@@ -175,16 +175,36 @@
     if (!gl) return;
 
     const compile = (type: number, source: string) => {
-      const shader = gl.createShader(type)!;
+      const shader = gl.createShader(type);
+      if (!shader) return null;
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        gl.deleteShader(shader);
+        return null;
+      }
       return shader;
     };
 
-    const program = gl.createProgram()!;
-    gl.attachShader(program, compile(gl.VERTEX_SHADER, VERT));
-    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAG));
+    const vertexShader = compile(gl.VERTEX_SHADER, VERT);
+    const fragmentShader = compile(gl.FRAGMENT_SHADER, FRAG);
+    const program = gl.createProgram();
+    if (!vertexShader || !fragmentShader || !program) {
+      if (vertexShader) gl.deleteShader(vertexShader);
+      if (fragmentShader) gl.deleteShader(fragmentShader);
+      if (program) gl.deleteProgram(program);
+      return;
+    }
+
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
+      return;
+    }
     gl.useProgram(program);
 
     const quad = new Float32Array([-1, -1, 3, -1, -1, 3]);
@@ -245,6 +265,8 @@
       cancelAnimationFrame(raf);
       observer.disconnect();
       gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
       gl.deleteBuffer(buffer);
     };
   });
