@@ -1,0 +1,93 @@
+---
+title: Анимированный Mesh Gradient
+description: Анимированный сеточный градиент на WebGL с настройкой палитры, шума, размытия и производительности.
+keywords: 'Opensophy, AnimatedMeshGradient, mesh gradient, WebGL, texture, UI components'
+---
+
+<script lang="ts">
+  import { ComponentPreview } from '$lib';
+  import AnimatedMeshGradient from '$lib/components/ui-registry/Animatedmeshgradient.svelte';
+  import { AnimatedmeshgradientSource } from '$lib/components/ui-registry/ui-demo-sources';
+  import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+  const controls: ComponentPreviewControl[] = [
+    { type: 'color', name: 'accent', label: 'Акцентный цвет', defaultValue: '#f43f5e' },
+    { type: 'color', name: 'third', label: 'Дополнительный цвет', defaultValue: '#7c3aed' },
+    { type: 'number', name: 'speed', label: 'Скорость', defaultValue: 1, min: 0, max: 3, step: 0.1 },
+    { type: 'number', name: 'noise', label: 'Шум', defaultValue: 0.15, min: 0, max: 1, step: 0.05 },
+    { type: 'number', name: 'blur', label: 'Размытие', defaultValue: 0.4, min: 0, max: 1, step: 0.05 },
+    { type: 'number', name: 'contrast', label: 'Контраст', defaultValue: 1, min: 0, max: 2, step: 0.1 },
+    { type: 'boolean', name: 'animated', label: 'Анимация', defaultValue: true },
+    { type: 'number', name: 'quality', label: 'Качество / нагрузка', defaultValue: 0.5, min: 0.1, max: 1.5, step: 0.1 }
+  ];
+</script>
+
+# Анимированный Mesh Gradient
+
+`Animatedmeshgradient` рисует плавно движущийся сеточный градиент с помощью WebGL. Палитра по умолчанию сочетает акцентный цвет Opensophy, белый и дополнительные фиолетовый и янтарный оттенки. Компонент можно использовать как самостоятельный фон или как подложку для контента.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'Animatedmeshgradient.svelte', code: AnimatedmeshgradientSource, language: 'svelte' }]}>
+  {#snippet children(values)}
+    <AnimatedMeshGradient
+      class="h-[360px] w-full rounded-lg"
+      colors={[values.accent as string, '#ffffff', values.third as string, '#f59e0b']}
+      speed={values.speed as number}
+      noise={values.noise as number}
+      blur={values.blur as number}
+      contrast={values.contrast as number}
+      animated={values.animated as boolean}
+      performance={{ undersampling: values.quality as number, fpsLock: 60 }}
+    >
+      <div class="flex h-full items-end p-6">
+        <div class="rounded-lg border border-white/20 bg-black/20 px-4 py-3 text-white backdrop-blur-sm">
+          <p class="text-xs uppercase tracking-[0.2em] text-white/70">Opensophy / texture</p>
+          <p class="mt-1 text-xl font-semibold">Mesh in motion</p>
+        </div>
+      </div>
+    </AnimatedMeshGradient>
+  {/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+  import AnimatedMeshGradient from '$lib/components/ui-registry/Animatedmeshgradient.svelte';
+</script>
+
+<AnimatedMeshGradient
+  class="h-96 overflow-hidden rounded-xl"
+  colors={['#f43f5e', '#ffffff', '#7c3aed', '#f59e0b']}
+  speed={1}
+>
+  <div class="flex h-full items-center justify-center text-white">
+    Контент поверх градиента
+  </div>
+</AnimatedMeshGradient>
+```
+
+## Особенности
+
+- WebGL-отрисовка с CSS-градиентным fallback, если WebGL недоступен
+- Настраиваемая палитра до четырёх цветов
+- Регулируемые скорость, шум, мягкость переходов и контраст
+- Ограничение FPS и масштаба внутреннего canvas для контроля нагрузки
+- Учитывает системную настройку `prefers-reduced-motion`
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `colors` | `IMeshGradientColor[]` | `['#7c3aed', '#06b6d4', '#f472b6', '#fbbf24']` | До четырёх CSS-цветов или объектов RGB; недостающие цвета дополняются дефолтной палитрой |
+| `speed` | `number` | `1` | Скорость движения цветовых пятен |
+| `noise` | `number` | `0.15` | Интенсивность зернистого шума, диапазон 0–1 |
+| `blur` | `number` | `0.4` | Мягкость цветовых переходов, диапазон 0–1 |
+| `contrast` | `number` | `1` | Контраст, диапазон 0–2 |
+| `animated` | `boolean` | `true` | Включает или останавливает движение |
+| `width` / `height` | `number \| string` | `'100%'` | Размер контейнера; число задаёт пиксели, строка принимает CSS-значение |
+| `performance.undersampling` | `number` | `0.5` | Масштаб разрешения canvas, 0.1–2; меньшее значение снижает нагрузку |
+| `performance.fpsLock` | `number` | `60` | Ограничение частоты кадров |
+| `style` / `class` | `string` | `''` | Inline-стили и CSS-классы корневого элемента |
+| `children` | `Snippet` | — | Содержимое, размещаемое поверх градиента |
