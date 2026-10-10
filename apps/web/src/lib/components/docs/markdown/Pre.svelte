@@ -58,5 +58,10 @@
 		background-color: transparent !important;
 		font-size: 14px;
 		font-weight: 400;
+		color: var(--foreground) !important;
+	}
+
+	:global(.shiki .line) {
+		color: var(--foreground) !important;
 	}
 </style>

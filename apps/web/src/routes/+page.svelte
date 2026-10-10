@@ -215,6 +215,15 @@
     </h2>
   </section>
 
+  <div class="ascii-logo" aria-label="Opensophy ASCII logo">
+    <pre aria-hidden="true">   ___  ____  _____ _   _ ____   ___  ____  _   _
+  / _ \/ ___|| ____| \ | |  _ \ / _ \|  _ \| | | |
+ | | | \___ \|  _| |  \| | | | | | | | |_) | |_| |
+ | |_| |___) | |___| |\  | |_| | |_| |  _ <|  _  |
+  \___/|____/|_____|_| \_|____/ \___/|_| \_\_| |_|
+    </pre>
+  </div>
+
   <!-- What We Do Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
     <p class="section-overline"><Badge variant="accent">Чем занимается</Badge></p>
@@ -308,7 +317,7 @@
     </div>
 
     <div class="relative z-10 w-full max-w-5xl mx-auto">
-      <p class="section-overline"><Badge variant="default">Вопросы и ответы</Badge></p>
+      <p class="section-overline"><Badge variant="default">Вопросы �� ответы</Badge></p>
       <Faq items={faqItems} />
     </div>
   </section>
@@ -501,6 +510,22 @@
   /* ─── Section Layout ───────────────────────────────────────── */
   /* Уменьшены отступы между секциями, чтобы блоки "Что такое Opensophy?"
      и "Чем занимается" помещались в один экран */
+  .ascii-logo {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0.5rem 0 1rem;
+    color: var(--accent);
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .ascii-logo pre {
+    margin: 0;
+    font: 500 clamp(0.38rem, 1vw, 0.72rem)/1.15 ui-monospace, SFMono-Regular, Menlo, monospace;
+    white-space: pre;
+  }
+
   .section-block {
     padding-top: clamp(0.75rem, 1.5vw, 1.25rem);
     padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
