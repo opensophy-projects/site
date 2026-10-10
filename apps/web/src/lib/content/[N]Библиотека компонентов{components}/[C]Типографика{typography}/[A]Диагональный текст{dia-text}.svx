@@ -5,9 +5,9 @@ keywords: 'Opensophy, Диагональный текст, DiaText, UI, UI compo
 ---
 
 <script lang="ts">
-\timport { ComponentPreview } from '$lib';
-\timport DiaText from '$lib/components/ui-registry/DiaText.svelte';
-\timport diaTextSource from '$lib/components/ui-registry/DiaText.svelte?raw';
+	import { ComponentPreview } from '$lib';
+	import DiaText from '$lib/components/ui-registry/DiaText.svelte';
+	import diaTextSource from '$lib/components/ui-registry/DiaText.svelte?raw';
 </script>
 
 # Диагональный текст
@@ -17,30 +17,30 @@ keywords: 'Opensophy, Диагональный текст, DiaText, UI, UI compo
 ## Превью
 
 <ComponentPreview
-\tsources={[
-\t\t{ name: 'DiaText.svelte', code: diaTextSource, language: 'svelte' }
-\t]}
+	sources={[
+		{ name: 'DiaText.svelte', code: diaTextSource, language: 'svelte' }
+	]}
 >
-\t<div class="text-3xl font-medium text-foreground">
-\t\tМы создаём <DiaText
-\t\t\ttext={['сайты', 'продукты', 'инструменты']}
-\t\t\tloop
-\t\t\tloopDelay={500}
-\t\t\tduration={1200}
-\t\t\tclass="text-accent"
-\t\t/>
-\t</div>
+	<div class="text-3xl font-medium text-foreground">
+		Мы создаём <DiaText
+			text={['сайты', 'продукты', 'инструменты']}
+			loop
+			loopDelay={500}
+			duration={1200}
+			class="text-accent"
+		/>
+	</div>
 </ComponentPreview>
 
 ## Использование
 
 ```svelte
 <script lang="ts">
-\timport DiaText from '$lib/components/ui-registry/DiaText.svelte';
+	import DiaText from '$lib/components/ui-registry/DiaText.svelte';
 </script>
 
 <p>
-\tМы создаём <DiaText text="цифровые продукты" />
+	Мы создаём <DiaText text="цифровые продукты" />
 </p>
 ```
 
@@ -48,13 +48,13 @@ keywords: 'Opensophy, Диагональный текст, DiaText, UI, UI compo
 
 ```svelte
 <DiaText
-\ttext={['сайты', 'приложения', 'инструменты']}
-\tloop
-\tduration={1400}
-\tdelay={200}
-\tloopDelay={800}
-\tsweepColors={['#ffffff', '#8b5cf6', '#ffffff']}
-\tbaseColor="currentColor"
+	text={['сайты', 'приложения', 'инструменты']}
+	loop
+	duration={1400}
+	delay={200}
+	loopDelay={800}
+	sweepColors={['#ffffff', '#8b5cf6', '#ffffff']}
+	baseColor="currentColor"
 />
 ```
 
