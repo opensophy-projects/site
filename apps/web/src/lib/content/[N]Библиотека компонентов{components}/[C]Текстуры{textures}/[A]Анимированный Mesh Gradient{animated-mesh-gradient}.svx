@@ -1,5 +1,5 @@
 ---
-title: Анимированный Mesh Gradient
+title: Анимированный сеточный градиент
 description: Анимированный WebGL-градиент с настраиваемыми цветами, шумом, мягкостью и производительностью.
 keywords: 'Opensophy, AnimatedMeshGradient, mesh gradient, WebGL, текстуры, UI components'
 ---
@@ -25,7 +25,7 @@ keywords: 'Opensophy, AnimatedMeshGradient, mesh gradient, WebGL, текстур
   ];
 </script>
 
-# Анимированный Mesh Gradient
+# Анимированный сеточный градиент
 
 `AnimatedMeshGradient` создаёт живой многоцветный фон с плавно движущимися цветовыми областями. Градиент отрисовывается через WebGL, а CSS-фолбэк остаётся видимым, если WebGL недоступен.
 
