@@ -1,0 +1,48 @@
+---
+title: Дуговая временная шкала
+description: Интерактивная временная шкала по дуге с активными шагами, описаниями и настраиваемой геометрией.
+keywords: 'Opensophy, Arc Timeline, UI, UI components, библиотека компонентов'
+---
+
+<script lang="ts">
+  import { ComponentPreview } from '$lib';
+  import ArcTimelineDemo from '$lib/components/ui-registry/ArcTimelineDemo.svelte';
+  import arcTimelineSource from '$lib/components/ui-registry/ArcTimeline.svelte?raw';
+</script>
+
+# Дуговая временная шкала
+
+`ArcTimeline` показывает этапы проекта на большой окружности. Клик по шагу или фокус с клавиатуры активирует его и раскрывает описание.
+
+## Интерактивное превью
+
+<ComponentPreview sources={[{ name: 'ArcTimeline.svelte', code: arcTimelineSource, language: 'svelte' }]} class="min-h-[26rem]"><ArcTimelineDemo /></ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+  import ArcTimeline from '$lib/components/ui-registry/ArcTimeline.svelte';
+  const data = [{ time: '2025', steps: [{ icon: '01', content: 'Запуск проекта' }] }];
+</script>
+
+<ArcTimeline {data} defaultActiveStep={{ stepIndex: 0 }} />
+```
+
+## Пропсы
+
+| Пропс | Тип | Описание |
+| --- | --- | --- |
+| `data` | `ArcTimelineItem[]` | Группы этапов с датой, иконкой и описанием |
+| `arcConfig` | `ArcTimelineArcConfig` | Размер окружности, углы и количество линий заполнения |
+| `defaultActiveStep` | `ArcTimelineDefaultActiveStep` | Активный шаг при первом отображении |
+| `class` | `string` | Дополнительный класс корневого элемента |
+
+### `arcConfig`
+
+- `circleWidth` — ширина окружности в пикселях, по умолчанию `5000`.
+- `angleBetweenMinorSteps` — расстояние между шагами, по умолчанию `0.35`.
+- `lineCountFillBetweenSteps` — число вспомогательных линий между шагами.
+- `boundaryPlaceholderLinesCount` — число линий до первого и после последнего шага.
+
+Компонент поддерживает строки, числа и Svelte snippets для `icon`, `content` и `time`.

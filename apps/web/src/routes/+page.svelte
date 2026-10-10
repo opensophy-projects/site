@@ -1,7 +1,7 @@
 <script lang="ts">
   import { brandingConfig } from "$lib/config/branding";
   import ServicesGrid from "$lib/components/ui-registry/ServicesGrid.svelte";
-  import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
+  import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
   import CardProject from "$lib/components/ui-registry/CardProject.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import TextLoop from "$lib/components/ui-registry/TextLoop.svelte";
@@ -214,22 +214,26 @@
       <span class="text-accent">DevSecOps и Open Source</span> и делает их доступнее
       для разработчиков и команд.
     </h2>
-    <div class="about-ascii" aria-hidden="true">
-      <AsciiVisual
-        src="/logo.png"
-        colored={false}
-        color="#f43f5e"
-        highlight="#f43f5e"
-        class="h-full w-full"
-        background=""
-        cellSize={6}
-        scale={5}
-        orbit={true}
-        autoRotate={true}
-        autoRotateSpeed={0.5}
-      />
-    </div>
   </section>
+
+  <div class="ascii-logo" aria-label="Opensophy ASCII logo">
+    <AsciiObject
+      src="/logo.png"
+      ascii={true}
+      colored={false}
+      color="#f43f5e"
+      highlight="#f43f5e"
+      background=""
+      cellSize={10}
+      contrast={1.5}
+      exposure={1}
+      scale={5}
+      orbit={false}
+      autoRotate={false}
+      rotationIntensity={0}
+      class="ascii-logo-canvas"
+    />
+  </div>
 
   <!-- What We Do Section -->
   <section class="section-block w-full max-w-5xl mx-auto px-4">
@@ -517,6 +521,30 @@
   /* ─── Section Layout ───────────────────────────────────────── */
   /* Уменьшены отступы между секциями, чтобы блоки "Что такое Opensophy?"
      и "Чем занимается" помещались в один экран */
+  .ascii-logo {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: clamp(12rem, 28vw, 20rem);
+    margin: 0.5rem 0 1rem;
+    color: var(--accent);
+    text-align: center;
+    overflow: hidden;
+  }
+
+
+  :global(.ascii-logo-canvas) {
+  position: relative;
+  z-index: 1;
+  display: block;
+  flex: 1 1 56rem;
+  width: 100%;
+  max-width: 56rem;
+  min-width: 0;
+  height: 100%;
+  }
+
   .section-block {
     padding-top: clamp(0.75rem, 1.5vw, 1.25rem);
     padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
@@ -572,14 +600,6 @@
     opacity: 1;
   }
 
-  /* Логотип: без overflow:hidden, чтобы контейнер его не обрезал.
-     Высота и верхний отступ уменьшены под компактную вёрстку. */
-  .about-ascii {
-    height: 17rem;
-    margin-top: 0.5rem;
-    overflow: visible;
-  }
-
   /* ─── Products Section Glow ────────────────────────────────── */
   .products-section {
     position: relative;
@@ -624,9 +644,6 @@
       right: auto;
       left: -0.5rem;
       width: 13rem;
-    }
-    .about-ascii {
-      height: 13rem;
     }
     .products-glow {
       width: 160%;

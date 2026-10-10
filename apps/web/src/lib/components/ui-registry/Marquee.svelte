@@ -111,7 +111,7 @@
 	>
 		{#each Array(repeat) as _, i (i)}
 			<div
-				class="marquee-part flex shrink-0"
+				class="marquee-part flex min-w-max shrink-0 items-center"
 				style:gap="{gap}px"
 				style:padding-left="{gap / 2}px"
 				style:padding-right="{gap / 2}px"

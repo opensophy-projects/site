@@ -435,7 +435,7 @@
     position: relative;
     display: flex;
     height: 100%;
-    min-height: 320px;
+    min-height: 460px;
     width: 100%;
     cursor: grab;
     touch-action: pan-y;

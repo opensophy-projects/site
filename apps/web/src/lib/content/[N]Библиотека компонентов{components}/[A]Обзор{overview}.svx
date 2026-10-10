@@ -41,6 +41,7 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="11" title="FAQ аккордеон" href="/components/faq">Раскрывающиеся блоки вопросов и ответов с плавной анимацией.</Card>
 <Card eyebrow="12" title="Индикатор загрузки" href="/components/lattice-loader">Анимированный индикатор загрузки из ячеек решётки с состояниями выполнения и ошибки.</Card>
 <Card eyebrow="13" title="Призрачный курсор" href="/components/ghost-cursor">Декоративный светящийся след, который следует за курсором и постепенно затухает.</Card>
+<Card eyebrow="14" title="Дуговая временная шкала" href="/components/arc-timeline">Интерактивная временная шкала с активными этапами и описаниями.</Card>
 </Cards>
 
 ### Карточки
@@ -48,13 +49,13 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 Компоненты для отображения контента в карточном формате:
 
 <Cards>
-<Card eyebrow="14" title="Светящаяся карточка" href="/components/glow-card">Карточка с интерактивным mesh-gradient glow при наведении.</Card>
-<Card eyebrow="15" title="Секция карточек" href="/components/card-section">Секция из 6 карточек услуг с кастомными SVG-визуализациями.</Card>
-<Card eyebrow="16" title="Карточка" href="/components/card">Универсальная карточка с eyebrow, заголовком и поддержкой ссылок.</Card>
-<Card eyebrow="17" title="Карточки с иконками" href="/components/icon-cards">Сетка карточек с иконками для компактного представления возможностей.</Card>
-<Card eyebrow="18" title="Отзыв" href="/components/testimonial">Карточка отзыва с аватаром, именем и текстом.</Card>
-<Card eyebrow="19" title="Подсвеченный блок" href="/components/highlight-box">Блок с подсветкой для акцентирования внимания.</Card>
-<Card eyebrow="20" title="Огненная карточка" href="/components/flame-wrap">WebGL-карточка с акцентной огненной рамкой, искрами и тепловым искажением.</Card>
+<Card eyebrow="15" title="Светящаяся карточка" href="/components/glow-card">Карточка с интерактивным mesh-gradient glow при наведении.</Card>
+<Card eyebrow="16" title="Секция карточек" href="/components/card-section">Секция из 6 карточек услуг с кастомными SVG-визуализациями.</Card>
+<Card eyebrow="17" title="Карточка" href="/components/card">Универсальная карточка с eyebrow, заголовком и поддержкой ссылок.</Card>
+<Card eyebrow="18" title="Карточки с иконками" href="/components/icon-cards">Сетка карточек с иконками для компактного представления возможностей.</Card>
+<Card eyebrow="19" title="Отзыв" href="/components/testimonial">Карточка отзыва с аватаром, именем и текстом.</Card>
+<Card eyebrow="20" title="Подсвеченный блок" href="/components/highlight-box">Блок с подсветкой для акцентирования внимания.</Card>
+<Card eyebrow="21" title="Огненная карточка" href="/components/flame-wrap">WebGL-карточка с акцентной огненной рамкой, искрами и тепловым искажением.</Card>
 </Cards>
 
 ### Типографика
@@ -62,15 +63,14 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 Эффекты для текста и заголовков:
 
 <Cards>
-<Card eyebrow="21" title="Цикличный текст" href="/components/text-loop">Анимированная смена текста через GSAP — для hero-секций и заголовков.</Card>
-<Card eyebrow="22" title="Бегущая строка" href="/components/marquee">Бесконечная горизонтальная прокрутка контента с плавной анимацией.</Card>
-<Card eyebrow="23" title="Волна веса" href="/components/weight-wave">Анимация изменения веса шрифта по волне.</Card>
-<Card eyebrow="24" title="Раздвижение текста" href="/components/text-split-hover">Эффект раздвижения текста при наведении.</Card>
-<Card eyebrow="25" title="Разделённое появление" href="/components/split-reveal">Появление текста с разделением на части.</Card>
-<Card eyebrow="26" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
-<Card eyebrow="27" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
-<Card eyebrow="28" title="Рандомизированный текст" href="/components/randomized-text">Плавное появление текста по словам или символам.</Card>
-<Card eyebrow="29" title="Диагональный текст" href="/components/dia-text">Световая полоса проходит по тексту с поддержкой циклической смены строк.</Card>
+<Card eyebrow="22" title="Цикличный текст" href="/components/text-loop">Анимированная смена текста через GSAP — для hero-секций и заголовков.</Card>
+<Card eyebrow="23" title="Бегущая строка" href="/components/marquee">Бесконечная горизонтальная прокрутка контента с плавной анимацией.</Card>
+<Card eyebrow="24" title="Волна веса" href="/components/weight-wave">Анимация изменения веса шрифта по волне.</Card>
+<Card eyebrow="25" title="Раздвижение текста" href="/components/text-split-hover">Эффект раздвижения текста при наведении.</Card>
+<Card eyebrow="26" title="Разделённое появление" href="/components/split-reveal">Появление текста с разделением на части.</Card>
+<Card eyebrow="27" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
+<Card eyebrow="28" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
+<Card eyebrow="29" title="Рандомизированный текст" href="/components/randomized-text">Плавное появление текста по словам или символам.</Card>
 </Cards>
 
 ### Медиа

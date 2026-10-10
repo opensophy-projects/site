@@ -86,14 +86,14 @@
 </script>
 
 {#if groupsLength > 0}
-	<div class="grid w-full max-w-[720px] place-items-center" {...props}>
+	<div class="grid w-full place-items-center" {...props}>
 		{#each groups as group, groupIndex (groupIndex)}
 			{@const isCurrent = groupIndex === index}
 			{@const isNext = canLoop && animate && groupIndex === nextIndex}
 			{@const isVisible = canLoop ? isCurrent || isNext : isCurrent}
 
 			<div
-				class={cn("flex w-full justify-center gap-10", className)}
+				class={cn("flex w-full items-center justify-center gap-10 bg-transparent", className)}
 				style:grid-area="1 / 1"
 				style:pointer-events={isVisible ? "auto" : "none"}
 			>
@@ -153,9 +153,10 @@
 		animation-name: logos-exit;
 	}
 
-	.logo-hidden {
-		opacity: 0;
-	}
+.logo-hidden {
+			opacity: 0;
+			visibility: hidden;
+		}
 
 	.logo-static {
 		opacity: 1;
