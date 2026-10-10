@@ -1,0 +1,73 @@
+---
+title: Анимированный Mesh Gradient
+description: Анимированный WebGL-градиент с настраиваемыми цветами, шумом, мягкостью и производительностью.
+keywords: 'Opensophy, AnimatedMeshGradient, mesh gradient, WebGL, текстуры, UI components'
+---
+
+<script lang="ts">
+  import { ComponentPreview } from '$lib';
+  import AnimatedMeshGradient from '$lib/components/ui-registry/Animatedmeshgradient.svelte';
+  import animatedMeshGradientSource from '$lib/components/ui-registry/Animatedmeshgradient.svelte?raw';
+</script>
+
+# Анимированный Mesh Gradient
+
+`AnimatedMeshGradient` создаёт живой многоцветный фон с плавно движущимися цветовыми областями. Градиент отрисовывается через WebGL, а CSS-фолбэк остаётся видимым, если WebGL недоступен.
+
+## Превью
+
+<ComponentPreview sources={[{ name: 'Animatedmeshgradient.svelte', code: animatedMeshGradientSource, language: 'svelte' }]}>
+  {#snippet children()}
+    <div class="h-[360px] w-full overflow-hidden rounded-lg">
+      <AnimatedMeshGradient class="h-full w-full" speed={1} noise={0.15} blur={0.4} contrast={1}>
+        <div class="flex h-full items-center justify-center p-8 text-center">
+          <div class="rounded-xl border border-white/20 bg-black/20 p-6 text-white backdrop-blur-sm">
+            <p class="text-sm font-medium uppercase tracking-[0.2em] text-white/70">WebGL texture</p>
+            <p class="mt-2 text-3xl font-semibold">Цвет в движении</p>
+            <p class="mt-2 text-sm text-white/80">Плавный градиент для hero-секций и карточек</p>
+          </div>
+        </div>
+      </AnimatedMeshGradient>
+    </div>
+  {/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+  import AnimatedMeshGradient from '$lib/components/ui-registry/Animatedmeshgradient.svelte';
+</script>
+
+<div class="h-[360px] overflow-hidden rounded-xl">
+  <AnimatedMeshGradient speed={1} blur={0.4} noise={0.15}>
+    <div class="flex h-full items-center justify-center">
+      <h2 class="text-3xl font-semibold text-white">Привет, мир</h2>
+    </div>
+  </AnimatedMeshGradient>
+</div>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `colors` | `IMeshGradientColor[]` | 4 цвета | До четырёх CSS-цветов или RGB-объектов |
+| `speed` | `number` | `1` | Скорость движения цветовых областей |
+| `noise` | `number` | `0.15` | Интенсивность зернистости (0–1) |
+| `blur` | `number` | `0.4` | Мягкость переходов (0–1) |
+| `contrast` | `number` | `1` | Контрастность цветов (0–2) |
+| `animated` | `boolean` | `true` | Включает или отключает анимацию |
+| `width` / `height` | `number \| string` | `100%` | Размер контейнера; число задаёт пиксели |
+| `performance.undersampling` | `number` | `0.5` | Масштаб разрешения canvas (0.1–2) |
+| `performance.fpsLock` | `number` | `60` | Ограничение частоты кадров |
+| `class` / `style` | `string` | — | Класс и inline-стили контейнера |
+| `children` | `Snippet` | — | Контент поверх градиента |
+
+## Особенности
+
+- WebGL-шейдер с CSS-градиентом в качестве фолбэка
+- Четыре настраиваемых цвета, мягкие переходы и регулируемый шум
+- Настройка разрешения canvas и ограничения FPS
+- Учитывает системную настройку `prefers-reduced-motion`
+- Контент отображается поверх фона через слот `children`
