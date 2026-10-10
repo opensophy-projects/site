@@ -228,8 +228,9 @@
       contrast={1.5}
       exposure={1}
       scale={5}
-      orbit={true}
+      orbit={false}
       autoRotate={false}
+      rotationIntensity={0}
       class="ascii-logo-canvas"
     />
   </div>
