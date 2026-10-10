@@ -11,23 +11,23 @@ export { default as Step } from './components/docs/markdown/Step.svelte';
 export { default as Steps } from './components/docs/markdown/Steps.svelte';
 export { default as ComponentPreview } from './components/docs/ComponentPreview.svelte';
 export {
-\ttype ComponentPreviewControl,
-\ttype ComponentPreviewValue,
-\ttype ComponentPreviewValues,
-\ttype SourceTab
+  type ComponentPreviewControl,
+  type ComponentPreviewValue,
+  type ComponentPreviewValues,
+  type SourceTab
 } from './components/docs/component-preview/types';
 
 export { brandingConfig } from './config/branding';
 export { siteConfig, type SiteConfig } from './config/site';
 export {
-\tavailablePackageManagers,
-\tcontentUiDefaults,
-\tmergeSectionUiConfig,
-\tresolveAssistantUrls,
-\tresolveRepositoryFileUrl,
-\tresolveTocSelector,
-\ttype ContentUiConfig,
-\ttype PackageManagerOption
+  availablePackageManagers,
+  contentUiDefaults,
+  mergeSectionUiConfig,
+  resolveAssistantUrls,
+  resolveRepositoryFileUrl,
+  resolveTocSelector,
+  type ContentUiConfig,
+  type PackageManagerOption
 } from './config/content-ui';
 
 export { themeStore, type Theme } from './stores/theme.svelte';
