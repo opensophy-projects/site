@@ -221,16 +221,15 @@
       src="/logo.png"
       ascii={true}
       colored={false}
-      color="var(--accent)"
-      highlight="var(--accent)"
+      color="#f43f5e"
+      highlight="#f43f5e"
       background=""
       cellSize={10}
       contrast={1.5}
       exposure={1}
       scale={5}
       orbit={true}
-      autoRotate={true}
-      autoRotateSpeed={0.5}
+      autoRotate={false}
       class="ascii-logo-canvas"
     />
   </div>
@@ -311,10 +310,10 @@
       <button
         type="button"
         class="services-action services-action-primary"
-        onclick={() => contactsState.open()}>Заказать у��луги</button
+        onclick={() => contactsState.open()}>Заказать услуги</button
       >
       <a class="services-action" href="/service-policy"
-        >����литика оказания услуг</a
+        >Политика оказания услуг</a
       >
     </div>
   </section>
@@ -328,7 +327,7 @@
     </div>
 
     <div class="relative z-10 w-full max-w-5xl mx-auto">
-      <p class="section-overline"><Badge variant="default">Вопросы �� ответы</Badge></p>
+      <p class="section-overline"><Badge variant="default">Вопросы и ответы</Badge></p>
       <Faq items={faqItems} />
     </div>
   </section>
