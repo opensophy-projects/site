@@ -295,18 +295,44 @@
     </div>
   </section>
 
-  <!-- Component showcase -->
-  <section class="component-showcase w-full max-w-5xl mx-auto px-4" aria-label="Компоненты">
+  <!-- Services showcase -->
+  <section class="component-showcase w-full max-w-7xl mx-auto px-4" aria-label="Наши направления">
     <div class="component-grid">
-      <div class="component-cell">
-        <ShieldInfinity accent="#f43f5e" width="100%" showControls={false} />
-      </div>
-      <div class="component-cell">
-        <Phosphor accent="#f43f5e" width="100%" showControls={false} />
-      </div>
-      <div class="component-cell">
-        <Terminal accent="#f43f5e" width="100%" showControls={false} />
-      </div>
+      <article class="component-cell">
+        <div class="component-visual component-visual-shield">
+          <ShieldInfinity accent="#f43f5e" width="100%" showControls={false} />
+        </div>
+        <div class="component-copy">
+          <h2>Автоматическая защита бизнеса</h2>
+          <p>
+            Настраиваем систему так, чтобы она сама проверяла код и настройки
+            <span class="text-accent">на каждом этапе.</span> Дополнительно внедряем защитный экран на базе искусственного интеллекта: он учится распознавать новые атаки в реальном времени и блокирует их до того, как они нанесут вред. Обычные фильтры пропускают нестандартные угрозы, а
+            <span class="text-accent">наш WAF адаптируется под них автоматически.</span> Вам не нужно постоянно обновлять правила — защита становится умнее с каждой атакой.
+          </p>
+        </div>
+      </article>
+      <article class="component-cell">
+        <div class="component-visual component-visual-phosphor">
+          <Phosphor accent="#f43f5e" width="100%" showControls={false} />
+        </div>
+        <div class="component-copy">
+          <h2>Автоматизируем повторяющиеся задачи</h2>
+          <p>
+            Настраиваем автоматическую выгрузку отчетов, рассылку уведомлений, проверку данных и другие рутинные операции. То, что сотрудники делают вручную каждый день или неделю, будет происходить само по расписанию. Освобождаем время команды для реальной работы.
+          </p>
+        </div>
+      </article>
+      <article class="component-cell">
+        <div class="component-visual component-visual-terminal">
+          <Terminal accent="#f43f5e" width="100%" showControls={false} />
+        </div>
+        <div class="component-copy">
+          <h2>Создаем цифровые продукты и чиним техническую часть</h2>
+          <p>
+            Разрабатываем сайты и внутренние инструменты, настраиваем серверы и устраняем сбои. Если система тормозит, не запускается или требует доработки — мы сможем найти причину и наладим работу.
+          </p>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -637,34 +663,82 @@
   /* ─── Component showcase ─────────────────────────────────── */
   .component-showcase {
     padding-top: 0.5rem;
-    padding-bottom: clamp(2rem, 4vw, 4rem);
+    padding-bottom: clamp(3rem, 6vw, 6rem);
   }
 
   .component-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: center;
-    gap: clamp(1rem, 3vw, 3rem);
+    align-items: start;
+    gap: clamp(1.5rem, 3.5vw, 4rem);
     width: 100%;
   }
 
   .component-cell {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     min-width: 0;
+    gap: 1.25rem;
     overflow: visible;
   }
 
-  .component-cell :global(svg) {
+  .component-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: clamp(18rem, 27vw, 25rem);
+  }
+
+  .component-visual :global(svg) {
     display: block;
+    width: 100%;
     max-width: 100%;
+    max-height: none;
+  }
+
+  .component-copy {
+    width: 100%;
+    text-align: left;
+  }
+
+  .component-copy h2 {
+    margin: 0 0 0.85rem;
+    color: #fff;
+    font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+  }
+
+  .component-copy p {
+    margin: 0;
+    color: #9ca3af;
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+
+  .component-copy .text-accent {
+    color: var(--accent);
   }
 
   @media (max-width: 767px) {
     .component-grid {
       grid-template-columns: 1fr;
-      gap: 2rem;
+      gap: 3rem;
+    }
+
+    .component-visual {
+      min-height: 0;
+      max-width: 28rem;
+      margin: 0 auto;
+    }
+
+    .component-copy {
+      max-width: 38rem;
+      margin: 0 auto;
     }
   }
 
