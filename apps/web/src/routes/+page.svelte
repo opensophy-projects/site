@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, type Component } from "svelte";
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
-  import CardProject from "$lib/components/ui-registry/CardProject.svelte";
+  import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import LogoCarousel from "$lib/components/ui-registry/logo-carousel.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
@@ -10,7 +10,12 @@
   import Terminal from "$lib/components/ui-registry/Terminal.svelte";
   import Radar from "$lib/components/ui-registry/Radar.svelte";
   import GhostCursor from "$lib/components/ui-registry/GhostCursor.svelte";
+  import DockerLogo from "$lib/components/ui-registry/DockerLogo.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
+  import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
+  import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
+  import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
+  import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
   // ─── Спонсоры ─────────────────────────────────────────────────
@@ -125,18 +130,20 @@
   type Project = {
     title: string;
     description: string;
-    colors: string[];
-    glowColor: string;
+    icon: Component<{ size?: number; class?: string }>;
     status: ProjectStatus;
   };
+
+  // Цвет пламени совпадает с акцентом сайта (#f43f5e)
+  const flameColor: [number, number, number] = [0.956, 0.247, 0.369];
 
   const projects: Project[] = [
     {
       title: "os.docs",
+      // Документы — платформа документации
+      icon: DocumentMultiple_01,
       description:
         "Платформа для документации и публикации контента. Подходит для технических команд, авторов и всех, кто хочет структурированно делиться знаниями.",
-      colors: ["#f43f5e", "#f472b6", "#b2263e"],
-      glowColor: "350 90 72",
       status: {
         variant: "released",
         label: "Проект в релизе",
@@ -145,10 +152,10 @@
     },
     {
       title: "os.ui",
+      // Диаграмма-плитка — библиотека UI-компонентов
+      icon: QHintonPlot,
       description:
         "Библиотека готовых UI-компонентов с живым превью и гибкими настройками. Включает анимации, интерактивные блоки и фирменные компоненты Opensophy — для разработчиков и дизайнеров.",
-      colors: ["#f43f5e", "#f472b6", "#b2263e"],
-      glowColor: "350 90 72",
       status: {
         variant: "released",
         label: "Проект в релизе",
@@ -157,10 +164,10 @@
     },
     {
       title: "os.mtls",
+      // Сеть — mTLS-сертификаты и доступ к сервисам
+      icon: Network_3,
       description:
         "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik. Позволяет надёжно закрыть доступ к сервисам и серверам без лишних сложностей.",
-      colors: ["#f43f5e", "#f472b6", "#b2263e"],
-      glowColor: "350 90 72",
       status: {
         variant: "released",
         label: "Проект в релизе",
@@ -169,9 +176,9 @@
     },
     {
       title: "os.compose",
+      // Логотип Docker — Docker Compose-шаблоны
+      icon: DockerLogo,
       description: "Библиотека готовых Docker Compose-шаблонов для DevSecOps.",
-      colors: ["#f43f5e", "#f472b6", "#b2263e"],
-      glowColor: "350 90 72",
       status: {
         variant: "in-progress",
         label: "Проект развивается",
@@ -180,10 +187,10 @@
     },
     {
       title: "os.dokploy",
+      // Контейнеры веб-сервисов — деплой и управление серверами
+      icon: WebServicesContainer,
       description:
         "Форк проекта Dokploy — платформа для управления серверами и деплоя приложений. Бесплатная enterprise-версия с обновлённым дизайном, встроенным управлением mTLS и русификацией.",
-      colors: ["#f43f5e", "#f472b6", "#b2263e"],
-      glowColor: "350 90 72",
       status: {
         variant: "released",
         label: "Проект в релизе",
@@ -382,45 +389,71 @@
   <!-- Projects Section -->
   <section class="section-block products-section w-full max-w-5xl mx-auto px-4">
     <div class="products-glow" aria-hidden="true"></div>
-    <p class="section-overline"><Badge variant="default">Продукты</Badge></p>
-    <div class="projects-grid">
-      {#each projects as project (project.title)}
-        <CardProject
-          colors={project.colors}
-          glowColor={project.glowColor}
-          borderRadius={12}
-        >
-          <div class="project-card-body">
-            <div class="project-card-header">
-              <span class="project-slug">{project.title}</span>
-              {#if project.status.modalText}
-                {@const modalText = project.status.modalText}
-                <button
-                  type="button"
-                  class="project-status project-status-{project.status.variant} project-status-link"
-                  onclick={() => openStatusModal(modalText)}
-                >
-                  {project.status.label}
-                </button>
-              {:else if project.status.href}
-                <a
-                  href={project.status.href}
-                  target={isExternal(project.status.href) ? "_blank" : undefined}
-                  rel={isExternal(project.status.href) ? "noreferrer" : undefined}
-                  class="project-status project-status-{project.status.variant} project-status-link"
-                >
-                  {project.status.label}
-                </a>
-              {:else}
-                <span class="project-status project-status-{project.status.variant}">
-                  {project.status.label}
-                </span>
-              {/if}
-            </div>
-            <p class="project-desc">{project.description}</p>
+
+    <!-- Вся секция (заголовок + карточки) обёрнута в FlameWrap -->
+    <div class="flame-slot">
+      <FlameWrap
+        color={flameColor}
+        radius={12}
+        height={90}
+        spread={8}
+        intensity={0.5}
+        sparks={1.2}
+        smoke={1}
+        scorch={0}
+      >
+        <div class="products-content">
+          <p class="section-overline"><Badge variant="default">Продукты</Badge></p>
+
+          <div class="projects-grid">
+            {#each projects as project, i (project.title)}
+              {@const Icon = project.icon}
+              <!-- Карточка с иконкой: внешний inset-слой + внутренняя карточка -->
+              <div
+                class="project-shell inset-shadow relative overflow-hidden rounded-xl bg-background-inset p-1.5"
+                class:project-shell-wide={projects.length % 2 === 1 && i === projects.length - 1}
+              >
+                <article class="project-card card rounded-lg bg-background">
+                  <div class="project-card-top">
+                    <div
+                      class="project-icon inset-shadow grid size-10 shrink-0 place-items-center rounded-sm bg-background-inset text-accent"
+                    >
+                      <Icon size={22} />
+                    </div>
+                    <div class="project-card-header">
+                      <span class="project-slug">{project.title}</span>
+                      {#if project.status.modalText}
+                        {@const modalText = project.status.modalText}
+                        <button
+                          type="button"
+                          class="project-status project-status-{project.status.variant} project-status-link"
+                          onclick={() => openStatusModal(modalText)}
+                        >
+                          {project.status.label}
+                        </button>
+                      {:else if project.status.href}
+                        <a
+                          href={project.status.href}
+                          target={isExternal(project.status.href) ? "_blank" : undefined}
+                          rel={isExternal(project.status.href) ? "noreferrer" : undefined}
+                          class="project-status project-status-{project.status.variant} project-status-link"
+                        >
+                          {project.status.label}
+                        </a>
+                      {:else}
+                        <span class="project-status project-status-{project.status.variant}">
+                          {project.status.label}
+                        </span>
+                      {/if}
+                    </div>
+                  </div>
+                  <p class="project-desc">{project.description}</p>
+                </article>
+              </div>
+            {/each}
           </div>
-        </CardProject>
-      {/each}
+        </div>
+      </FlameWrap>
     </div>
   </section>
 </main>
@@ -1066,24 +1099,54 @@
     color: #fff;
   }
 
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+  /* ─── Products: FlameWrap + карточки с иконками ──────────── */
+  /* Отступ сверху — место под языки пламени */
+  .flame-slot {
+    margin-top: 2.5rem;
   }
 
-  @media (max-width: 479px) {
+  .products-content {
+    padding: 1rem 0.25rem 0.25rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .project-shell-wide {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 639px) {
     .projects-grid {
       grid-template-columns: 1fr;
     }
+    .project-shell-wide {
+      grid-column: auto;
+    }
   }
 
-  .project-card-body {
+  .project-card {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.9rem;
+    height: 100%;
+    min-height: 11rem;
     padding: 1.25rem 1.375rem 1.375rem;
-    min-height: 10.5rem;
+    box-sizing: border-box;
+  }
+
+  .project-shell {
+    height: 100%;
+    box-sizing: border-box;
+  }
+
+  .project-card-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   .project-card-header {
@@ -1091,6 +1154,7 @@
     align-items: center;
     gap: 0.5rem;
     flex-wrap: wrap;
+    min-width: 0;
   }
 
   .project-slug {
