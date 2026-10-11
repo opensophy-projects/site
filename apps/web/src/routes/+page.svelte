@@ -687,7 +687,7 @@
   .showcase-inner {
     border-radius: 0.5rem;
     border: 1px solid var(--border);
-    background: var(--background-inset);
+    background: var(--background);
     padding: clamp(1.25rem, 3vw, 2.5rem);
   }
 
