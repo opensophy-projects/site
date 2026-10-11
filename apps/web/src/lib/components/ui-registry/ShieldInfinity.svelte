@@ -9,8 +9,8 @@
 
   const D =
     'M0,-120 C40,-100 80,-95 100,-95 L100,-10 C100,60 55,100 0,125 C-55,100 -100,60 -100,-10 L-100,-95 C-80,-95 -40,-100 0,-120Z';
-  const DEPTH = 14; // shield thickness (local units)
-  const H = 12; // infinity tube thickness (local units)
+  const DEPTH = 14;
+  const H = 12;
   const corners = [
     [0, -120],
     [100, -95],
@@ -18,7 +18,6 @@
     [-100, -95]
   ];
 
-  // lemniscate outline
   const M = 240;
   const pts = Array.from({ length: M + 1 }, (_, k) => {
     const t = (k / M) * Math.PI * 2;
@@ -32,19 +31,18 @@
   });
 
   let front;
-  let conn = []; // silhouette edges of the shield thickness
+  let conn = [];
   let tgt = 0;
   let hov = 0;
   let ph = 0;
-  let w = 7; // tube stroke width, px
-  let sc = 1; // tube pulse scale
+  let w = 7;
+  let sc = 1;
   let ech = [
     { f: 0, o: 0 },
     { f: 0, o: 0 }
   ];
 
   onMount(() => {
-    // edges where the outline runs parallel to the depth direction (lower curve only)
     const len = front.getTotalLength();
     const N = 480;
     const out = [];
@@ -94,7 +92,6 @@
   on:pointerup={(e) => e.pointerType !== 'mouse' && (tgt = 0)}
 >
   <g transform="translate(300 300) rotate(8) scale(1.15) matrix(0.866 0.5 0 1 0 0)">
-    <!-- shield: back face, thickness edges, front face (opaque, hides what is behind) -->
     <path class="l bk" d={D} transform="translate({DEPTH} {-DEPTH})" />
     <g>
       {#each corners as c}
@@ -107,7 +104,6 @@
     <path class="l fl" d={D} bind:this={front} />
     <path class="l f" d={D} transform="scale(.86) translate(0 4)" />
 
-    <!-- infinity: extruded tube -->
     <g transform="translate(-4 10)">
       <g transform="scale({sc})">
         {#each slices as s (s.i)}
@@ -131,22 +127,15 @@
 
 <style>
   .hl {
-    /* override these from the outside to match your theme */
-    --hl-bg: #f6f4f1;
-    --hl-line: #2b2f3a;
-    --hl-faint: #2b2f3a55;
+    /* Theme follows the host page instead of the OS color-scheme. */
+    --hl-bg: var(--background, #f6f4f1);
+    --hl-line: var(--foreground, #2b2f3a);
+    --hl-faint: color-mix(in srgb, var(--foreground, #2b2f3a) 34%, transparent);
     display: block;
     height: auto;
     max-height: 80vh;
     cursor: pointer;
     touch-action: none;
-  }
-  @media (prefers-color-scheme: dark) {
-    .hl {
-      --hl-bg: #0e1016;
-      --hl-line: #d7dbe6;
-      --hl-faint: #d7dbe655;
-    }
   }
   .l {
     fill: none;
