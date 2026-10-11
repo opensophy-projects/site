@@ -2,7 +2,8 @@
   import { onMount, type Component } from "svelte";
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
-  import ArcFlame from "$lib/components/ui-registry/ArcFlame.svelte";
+  import ArcFlame from "$lib/components/ui-registry/Arcflame.svelte";
+  import ArcTimeline from "$lib/components/ui-registry/ArcTimeline.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import LogoCarousel from "$lib/components/ui-registry/logo-carousel.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
@@ -211,6 +212,57 @@
     },
   ];
 
+  // ─── Команда ──────────────────────────────────────────────────
+  type TeamMember = { name: string; role: string; initials: string };
+
+  const team: TeamMember[] = [
+    { name: "Селезнева Богдана", role: "GRC-аналитик", initials: "СБ" },
+    { name: "Кулешов Даниил", role: "DevSecOps-инженер", initials: "КД" },
+    { name: "Гаршина Александра", role: "DevOps-инженер", initials: "ГА" },
+  ];
+
+  // ─── История проекта (в хронологическом порядке) ──────────────
+  // Первая дата — 21.12.2025, остальные — 2026 год. Сейчас 11 октября 2026.
+  const timeline = [
+    {
+      time: "Декабрь 2025",
+      steps: [{ icon: "21.12", content: "Создание проекта opensophy" }],
+    },
+    {
+      time: "Январь 2026",
+      steps: [
+        { icon: "07.01", content: "Начало публикации образовательных статей и учебных материалов" },
+      ],
+    },
+    {
+      time: "Февраль 2026",
+      steps: [{ icon: "19.02", content: "Заключение сотрудничества с Кондор" }],
+    },
+    {
+      time: "Март 2026",
+      steps: [
+        { icon: "07.03", content: "Создание os.docs" },
+        { icon: "27.03", content: "Заключение сотрудничества с RUVDS" },
+      ],
+    },
+    {
+      time: "Август 2026",
+      steps: [{ icon: "20.08", content: "Большой ребрендинг проекта и философии" }],
+    },
+    {
+      time: "Сентябрь 2026",
+      steps: [
+        { icon: "01.09", content: "Создание os.ui" },
+        { icon: "10.09", content: "Создание os.dokploy" },
+        { icon: "15.09", content: "Создание os.mtls" },
+      ],
+    },
+    {
+      time: "Октябрь 2026",
+      steps: [{ icon: "11.10", content: "Формирование команды opensophy" }],
+    },
+  ];
+
   let statusModalOpen = $state(false);
   let statusModalText = $state("");
 
@@ -256,10 +308,13 @@
         <ArcFlame
           arc={arcEl}
           color={flameColor}
-          height={90}
-          intensity={0.5}
-          sparks={1.2}
-          smoke={1}
+          height={isMobile ? 110 : 170}
+          intensity={0.85}
+          turbulence={0.6}
+          melt={6}
+          sparks={1.8}
+          smoke={1.3}
+          rim={3}
         />
       {/if}
     </div>
@@ -438,6 +493,35 @@
           {@render projectCard(project, wide)}
         {/if}
       {/each}
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="section-block team-section w-full max-w-5xl mx-auto px-4" aria-label="Команда">
+    <p class="section-overline"><Badge variant="accent">Команда</Badge></p>
+    <div class="team-grid">
+      {#each team as member (member.name)}
+        <div class="inset-shadow relative overflow-hidden rounded-xl bg-background-inset p-1.5">
+          <article class="team-card card rounded-lg bg-background">
+            <div
+              class="team-avatar inset-shadow grid size-14 shrink-0 place-items-center rounded-full bg-accent/10 text-lg font-semibold text-accent"
+              aria-hidden="true"
+            >
+              {member.initials}
+            </div>
+            <h3 class="team-name">{member.name}</h3>
+            <p class="team-role">{member.role}</p>
+          </article>
+        </div>
+      {/each}
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="section-block timeline-section w-full max-w-5xl mx-auto px-4" aria-label="История проекта">
+    <p class="section-overline"><Badge variant="default">История</Badge></p>
+    <div class="w-full rounded-lg border border-border bg-background p-2">
+      <ArcTimeline data={timeline} defaultActiveStep={{ time: "Октябрь 2026", stepIndex: 0 }} />
     </div>
   </section>
 </main>
@@ -1314,6 +1398,55 @@
   @keyframes status-modal-scale-in {
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
+  }
+
+  /* ─── Team ─────────────────────────────────────────────────── */
+  .team-section {
+    padding-top: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 767px) {
+    .team-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .team-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .team-name {
+    margin: 0.5rem 0 0;
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+  }
+
+  .team-role {
+    margin: 0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .timeline-section {
+    padding-bottom: clamp(3rem, 6vw, 6rem);
   }
 
   /* Текст как в остальных блоках: крупнее, насыщенность 500, плотный интервал */
