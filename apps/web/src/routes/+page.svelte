@@ -334,6 +334,7 @@
       <div class="hero-logo" aria-label="Opensophy ASCII logo" bind:this={logoEl}>
         <AsciiVisual
           src="/logo.png"
+          forceAscii={true}
           ascii={true}
           colored={false}
           color="#f43f5e"
