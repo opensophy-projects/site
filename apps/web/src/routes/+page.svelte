@@ -3,48 +3,53 @@
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import CardProject from "$lib/components/ui-registry/CardProject.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
-  import DiaText from "$lib/components/ui-registry/DiaText.svelte";
+  import TextLoop from "$lib/components/ui-registry/TextLoop.svelte";
+  import GlowHorizon from "$lib/components/ui-registry/glowhorizon.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
   import Faq from "$lib/components/ui-registry/Faq.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
-  // ─── Hero: три темы справа ────────────────────────────────────
-  type Topic = { title: string; href: string; lines: string[] };
+  // ─── Hero: циклический текст справа ───────────────────────────
+  // Описание разбито на 4 строки (TextLoop не переносит текст),
+  // каждая строка — свой TextLoop с тем же интервалом, поэтому меняются синхронно.
+  type Topic = { title: string; lines: string[] };
 
   const topics: Topic[] = [
     {
-      title: "Для начинающих",
-      href: "/article/general",
+      title: "Для начинающих инженеров",
       lines: [
-        "Статьи и образовательный контент",
-        "который поможет стать devsecops инженером",
+        "Создаём образовательные материалы",
+        "для студентов и начинающих инженеров,",
+        "которые помогают получить практические",
+        "навыки и уверенно войти в профессию.",
       ],
     },
     {
-      title: "Для разработчиков",
-      href: "/components/overview",
+      title: "Для инженеров",
       lines: [
-        "Open source продукты и решения:",
-        "os.ui, os.docs, os.mtls, os.compose",
+        "Разрабатываем инструменты и продукты,",
+        "которые автоматизируют рутинные задачи,",
+        "упрощают рабочие процессы и помогают",
+        "инженерам работать эффективнее.",
       ],
     },
     {
       title: "Для компаний",
-      href: "/solutions",
       lines: [
-        "Услуги в сфере безопасности:",
-        "аудит, DevSecOps, поиск утечек данных",
+        "Помогаем внедрять практики DevSecOps",
+        "и повышать уровень безопасности",
+        "инфраструктуры и процессов",
+        "разработки.",
       ],
     },
   ];
 
-  // Индекс темы, над которой сейчас курсор/фокус
-  let activeTopic = $state<number | null>(null);
-
-  // Цвета полосы DiaText на описании
-  const topicSweep = ["#f43f5e", "#fda4af", "#f43f5e"];
+  const LOOP_INTERVAL = 5000;
+  const topicTitles = topics.map((t) => t.title);
+  // lineLoops[i] — i-я строка описания для всех трёх тем
+  const lineLoops = [0, 1, 2, 3].map((i) => topics.map((t) => t.lines[i]));
 
   type StatusVariant = "in-progress" | "released" | "frozen" | "not-started";
 
@@ -217,17 +222,13 @@
   <!-- Hero Section -->
   <section class="hero-section relative flex w-full items-center justify-center">
     <div class="hero-card" aria-hidden="true">
-      <div class="hero-bg"></div>
+      <GlowHorizon variant="top" />
     </div>
 
     <div class="hero-inner">
-      <!-- Слева: заголовок, подзаголовок, кнопки -->
+      <!-- Слева: заголовок и кнопки -->
       <div class="hero-left">
         <h1 class="hero-title">Мастерская<br />DevSecOps</h1>
-        <p class="hero-lead">
-          Безопасная инфраструктура, open source и инженерные решения без
-          лишней сложности.
-        </p>
         <div class="hero-actions">
           <Button variant="primary" onclick={() => contactsState.open()}>
             Контакты
@@ -258,45 +259,19 @@
         />
       </div>
 
-      <!-- Справа: три темы, по наведению — продолжение (DiaText) -->
-      <nav class="hero-topics" aria-label="Для кого Opensophy">
-        {#each topics as topic, i (topic.title)}
-          <a
-            href={topic.href}
-            class="topic"
-            class:topic-active={activeTopic === i}
-            onmouseenter={() => (activeTopic = i)}
-            onmouseleave={() => (activeTopic = null)}
-            onfocus={() => (activeTopic = i)}
-            onblur={() => (activeTopic = null)}
-          >
-            <span class="topic-title">{topic.title}</span>
-
-            <!-- Десктоп: проявляется по наведению -->
-            <span class="topic-desc">
-              {#if activeTopic === i}
-                {#each topic.lines as line, li (line)}
-                  <span class="topic-line">
-                    <DiaText
-                      text={line}
-                      delay={li * 180}
-                      duration={900}
-                      sweepColors={topicSweep}
-                    />
-                  </span>
-                {/each}
-              {/if}
-            </span>
-
-            <!-- Тач-устройства: без наведения, показываем сразу -->
-            <span class="topic-static">
-              {#each topic.lines as line (line)}
-                <span class="topic-line">{line}</span>
-              {/each}
-            </span>
-          </a>
-        {/each}
-      </nav>
+      <!-- Справа: циклический текст (TextLoop) -->
+      <div class="hero-topics" aria-live="polite">
+        <div class="topic-title">
+          <TextLoop texts={topicTitles} interval={LOOP_INTERVAL} />
+        </div>
+        <div class="topic-desc">
+          {#each lineLoops as texts, li (li)}
+            <div class="topic-line">
+              <TextLoop {texts} interval={LOOP_INTERVAL} />
+            </div>
+          {/each}
+        </div>
+      </div>
     </div>
   </section>
 
@@ -458,7 +433,7 @@
     padding: 6.5rem 0 3rem;
   }
 
-  /* Карточка на всю ширину — как контентная область docs */
+  /* Карточка на всю ширину; внутри — GlowHorizon (variant="top") */
   .hero-card {
     position: absolute;
     top: 0;
@@ -475,30 +450,12 @@
     box-shadow: none;
   }
 
-  /* Свечение: слабее и поднято выше — к центру/логотипу */
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      ellipse 62% 52% at 50% 52%,
-      rgba(244, 63, 94, 0.3) 0%,
-      rgba(244, 63, 94, 0.1) 45%,
-      transparent 78%
-    );
-    opacity: 0.7;
-  }
-
-  :global(.dark) .hero-bg {
-    opacity: 0.6;
-  }
-
   .hero-inner {
     position: relative;
     z-index: 10;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
-    align-items: center; /* текст и логотип на одном уровне */
+    align-items: center;
     gap: clamp(1rem, 3vw, 3rem);
     width: calc(100% - 2rem);
     max-width: 92rem;
@@ -511,7 +468,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 
   .hero-title {
@@ -523,19 +480,10 @@
     color: var(--foreground);
   }
 
-  .hero-lead {
-    margin: 0;
-    max-width: 24rem;
-    font-size: clamp(1rem, 1.3vw, 1.2rem);
-    line-height: 1.6;
-    color: var(--foreground-muted);
-  }
-
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 0.5rem;
   }
 
   /* ─── Hero: логотип ────────────────────────────────────────── */
@@ -552,99 +500,79 @@
     height: 100%;
   }
 
-  /* ─── Hero: три темы справа ────────────────────────────────── */
+  /* ─── Hero: циклический текст справа ───────────────────────── */
   .hero-topics {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 0.75rem;
     justify-self: end;
     width: 100%;
-    max-width: 22rem;
+    max-width: 24rem;
   }
 
-  .topic {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    color: var(--foreground-muted);
-    text-decoration: none;
-    transition: color 150ms ease-out;
-  }
-
+  /* Заголовок — белый (цвет наследует TextLoop через text-inherit) */
   .topic-title {
-    font-size: clamp(1.05rem, 1.4vw, 1.3rem);
+    min-height: 1.4em;
+    font-size: clamp(1.05rem, 1.5vw, 1.35rem);
     font-weight: 500;
     letter-spacing: -0.01em;
-    transition: color 150ms ease-out;
-  }
-
-  .topic:hover .topic-title,
-  .topic:focus-visible .topic-title,
-  .topic-active .topic-title {
+    line-height: 1.4;
     color: var(--foreground);
   }
 
-  /* Место под описание зарезервировано — ничего не прыгает при наведении */
+  /* Описание — акцентным цветом. 4 строки зарезервированы, ничего не прыгает */
   .topic-desc {
     display: flex;
     flex-direction: column;
-    min-height: 3.3rem;
     font-size: 0.85rem;
     line-height: 1.55;
-    color: var(--foreground-muted);
+    color: var(--accent);
   }
 
   .topic-line {
-    display: block;
+    min-height: 1.55em;
   }
 
-  .topic-static {
-    display: none;
-    flex-direction: column;
-    font-size: 0.85rem;
-    line-height: 1.55;
-    color: var(--foreground-muted);
-  }
-
-  /* Тач-устройства: наведения нет, показываем описание сразу */
-  @media (hover: none) {
-    .topic-desc {
-      display: none;
-    }
-    .topic-static {
-      display: flex;
-    }
-  }
-
-  /* ─── Hero: адаптив ────────────────────────────────────────── */
+  /* ─── Hero: адаптив (мобильный) ────────────────────────────── */
   @media (max-width: 1023px) {
     .hero-section {
-      padding-top: 6rem;
+      min-height: auto;
+      padding-top: 5.5rem;
+      padding-bottom: 3rem;
     }
     .hero-inner {
       grid-template-columns: 1fr;
-      gap: 2rem;
+      gap: 1.5rem;
+    }
+
+    /* Порядок на мобильном: логотип → заголовок и кнопки → тексты «Для…» */
+    .hero-logo {
+      order: 1;
+      height: clamp(14rem, 55vw, 20rem);
     }
     .hero-left {
+      order: 2;
       align-items: center;
       text-align: center;
-    }
-    .hero-lead {
-      max-width: 32rem;
     }
     .hero-actions {
       justify-content: center;
     }
-    .hero-logo {
-      height: clamp(16rem, 60vw, 24rem);
-    }
     .hero-topics {
+      order: 3;
       justify-self: center;
+      align-items: center;
       max-width: 28rem;
       text-align: center;
     }
-    .topic {
-      align-items: center;
+    .topic-title {
+      font-size: 1.15rem;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .topic-desc {
+      font-size: 0.78rem;
     }
   }
 
