@@ -365,7 +365,7 @@
   </section>
 
   <!-- About us -->
-  <section class="section-block about-us-section w-full max-w-5xl mx-auto px-4" aria-label="О нас">
+  <section class="section-block about-us-section w-full max-w-6xl mx-auto px-4" aria-label="О нас">
     <p class="section-overline"><Badge variant="accent">О нас</Badge></p>
     <p class="about-us-copy">
       <span class="text-foreground">Opensophy — это команда специалистов в области информационной безопасности и разработки.</span>
@@ -901,13 +901,13 @@
 
   .about-us-copy {
     margin: 0 auto;
-    max-width: 52rem;
+    max-width: 100%;
     text-align: center;
     color: var(--foreground-muted);
-    font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+    font-size: clamp(1.75rem, 3.5vw, 2.6rem);
     font-weight: 500;
-    line-height: 1.5;
-    letter-spacing: -0.015em;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
   }
 
   /* ─── Component showcase ─────────────────────────────────── */
