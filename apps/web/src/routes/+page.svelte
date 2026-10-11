@@ -541,9 +541,9 @@
   .hero-arc {
     position: absolute;
     left: 50%;
-    top: calc(100% - 15rem);
+    top: calc(100% - 4rem);
     width: 165%;
-    height: 30rem;
+    height: 42rem;
     transform: translateX(-50%);
     border-radius: 50%;
     background: var(--background);
@@ -620,9 +620,9 @@
     }
 
     .hero-arc {
-      top: calc(100% - 8rem);
+      top: calc(100% - 3rem);
       width: 220%;
-      height: 16rem;
+      height: 26rem;
     }
 
     .hero-inner {
