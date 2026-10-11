@@ -963,10 +963,10 @@
   .component-copy p {
     margin: 0;
     color: var(--foreground-muted);
-    font-size: clamp(0.9rem, 1vw, 1.02rem);
+    font-size: clamp(1.1rem, 1.5vw, 1.45rem);
     font-weight: 500;
-    line-height: 1.6;
-    letter-spacing: -0.01em;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
   }
 
   .component-copy .text-strong {
@@ -992,7 +992,7 @@
     }
 
     .component-copy p {
-      font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+      font-size: clamp(1.15rem, 2.4vw, 1.5rem);
     }
   }
 
