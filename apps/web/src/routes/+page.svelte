@@ -465,14 +465,14 @@
   /* ─── Hero Section ─────────────────────────────────────────── */
   .hero-section {
     position: relative;
-    padding: 5.5rem 0 3.5rem;
+    padding: 5.5rem 0 6rem;
   }
 
   /* Контейнер свечения (внутри — GlowHorizon variant="top").
      Свечение сильнее у нижнего края, т.е. оно ниже логотипа. */
   .hero-card {
     position: absolute;
-    top: 0;
+    top: 45%; /* свечение начинается ниже логотипа */
     bottom: 0;
     left: 0;
     right: 0;
@@ -516,11 +516,12 @@
   @media (max-width: 1023px) {
     .hero-section {
       padding-top: 4.5rem;
-      padding-bottom: 2.5rem;
+      padding-bottom: 5rem;
     }
 
     /* Свечение на всю ширину экрана, без чёрных полей по бокам */
     .hero-card {
+      top: 50%;
       width: 100%;
       max-width: none;
       margin-left: 0;
@@ -549,14 +550,14 @@
     position: relative;
     display: flex;
     justify-content: center;
-    min-height: 3rem;
+    min-height: 5rem;
   }
 
   .sponsors-row {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2.5rem;
+    gap: 4rem;
   }
 
   /* Невидимая копия для измерения ширины */
@@ -566,7 +567,7 @@
     left: 0;
     display: flex;
     align-items: center;
-    gap: 2.5rem;
+    gap: 4rem;
     width: max-content;
     visibility: hidden;
     pointer-events: none;
@@ -577,7 +578,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 3rem;
+    height: 5rem;
     padding: 0 0.5rem;
     outline: none;
     opacity: 0.85;
@@ -592,18 +593,27 @@
 
   .sponsor-logo {
     display: block;
-    height: 2rem;
+    height: 4.25rem;
     width: auto;
     max-width: none;
     object-fit: contain;
   }
 
   .sponsor-text {
-    font-size: 1.35rem;
+    font-size: 2.1rem;
     font-weight: 600;
     letter-spacing: -0.01em;
     white-space: nowrap;
     color: var(--foreground);
+  }
+
+  @media (max-width: 1023px) {
+    .sponsor-logo {
+      height: 3.75rem;
+    }
+    .sponsor-text {
+      font-size: 1.9rem;
+    }
   }
 
   .sponsor-tip {
