@@ -10,6 +10,7 @@
   import ShieldInfinity from "$lib/components/ui-registry/ShieldInfinity.svelte";
   import Phosphor from "$lib/components/ui-registry/Phosphor.svelte";
   import Terminal from "$lib/components/ui-registry/Terminal.svelte";
+  import GhostCursor from "$lib/components/ui-registry/GhostCursor.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
@@ -246,21 +247,18 @@
       <div class="hero-arc"></div>
     </div>
 
-    <div class="hero-inner">
-      <div class="hero-copy">
-        <h1 class="hero-lead">
-          <span class="text-foreground">opensophy</span>
-          <span class="hero-lead-line text-accent">Мастерская DevSecOps</span>
-        </h1>
-        <div class="services-actions hero-actions">
-          <button
-            type="button"
-            class="services-action services-action-primary"
-            onclick={() => contactsState.open()}>Контакты</button
-          >
-          <a class="services-action" href="/solutions">Услуги</a>
-        </div>
+    <!-- GhostCursor только на ПК и только выше линии дуги -->
+    {#if !isMobile}
+      <div class="hero-ghost" aria-hidden="true">
+        <GhostCursor />
       </div>
+    {/if}
+
+    <div class="hero-inner">
+      <h1 class="hero-lead">
+        <span class="text-foreground">opensophy</span>
+        <span class="hero-lead-line text-accent">Мастерская DevSecOps</span>
+      </h1>
 
       <div class="hero-logo" aria-label="Opensophy ASCII logo">
         <AsciiVisual
@@ -281,6 +279,15 @@
           floatSpeed={1.6}
           class="hero-logo-canvas"
         />
+      </div>
+
+      <div class="services-actions hero-actions">
+        <button
+          type="button"
+          class="services-action services-action-primary"
+          onclick={() => contactsState.open()}>Контакты</button
+        >
+        <a class="services-action" href="/solutions">Услуги</a>
       </div>
     </div>
   </section>
@@ -570,18 +577,21 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
     align-items: center;
-    gap: clamp(1.5rem, 4vw, 4rem);
+    column-gap: clamp(1.5rem, 4vw, 4rem);
+    row-gap: 0;
     width: calc(100% - 2rem);
     max-width: 80rem;
     margin: 0 auto;
     padding: 0 1.25rem;
   }
 
-  .hero-copy {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+  /* Зона GhostCursor: от верха секции до линии дуги, ниже — не работает */
+  .hero-ghost {
+    position: absolute;
+    inset: 0 0 4rem 0;
+    z-index: 1;
+    contain: paint;
+    pointer-events: none;
   }
 
   /* Стиль как у блока «Opensophy занимается…» */
@@ -591,6 +601,9 @@
     font-weight: 500;
     line-height: 1.4;
     color: var(--foreground-muted);
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
   }
 
   .hero-lead-line {
@@ -598,14 +611,20 @@
   }
 
   .hero-actions {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
     justify-content: flex-start;
-    margin-top: 0.75rem;
+    margin-top: 1.5rem;
   }
 
   .hero-logo {
     position: relative;
     width: 100%;
     justify-self: end;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
     height: clamp(22rem, 34vw, 36rem);
     color: var(--accent);
   }
@@ -633,21 +652,31 @@
       grid-template-columns: 1fr;
       width: 100%;
       padding: 0 1rem;
-      gap: 0.5rem;
+      row-gap: 0.5rem;
     }
 
-    .hero-copy {
-      align-items: center;
+    /* Мобильный порядок: заголовок → логотип → кнопки */
+    .hero-lead {
+      grid-column: 1;
+      grid-row: auto;
+      align-self: auto;
       text-align: center;
     }
 
-    .hero-actions {
-      justify-content: center;
-    }
-
     .hero-logo {
+      grid-column: 1;
+      grid-row: auto;
+      align-self: auto;
       justify-self: center;
       height: clamp(18rem, 88vw, 26rem);
+    }
+
+    .hero-actions {
+      grid-column: 1;
+      grid-row: auto;
+      align-self: auto;
+      justify-content: center;
+      margin-top: 0.5rem;
     }
   }
 
