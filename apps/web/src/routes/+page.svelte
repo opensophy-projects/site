@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import ServicesGrid from "$lib/components/ui-registry/ServicesGrid.svelte";
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import CardProject from "$lib/components/ui-registry/CardProject.svelte";
@@ -11,7 +12,22 @@
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
-  // ─── Hero: циклический текст справа ───────────────────────────
+  // ─── Мобильный режим: нужен, чтобы увеличить ASCII-лого ───────
+  let isMobile = $state(false);
+
+  onMount(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    isMobile = mq.matches;
+    const onChange = (e: MediaQueryListEvent) => {
+      isMobile = e.matches;
+    };
+    mq.addEventListener("change", onChange);
+    return () => {
+      mq.removeEventListener("change", onChange);
+    };
+  });
+
+  // ─── Hero: циклический текст справа (только десктоп) ──────────
   // Описание разбито на 4 строки (TextLoop не переносит текст),
   // каждая строка — свой TextLoop с тем же интервалом, поэтому меняются синхронно.
   type Topic = { title: string; lines: string[] };
@@ -221,8 +237,9 @@
 
   <!-- Hero Section -->
   <section class="hero-section relative flex w-full items-center justify-center">
+    <!-- Свечение: компонент GlowHorizon сверху, слабее и меньше по высоте -->
     <div class="hero-card" aria-hidden="true">
-      <GlowHorizon variant="top" />
+      <GlowHorizon variant="top" opacity={0.14} />
     </div>
 
     <div class="hero-inner">
@@ -237,7 +254,7 @@
         </div>
       </div>
 
-      <!-- Центр: левитирующий ASCII-логотип -->
+      <!-- Центр: левитирующий ASCII-логотип (на мобильном крупнее) -->
       <div class="hero-logo" aria-label="Opensophy ASCII logo">
         <AsciiVisual
           src="/logo.png"
@@ -246,20 +263,20 @@
           color="#f43f5e"
           highlight="#f43f5e"
           background=""
-          cellSize={9}
+          cellSize={isMobile ? 8 : 9}
           contrast={1.5}
           exposure={1}
-          scale={3.6}
+          scale={isMobile ? 5 : 3.6}
           orbit={false}
           autoRotate={false}
           rotationIntensity={0.5}
-          floatIntensity={2.5}
+          floatIntensity={isMobile ? 1.5 : 2.5}
           floatSpeed={1.6}
           class="hero-logo-canvas"
         />
       </div>
 
-      <!-- Справа: циклический текст (TextLoop) -->
+      <!-- Справа: циклический текст (TextLoop), скрыт на мобильном -->
       <div class="hero-topics" aria-live="polite">
         <div class="topic-title">
           <TextLoop texts={topicTitles} interval={LOOP_INTERVAL} />
@@ -433,13 +450,14 @@
     padding: 6.5rem 0 3rem;
   }
 
-  /* Карточка на всю ширину; внутри — GlowHorizon (variant="top") */
+  /* Контейнер свечения (внутри — GlowHorizon variant="top").
+     Меньше: занимает только верхние ~62% секции, а не всю высоту. */
   .hero-card {
     position: absolute;
     top: 0;
-    bottom: 0;
     left: 0;
     right: 0;
+    height: 62%;
     width: calc(100% - 2rem);
     max-width: 92rem;
     margin-left: auto;
@@ -510,7 +528,7 @@
     max-width: 24rem;
   }
 
-  /* Заголовок — белый (цвет наследует TextLoop через text-inherit) */
+  /* Заголовок — белый */
   .topic-title {
     min-height: 1.4em;
     font-size: clamp(1.05rem, 1.5vw, 1.35rem);
@@ -520,7 +538,7 @@
     color: var(--foreground);
   }
 
-  /* Описание — акцентным цветом. 4 строки зарезервированы, ничего не прыгает */
+  /* Описание — акцентным цветом. 4 строки зарезервированы */
   .topic-desc {
     display: flex;
     flex-direction: column;
@@ -537,18 +555,32 @@
   @media (max-width: 1023px) {
     .hero-section {
       min-height: auto;
-      padding-top: 5.5rem;
-      padding-bottom: 3rem;
-    }
-    .hero-inner {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
+      padding-top: 5rem;
+      padding-bottom: 2.5rem;
     }
 
-    /* Порядок на мобильном: логотип → заголовок и кнопки → тексты «Для…» */
+    /* Свечение растягивается на всю ширину экрана, без чёрных полей по бокам */
+    .hero-card {
+      width: 100%;
+      max-width: none;
+      margin-left: 0;
+      margin-right: 0;
+      height: 58%;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .hero-inner {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0 1.25rem;
+    }
+
+    /* Порядок на мобильном: логотип → заголовок и кнопки */
     .hero-logo {
       order: 1;
-      height: clamp(14rem, 55vw, 20rem);
+      height: clamp(18rem, 88vw, 26rem);
     }
     .hero-left {
       order: 2;
@@ -558,21 +590,10 @@
     .hero-actions {
       justify-content: center;
     }
-    .hero-topics {
-      order: 3;
-      justify-self: center;
-      align-items: center;
-      max-width: 28rem;
-      text-align: center;
-    }
-    .topic-title {
-      font-size: 1.15rem;
-    }
-  }
 
-  @media (max-width: 420px) {
-    .topic-desc {
-      font-size: 0.78rem;
+    /* Тексты «Для …» на мобильном убраны */
+    .hero-topics {
+      display: none;
     }
   }
 
