@@ -20,7 +20,6 @@
   import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
   import { canRunHeavyEffects } from "$lib/utils/perf";
-  import Query from "$lib/components/ui-registry/Query.svelte";
 
   // ─── Спонсоры ─────────────────────────────────────────────────
   type Sponsor = { name: string; description: string; logo?: string };
