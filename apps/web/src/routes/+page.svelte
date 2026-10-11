@@ -521,7 +521,7 @@
   </section>
 
   <!-- Contacts -->
-  <section class="section-block contact-section w-full max-w-5xl mx-auto px-4" aria-label="Контакты">
+  <section class="section-block contact-section" aria-label="Контакты">
     <p class="section-overline"><Badge variant="accent">Контакты</Badge></p>
     <div class="inset-shadow relative overflow-hidden rounded-xl bg-background-inset p-1.5">
       <div class="contact-card card rounded-lg bg-background">
@@ -538,7 +538,6 @@
             class="services-action services-action-primary"
             onclick={() => contactsState.open()}>Написать нам</button
           >
-          <a class="services-action" href="/solutions">Все услуги</a>
         </div>
       </div>
     </div>
@@ -1485,7 +1484,12 @@
   }
 
   /* ─── Contacts ─────────────────────────────────────────────── */
+  /* Ширина как у секции «История» и розового блока «Продукты» */
   .contact-section {
+    width: 92rem;
+    max-width: calc(100vw - 2rem);
+    margin: 0 auto;
+    box-sizing: border-box;
     padding-bottom: clamp(3rem, 6vw, 6rem);
   }
 
