@@ -899,6 +899,19 @@
     margin-top: clamp(2rem, 4vw, 3.5rem);
   }
 
+  /* Мобильный: три кнопки друг под другом, на всю ширину */
+  @media (max-width: 767px) {
+    .component-showcase .showcase-actions {
+      flex-direction: column;
+      align-items: stretch;
+      flex-wrap: nowrap;
+      width: 100%;
+      max-width: 24rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
   .component-cell {
     display: flex;
     flex-direction: column;
