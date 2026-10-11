@@ -1,5 +1,5 @@
 <script module lang="ts">
-  import { circ, clamp, open, poly, rad, type Vec2, type Vec3 } from "../core/iso";
+  import { circ, clamp, open, poly, rad, type Vec2, type Vec3 } from "$lib/core/iso";
 
   /**
    * Query: знак вопроса как тело на круглом постаменте. Крюк — одна изогнутая
@@ -92,9 +92,9 @@
 
 <script lang="ts">
   import { onDestroy } from "svelte";
-  import { Cam, facing, fit, prism, proj } from "../core/iso";
-  import { spring, stepS } from "../core/motion";
-  import { TABLE } from "../intensity";
+  import { Cam, facing, fit, prism, proj } from "$lib/core/iso";
+  import { spring, stepS } from "$lib/core/motion";
+  import { TABLE } from "$lib/intensity";
 
   let { value, readout = $bindable("rest") }: { value: number; readout?: string } = $props();
 
