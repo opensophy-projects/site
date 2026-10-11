@@ -38,6 +38,8 @@
 
   // Мобильный режим: крупнее ASCII-лого и всегда карусель спонсоров
   let isMobile = $state(false);
+  // Телефон (< 768px): без GhostCursor, без текста и кнопок в hero
+  let isPhone = $state(false);
   // Помещаются ли все логотипы в одну строку (проверяется по скрытой копии)
   let fits = $state(true);
   let sponsorsEl = $state<HTMLElement | undefined>();
@@ -60,6 +62,13 @@
     };
     mq.addEventListener("change", onChange);
 
+    const phoneMq = window.matchMedia("(max-width: 767px)");
+    isPhone = phoneMq.matches;
+    const onPhoneChange = (e: MediaQueryListEvent) => {
+      isPhone = e.matches;
+    };
+    phoneMq.addEventListener("change", onPhoneChange);
+
     const ro = new ResizeObserver(measureSponsors);
     if (sponsorsEl) ro.observe(sponsorsEl);
     if (measureEl) ro.observe(measureEl);
@@ -67,6 +76,7 @@
 
     return () => {
       mq.removeEventListener("change", onChange);
+      phoneMq.removeEventListener("change", onPhoneChange);
       ro.disconnect();
     };
   });
@@ -247,11 +257,10 @@
       <div class="hero-arc"></div>
     </div>
 
-    <!-- GhostCursor только на ПК и только выше линии дуги -->
-    {#if !isMobile}
-      <div class="hero-ghost" aria-hidden="true">
-        <GhostCursor />
-      </div>
+    <!-- GhostCursor: ПК и планшет, не на телефоне. Слушает мышь на всей секции,
+         а маска (.hero-ghost) вырезает область под дугой — там он не виден. -->
+    {#if !isPhone}
+      <GhostCursor color="#f43f5e" zIndex={1} class="hero-ghost" />
     {/if}
 
     <div class="hero-inner">
@@ -510,6 +519,10 @@
     position: relative;
     min-height: 40rem;
     padding: 6rem 0 5rem;
+    /* Эллипс дуги (для маски GhostCursor): полуоси и центр */
+    --arc-rx: 82.5%;
+    --arc-ry: 21rem;
+    --arc-cy: calc(100% + 17rem);
   }
 
   /* Карточка со свечением: растянута на всю секцию, скруглена снизу */
@@ -585,13 +598,19 @@
     padding: 0 1.25rem;
   }
 
-  /* Зона GhostCursor: от верха секции до линии дуги, ниже — не работает */
-  .hero-ghost {
-    position: absolute;
-    inset: 0 0 4rem 0;
-    z-index: 1;
-    contain: paint;
-    pointer-events: none;
+  /* Маска GhostCursor: всё, что внутри эллипса дуги, скрыто.
+     Параметры эллипса (--arc-*) заданы на .hero-section и совпадают с .hero-arc */
+  :global(.hero-ghost) {
+    -webkit-mask-image: radial-gradient(
+      ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
+      transparent 99%,
+      #000 100%
+    );
+    mask-image: radial-gradient(
+      ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
+      transparent 99%,
+      #000 100%
+    );
   }
 
   /* Стиль как у блока «Opensophy занимается…» */
@@ -610,7 +629,7 @@
     display: block;
   }
 
-  .hero-actions {
+  .services-actions.hero-actions {
     grid-column: 1;
     grid-row: 2;
     align-self: start;
@@ -640,6 +659,9 @@
       min-height: 0;
       padding-top: 5rem;
       padding-bottom: 5rem;
+      --arc-rx: 110%;
+      --arc-ry: 13rem;
+      --arc-cy: calc(100% + 10rem);
     }
 
     .hero-arc {
@@ -671,12 +693,29 @@
       height: clamp(18rem, 88vw, 26rem);
     }
 
-    .hero-actions {
+    .services-actions.hero-actions {
       grid-column: 1;
       grid-row: auto;
       align-self: auto;
       justify-content: center;
       margin-top: 0.5rem;
+    }
+  }
+
+  /* Телефон: в hero остаётся только логотип (h1 скрыт визуально, но есть для SEO/скринридеров) */
+  @media (max-width: 767px) {
+    .hero-lead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    .services-actions.hero-actions {
+      display: none;
     }
   }
 
