@@ -512,13 +512,8 @@
     bottom: 0;
     left: 0;
     right: 0;
-    width: calc(100% - 2rem);
-    max-width: 92rem;
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
     overflow: hidden;
-    border-bottom-left-radius: var(--radius-3xl, 3.3rem);
-    border-bottom-right-radius: var(--radius-3xl, 3.3rem);
     box-shadow: none;
   }
 
@@ -529,13 +524,13 @@
     pointer-events: none;
     background:
       radial-gradient(
-        ellipse 65% 55% at 50% 100%,
+        ellipse 75% 55% at 50% 100%,
         rgba(244, 63, 94, 0.5) 0%,
         rgba(244, 63, 94, 0.22) 38%,
         transparent 72%
       ),
       radial-gradient(
-        ellipse 90% 70% at 50% 100%,
+        ellipse 100% 70% at 50% 100%,
         rgba(244, 63, 94, 0.12) 0%,
         transparent 75%
       );
@@ -546,9 +541,9 @@
   .hero-arc {
     position: absolute;
     left: 50%;
-    top: calc(100% - 14rem);
-    width: 104%;
-    height: 28rem;
+    top: calc(100% - 15rem);
+    width: 165%;
+    height: 30rem;
     transform: translateX(-50%);
     border-radius: 50%;
     background: var(--background);
@@ -624,18 +619,9 @@
       padding-bottom: 5rem;
     }
 
-    .hero-card {
-      width: 100%;
-      max-width: none;
-      margin-left: 0;
-      margin-right: 0;
-      border-bottom-left-radius: 2rem;
-      border-bottom-right-radius: 2rem;
-    }
-
     .hero-arc {
       top: calc(100% - 8rem);
-      width: 112%;
+      width: 220%;
       height: 16rem;
     }
 
