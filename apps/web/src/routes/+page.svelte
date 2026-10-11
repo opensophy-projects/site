@@ -899,6 +899,14 @@
     padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
   }
 
+  /* ПК: увеличенный отступ после спонсоров, привязан к высоте экрана —
+     блок «О нас» не выглядывает снизу на первом экране */
+  @media (min-width: 1024px) {
+    .sponsors-section {
+      padding-bottom: clamp(8rem, 24vh, 18rem);
+    }
+  }
+
   .about-us-copy {
     margin: 0 auto;
     max-width: 100%;
