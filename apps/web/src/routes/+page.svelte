@@ -2,7 +2,7 @@
   import { onMount, type Component } from "svelte";
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
-  import ArcFlame from "$lib/components/ui-registry/Arcflame.svelte";
+  import ArcFlame from "$lib/components/ui-registry/ArcFlame.svelte";
   import ArcTimeline from "$lib/components/ui-registry/ArcTimeline.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import LogoCarousel from "$lib/components/ui-registry/logo-carousel.svelte";
