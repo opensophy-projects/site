@@ -248,8 +248,10 @@
 
     <div class="hero-inner">
       <div class="hero-copy">
-        <h1 class="hero-title">opensophy</h1>
-        <p class="hero-subtitle">Мастерская DevSecOps</p>
+        <h1 class="hero-lead">
+          <span class="text-foreground">opensophy</span>
+          <span class="hero-lead-line text-accent">Мастерская DevSecOps</span>
+        </h1>
         <div class="services-actions hero-actions">
           <button
             type="button"
@@ -271,7 +273,7 @@
           cellSize={isMobile ? 8 : 9}
           contrast={1.5}
           exposure={1}
-          scale={isMobile ? 5 : 4.6}
+          scale={isMobile ? 5 : 4}
           orbit={false}
           autoRotate={false}
           rotationIntensity={0.5}
@@ -540,12 +542,13 @@
   }
 
   /* Огромный тёмный «шар» — его верхний край даёт изогнутую светящуюся линию */
+  /* Эллипс с центром на нижней кромке: дуга идёт от угла до угла */
   .hero-arc {
     position: absolute;
     left: 50%;
-    top: 80%;
-    width: 150%;
-    aspect-ratio: 1 / 1;
+    top: calc(100% - 14rem);
+    width: 104%;
+    height: 28rem;
     transform: translateX(-50%);
     border-radius: 50%;
     background: var(--background);
@@ -582,29 +585,17 @@
     gap: 1rem;
   }
 
-  .hero-title {
+  /* Стиль как у блока «Opensophy занимается…» */
+  .hero-lead {
     margin: 0;
-    font-size: clamp(3rem, 7vw, 6rem);
-    font-weight: 600;
-    line-height: 1.02;
-    letter-spacing: -0.04em;
-    color: var(--foreground);
-    background: linear-gradient(
-      180deg,
-      var(--foreground) 30%,
-      color-mix(in srgb, var(--foreground) 55%, transparent) 100%
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--foreground-muted);
   }
 
-  .hero-subtitle {
-    margin: 0;
-    font-size: clamp(1.15rem, 2vw, 1.6rem);
-    font-weight: 500;
-    letter-spacing: -0.015em;
-    color: var(--foreground-muted);
+  .hero-lead-line {
+    display: block;
   }
 
   .hero-actions {
@@ -616,7 +607,7 @@
     position: relative;
     width: 100%;
     justify-self: end;
-    height: clamp(26rem, 40vw, 42rem);
+    height: clamp(22rem, 34vw, 36rem);
     color: var(--accent);
   }
 
@@ -643,8 +634,9 @@
     }
 
     .hero-arc {
-      top: 88%;
-      width: 260%;
+      top: calc(100% - 8rem);
+      width: 112%;
+      height: 16rem;
     }
 
     .hero-inner {
@@ -1114,6 +1106,7 @@
     font-size: 0.9rem;
     font-weight: 600;
     text-decoration: none;
+    cursor: pointer;
   }
 
   .services-action-primary {
