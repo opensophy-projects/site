@@ -46,14 +46,10 @@
   let sponsorsEl = $state<HTMLElement | undefined>();
   let measureEl = $state<HTMLElement | undefined>();
 
-  // Hero: положение ASCII-логотипа внутри секции (px) — вокруг него GhostCursor затухает
-  let heroEl = $state<HTMLElement | undefined>();
+  // Hero: ASCII-логотип. GhostCursor плавно гаснет, когда курсор приближается к нему
+  // (без маски-«дырки», поэтому никакого круга под логотипом нет).
   let logoEl = $state<HTMLElement | undefined>();
-  let logoCx = $state(0);
-  let logoCy = $state(0);
-  let logoRx = $state(0);
-  let logoRy = $state(0);
-  let logoMeasured = $state(false);
+  let ghostOpacity = $state(1);
 
   // Карусель: всегда на мобильном, на ПК — только если логотипы не помещаются
   const useCarousel = $derived(isMobile || !fits);
@@ -64,17 +60,28 @@
     fits = measureEl.offsetWidth <= sponsorsEl.clientWidth;
   }
 
-  function measureLogo() {
-    if (!heroEl || !logoEl) return;
-    const h = heroEl.getBoundingClientRect();
-    const l = logoEl.getBoundingClientRect();
-    if (!l.width || !l.height) return;
-    logoCx = l.left - h.left + l.width / 2;
-    logoCy = l.top - h.top + l.height / 2;
-    // Радиусы зоны затухания чуть больше самого логотипа
-    logoRx = l.width * 0.6;
-    logoRy = l.height * 0.6;
-    logoMeasured = true;
+  function smoothstep(edge0: number, edge1: number, x: number) {
+    const t = Math.min(1, Math.max(0, (x - edge0) / (edge1 - edge0)));
+    return t * t * (3 - 2 * t);
+  }
+
+  let rafId = 0;
+  function onPointerMove(e: PointerEvent) {
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = 0;
+      if (!logoEl) return;
+      const l = logoEl.getBoundingClientRect();
+      if (!l.width || !l.height) return;
+      const cx = l.left + l.width / 2;
+      const cy = l.top + l.height / 2;
+      // Нормированное эллиптическое расстояние: 1 = край логотипа
+      const dx = (e.clientX - cx) / (l.width / 2);
+      const dy = (e.clientY - cy) / (l.height / 2);
+      const d = Math.hypot(dx, dy);
+      // Внутри логотипа (d < 0.6) — полностью погашен, к d = 1.5 плавно возвращается
+      ghostOpacity = smoothstep(0.6, 1.5, d);
+    });
   }
 
   onMount(() => {
@@ -97,18 +104,14 @@
     if (measureEl) ro.observe(measureEl);
     measureSponsors();
 
-    const heroRo = new ResizeObserver(measureLogo);
-    if (heroEl) heroRo.observe(heroEl);
-    if (logoEl) heroRo.observe(logoEl);
-    measureLogo();
-    window.addEventListener("resize", measureLogo);
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
 
     return () => {
       mq.removeEventListener("change", onChange);
       phoneMq.removeEventListener("change", onPhoneChange);
       ro.disconnect();
-      heroRo.disconnect();
-      window.removeEventListener("resize", measureLogo);
+      window.removeEventListener("pointermove", onPointerMove);
+      if (rafId) cancelAnimationFrame(rafId);
     };
   });
 
@@ -283,9 +286,7 @@
   <!-- Hero Section -->
   <section
     class="hero-section relative flex w-full items-center justify-center"
-    class:logo-measured={logoMeasured}
-    bind:this={heroEl}
-    style="--logo-cx: {logoCx}px; --logo-cy: {logoCy}px; --logo-rx: {logoRx}px; --logo-ry: {logoRy}px;"
+    style="--ghost-opacity: {ghostOpacity};"
   >
     <!-- Изогнутое свечение (горизонт) -->
     <div class="hero-card" aria-hidden="true">
@@ -293,9 +294,8 @@
       <div class="hero-arc"></div>
     </div>
 
-    <!-- GhostCursor: ПК и планшет, не на телефоне. Слушает мышь на всей секции,
-         а маска (.hero-ghost) вырезает область под дугой и плавно гасит его
-         вокруг ASCII-логотипа. -->
+    <!-- GhostCursor: ПК и планшет, не на телефоне. Маска вырезает область под дугой,
+         а прозрачность плавно падает до нуля, когда курсор рядом с ASCII-логотипом. -->
     {#if !isPhone}
       <GhostCursor color="#f43f5e" zIndex={1} class="hero-ghost" />
     {/if}
@@ -364,6 +364,16 @@
     </div>
   </section>
 
+  <!-- About us -->
+  <section class="section-block about-us-section w-full max-w-5xl mx-auto px-4" aria-label="О нас">
+    <p class="section-overline"><Badge variant="accent">О нас</Badge></p>
+    <p class="about-us-copy">
+      <span class="text-foreground">Opensophy — это команда специалистов в области информационной безопасности и разработки.</span>
+      Мы оказываем услуги по внедрению
+      <span class="text-accent">DevSecOps, автоматизации процессов и настройке инфраструктуры</span>, а также разрабатываем программное обеспечение и создаем образовательный контент.
+    </p>
+  </section>
+
   <!-- Services showcase -->
   <section class="component-showcase" aria-label="Наши направления">
     <div class="component-grid">
@@ -406,7 +416,8 @@
       </article>
       <article class="component-cell">
         <div class="component-visual component-visual-radar">
-          <Radar scope="window" />
+          <!-- Радар следит за курсором только в пределах своего элемента, а не по всей странице -->
+          <Radar scope="element" />
         </div>
         <div class="component-copy">
           <h2>Комплексная проверка безопасности и закрытие рисков</h2>
@@ -573,11 +584,8 @@
     --arc-rx: 82.5%;
     --arc-ry: 21rem;
     --arc-cy: calc(100% + 17rem);
-    /* Зона вокруг ASCII-логотипа (для маски GhostCursor) — перезаписывается из JS */
-    --logo-cx: 75%;
-    --logo-cy: 50%;
-    --logo-rx: 18rem;
-    --logo-ry: 18rem;
+    /* Плавность затухания GhostCursor возле логотипа — задаётся из JS */
+    --ghost-opacity: 1;
   }
 
   /* Карточка со свечением: растянута на всю секцию, скруглена снизу */
@@ -653,39 +661,23 @@
     padding: 0 1.25rem;
   }
 
-  /* Маска GhostCursor — два слоя, пересекаются (mask-composite: intersect):
-     1) всё, что внутри эллипса дуги, скрыто (параметры --arc-* совпадают с .hero-arc);
-     2) вокруг ASCII-логотипа курсор плавно затухает: в центре зоны полностью
-        прозрачен, к краю (--logo-rx / --logo-ry) плавно возвращается. */
+  /* GhostCursor:
+     1) маска скрывает всё, что внутри эллипса дуги (параметры --arc-* совпадают с .hero-arc);
+     2) opacity плавно уходит в 0 рядом с ASCII-логотипом (значение считается в JS).
+     Никаких «дырок» в маске — поэтому круга вокруг логотипа больше нет. */
   :global(.hero-ghost) {
-    -webkit-mask-image:
-      radial-gradient(
-        ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
-        transparent 99%,
-        #000 100%
-      ),
-      radial-gradient(
-        ellipse var(--logo-rx) var(--logo-ry) at var(--logo-cx) var(--logo-cy),
-        transparent 0%,
-        transparent 35%,
-        rgba(0, 0, 0, 0.35) 65%,
-        #000 100%
-      );
-    mask-image:
-      radial-gradient(
-        ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
-        transparent 99%,
-        #000 100%
-      ),
-      radial-gradient(
-        ellipse var(--logo-rx) var(--logo-ry) at var(--logo-cx) var(--logo-cy),
-        transparent 0%,
-        transparent 35%,
-        rgba(0, 0, 0, 0.35) 65%,
-        #000 100%
-      );
-    -webkit-mask-composite: source-in;
-    mask-composite: intersect;
+    opacity: var(--ghost-opacity, 1);
+    transition: opacity 250ms ease-out;
+    -webkit-mask-image: radial-gradient(
+      ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
+      transparent 99%,
+      #000 100%
+    );
+    mask-image: radial-gradient(
+      ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
+      transparent 99%,
+      #000 100%
+    );
   }
 
   /* Стиль как у блока «Opensophy занимается…» */
@@ -900,6 +892,22 @@
   .sponsor:focus-visible .sponsor-tip {
     opacity: 1;
     transform: translate(-50%, 0);
+  }
+
+  /* ─── About us (между спонсорами и сеткой направлений) ──────── */
+  .about-us-section {
+    padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .about-us-copy {
+    margin: 0 auto;
+    max-width: 52rem;
+    text-align: center;
+    color: var(--foreground-muted);
+    font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: -0.015em;
   }
 
   /* ─── Component showcase ─────────────────────────────────── */
