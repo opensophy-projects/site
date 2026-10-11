@@ -296,7 +296,7 @@
   </section>
 
   <!-- Services showcase -->
-  <section class="component-showcase w-full max-w-7xl mx-auto px-4" aria-label="Наши направления">
+  <section class="component-showcase" aria-label="Наши направления">
     <div class="component-grid">
       <article class="component-cell">
         <div class="component-visual component-visual-shield">
@@ -305,7 +305,7 @@
         <div class="component-copy">
           <h2>Автоматическая защита бизнеса</h2>
           <p>
-            Настраиваем систему так, чтобы она сама проверяла код и настройки
+            <span class="text-strong">Настраиваем систему так, чтобы она сама проверяла код и настройки</span>
             <span class="text-accent">на каждом этапе.</span> Дополнительно внедряем защитный экран на базе искусственного интеллекта: он учится распознавать новые атаки в реальном времени и блокирует их до того, как они нанесут вред. Обычные фильтры пропускают нестандартные угрозы, а
             <span class="text-accent">наш WAF адаптируется под них автоматически.</span> Вам не нужно постоянно обновлять правила — защита становится умнее с каждой атакой.
           </p>
@@ -318,7 +318,8 @@
         <div class="component-copy">
           <h2>Автоматизируем повторяющиеся задачи</h2>
           <p>
-            Настраиваем автоматическую выгрузку отчетов, рассылку уведомлений, проверку данных и другие рутинные операции. То, что сотрудники делают вручную каждый день или неделю, будет происходить само по расписанию. Освобождаем время команды для реальной работы.
+            <span class="text-strong">Настраиваем автоматическую выгрузку отчетов, рассылку уведомлений, проверку данных и другие рутинные операции.</span> То, что сотрудники делают вручную каждый день или неделю,
+            <span class="text-accent">будет происходить само по расписанию.</span> Освобождаем время команды для реальной работы.
           </p>
         </div>
       </article>
@@ -329,7 +330,8 @@
         <div class="component-copy">
           <h2>Создаем цифровые продукты и чиним техническую часть</h2>
           <p>
-            Разрабатываем сайты и внутренние инструменты, настраиваем серверы и устраняем сбои. Если система тормозит, не запускается или требует доработки — мы сможем найти причину и наладим работу.
+            <span class="text-strong">Разрабатываем сайты и внутренние инструменты, настраиваем серверы и устраняем сбои.</span> Если система тормозит, не запускается или требует доработки —
+            <span class="text-accent">мы сможем найти причину и наладим работу.</span>
           </p>
         </div>
       </article>
@@ -661,9 +663,13 @@
   }
 
   /* ─── Component showcase ─────────────────────────────────── */
+  /* Ширина совпадает с границами свечения (hero-card): 92rem */
   .component-showcase {
-    padding-top: 0.5rem;
-    padding-bottom: clamp(3rem, 6vw, 6rem);
+    width: calc(100% - 2rem);
+    max-width: 92rem;
+    margin: 0 auto;
+    padding: 0.5rem 1.25rem clamp(3rem, 6vw, 6rem);
+    box-sizing: border-box;
   }
 
   .component-grid {
@@ -706,18 +712,25 @@
 
   .component-copy h2 {
     margin: 0 0 0.85rem;
-    color: #fff;
+    color: var(--foreground);
     font-size: clamp(1.2rem, 1.7vw, 1.55rem);
     font-weight: 600;
     line-height: 1.25;
     letter-spacing: -0.025em;
   }
 
+  /* Стиль текста как в блоке «Opensophy — это инициатива…» */
   .component-copy p {
     margin: 0;
-    color: #9ca3af;
-    font-size: 0.95rem;
-    line-height: 1.8;
+    color: var(--foreground-muted);
+    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    font-weight: 500;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  .component-copy .text-strong {
+    color: var(--foreground);
   }
 
   .component-copy .text-accent {
@@ -725,6 +738,12 @@
   }
 
   @media (max-width: 767px) {
+    .component-showcase {
+      width: 100%;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
     .component-grid {
       grid-template-columns: 1fr;
       gap: 3rem;
