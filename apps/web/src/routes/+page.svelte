@@ -8,9 +8,6 @@
   import LogoCarousel from "$lib/components/ui-registry/logo-carousel.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
   import Faq from "$lib/components/ui-registry/Faq.svelte";
-  import ShieldInfinity from "$lib/components/ui-registry/ShieldInfinity.svelte";
-  import Phosphor from "$lib/components/ui-registry/Phosphor.svelte";
-  import Terminal from "$lib/components/ui-registry/Terminal.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
@@ -241,11 +238,13 @@
 
   <!-- Hero Section -->
   <section class="hero-section relative flex w-full items-center justify-center">
+    <!-- Свечение: GlowHorizon сверху, расположено ниже логотипа -->
     <div class="hero-card" aria-hidden="true">
       <GlowHorizon variant="top" opacity={0.14} />
     </div>
 
     <div class="hero-inner">
+      <!-- Левитирующий ASCII-логотип -->
       <div class="hero-logo" aria-label="Opensophy ASCII logo">
         <AsciiVisual
           src="/logo.png"
@@ -269,10 +268,11 @@
     </div>
   </section>
 
-  <!-- Sponsors Section -->
+  <!-- Sponsors Section (сразу под свечением) -->
   <section class="sponsors-section w-full max-w-5xl mx-auto px-4">
     <p class="section-overline"><Badge variant="default">Спонсоры</Badge></p>
     <div class="sponsors-wrap" bind:this={sponsorsEl}>
+      <!-- Скрытая копия для измерения: помещаются ли все логотипы в строку -->
       <div class="sponsors-measure" bind:this={measureEl} aria-hidden="true" inert>
         {#each sponsors as s (s.name)}
           <span class="sponsor">{@render sponsorFace(s)}</span>
@@ -292,47 +292,6 @@
           {/each}
         </div>
       {/if}
-    </div>
-  </section>
-
-  <!-- Services showcase -->
-  <section class="component-showcase w-full max-w-7xl mx-auto px-4" aria-label="Наши направления">
-    <div class="component-grid">
-      <article class="component-cell">
-        <div class="component-visual component-visual-shield">
-          <ShieldInfinity accent="#f43f5e" width="100%" showControls={false} />
-        </div>
-        <div class="component-copy">
-          <h2>Автоматическая защита бизнеса</h2>
-          <p>
-            Настраиваем систему так, чтобы она сама проверяла код и настройки
-            <span class="text-accent">на каждом этапе.</span> Дополнительно внедряем защитный экран на базе искусственного интеллекта: он учится распознавать новые атаки в реальном времени и блокирует их до того, как они нанесут вред. Обычные фильтры пропускают нестандартные угрозы, а
-            <span class="text-accent">наш WAF адаптируется под них автоматически.</span> Вам не нужно постоянно обновлять правила — защита становится умнее с каждой атакой.
-          </p>
-        </div>
-      </article>
-      <article class="component-cell">
-        <div class="component-visual component-visual-phosphor">
-          <Phosphor accent="#f43f5e" width="100%" showControls={false} />
-        </div>
-        <div class="component-copy">
-          <h2>Автоматизируем повторяющиеся задачи</h2>
-          <p>
-            Настраиваем автоматическую выгрузку отчетов, рассылку уведомлений, проверку данных и другие рутинные операции. То, что сотрудники делают вручную каждый день или неделю, будет происходить само по расписанию. Освобождаем время команды для реальной работы.
-          </p>
-        </div>
-      </article>
-      <article class="component-cell">
-        <div class="component-visual component-visual-terminal">
-          <Terminal accent="#f43f5e" width="100%" showControls={false} />
-        </div>
-        <div class="component-copy">
-          <h2>Создаем цифровые продукты и чиним техническую часть</h2>
-          <p>
-            Разрабатываем сайты и внутренние инструменты, настраиваем серверы и устраняем сбои. Если система тормозит, не запускается или требует доработки — мы сможем найти причину и наладим работу.
-          </p>
-        </div>
-      </article>
     </div>
   </section>
 
@@ -380,22 +339,32 @@
                 {@const modalText = project.status.modalText}
                 <button
                   type="button"
-                  class="project-status project-status-{project.status.variant} project-status-link"
-                  onclick={() => openStatusModal(modalText)}
+                  class="project-status project-status-{project.status
+                    .variant} project-status-link"
+                  onclick={() => {
+                    openStatusModal(modalText);
+                  }}
                 >
                   {project.status.label}
                 </button>
               {:else if project.status.href}
                 <a
                   href={project.status.href}
-                  target={isExternal(project.status.href) ? "_blank" : undefined}
-                  rel={isExternal(project.status.href) ? "noreferrer" : undefined}
-                  class="project-status project-status-{project.status.variant} project-status-link"
+                  target={isExternal(project.status.href)
+                    ? "_blank"
+                    : undefined}
+                  rel={isExternal(project.status.href)
+                    ? "noreferrer"
+                    : undefined}
+                  class="project-status project-status-{project.status
+                    .variant} project-status-link"
                 >
                   {project.status.label}
                 </a>
               {:else}
-                <span class="project-status project-status-{project.status.variant}">
+                <span
+                  class="project-status project-status-{project.status.variant}"
+                >
                   {project.status.label}
                 </span>
               {/if}
@@ -418,12 +387,16 @@
         class="services-action services-action-primary"
         onclick={() => contactsState.open()}>Заказать услуги</button
       >
-      <a class="services-action" href="/service-policy">Политика оказания услуг</a>
+      <a class="services-action" href="/service-policy"
+        >Политика оказания услуг</a
+      >
     </div>
   </section>
 
   <!-- FAQ Section -->
-  <section class="cta-section relative flex w-full items-center justify-center px-6 py-16 md:py-24">
+  <section
+    class="cta-section relative flex w-full items-center justify-center px-6 py-16 md:py-24"
+  >
     <div class="cta-card" aria-hidden="true">
       <div class="cta-bg"></div>
     </div>
@@ -464,14 +437,23 @@
   >
     <div
       class="status-modal"
-      onclick={(e) => e.stopPropagation()}
-      onkeydown={(e) => e.stopPropagation()}
+      onclick={(e) => {
+        e.stopPropagation();
+      }}
+      onkeydown={(e) => {
+        e.stopPropagation();
+      }}
       role="dialog"
       aria-modal="true"
       aria-label="Информация о статусе"
       tabindex="-1"
     >
-      <button type="button" class="status-modal-close" onclick={closeStatusModal} aria-label="Закрыть">
+      <button
+        type="button"
+        class="status-modal-close"
+        onclick={closeStatusModal}
+        aria-label="Закрыть"
+      >
         <Close size={18} />
       </button>
       <p class="status-modal-text">{statusModalText}</p>
@@ -480,14 +462,17 @@
 {/if}
 
 <style>
+  /* ─── Hero Section ─────────────────────────────────────────── */
   .hero-section {
     position: relative;
     padding: 5.5rem 0 6rem;
   }
 
+  /* Контейнер свечения (внутри — GlowHorizon variant="top").
+     Свечение сильнее у нижнего края, т.е. оно ниже логотипа. */
   .hero-card {
     position: absolute;
-    top: 45%;
+    top: 45%; /* свечение начинается ниже логотипа */
     bottom: 0;
     left: 0;
     right: 0;
@@ -512,6 +497,7 @@
     padding: 0 1.25rem;
   }
 
+  /* ─── Hero: логотип ────────────────────────────────────────── */
   .hero-logo {
     position: relative;
     width: 100%;
@@ -526,12 +512,14 @@
     height: 100%;
   }
 
+  /* ─── Hero: мобильный ──────────────────────────────────────── */
   @media (max-width: 1023px) {
     .hero-section {
       padding-top: 4.5rem;
       padding-bottom: 5rem;
     }
 
+    /* Свечение на всю ширину экрана, без чёрных полей по бокам */
     .hero-card {
       top: 50%;
       width: 100%;
@@ -555,7 +543,7 @@
   /* ─── Sponsors ─────────────────────────────────────────────── */
   .sponsors-section {
     padding-top: 1.25rem;
-    padding-bottom: 5rem;
+    padding-bottom: 5rem; /* место под подсказку при наведении */
   }
 
   .sponsors-wrap {
@@ -572,6 +560,7 @@
     gap: 4rem;
   }
 
+  /* Невидимая копия для измерения ширины */
   .sponsors-measure {
     position: absolute;
     top: 0;
@@ -608,11 +597,6 @@
     width: auto;
     max-width: none;
     object-fit: contain;
-    filter: brightness(0);
-  }
-
-  :global(.dark) .sponsor-logo {
-    filter: none;
   }
 
   .sponsor-text {
@@ -650,7 +634,9 @@
     opacity: 0;
     pointer-events: none;
     transform: translate(-50%, -4px);
-    transition: opacity 150ms ease-out, transform 150ms ease-out;
+    transition:
+      opacity 150ms ease-out,
+      transform 150ms ease-out;
   }
 
   .sponsor:hover .sponsor-tip,
@@ -660,93 +646,12 @@
     transform: translate(-50%, 0);
   }
 
-  /* ─── Component showcase ─────────────────────────────────── */
-  .component-showcase {
-    padding-top: 0.5rem;
-    padding-bottom: clamp(3rem, 6vw, 6rem);
-  }
-
-  .component-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: start;
-    gap: clamp(1.5rem, 3.5vw, 4rem);
-    width: 100%;
-  }
-
-  .component-cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    min-width: 0;
-    gap: 1.25rem;
-    overflow: visible;
-  }
-
-  .component-visual {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: clamp(18rem, 27vw, 25rem);
-  }
-
-  .component-visual :global(svg) {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    max-height: none;
-  }
-
-  .component-copy {
-    width: 100%;
-    text-align: left;
-  }
-
-  .component-copy h2 {
-    margin: 0 0 0.85rem;
-    color: #fff;
-    font-size: clamp(1.2rem, 1.7vw, 1.55rem);
-    font-weight: 600;
-    line-height: 1.25;
-    letter-spacing: -0.025em;
-  }
-
-  .component-copy p {
-    margin: 0;
-    color: #9ca3af;
-    font-size: 0.95rem;
-    line-height: 1.8;
-  }
-
-  .component-copy .text-accent {
-    color: var(--accent);
-  }
-
-  @media (max-width: 767px) {
-    .component-grid {
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-
-    .component-visual {
-      min-height: 0;
-      max-width: 28rem;
-      margin: 0 auto;
-    }
-
-    .component-copy {
-      max-width: 38rem;
-      margin: 0 auto;
-    }
-  }
-
   /* ─── CTA Section ──────────────────────────────────────────── */
   .cta-section {
     position: relative;
   }
 
+  /* Та же карточка что у hero — но градиент идёт сверху вниз */
   .cta-card {
     position: absolute;
     inset: 0;
@@ -756,11 +661,13 @@
     left: 0;
     right: 0;
     overflow: hidden;
+    /* Скругление сверху — зеркально hero */
     border-top-left-radius: var(--radius-3xl, 3.3rem);
     border-top-right-radius: var(--radius-3xl, 3.3rem);
     box-shadow: none;
   }
 
+  /* Градиент сверху вниз (at 50% 0% → прозрачный внизу) */
   .cta-bg {
     position: absolute;
     inset: 0;
@@ -779,6 +686,7 @@
     opacity: 0.22;
   }
 
+  /* CTA Typography */
   .cta-heading {
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 500;
@@ -795,6 +703,7 @@
     margin: 0;
   }
 
+  /* CTA Button */
   .cta-button {
     display: inline-flex;
     align-items: center;
@@ -809,7 +718,10 @@
     letter-spacing: 0.01em;
     border: none;
     cursor: pointer;
-    transition: background 150ms ease-out, transform 150ms ease-out, box-shadow 150ms ease-out;
+    transition:
+      background 150ms ease-out,
+      transform 150ms ease-out,
+      box-shadow 150ms ease-out;
     box-shadow: 0 2px 12px rgba(244, 63, 94, 0.25);
   }
 
@@ -857,7 +769,6 @@
     font-size: 0.8rem;
     cursor: help;
   }
-
   .about-note::after {
     content: "от «open philosophy» — «открытая философия»";
     position: absolute;
@@ -876,12 +787,12 @@
     pointer-events: none;
     transition: opacity 0.15s;
   }
-
   .about-note:hover::after,
   .about-note:focus::after {
     opacity: 1;
   }
 
+  /* ─── Products Section Glow ────────────────────────────────── */
   .products-section {
     position: relative;
     z-index: 1;
@@ -988,6 +899,7 @@
     color: #fff;
   }
 
+  /* ─── Projects Grid ────────────────────────────────────────── */
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1000,6 +912,7 @@
     }
   }
 
+  /* ─── Project Card ─────────────────────────────────────────── */
   .project-card-body {
     display: flex;
     flex-direction: column;
@@ -1039,9 +952,33 @@
     cursor: default;
   }
 
-  .project-status-in-progress,
-  .project-status-released,
-  .project-status-frozen,
+  .project-status-in-progress {
+    text-transform: uppercase;
+    color: var(--foreground-muted);
+    background: var(--background-inset);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+  }
+
+  .project-status-released {
+    text-transform: uppercase;
+    color: var(--foreground-muted);
+    background: var(--background-inset);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+  }
+
+  .project-status-frozen {
+    text-transform: uppercase;
+    color: var(--foreground-muted);
+    background: var(--background-inset);
+    border: 1px solid var(--border);
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+  }
+
   .project-status-not-started {
     text-transform: uppercase;
     color: var(--foreground-muted);
@@ -1068,7 +1005,9 @@
     border: none;
     padding: 0;
     border-radius: 0;
-    transition: color 150ms ease-out, text-decoration-color 150ms ease-out;
+    transition:
+      color 150ms ease-out,
+      text-decoration-color 150ms ease-out;
     cursor: pointer;
   }
 
@@ -1122,7 +1061,9 @@
     background: transparent;
     color: var(--foreground-muted);
     cursor: pointer;
-    transition: background 150ms ease-out, color 150ms ease-out;
+    transition:
+      background 150ms ease-out,
+      color 150ms ease-out;
   }
 
   .status-modal-close:hover {
@@ -1139,13 +1080,23 @@
   }
 
   @keyframes status-modal-fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   @keyframes status-modal-scale-in {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   .project-desc {
