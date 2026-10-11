@@ -427,6 +427,16 @@
         </div>
       </article>
     </div>
+
+    <div class="services-actions showcase-actions">
+      <a class="services-action" href="/solutions">Посмотреть все услуги</a>
+      <button
+        type="button"
+        class="services-action services-action-primary"
+        onclick={() => contactsState.open()}>Заказать услуги</button
+      >
+      <a class="services-action" href="/service-policy">Политика оказания услуг</a>
+    </div>
   </section>
 
   <!-- Projects Section -->
@@ -901,6 +911,10 @@
     width: 100%;
   }
 
+  .component-showcase .showcase-actions {
+    margin-top: clamp(2rem, 4vw, 3.5rem);
+  }
+
   .component-cell {
     display: flex;
     flex-direction: column;
@@ -1116,12 +1130,12 @@
 
   .products-glow {
     position: absolute;
-    top: 0;
+    top: -2.5rem;
     left: 50%;
     transform: translateX(-50%);
-    width: 80rem;
-    max-width: 100vw;
-    height: 100%;
+    width: 92rem;
+    max-width: calc(100vw - 2rem);
+    height: calc(100% + 5rem);
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
