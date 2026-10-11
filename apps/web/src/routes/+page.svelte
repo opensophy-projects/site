@@ -4,16 +4,50 @@
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import CardProject from "$lib/components/ui-registry/CardProject.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
-  import TextLoop from "$lib/components/ui-registry/TextLoop.svelte";
   import GlowHorizon from "$lib/components/ui-registry/glowhorizon.svelte";
-  import Button from "$lib/components/ui-registry/Button.svelte";
+  import LogoCarousel from "$lib/components/ui-registry/logo-carousel.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
   import Faq from "$lib/components/ui-registry/Faq.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
 
-  // ─── Мобильный режим: нужен, чтобы увеличить ASCII-лого ───────
+  // ─── Спонсоры ─────────────────────────────────────────────────
+  type Sponsor = { name: string; description: string; logo?: string };
+
+  const sponsors: Sponsor[] = [
+    {
+      name: "RUVDS",
+      description: "Российский хостинг-провайдер и международный облачный сервис",
+      logo: "/ruvds-logo.png",
+    },
+    {
+      name: "Кондор",
+      description:
+        "Проектировщик и интегратор комплексных систем безопасности и связи",
+    },
+    {
+      name: "Ziree Medical",
+      description:
+        "Китайский производитель высокотехнологичного медицинского оборудования и устройств фототерапии",
+      logo: "/zireelogo.png",
+    },
+  ];
+
+  // Мобильный режим: крупнее ASCII-лого и всегда карусель спонсоров
   let isMobile = $state(false);
+  // Помещаются ли все логотипы в одну строку (проверяется по скрытой копии)
+  let fits = $state(true);
+  let sponsorsEl = $state<HTMLElement | undefined>();
+  let measureEl = $state<HTMLElement | undefined>();
+
+  // Карусель: всегда на мобильном, на ПК — только если логотипы не помещаются
+  const useCarousel = $derived(isMobile || !fits);
+  const groupSize = $derived(isMobile ? 1 : 2);
+
+  function measureSponsors() {
+    if (!sponsorsEl || !measureEl) return;
+    fits = measureEl.offsetWidth <= sponsorsEl.clientWidth;
+  }
 
   onMount(() => {
     const mq = window.matchMedia("(max-width: 1023px)");
@@ -22,50 +56,17 @@
       isMobile = e.matches;
     };
     mq.addEventListener("change", onChange);
+
+    const ro = new ResizeObserver(measureSponsors);
+    if (sponsorsEl) ro.observe(sponsorsEl);
+    if (measureEl) ro.observe(measureEl);
+    measureSponsors();
+
     return () => {
       mq.removeEventListener("change", onChange);
+      ro.disconnect();
     };
   });
-
-  // ─── Hero: циклический текст справа (только десктоп) ──────────
-  // Описание разбито на 4 строки (TextLoop не переносит текст),
-  // каждая строка — свой TextLoop с тем же интервалом, поэтому меняются синхронно.
-  type Topic = { title: string; lines: string[] };
-
-  const topics: Topic[] = [
-    {
-      title: "Для начинающих инженеров",
-      lines: [
-        "Создаём образовательные материалы",
-        "для студентов и начинающих инженеров,",
-        "которые помогают получить практические",
-        "навыки и уверенно войти в профессию.",
-      ],
-    },
-    {
-      title: "Для инженеров",
-      lines: [
-        "Разрабатываем инструменты и продукты,",
-        "которые автоматизируют рутинные задачи,",
-        "упрощают рабочие процессы и помогают",
-        "инженерам работать эффективнее.",
-      ],
-    },
-    {
-      title: "Для компаний",
-      lines: [
-        "Помогаем внедрять практики DevSecOps",
-        "и повышать уровень безопасности",
-        "инфраструктуры и процессов",
-        "разработки.",
-      ],
-    },
-  ];
-
-  const LOOP_INTERVAL = 5000;
-  const topicTitles = topics.map((t) => t.title);
-  // lineLoops[i] — i-я строка описания для всех трёх тем
-  const lineLoops = [0, 1, 2, 3].map((i) => topics.map((t) => t.lines[i]));
 
   type StatusVariant = "in-progress" | "released" | "frozen" | "not-started";
 
@@ -237,24 +238,13 @@
 
   <!-- Hero Section -->
   <section class="hero-section relative flex w-full items-center justify-center">
-    <!-- Свечение: компонент GlowHorizon сверху, слабее и меньше по высоте -->
+    <!-- Свечение: GlowHorizon сверху, расположено ниже логотипа -->
     <div class="hero-card" aria-hidden="true">
       <GlowHorizon variant="top" opacity={0.14} />
     </div>
 
     <div class="hero-inner">
-      <!-- Слева: заголовок и кнопки -->
-      <div class="hero-left">
-        <h1 class="hero-title">Мастерская<br />DevSecOps</h1>
-        <div class="hero-actions">
-          <Button variant="primary" onclick={() => contactsState.open()}>
-            Контакты
-          </Button>
-          <Button variant="secondary" href="/solutions">Посмотреть услуги</Button>
-        </div>
-      </div>
-
-      <!-- Центр: левитирующий ASCII-логотип (на мобильном крупнее) -->
+      <!-- Левитирующий ASCII-логотип -->
       <div class="hero-logo" aria-label="Opensophy ASCII logo">
         <AsciiVisual
           src="/logo.png"
@@ -275,20 +265,33 @@
           class="hero-logo-canvas"
         />
       </div>
+    </div>
+  </section>
 
-      <!-- Справа: циклический текст (TextLoop), скрыт на мобильном -->
-      <div class="hero-topics" aria-live="polite">
-        <div class="topic-title">
-          <TextLoop texts={topicTitles} interval={LOOP_INTERVAL} />
-        </div>
-        <div class="topic-desc">
-          {#each lineLoops as texts, li (li)}
-            <div class="topic-line">
-              <TextLoop {texts} interval={LOOP_INTERVAL} />
-            </div>
+  <!-- Sponsors Section (сразу под свечением) -->
+  <section class="sponsors-section w-full max-w-5xl mx-auto px-4">
+    <p class="section-overline"><Badge variant="default">Спонсоры</Badge></p>
+    <div class="sponsors-wrap" bind:this={sponsorsEl}>
+      <!-- Скрытая копия для измерения: помещаются ли все логотипы в строку -->
+      <div class="sponsors-measure" bind:this={measureEl} aria-hidden="true" inert>
+        {#each sponsors as s (s.name)}
+          <span class="sponsor">{@render sponsorFace(s)}</span>
+        {/each}
+      </div>
+
+      {#if useCarousel}
+        <LogoCarousel items={sponsors} count={groupSize}>
+          {#snippet children(item)}
+            {@render sponsor(item)}
+          {/snippet}
+        </LogoCarousel>
+      {:else}
+        <div class="sponsors-row">
+          {#each sponsors as s (s.name)}
+            {@render sponsor(s)}
           {/each}
         </div>
-      </div>
+      {/if}
     </div>
   </section>
 
@@ -405,6 +408,22 @@
   </section>
 </main>
 
+{#snippet sponsorFace(s: Sponsor)}
+  {#if s.logo}
+    <img src={s.logo} alt={s.name} class="sponsor-logo" loading="lazy" decoding="async" />
+  {:else}
+    <span class="sponsor-text">{s.name}</span>
+  {/if}
+{/snippet}
+
+{#snippet sponsor(s: Sponsor)}
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <div class="sponsor" tabindex="0" role="group" aria-label="{s.name}: {s.description}">
+    {@render sponsorFace(s)}
+    <span class="sponsor-tip" role="tooltip">{s.description}</span>
+  </div>
+{/snippet}
+
 {#if statusModalOpen}
   <div
     class="status-modal-overlay"
@@ -446,18 +465,17 @@
   /* ─── Hero Section ─────────────────────────────────────────── */
   .hero-section {
     position: relative;
-    min-height: 100dvh;
-    padding: 6.5rem 0 3rem;
+    padding: 5.5rem 0 3.5rem;
   }
 
   /* Контейнер свечения (внутри — GlowHorizon variant="top").
-     Меньше: занимает только верхние ~62% секции, а не всю высоту. */
+     Свечение сильнее у нижнего края, т.е. оно ниже логотипа. */
   .hero-card {
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
-    height: 62%;
     width: calc(100% - 2rem);
     max-width: 92rem;
     margin-left: auto;
@@ -471,44 +489,20 @@
   .hero-inner {
     position: relative;
     z-index: 10;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(0, 1fr);
-    align-items: center;
-    gap: clamp(1rem, 3vw, 3rem);
+    display: flex;
+    justify-content: center;
     width: calc(100% - 2rem);
     max-width: 92rem;
     margin: 0 auto;
-    padding: 0 clamp(1.25rem, 3vw, 3rem);
-  }
-
-  /* ─── Hero: левая колонка ──────────────────────────────────── */
-  .hero-left {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-  }
-
-  .hero-title {
-    margin: 0;
-    font-size: clamp(2.4rem, 4.6vw, 4.5rem);
-    font-weight: 500;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-    color: var(--foreground);
-  }
-
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+    padding: 0 1.25rem;
   }
 
   /* ─── Hero: логотип ────────────────────────────────────────── */
   .hero-logo {
     position: relative;
     width: 100%;
-    height: clamp(20rem, 32vw, 32rem);
+    max-width: 44rem;
+    height: clamp(22rem, 34vw, 32rem);
     color: var(--accent);
   }
 
@@ -518,83 +512,128 @@
     height: 100%;
   }
 
-  /* ─── Hero: циклический текст справа ───────────────────────── */
-  .hero-topics {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    justify-self: end;
-    width: 100%;
-    max-width: 24rem;
-  }
-
-  /* Заголовок — белый */
-  .topic-title {
-    min-height: 1.4em;
-    font-size: clamp(1.05rem, 1.5vw, 1.35rem);
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    line-height: 1.4;
-    color: var(--foreground);
-  }
-
-  /* Описание — акцентным цветом. 4 строки зарезервированы */
-  .topic-desc {
-    display: flex;
-    flex-direction: column;
-    font-size: 0.85rem;
-    line-height: 1.55;
-    color: var(--accent);
-  }
-
-  .topic-line {
-    min-height: 1.55em;
-  }
-
-  /* ─── Hero: адаптив (мобильный) ────────────────────────────── */
+  /* ─── Hero: мобильный ──────────────────────────────────────── */
   @media (max-width: 1023px) {
     .hero-section {
-      min-height: auto;
-      padding-top: 5rem;
+      padding-top: 4.5rem;
       padding-bottom: 2.5rem;
     }
 
-    /* Свечение растягивается на всю ширину экрана, без чёрных полей по бокам */
+    /* Свечение на всю ширину экрана, без чёрных полей по бокам */
     .hero-card {
       width: 100%;
       max-width: none;
       margin-left: 0;
       margin-right: 0;
-      height: 58%;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 2rem;
+      border-bottom-right-radius: 2rem;
     }
 
     .hero-inner {
-      grid-template-columns: 1fr;
-      gap: 0.5rem;
       width: 100%;
-      padding: 0 1.25rem;
+      padding: 0 1rem;
     }
 
-    /* Порядок на мобильном: логотип → заголовок и кнопки */
     .hero-logo {
-      order: 1;
       height: clamp(18rem, 88vw, 26rem);
     }
-    .hero-left {
-      order: 2;
-      align-items: center;
-      text-align: center;
-    }
-    .hero-actions {
-      justify-content: center;
-    }
+  }
 
-    /* Тексты «Для …» на мобильном убраны */
-    .hero-topics {
-      display: none;
-    }
+  /* ─── Sponsors ─────────────────────────────────────────────── */
+  .sponsors-section {
+    padding-top: 1.25rem;
+    padding-bottom: 5rem; /* место под подсказку при наведении */
+  }
+
+  .sponsors-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    min-height: 3rem;
+  }
+
+  .sponsors-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+
+  /* Невидимая копия для измерения ширины */
+  .sponsors-measure {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    width: max-content;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .sponsor {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    padding: 0 0.5rem;
+    outline: none;
+    opacity: 0.85;
+    transition: opacity 150ms ease-out;
+  }
+
+  .sponsor:hover,
+  .sponsor:focus-visible,
+  .sponsor:focus {
+    opacity: 1;
+  }
+
+  .sponsor-logo {
+    display: block;
+    height: 2rem;
+    width: auto;
+    max-width: none;
+    object-fit: contain;
+  }
+
+  .sponsor-text {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    color: var(--foreground);
+  }
+
+  .sponsor-tip {
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 50%;
+    z-index: 20;
+    width: max-content;
+    max-width: min(16rem, 80vw);
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.5rem;
+    background: var(--foreground);
+    color: var(--background);
+    font-size: 0.8rem;
+    line-height: 1.35;
+    text-align: center;
+    white-space: normal;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -4px);
+    transition:
+      opacity 150ms ease-out,
+      transform 150ms ease-out;
+  }
+
+  .sponsor:hover .sponsor-tip,
+  .sponsor:focus .sponsor-tip,
+  .sponsor:focus-visible .sponsor-tip {
+    opacity: 1;
+    transform: translate(-50%, 0);
   }
 
   /* ─── CTA Section ──────────────────────────────────────────── */
