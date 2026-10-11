@@ -550,7 +550,7 @@
     position: relative;
     display: flex;
     justify-content: center;
-    min-height: 5rem;
+    min-height: 7.5rem;
   }
 
   .sponsors-row {
@@ -578,7 +578,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 5rem;
+    height: 7.5rem;
     padding: 0 0.5rem;
     outline: none;
     opacity: 0.85;
@@ -593,7 +593,7 @@
 
   .sponsor-logo {
     display: block;
-    height: 4.25rem;
+    height: 7rem;
     width: auto;
     max-width: none;
     object-fit: contain;
@@ -609,7 +609,7 @@
 
   @media (max-width: 1023px) {
     .sponsor-logo {
-      height: 3.75rem;
+      height: 6rem;
     }
     .sponsor-text {
       font-size: 1.9rem;
