@@ -12,7 +12,7 @@
   const N = 7, PITCH = 10, M = 8, EXT = M * 2 + PITCH * (N - 1);
   const T = 5, R = 2.5, DROP = 15, BT = 4, BO = 7;
   const K = 2.3, C = 0.7071, OX = 200, OY = 95;
-  const FRAME = 110, RESUME = 1200, RAMP = 400;
+  const FRAME = 80, RESUME = 0, RAMP = 220;
   const SPLASH = [[0, 0, 1], [1, 0, 0.45], [-1, 0, 0.45], [0, 1, 0.45], [0, -1, 0.45]];
   /** Seven row bytes per frame (MSB = left column): ripple, pause, diagonal sweep, pause. */
   const LOOP = [
@@ -62,7 +62,6 @@
     return lo.concat(up);
   }
 
-  /** A slab: opaque hull, the visible lower arc, the two silhouette edges, the top outline. */
   function slab(ring, zt, zb) {
     const t = ring.map((q) => P(q[0], q[1], zt));
     const b = ring.map((q) => P(q[0], q[1], zb));
@@ -117,7 +116,7 @@
   let op = new Array(N * N).fill(0.14);
   let readout = 'loop';
   const I = new Float32Array(N * N);
-  let clock = 0, lastF = -1, leftAt = -1e9, painting = false, prev = null;
+  let clock = 0, lastF = -1, leftAt = 0, painting = false, prev = null;
 
   function excite(x, y, a) {
     const c = Math.round((x - M) / PITCH), r = Math.round((y - M) / PITCH);
@@ -138,7 +137,6 @@
     painting = true;
     const q = at(e);
     if (prev) {
-      // fill between moves so a fast stroke leaves a line, not dots
       const n = Math.max(1, Math.ceil(Math.hypot(q[0] - prev[0], q[1] - prev[1]) / 3));
       for (let k = 1; k <= n; k++) excite(prev[0] + ((q[0] - prev[0]) * k) / n, prev[1] + ((q[1] - prev[1]) * k) / n, 1);
     } else excite(q[0], q[1], 1);
@@ -159,24 +157,21 @@
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const decay = Math.exp((-dt * 1000) / tau);
-      if (reduce && !painting) {
-        // no loop: settle on a composed still, the ripple's widest ring
-        for (let i = 0; i < N * N; i++) I[i] = Math.max(I[i] * decay, lit(3, Math.floor(i / N), i % N) * 0.8);
+      for (let i = 0; i < N * N; i++) I[i] *= decay;
+      const g = painting ? 0 : Math.min(1, Math.max(0, (now - leftAt - RESUME - RAMP) / RAMP));
+      if (g > 0 && !reduce) {
+        clock += dt * 1000;
+        const f = Math.floor(clock / FRAME) % LOOP.length;
+        if (f !== lastF) {
+          lastF = f;
+          for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) if (lit(f, r, c)) I[r * N + c] = Math.max(I[r * N + c], g);
+        }
+        readout = `loop · ${String(f + 1).padStart(2, '0')}/${LOOP.length}`;
+      } else if (reduce) {
+        for (let i = 0; i < N * N; i++) I[i] = Math.max(I[i], lit(3, Math.floor(i / N), i % N) * 0.8);
         readout = 'still';
-      } else {
-        for (let i = 0; i < N * N; i++) I[i] *= decay;
-        const g = painting ? 0 : Math.min(1, Math.max(0, (now - leftAt - RESUME) / RAMP));
-        if (g > 0) {
-          clock += dt * 1000;
-          const f = Math.floor(clock / FRAME) % LOOP.length;
-          if (f !== lastF) {
-            lastF = f;
-            for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) if (lit(f, r, c)) I[r * N + c] = Math.max(I[r * N + c], g);
-          }
-          readout = `loop · ${String(f + 1).padStart(2, '0')}/${LOOP.length}`;
-        } else readout = painting ? 'paint' : 'afterglow';
-      }
-      op = Array.from(I, (v) => 0.14 + 0.86 * Math.min(1, Math.max(0, v)));
+      } else readout = painting ? 'paint' : 'afterglow';
+      op = Array.from(I, (v) => 0.08 + 0.92 * Math.min(1, Math.max(0, v)));
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -197,14 +192,12 @@
     on:pointerleave={leave}
     on:pointerup={(e) => e.pointerType !== 'mouse' && leave()}
   >
-    <!-- base plate -->
     <path class="s nostroke" d={plate.hull} />
     <path class="n" d={plate.arc} />
     {#each plate.edges as d}<path class="n" {d} />{/each}
     <path class="s" d={plate.top} />
     <path class="lo" d={plateInset} />
 
-    <!-- dashed drops, then the tile over them -->
     {#each drops as d}<path class="n dash" {d} />{/each}
     <path class="s nostroke" d={tile.hull} />
     <path class="n" d={tile.arc} />
@@ -229,11 +222,11 @@
 
 <style>
   .hl-wrap {
-    /* override from outside to match your theme */
-    --hl-bg: #f6f4f1;
-    --hl-line: #2b2f3a;
-    --hl-faint: #2b2f3a66;
-    --hl-txt: #6b6f7a;
+    /* Theme follows the host page instead of the OS color-scheme. */
+    --hl-bg: var(--background, #f6f4f1);
+    --hl-line: var(--foreground, #2b2f3a);
+    --hl-faint: color-mix(in srgb, var(--foreground, #2b2f3a) 34%, transparent);
+    --hl-txt: var(--foreground-muted, #6b6f7a);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -241,14 +234,6 @@
     color: var(--hl-txt);
     font: 12px ui-monospace, Menlo, Consolas, monospace;
     letter-spacing: 0.06em;
-  }
-  @media (prefers-color-scheme: dark) {
-    .hl-wrap {
-      --hl-bg: #0e1016;
-      --hl-line: #d7dbe6;
-      --hl-faint: #d7dbe655;
-      --hl-txt: #8b90a0;
-    }
   }
   .hl {
     display: block;
@@ -267,9 +252,7 @@
     stroke-linejoin: round;
     stroke-linecap: round;
   }
-  .nostroke {
-    stroke: none;
-  }
+  .nostroke { stroke: none; }
   .n {
     fill: none;
     stroke: var(--hl-line);
@@ -288,9 +271,7 @@
   .dot {
     fill: var(--hl-accent);
   }
-  .read {
-    min-height: 1.2em;
-  }
+  .read { min-height: 1.2em; }
   .tau {
     display: flex;
     gap: 10px;
