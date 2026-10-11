@@ -5,7 +5,6 @@
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import LogoCarousel from "$lib/components/ui-registry/logo-carousel.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
-  import Faq from "$lib/components/ui-registry/Faq.svelte";
   import ShieldInfinity from "$lib/components/ui-registry/ShieldInfinity.svelte";
   import Phosphor from "$lib/components/ui-registry/Phosphor.svelte";
   import Terminal from "$lib/components/ui-registry/Terminal.svelte";
@@ -191,64 +190,6 @@
         href: "https://opensophy.com/dokploy",
       },
     },
-  ];
-
-  const faqItems = [
-    {
-      question: "Кто автор Opensophy?",
-      answer:
-        "Даниил Кулешов — основатель и руководитель Opensophy. С 2025 года занимаюсь DevSecOps: выстраиваю безопасные пайплайны, встраиваю безопасность в разработку и настраиваю инфраструктуру с нуля. До этого занимался white hat-хакингом и bug bounty, а ещё раньше был графическим дизайнером, преподавал программирование и работал комьюнити-менеджером в NetEase Games."
-    },
-    {
-      question: "Какие услуги вы оказываете?",
-      answer:
-        "Тестирование на проникновение (blackbox / graybox / whitebox), внедрение процессов безопасной разработки (DevSecOps), поиск утечек данных, настройка защиты инфраструктуры, автоматизация и обучение."
-    },
-    {
-      question: "Сколько стоят услуги?",
-      answer:
-        "Средний чек — от 5 до 20 тысяч рублей. Точная стоимость зависит от объёма работ и сроков: мы обсуждаем задачу, согласовываем условия и фиксируем их письменно до начала работ."
-    },
-    {
-      question: "Как проходит работа?",
-      answer:
-        "Вы описываете задачу, мы согласовываем объём, сроки и стоимость, затем подписываем разрешение на работы. После этого я провожу проверку строго в рамках согласованного периметра и отдаю отчёт понятным языком, с приоритетами: что исправить сейчас, а что может подождать."
-    },
-    {
-      question: "Проверяете ли вы системы без разрешения?",
-      answer:
-        "Нет. Я ничего не проверяю и не тестирую без письменного разрешения владельца системы. В нём указано, какие системы проверяются, какими методами и в какие даты. Всё, что не входит в согласованный перечень, не проверяется."
-    },
-    {
-      question: "Как быстро вы отвечаете и сдаёте отчёт?",
-      answer:
-        "На запросы, отправленные на opensophy@gmail.com, я отвечаю в течение 3 рабочих дней. Отчёт по результатам работ направляю в течение недели после полного завершения технических работ."
-    },
-    {
-      question: "Что вы гарантируете?",
-      answer:
-        "Работу только в согласованных границах, отсутствие разрушительных действий (DoS, удаление или изменение данных, социальная инженерия) без отдельной договорённости, конфиденциальность найденных данных и минимально необходимые доказательства уязвимостей. При риске необратимых последствий я останавливаюсь и сообщаю вам."
-    },
-    {
-      question: "Чего вы не гарантируете?",
-      answer:
-        "Автоматизированные проверки, включая AI-assisted анализ кода, не гарантируют обнаружение всех уязвимостей и не заменяют полноценный ручной аудит, если он требуется по закону или отраслевым стандартам. Результаты отражают состояние систем на момент проведения работ."
-    },
-    {
-      question: "Можно ли изменить условия или остановить работы?",
-      answer:
-        "Да. Изменения объёма, сроков или стоимости оформляются дополнительным соглашением в течение 5 рабочих дней. Заказчик может приостановить или прекратить работы по письменному уведомлению. О приостановке с моей стороны я уведомляю в течение 1 рабочего дня."
-    },
-    {
-      question: "Как с вами связаться?",
-      answer:
-        "Напишите на opensophy@gmail.com или нажмите «Заказать услуги» в разделе выше. Если есть вопросы о том, как я работаю, лучше задать их до заказа — обсудим детали."
-    },
-    {
-      question: "Рассматриваете ли вы трудоустройство в компанию?",
-      answer:
-        "Да, вы можете предложить мне работу. Я рассматриваю предложения от 150 тысяч рублей, готов к удалённой работе и к переезду. Подробнее — на Хабр Карьере: https://career.habr.com/opensophy"
-    }
   ];
 
   let statusModalOpen = $state(false);
@@ -480,18 +421,6 @@
           </div>
         </CardProject>
       {/each}
-    </div>
-  </section>
-
-  <!-- FAQ Section -->
-  <section class="cta-section relative flex w-full items-center justify-center px-6 py-16 md:py-24">
-    <div class="cta-card" aria-hidden="true">
-      <div class="cta-bg"></div>
-    </div>
-
-    <div class="relative z-10 w-full max-w-5xl mx-auto">
-      <p class="section-overline"><Badge variant="default">Вопросы и ответы</Badge></p>
-      <Faq items={faqItems} />
     </div>
   </section>
 </main>
@@ -1020,88 +949,6 @@
     }
   }
 
-  /* ─── CTA Section ──────────────────────────────────────────── */
-  .cta-section {
-    position: relative;
-  }
-
-  .cta-card {
-    position: absolute;
-    inset: 0;
-    max-width: 80rem;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
-    overflow: hidden;
-    border-top-left-radius: var(--radius-3xl, 3.3rem);
-    border-top-right-radius: var(--radius-3xl, 3.3rem);
-    box-shadow: none;
-  }
-
-  .cta-bg {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: radial-gradient(
-      125% 125% at 50% 100%,
-      transparent 40%,
-      #f43f5e 68%,
-      #fda4af 86%,
-      #fff1f2 100%
-    );
-    opacity: 0.28;
-  }
-
-  :global(.dark) .cta-bg {
-    opacity: 0.22;
-  }
-
-  .cta-heading {
-    font-size: clamp(2rem, 5vw, 3.5rem);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    color: var(--foreground);
-    margin: 0;
-  }
-
-  .cta-sub {
-    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
-    line-height: 1.7;
-    color: var(--foreground-muted);
-    margin: 0;
-  }
-
-  .cta-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    padding: 0.65rem 1.4rem;
-    border-radius: var(--radius-sm, 0.55rem);
-    background: var(--accent);
-    color: #fff;
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    border: none;
-    cursor: pointer;
-    transition: background 150ms ease-out, transform 150ms ease-out, box-shadow 150ms ease-out;
-    box-shadow: 0 2px 12px rgba(244, 63, 94, 0.25);
-  }
-
-  .cta-button:hover {
-    background: color-mix(in oklch, var(--accent) 85%, black);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(244, 63, 94, 0.35);
-  }
-
-  .cta-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(244, 63, 94, 0.2);
-  }
-
   /* ─── Section Layout ───────────────────────────────────────── */
   .section-block {
     padding-top: clamp(0.75rem, 1.5vw, 1.25rem);
@@ -1379,17 +1226,14 @@
     to { opacity: 1; transform: scale(1); }
   }
 
+  /* Текст как в остальных блоках: крупнее, насыщенность 500, плотный интервал */
   .project-desc {
-    font-size: 0.8rem;
-    line-height: 1.6;
+    font-size: clamp(1rem, 1.35vw, 1.2rem);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
     color: var(--foreground-muted);
     margin: 0;
     flex: 1;
-  }
-
-  @media (min-width: 768px) {
-    .project-desc {
-      font-size: 0.85rem;
-    }
   }
 </style>
