@@ -10,6 +10,7 @@
   import ShieldInfinity from "$lib/components/ui-registry/ShieldInfinity.svelte";
   import Phosphor from "$lib/components/ui-registry/Phosphor.svelte";
   import Terminal from "$lib/components/ui-registry/Terminal.svelte";
+  import Radar from "$lib/components/ui-registry/Radar.svelte";
   import GhostCursor from "$lib/components/ui-registry/GhostCursor.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
@@ -45,6 +46,15 @@
   let sponsorsEl = $state<HTMLElement | undefined>();
   let measureEl = $state<HTMLElement | undefined>();
 
+  // Hero: положение ASCII-логотипа внутри секции (px) — вокруг него GhostCursor затухает
+  let heroEl = $state<HTMLElement | undefined>();
+  let logoEl = $state<HTMLElement | undefined>();
+  let logoCx = $state(0);
+  let logoCy = $state(0);
+  let logoRx = $state(0);
+  let logoRy = $state(0);
+  let logoMeasured = $state(false);
+
   // Карусель: всегда на мобильном, на ПК — только если логотипы не помещаются
   const useCarousel = $derived(isMobile || !fits);
   const groupSize = $derived(isMobile ? 1 : 2);
@@ -52,6 +62,19 @@
   function measureSponsors() {
     if (!sponsorsEl || !measureEl) return;
     fits = measureEl.offsetWidth <= sponsorsEl.clientWidth;
+  }
+
+  function measureLogo() {
+    if (!heroEl || !logoEl) return;
+    const h = heroEl.getBoundingClientRect();
+    const l = logoEl.getBoundingClientRect();
+    if (!l.width || !l.height) return;
+    logoCx = l.left - h.left + l.width / 2;
+    logoCy = l.top - h.top + l.height / 2;
+    // Радиусы зоны затухания чуть больше самого логотипа
+    logoRx = l.width * 0.6;
+    logoRy = l.height * 0.6;
+    logoMeasured = true;
   }
 
   onMount(() => {
@@ -74,10 +97,18 @@
     if (measureEl) ro.observe(measureEl);
     measureSponsors();
 
+    const heroRo = new ResizeObserver(measureLogo);
+    if (heroEl) heroRo.observe(heroEl);
+    if (logoEl) heroRo.observe(logoEl);
+    measureLogo();
+    window.addEventListener("resize", measureLogo);
+
     return () => {
       mq.removeEventListener("change", onChange);
       phoneMq.removeEventListener("change", onPhoneChange);
       ro.disconnect();
+      heroRo.disconnect();
+      window.removeEventListener("resize", measureLogo);
     };
   });
 
@@ -250,7 +281,12 @@
   <SiteMenu />
 
   <!-- Hero Section -->
-  <section class="hero-section relative flex w-full items-center justify-center">
+  <section
+    class="hero-section relative flex w-full items-center justify-center"
+    class:logo-measured={logoMeasured}
+    bind:this={heroEl}
+    style="--logo-cx: {logoCx}px; --logo-cy: {logoCy}px; --logo-rx: {logoRx}px; --logo-ry: {logoRy}px;"
+  >
     <!-- Изогнутое свечение (горизонт) -->
     <div class="hero-card" aria-hidden="true">
       <div class="hero-halo"></div>
@@ -258,7 +294,8 @@
     </div>
 
     <!-- GhostCursor: ПК и планшет, не на телефоне. Слушает мышь на всей секции,
-         а маска (.hero-ghost) вырезает область под дугой — там он не виден. -->
+         а маска (.hero-ghost) вырезает область под дугой и плавно гасит его
+         вокруг ASCII-логотипа. -->
     {#if !isPhone}
       <GhostCursor color="#f43f5e" zIndex={1} class="hero-ghost" />
     {/if}
@@ -269,7 +306,7 @@
         <span class="hero-lead-line text-accent">Мастерская DevSecOps</span>
       </h1>
 
-      <div class="hero-logo" aria-label="Opensophy ASCII logo">
+      <div class="hero-logo" aria-label="Opensophy ASCII logo" bind:this={logoEl}>
         <AsciiVisual
           src="/logo.png"
           ascii={true}
@@ -364,6 +401,19 @@
           <p>
             <span class="text-strong">Разрабатываем сайты и внутренние инструменты, настраиваем серверы и устраняем сбои.</span> Если система тормозит, не запускается или требует доработки —
             <span class="text-accent">мы сможем найти причину и наладим работу.</span>
+          </p>
+        </div>
+      </article>
+      <article class="component-cell">
+        <div class="component-visual component-visual-radar">
+          <Radar scope="window" />
+        </div>
+        <div class="component-copy">
+          <h2>Комплексная проверка безопасности и закрытие рисков</h2>
+          <p>
+            <span class="text-strong">Предлагаем три направления проверки — по отдельности или в комплексе, выбирайте то, что нужно именно сейчас:</span>
+            находим утечки данных и скрытые уязвимости через анализ открытых источников; расследуем инциденты, изучаем логи и трафик, чтобы найти причину сбоя или взлома внутри инфраструктуры; приводим процессы и документы в соответствие с 152-ФЗ, ISO 27001 и другими требованиями регуляторов, проектируем модель доступа и пишем регламенты,
+            <span class="text-accent">чтобы к вам не было вопросов при проверках.</span>
           </p>
         </div>
       </article>
@@ -523,6 +573,11 @@
     --arc-rx: 82.5%;
     --arc-ry: 21rem;
     --arc-cy: calc(100% + 17rem);
+    /* Зона вокруг ASCII-логотипа (для маски GhostCursor) — перезаписывается из JS */
+    --logo-cx: 75%;
+    --logo-cy: 50%;
+    --logo-rx: 18rem;
+    --logo-ry: 18rem;
   }
 
   /* Карточка со свечением: растянута на всю секцию, скруглена снизу */
@@ -598,19 +653,39 @@
     padding: 0 1.25rem;
   }
 
-  /* Маска GhostCursor: всё, что внутри эллипса дуги, скрыто.
-     Параметры эллипса (--arc-*) заданы на .hero-section и совпадают с .hero-arc */
+  /* Маска GhostCursor — два слоя, пересекаются (mask-composite: intersect):
+     1) всё, что внутри эллипса дуги, скрыто (параметры --arc-* совпадают с .hero-arc);
+     2) вокруг ASCII-логотипа курсор плавно затухает: в центре зоны полностью
+        прозрачен, к краю (--logo-rx / --logo-ry) плавно возвращается. */
   :global(.hero-ghost) {
-    -webkit-mask-image: radial-gradient(
-      ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
-      transparent 99%,
-      #000 100%
-    );
-    mask-image: radial-gradient(
-      ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
-      transparent 99%,
-      #000 100%
-    );
+    -webkit-mask-image:
+      radial-gradient(
+        ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
+        transparent 99%,
+        #000 100%
+      ),
+      radial-gradient(
+        ellipse var(--logo-rx) var(--logo-ry) at var(--logo-cx) var(--logo-cy),
+        transparent 0%,
+        transparent 35%,
+        rgba(0, 0, 0, 0.35) 65%,
+        #000 100%
+      );
+    mask-image:
+      radial-gradient(
+        ellipse var(--arc-rx) var(--arc-ry) at 50% var(--arc-cy),
+        transparent 99%,
+        #000 100%
+      ),
+      radial-gradient(
+        ellipse var(--logo-rx) var(--logo-ry) at var(--logo-cx) var(--logo-cy),
+        transparent 0%,
+        transparent 35%,
+        rgba(0, 0, 0, 0.35) 65%,
+        #000 100%
+      );
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
   }
 
   /* Стиль как у блока «Opensophy занимается…» */
@@ -837,11 +912,12 @@
     box-sizing: border-box;
   }
 
+  /* 4 карточки: 4 колонки на ПК, 2×2 на планшете, 1 колонка на телефоне */
   .component-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: start;
-    gap: clamp(1.5rem, 3.5vw, 4rem);
+    gap: clamp(1.5rem, 2.5vw, 3rem);
     width: 100%;
   }
 
@@ -860,7 +936,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: clamp(18rem, 27vw, 25rem);
+    min-height: clamp(14rem, 20vw, 22rem);
   }
 
   .component-visual :global(svg) {
@@ -868,6 +944,14 @@
     width: 100%;
     max-width: 100%;
     max-height: none;
+  }
+
+  /* Тема радара: линии — цвет текста, заливка — фон, акцент — фирменный розовый */
+  .component-visual-radar {
+    --hl-ink: var(--foreground);
+    --hl-surface: var(--background);
+    --hl-rim: var(--accent);
+    --hl-accent: #f43f5e;
   }
 
   .component-copy {
@@ -878,7 +962,7 @@
   .component-copy h2 {
     margin: 0 0 0.85rem;
     color: var(--foreground);
-    font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+    font-size: clamp(1.1rem, 1.4vw, 1.4rem);
     font-weight: 600;
     line-height: 1.25;
     letter-spacing: -0.025em;
@@ -888,7 +972,7 @@
   .component-copy p {
     margin: 0;
     color: var(--foreground-muted);
-    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    font-size: clamp(0.9rem, 1vw, 1.02rem);
     font-weight: 500;
     line-height: 1.6;
     letter-spacing: -0.01em;
@@ -900,6 +984,25 @@
 
   .component-copy .text-accent {
     color: var(--accent);
+  }
+
+  @media (max-width: 1099px) {
+    .component-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 3rem clamp(1.5rem, 3.5vw, 3rem);
+    }
+
+    .component-visual {
+      min-height: clamp(16rem, 32vw, 22rem);
+    }
+
+    .component-copy h2 {
+      font-size: clamp(1.2rem, 2.2vw, 1.5rem);
+    }
+
+    .component-copy p {
+      font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+    }
   }
 
   @media (max-width: 767px) {
