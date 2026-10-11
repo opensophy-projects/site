@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import ServicesGrid from "$lib/components/ui-registry/ServicesGrid.svelte";
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import CardProject from "$lib/components/ui-registry/CardProject.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
@@ -481,21 +480,6 @@
           </div>
         </CardProject>
       {/each}
-    </div>
-  </section>
-
-  <!-- Services Section -->
-  <section class="section-block w-full max-w-5xl mx-auto px-4">
-    <p class="section-overline"><Badge variant="accent">Услуги</Badge></p>
-    <ServicesGrid />
-    <div class="services-actions">
-      <a class="services-action" href="/solutions">Посмотреть все услуги</a>
-      <button
-        type="button"
-        class="services-action services-action-primary"
-        onclick={() => contactsState.open()}>Заказать услуги</button
-      >
-      <a class="services-action" href="/service-policy">Политика оказания услуг</a>
     </div>
   </section>
 
