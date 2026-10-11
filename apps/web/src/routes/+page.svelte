@@ -4,7 +4,6 @@
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import CardProject from "$lib/components/ui-registry/CardProject.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
-  import GlowHorizon from "$lib/components/ui-registry/glowhorizon.svelte";
   import LogoCarousel from "$lib/components/ui-registry/logo-carousel.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
   import Faq from "$lib/components/ui-registry/Faq.svelte";
@@ -241,11 +240,26 @@
 
   <!-- Hero Section -->
   <section class="hero-section relative flex w-full items-center justify-center">
+    <!-- Изогнутое свечение (горизонт) -->
     <div class="hero-card" aria-hidden="true">
-      <GlowHorizon variant="top" opacity={0.14} />
+      <div class="hero-halo"></div>
+      <div class="hero-arc"></div>
     </div>
 
     <div class="hero-inner">
+      <div class="hero-copy">
+        <h1 class="hero-title">opensophy</h1>
+        <p class="hero-subtitle">Мастерская DevSecOps</p>
+        <div class="services-actions hero-actions">
+          <button
+            type="button"
+            class="services-action services-action-primary"
+            onclick={() => contactsState.open()}>Контакты</button
+          >
+          <a class="services-action" href="/solutions">Услуги</a>
+        </div>
+      </div>
+
       <div class="hero-logo" aria-label="Opensophy ASCII logo">
         <AsciiVisual
           src="/logo.png"
@@ -257,7 +271,7 @@
           cellSize={isMobile ? 8 : 9}
           contrast={1.5}
           exposure={1}
-          scale={isMobile ? 5 : 3.6}
+          scale={isMobile ? 5 : 4.6}
           orbit={false}
           autoRotate={false}
           rotationIntensity={0.5}
@@ -482,14 +496,17 @@
 {/if}
 
 <style>
+  /* ─── Hero ─────────────────────────────────────────────────── */
   .hero-section {
     position: relative;
-    padding: 5.5rem 0 6rem;
+    min-height: 40rem;
+    padding: 6rem 0 5rem;
   }
 
+  /* Карточка со свечением: растянута на всю секцию, скруглена снизу */
   .hero-card {
     position: absolute;
-    top: 45%;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
@@ -503,22 +520,103 @@
     box-shadow: none;
   }
 
+  /* Мягкое облако света над горизонтом */
+  .hero-halo {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 65% 55% at 50% 100%,
+        rgba(244, 63, 94, 0.5) 0%,
+        rgba(244, 63, 94, 0.22) 38%,
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 90% 70% at 50% 100%,
+        rgba(244, 63, 94, 0.12) 0%,
+        transparent 75%
+      );
+  }
+
+  /* Огромный тёмный «шар» — его верхний край даёт изогнутую светящуюся линию */
+  .hero-arc {
+    position: absolute;
+    left: 50%;
+    top: 80%;
+    width: 150%;
+    aspect-ratio: 1 / 1;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--background);
+    border-top: 1px solid rgba(253, 164, 175, 0.85);
+    box-shadow:
+      0 -2px 14px rgba(253, 164, 175, 0.55),
+      0 -10px 40px rgba(244, 63, 94, 0.55),
+      0 -28px 90px rgba(244, 63, 94, 0.3),
+      inset 0 3px 22px rgba(244, 63, 94, 0.35);
+    pointer-events: none;
+  }
+
+  :global(.dark) .hero-halo {
+    opacity: 0.9;
+  }
+
   .hero-inner {
     position: relative;
     z-index: 10;
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    align-items: center;
+    gap: clamp(1.5rem, 4vw, 4rem);
     width: calc(100% - 2rem);
-    max-width: 92rem;
+    max-width: 80rem;
     margin: 0 auto;
     padding: 0 1.25rem;
+  }
+
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .hero-title {
+    margin: 0;
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    color: var(--foreground);
+    background: linear-gradient(
+      180deg,
+      var(--foreground) 30%,
+      color-mix(in srgb, var(--foreground) 55%, transparent) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-subtitle {
+    margin: 0;
+    font-size: clamp(1.15rem, 2vw, 1.6rem);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--foreground-muted);
+  }
+
+  .hero-actions {
+    justify-content: flex-start;
+    margin-top: 0.75rem;
   }
 
   .hero-logo {
     position: relative;
     width: 100%;
-    max-width: 44rem;
-    height: clamp(22rem, 34vw, 32rem);
+    justify-self: end;
+    height: clamp(26rem, 40vw, 42rem);
     color: var(--accent);
   }
 
@@ -530,12 +628,12 @@
 
   @media (max-width: 1023px) {
     .hero-section {
-      padding-top: 4.5rem;
+      min-height: 0;
+      padding-top: 5rem;
       padding-bottom: 5rem;
     }
 
     .hero-card {
-      top: 50%;
       width: 100%;
       max-width: none;
       margin-left: 0;
@@ -544,12 +642,29 @@
       border-bottom-right-radius: 2rem;
     }
 
+    .hero-arc {
+      top: 88%;
+      width: 260%;
+    }
+
     .hero-inner {
+      grid-template-columns: 1fr;
       width: 100%;
       padding: 0 1rem;
+      gap: 0.5rem;
+    }
+
+    .hero-copy {
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero-actions {
+      justify-content: center;
     }
 
     .hero-logo {
+      justify-self: center;
       height: clamp(18rem, 88vw, 26rem);
     }
   }
