@@ -2,7 +2,7 @@
   import { onMount, type Component } from "svelte";
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
   import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
-  import ArcFlame from "$lib/components/ui-registry/ArcFlame.svelte";
+  import ArcFlame from "$lib/components/ui-registry/Arcflame.svelte";
   import ArcTimeline from "$lib/components/ui-registry/ArcTimeline.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import LogoCarousel from "$lib/components/ui-registry/logo-carousel.svelte";
@@ -213,12 +213,12 @@
   ];
 
   // ─── Команда ──────────────────────────────────────────────────
-  type TeamMember = { name: string; role: string; initials: string };
+  type TeamMember = { name: string; role: string };
 
   const team: TeamMember[] = [
-    { name: "Селезнева Богдана", role: "GRC-аналитик", initials: "СБ" },
-    { name: "Кулешов Даниил", role: "DevSecOps-инженер", initials: "КД" },
-    { name: "Гаршина Александра", role: "DevOps-инженер", initials: "ГА" },
+    { name: "Селезнева Богдана", role: "GRC-аналитик" },
+    { name: "Кулешов Даниил", role: "DevSecOps-инженер" },
+    { name: "Гаршина Александра", role: "DevOps-инженер" },
   ];
 
   // ─── История проекта (в хронологическом порядке) ──────────────
@@ -503,12 +503,6 @@
       {#each team as member (member.name)}
         <div class="inset-shadow relative overflow-hidden rounded-xl bg-background-inset p-1.5">
           <article class="team-card card rounded-lg bg-background">
-            <div
-              class="team-avatar inset-shadow grid size-14 shrink-0 place-items-center rounded-full bg-accent/10 text-lg font-semibold text-accent"
-              aria-hidden="true"
-            >
-              {member.initials}
-            </div>
             <h3 class="team-name">{member.name}</h3>
             <p class="team-role">{member.role}</p>
           </article>
@@ -518,7 +512,7 @@
   </section>
 
   <!-- Timeline -->
-  <section class="section-block timeline-section w-full max-w-5xl mx-auto px-4" aria-label="История проекта">
+  <section class="section-block timeline-section" aria-label="История проекта">
     <p class="section-overline"><Badge variant="default">История</Badge></p>
     <div class="w-full rounded-lg border border-border bg-background p-2">
       <ArcTimeline data={timeline} defaultActiveStep={{ time: "Октябрь 2026", stepIndex: 0 }} />
@@ -1428,7 +1422,7 @@
   }
 
   .team-name {
-    margin: 0.5rem 0 0;
+    margin: 0;
     font-size: clamp(1.05rem, 1.4vw, 1.25rem);
     font-weight: 600;
     letter-spacing: -0.02em;
@@ -1445,7 +1439,12 @@
     color: var(--accent);
   }
 
+  /* Ширина как у розового блока секции «Продукты» (.products-glow) */
   .timeline-section {
+    width: 92rem;
+    max-width: calc(100vw - 2rem);
+    margin: 0 auto;
+    box-sizing: border-box;
     padding-bottom: clamp(3rem, 6vw, 6rem);
   }
 
