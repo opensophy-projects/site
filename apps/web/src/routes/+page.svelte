@@ -518,6 +518,30 @@
       <ArcTimeline data={timeline} defaultActiveStep={{ time: "Октябрь 2026", stepIndex: 0 }} />
     </div>
   </section>
+
+  <!-- Contacts -->
+  <section class="section-block contact-section w-full max-w-5xl mx-auto px-4" aria-label="Контакты">
+    <p class="section-overline"><Badge variant="accent">Контакты</Badge></p>
+    <div class="inset-shadow relative overflow-hidden rounded-xl bg-background-inset p-1.5">
+      <div class="contact-card card rounded-lg bg-background">
+        <h2 class="contact-title">
+          <span class="text-foreground">Остались вопросы?</span>
+          <span class="text-accent">Напишите нам</span>
+        </h2>
+        <p class="contact-text">
+          Расскажите о задаче — подскажем, как её решить, и подберём подходящую услугу.
+        </p>
+        <div class="services-actions contact-actions">
+          <button
+            type="button"
+            class="services-action services-action-primary"
+            onclick={() => contactsState.open()}>Написать нам</button
+          >
+          <a class="services-action" href="/solutions">Все услуги</a>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <!-- Карточка продукта: внешний inset-слой + внутренняя карточка -->
@@ -1457,5 +1481,75 @@
     color: var(--foreground-muted);
     margin: 0;
     flex: 1;
+  }
+
+  /* ─── Contacts ─────────────────────────────────────────────── */
+  .contact-section {
+    padding-bottom: clamp(3rem, 6vw, 6rem);
+  }
+
+  .contact-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .contact-title {
+    margin: 0;
+    font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .contact-title span {
+    display: block;
+  }
+
+  .contact-text {
+    margin: 0;
+    max-width: 34rem;
+    font-size: clamp(1rem, 1.35vw, 1.2rem);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    color: var(--foreground-muted);
+  }
+
+  /* ─── Мобильные поправки: «Команда» и «Контакты» ───────────── */
+  @media (max-width: 767px) {
+    /* Свечение .products-glow выступает вниз на 2.5rem — компенсируем,
+       чтобы бейдж «Команда» не прижимался к розовому блоку */
+    .products-section {
+      padding-bottom: 3.5rem;
+    }
+
+    .team-section {
+      padding-top: 3rem;
+      padding-bottom: 2.5rem;
+    }
+
+    .team-section .section-overline {
+      margin-bottom: 1.5rem;
+    }
+
+    .team-grid {
+      gap: 1rem;
+    }
+
+    .contact-card {
+      padding: 2rem 1.25rem;
+    }
+
+    .contact-actions {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+      max-width: 20rem;
+    }
   }
 </style>
