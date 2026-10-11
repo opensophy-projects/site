@@ -509,12 +509,16 @@
   .hero-card {
     position: absolute;
     top: 0;
-    bottom: 0;
+    bottom: -4rem;
     left: 0;
     right: 0;
     width: 100%;
     overflow: hidden;
     box-shadow: none;
+    pointer-events: none;
+    /* Плавное растворение внизу — никакой резкой границы между секциями */
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent 100%);
   }
 
   /* Мягкое облако света над горизонтом */
@@ -541,7 +545,7 @@
   .hero-arc {
     position: absolute;
     left: 50%;
-    top: calc(100% - 4rem);
+    top: calc(100% - 8rem);
     width: 165%;
     height: 42rem;
     transform: translateX(-50%);
@@ -620,7 +624,7 @@
     }
 
     .hero-arc {
-      top: calc(100% - 3rem);
+      top: calc(100% - 7rem);
       width: 220%;
       height: 26rem;
     }
