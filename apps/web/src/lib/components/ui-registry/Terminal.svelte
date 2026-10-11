@@ -14,7 +14,6 @@
   const VB = PB, VA = PB + V * G, H = VA + TB, E = 4;
   const K = 2.1, C = 0.7071, OX = 70, OY = 360;
   const NS = 'http://www.w3.org/2000/svg';
-  /** The history, oldest first: an indent in cells, then each token's length in cells. */
   const HIST = [
     '0 5 12', '2 7 3 9', '2 14', '4 6 10', '4 18', '2 3', '0 2', '0 2 6 8',
     '0 26', '0 20', '0 11 4', '2 9 12', '2 5 3 7', '4 16', '4 8 8', '2 4',
@@ -24,7 +23,6 @@
 
   const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
   const smooth = (t) => t * t * (3 - 2 * t);
-  /** Slab frame: u across, v up, w out of the face. */
   const P2 = (u, v, w) => [OX + (u + w) * C * K, OY + ((w - u) * C * 0.5 - v) * K];
   const onFace = (sx, sy, w) => {
     const u = (sx - OX) / (C * K) - w;
@@ -70,7 +68,6 @@
       (p || svg).appendChild(e);
       return e;
     };
-    /** A prism: back outline, silhouette edges, opaque front face, crease. */
     const mkP = (par) => {
       const g = mk('g', {}, par);
       return { b: mk('path', { class: 'n' }, g), c: mk('path', { class: 'n' }, g), f: mk('path', { class: 'f' }, g), i: mk('path', { class: 'lo' }, g) };
@@ -86,7 +83,6 @@
         const a = f[i], c = f[(i + 1) % n];
         cs.push((c[0] - a[0]) * dy - (c[1] - a[1]) * dx);
       }
-      // edges where the outline runs parallel to the depth direction
       for (let i = 0; i < n; i++) {
         if (cs[i] * cs[(i + n - 1) % n] < 0) cn += 'M' + f[i][0].toFixed(1) + ',' + f[i][1].toFixed(1) + 'L' + b[i][0].toFixed(1) + ',' + b[i][1].toFixed(1);
       }
@@ -112,7 +108,6 @@
       return { j, segs, sp: spring(0, 0.01), drawn: '' };
     });
 
-    // prompt bar, chevron, cursor; then the title bar and buttons, painted after the lines
     const prompt = mkP(g);
     setP(prompt, rr(IN, IN, W - IN, VB, 6, 5), rr(IN + 1.4, IN + 1.4, W - IN - 1.4, VB - 1.4, 4.6, 5), 0, HB);
     const cy = (IN + VB) / 2;
@@ -127,7 +122,6 @@
       setP(mkP(g), rr(cx - 2.8, cv - 2.8, cx + 2.8, cv + 2.8, 2.8, 5), null, HB, HB + 1.3);
     }
 
-    /** Row j with the window scrolled to `top`: cut to the window, lifted less near either bar. */
     function drawRow(rw, top) {
       const key = top + '|' + rw.sp.x;
       if (key === rw.drawn) return;
@@ -151,7 +145,6 @@
     const top = spring(REST_TOP, 0.002);
     let R = spread, over = null;
 
-    /** Where the pointer is: "prompt", a depth down the rows from 0 to 1, or null off the window. */
     function hit(sx, sy) {
       const qb = onFace(sx, sy, HB), inU = (q) => q[0] > IN && q[0] < W - IN;
       if (inU(qb) && qb[1] > IN && qb[1] < VB) return 'prompt';
@@ -229,11 +222,11 @@
 
 <style>
   .hl-wrap {
-    /* override from outside to match your theme */
-    --hl-bg: #f6f4f1;
-    --hl-line: #2b2f3a;
-    --hl-faint: #2b2f3a66;
-    --hl-txt: #6b6f7a;
+    /* Theme follows the host page instead of the OS color-scheme. */
+    --hl-bg: var(--background, #f6f4f1);
+    --hl-line: var(--foreground, #2b2f3a);
+    --hl-faint: color-mix(in srgb, var(--foreground, #2b2f3a) 34%, transparent);
+    --hl-txt: var(--foreground-muted, #6b6f7a);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -241,14 +234,6 @@
     color: var(--hl-txt);
     font: 12px ui-monospace, Menlo, Consolas, monospace;
     letter-spacing: 0.06em;
-  }
-  @media (prefers-color-scheme: dark) {
-    .hl-wrap {
-      --hl-bg: #0e1016;
-      --hl-line: #d7dbe6;
-      --hl-faint: #d7dbe655;
-      --hl-txt: #8b90a0;
-    }
   }
   .hl {
     display: block;
@@ -282,9 +267,7 @@
     stroke: var(--hl-hi);
     stroke-width: 1.8;
   }
-  .read {
-    min-height: 1.2em;
-  }
+  .read { min-height: 1.2em; }
   .ctl {
     display: flex;
     gap: 10px;
