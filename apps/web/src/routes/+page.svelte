@@ -297,6 +297,8 @@
 
   <!-- Services showcase -->
   <section class="component-showcase" aria-label="Наши направления">
+   <div class="showcase-outer inset-shadow">
+    <div class="showcase-inner card">
     <div class="component-grid">
       <article class="component-cell">
         <div class="component-visual component-visual-shield">
@@ -336,6 +338,8 @@
         </div>
       </article>
     </div>
+    </div>
+   </div>
   </section>
 
   <!-- About Section -->
@@ -668,8 +672,23 @@
     width: calc(100% - 2rem);
     max-width: 92rem;
     margin: 0 auto;
-    padding: 0.5rem 1.25rem clamp(3rem, 6vw, 6rem);
+    padding: 0.5rem 0 clamp(3rem, 6vw, 6rem);
     box-sizing: border-box;
+  }
+
+  /* Одна большая карточка — те же границы, что у Card.svelte:
+     внешняя рамка (inset-shadow, rounded-xl, p-1.5) + внутренняя (rounded-lg, border) */
+  .showcase-outer {
+    border-radius: 0.75rem;
+    background: var(--background-inset);
+    padding: 0.375rem;
+  }
+
+  .showcase-inner {
+    border-radius: 0.5rem;
+    border: 1px solid var(--border);
+    background: var(--background);
+    padding: clamp(1.25rem, 3vw, 2.5rem);
   }
 
   .component-grid {
