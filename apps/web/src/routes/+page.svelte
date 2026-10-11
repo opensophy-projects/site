@@ -8,6 +8,9 @@
   import Badge from "$lib/components/ui-registry/Badge.svelte";
   import Faq from "$lib/components/ui-registry/Faq.svelte";
   import ShieldInfinity from "$lib/components/ui-registry/ShieldInfinity.svelte";
+  import Phosphor from "$lib/components/ui-registry/Phosphor.svelte";
+  import Terminal from "$lib/components/ui-registry/Terminal.svelte";
+  import Radar from "$lib/components/ui-registry/Radar.svelte";
   import GhostCursor from "$lib/components/ui-registry/GhostCursor.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
@@ -387,7 +390,71 @@
           </p>
         </div>
       </article>
+      <article class="component-cell">
+        <div class="component-visual component-visual-phosphor">
+          <Phosphor accent="#f43f5e" width="100%" showControls={false} />
+        </div>
+        <div class="component-copy">
+          <h2>Автоматизируем повторяющиеся задачи</h2>
+          <p>
+            <span class="text-strong">Настраиваем автоматическую выгрузку отчетов, рассылку уведомлений, проверку данных и другие рутинные операции.</span> То, что сотрудники делают вручную каждый день или неделю,
+            <span class="text-accent">будет происходить само по расписанию.</span> Освобождаем время команды для реальной работы.
+          </p>
+        </div>
+      </article>
+      <article class="component-cell">
+        <div class="component-visual component-visual-terminal">
+          <Terminal accent="#f43f5e" width="100%" showControls={false} />
+        </div>
+        <div class="component-copy">
+          <h2>Создаем цифровые продукты и чиним техническую часть</h2>
+          <p>
+            <span class="text-strong">Разрабатываем сайты и внутренние инструменты, настраиваем серверы и устраняем сбои.</span> Если система тормозит, не запускается или требует доработки —
+            <span class="text-accent">мы сможем найти причину и наладим работу.</span>
+          </p>
+        </div>
+      </article>
+      <article class="component-cell">
+        <div class="component-visual component-visual-radar">
+          <!-- Радар следит за курсором только в пределах своего элемента, а не по всей странице -->
+          <Radar scope="element" />
+        </div>
+        <div class="component-copy">
+          <h2>Комплексная проверка безопасности и закрытие рисков</h2>
+          <p>
+            <span class="text-strong">Предлагаем три направления проверки — по отдельности или в комплексе, выбирайте то, что нужно именно сейчас:</span>
+            находим утечки данных и скрытые уязвимости через анализ открытых источников; расследуем инциденты, изучаем логи и трафик, чтобы найти причину сбоя или взлома внутри инфраструктуры; приводим процессы и документы в соответствие с 152-ФЗ, ISO 27001 и другими требованиями регуляторов, проектируем модель доступа и пишем регламенты,
+            <span class="text-accent">чтобы к вам не было вопросов при проверках.</span>
+          </p>
+        </div>
+      </article>
     </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="section-block w-full max-w-5xl mx-auto px-4">
+    <p class="section-overline"><Badge variant="accent">Что такое Opensophy?</Badge></p>
+    <h2 class="section-lead text-foreground-muted about-copy">
+      <span class="text-foreground">Opensophy</span><button
+        type="button"
+        class="about-note"
+        aria-label="Что означает название">?</button
+      > <span class="about-dash">—</span> это инициатива, которая развивает
+      <span class="text-accent">DevSecOps и Open Source</span> и делает их доступнее
+      для разработчиков и команд.
+    </h2>
+  </section>
+
+  <!-- What We Do Section -->
+  <section class="section-block w-full max-w-5xl mx-auto px-4">
+    <p class="section-overline"><Badge variant="accent">Чем занимается</Badge></p>
+    <h2 class="section-lead text-foreground-muted">
+      <span class="text-foreground">Opensophy занимается&nbsp;</span><span
+        class="text-accent"
+        >внедрением DevSecOps: автоматизацией, безопасностью и инфраструктурой</span
+      >, развитием open-source инструментов для разработчиков и DevOps-команд, а
+      также подготовкой образовательных материалов.
+    </h2>
   </section>
 
   <!-- Projects Section -->
@@ -832,6 +899,25 @@
     padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
   }
 
+  /* ПК: увеличенный отступ после спонсоров, привязан к высоте экрана —
+     блок «О нас» не выглядывает снизу на первом экране */
+  @media (min-width: 1024px) {
+    .sponsors-section {
+      padding-bottom: clamp(8rem, 24vh, 18rem);
+    }
+  }
+
+  .about-us-copy {
+    margin: 0 auto;
+    max-width: 100%;
+    text-align: center;
+    color: var(--foreground-muted);
+    font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+  }
+
   /* ─── Component showcase ─────────────────────────────────── */
   /* Ширина совпадает с границами свечения (hero-card): 92rem */
   .component-showcase {
@@ -874,6 +960,14 @@
     width: 100%;
     max-width: 100%;
     max-height: none;
+  }
+
+  /* Тема радара: линии — цвет текста, заливка — фон, акцент — фирменный розовый */
+  .component-visual-radar {
+    --hl-ink: var(--foreground);
+    --hl-surface: var(--background);
+    --hl-rim: var(--accent);
+    --hl-accent: #f43f5e;
   }
 
   .component-copy {
@@ -1051,6 +1145,46 @@
     margin-bottom: 1rem;
   }
 
+  .about-note {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 0.9rem;
+    height: 0.9rem;
+    margin-left: 0.1rem;
+    transform: translateY(-0.75rem);
+    vertical-align: middle;
+    border-radius: 999px;
+    background: var(--accent);
+    color: white;
+    font-size: 0.8rem;
+    cursor: help;
+  }
+
+  .about-note::after {
+    content: "от «open philosophy» — «открытая философия»";
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    z-index: 5;
+    width: max-content;
+    max-width: 16rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.5rem;
+    background: var(--foreground);
+    color: var(--background);
+    font-size: 0.8rem;
+    line-height: 1.35;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+  }
+
+  .about-note:hover::after,
+  .about-note:focus::after {
+    opacity: 1;
+  }
+
   .products-section {
     position: relative;
     z-index: 1;
@@ -1082,6 +1216,14 @@
   }
 
   @media (max-width: 600px) {
+    .about-note {
+      transform: translateY(-0.6rem);
+    }
+    .about-note::after {
+      right: auto;
+      left: -0.5rem;
+      width: 13rem;
+    }
     .products-glow {
       width: 160%;
     }
