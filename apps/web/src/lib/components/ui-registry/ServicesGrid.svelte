@@ -23,6 +23,7 @@
     visual: VisualKind;
     wide?: boolean;
     recommended?: boolean;
+    offset?: boolean;
   };
 
   const services: Service[] = [
@@ -107,6 +108,7 @@
         "Поможем разобраться с задачей: подскажем подходящие инструменты, оценим архитектуру и безопасность, ответим на вопросы по DevSecOps, инфраструктуре и автоматизации.",
       price: "По запросу",
       visual: "consult",
+      offset: true,
     },
     {
       id: "trouble",
@@ -115,7 +117,6 @@
         "Что-то не запускается, тормозит или настроено «как получилось»? Находим причину и исправляем: Docker, Linux-серверы, конфигурации, CI/CD-пайплайны. Помогаем с настройкой и проверкой, чтобы всё работало стабильно.",
       price: "от 7 800 ₽",
       visual: "gear",
-      wide: true,
       recommended: true,
     },
     {
@@ -338,7 +339,7 @@
 
 <section class="services-grid">
   {#each services as s (s.id)}
-    <div class="service" class:service-wide={s.wide} class:flame-slot={s.recommended}>
+    <div class="service" class:service-wide={s.wide} class:flame-slot={s.recommended} class:flame-pad={s.offset}>
       {#if s.recommended}
         <FlameWrap
           color={flameColor}
@@ -378,6 +379,12 @@
 
   .flame-slot {
     margin-top: 2.5rem;
+  }
+
+  @media (min-width: 601px) {
+    .flame-pad {
+      margin-top: 2.5rem;
+    }
   }
 
   @media (max-width: 600px) {
