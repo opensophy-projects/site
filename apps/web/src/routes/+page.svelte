@@ -62,6 +62,9 @@
   // Дуга hero: ArcFlame берёт из неё эллипс, по которому горит огонь
   let arcEl = $state<HTMLElement | undefined>();
 
+  // Радар: обёртка, которая ловит наведение на всю область иллюстрации
+  let radarEl = $state<HTMLElement | undefined>();
+
   // Карусель: всегда на мобильном, на ПК — только если логотипы не помещаются
   const useCarousel = $derived(isMobile || !fits);
   const groupSize = $derived(isMobile ? 1 : 2);
@@ -74,6 +77,28 @@
   function smoothstep(edge0: number, edge1: number, x: number) {
     const t = Math.min(1, Math.max(0, (x - edge0) / (edge1 - edge0)));
     return t * t * (3 - 2 * t);
+  }
+
+  // Радар двигается при наведении на любую точку его блока: если событие
+  // не дошло до самого радара (курсор над полями вокруг SVG), пересылаем его внутрь.
+  function forwardToRadar(e: PointerEvent) {
+    const target = radarEl?.firstElementChild;
+    if (!target || target.contains(e.target as Node)) return;
+    const init = {
+      clientX: e.clientX,
+      clientY: e.clientY,
+      screenX: e.screenX,
+      screenY: e.screenY,
+      pointerId: e.pointerId,
+      pointerType: e.pointerType,
+      isPrimary: e.isPrimary,
+      bubbles: false,
+      cancelable: false,
+    };
+    target.dispatchEvent(new PointerEvent(e.type, init));
+    if (e.type === "pointermove") {
+      target.dispatchEvent(new MouseEvent("mousemove", init));
+    }
   }
 
   let rafId = 0;
@@ -440,8 +465,16 @@
         </div>
       </article>
       <article class="component-cell">
-        <div class="component-visual component-visual-radar">
-          <!-- Радар следит за курсором только в пределах своего элемента, а не по всей странице -->
+        <!-- Радар следит за курсором только при наведении на свой блок.
+             Обёртка ловит наведение на всю область и пересылает его радару. -->
+        <!-- svelte-ignore a11y_no_static_element_interactions -->
+        <div
+          class="component-visual component-visual-radar"
+          bind:this={radarEl}
+          onpointermove={forwardToRadar}
+          onpointerenter={forwardToRadar}
+          onpointerleave={forwardToRadar}
+        >
           <Radar scope="element" />
         </div>
         <div class="component-copy">
@@ -515,7 +548,8 @@
   <!-- Timeline -->
   <section class="section-block timeline-section" aria-label="История проекта">
     <p class="section-overline"><Badge variant="default">История</Badge></p>
-    <div class="w-full rounded-lg border border-border bg-background p-2">
+    <!-- Без линий границы: мягкое затемнение + блюр вместо рамки -->
+    <div class="timeline-panel w-full">
       <ArcTimeline data={timeline} defaultActiveStep={{ time: "Октябрь 2026", stepIndex: 0 }} />
     </div>
   </section>
@@ -1037,6 +1071,15 @@
     --hl-surface: var(--background);
     --hl-rim: var(--accent);
     --hl-accent: #f43f5e;
+    /* Блок целиком принимает курсор, чтобы радар реагировал на наведение */
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+    touch-action: none;
+  }
+
+  .component-visual-radar > :global(*) {
+    pointer-events: auto;
   }
 
   .component-copy {
@@ -1470,6 +1513,20 @@
     margin: 0 auto;
     box-sizing: border-box;
     padding-bottom: clamp(3rem, 6vw, 6rem);
+  }
+
+  /* История: без линий границы — вместо рамки затемнение и блюр.
+     Края растворяются мягкой тенью, поэтому резкого контура нет. */
+  .timeline-panel {
+    position: relative;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 1.5rem;
+    outline: none;
+    background: color-mix(in srgb, var(--background-inset) 70%, transparent);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 0 48px 24px color-mix(in srgb, var(--background-inset) 70%, transparent);
   }
 
   /* Текст как в остальных блоках: крупнее, насыщенность 500, плотный интервал */
