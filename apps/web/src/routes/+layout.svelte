@@ -28,7 +28,7 @@
 
 	const siteName = siteConfig.name;
 	const authorName = siteConfig.author;
-	const homeTitle = `${siteConfig.name} — DevSecOps и open-source`;
+	const homeTitle = `${siteConfig.name} — DevSecOps, кибербезопасность и веб-разработка`;
 	const homeDescription = siteConfig.description;
 	const homeKeywords = siteConfig.keywords.join(', ');
 	const sharedOgImage = new URL(siteConfig.ogImage, siteOrigin).href;
@@ -111,7 +111,7 @@
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:image" content={sharedOgImage} />
-		<meta property="og:image:alt" content="opensophy — DevSecOps и open-source" />
+		<meta property="og:image:alt" content="Opensophy — DevSecOps, кибербезопасность и веб-разработка" />
 		<meta property="og:image:type" content="image/jpeg" />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
