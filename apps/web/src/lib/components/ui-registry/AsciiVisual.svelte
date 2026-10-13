@@ -13,13 +13,18 @@
   import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
   import { canRunHeavyEffects } from "$lib/utils/perf";
 
+  // Типы пропсов берём напрямую из компонента, а не через отдельный
+  // именованный экспорт (он не резолвился и превращался в 'error' type).
   type AsciiObjectProps = ComponentProps<typeof AsciiObject>;
 
   type Props = Omit<AsciiObjectProps, "class" | "src"> & {
     class?: string;
     src?: string;
+    /** CSS-класс для картинки-замены на слабых устройствах */
     imgClass?: string;
+    /** Альтернативный текст для картинки на слабых устройствах */
     alt?: string;
+    /** Всегда рендерить ASCII, без картинки-замены на слабых устройствах */
     forceAscii?: boolean;
   };
 
@@ -29,61 +34,29 @@
     alt = "",
     src = "",
     forceAscii = false,
-    onLoad: onLoadCallback = null,
-    onError: onErrorCallback = null,
     ...options
   }: Props = $props();
 
+  // Решение принимается один раз на клиенте после монтирования.
   let heavy = $state(false);
   let mounted = $state(false);
-  let ready = $state(false);
 
   $effect(() => {
     heavy = forceAscii || canRunHeavyEffects();
     mounted = true;
-    ready = !heavy;
   });
-
-  function handleLoad(): void {
-    ready = true;
-    onLoadCallback?.();
-  }
-
-  function handleError(error: unknown): void {
-    onErrorCallback?.(error);
-  }
 </script>
 
 {#if mounted && heavy}
-  <div class={className} style="position: relative;">
-    {#if src && !ready}
-      <img
-        {src}
-        {alt}
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        aria-hidden={alt ? undefined : true}
-        class={imgClass}
-        style="position: absolute; inset: 0; display: block;"
-      />
-    {/if}
-    <AsciiObject
-      {src}
-      class="absolute inset-0 h-full w-full"
-      {...options}
-      onLoad={handleLoad}
-      onError={handleError}
-    />
-  </div>
+  <AsciiObject {src} class={className} {...options} />
 {:else if mounted}
+  <!-- Слабое устройство: лёгкая статичная картинка вместо WebGL-рендера -->
   <div class={className} style="position: relative;">
     {#if src}
       <img
         {src}
         {alt}
-        loading="eager"
-        fetchpriority="high"
+        loading="lazy"
         decoding="async"
         aria-hidden={alt ? undefined : true}
         class={imgClass}
