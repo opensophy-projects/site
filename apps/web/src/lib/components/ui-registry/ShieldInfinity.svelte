@@ -135,10 +135,7 @@
 
 <style>
   .hl {
-    /* переопределяются снаружи под тему */
-    --hl-bg: #f6f4f1;
-    --hl-line: #2b2f3a;
-    --hl-faint: #2b2f3a55;
+    /* Цвета наследуются от контейнера темы страницы. */
     display: block;
     height: auto;
     max-height: 80vh;
