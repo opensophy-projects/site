@@ -266,8 +266,9 @@ void main () {
     });
     if (!gl) return;
 
-    const compile = (type: number, src: string) => {
-      const s = gl.createShader(type)!;
+    const compile = (type: number, src: string): WebGLShader | null => {
+      const s = gl.createShader(type);
+      if (!s) return null;
       gl.shaderSource(s, src);
       gl.compileShader(s);
       if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
@@ -277,7 +278,8 @@ void main () {
     };
     const vs = compile(gl.VERTEX_SHADER, VERT);
     const fs = compile(gl.FRAGMENT_SHADER, FRAG);
-    const program = gl.createProgram()!;
+    if (!vs || !fs) return;
+    const program = gl.createProgram();
     gl.attachShader(program, vs);
     gl.attachShader(program, fs);
     gl.linkProgram(program);
@@ -285,8 +287,8 @@ void main () {
     const U: Record<string, WebGLUniformLocation | null> = {};
     const n = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS) as number;
     for (let i = 0; i < n; i++) {
-      const info = gl.getActiveUniform(program, i)!;
-      U[info.name] = gl.getUniformLocation(program, info.name);
+      const info = gl.getActiveUniform(program, i);
+      if (info) U[info.name] = gl.getUniformLocation(program, info.name);
     }
 
     const quad = gl.createBuffer();
