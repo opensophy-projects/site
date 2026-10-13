@@ -24,7 +24,9 @@ keywords: 'Opensophy, Radar, SVG, illustration, UI components'
 
 <ComponentPreview controls={controls} sources={[{ name: 'Radar.svelte', code: source, language: 'svelte' }]}>
 	{#snippet children(values)}
-		<Radar reach={values.reach as number} scope={values.scope as 'self' | 'window'} />
+		<div class="radar-demo">
+			<Radar reach={values.reach as number} scope={values.scope as 'self' | 'window'} />
+		</div>
 	{/snippet}
 </ComponentPreview>
 

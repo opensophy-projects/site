@@ -405,7 +405,7 @@
     <div class="component-grid">
       <article class="component-cell">
         <div class="component-visual component-visual-shield">
-          <ShieldInfinity accent="#f43f5e" width="100%" showControls={false} />
+          <ShieldInfinity accent="#f43f5e" width="100%" />
         </div>
         <div class="component-copy">
           <h2>Автоматическая защита бизнеса</h2>
