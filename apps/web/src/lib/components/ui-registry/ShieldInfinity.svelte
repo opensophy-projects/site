@@ -145,13 +145,6 @@
     cursor: pointer;
     touch-action: none;
   }
-  @media (prefers-color-scheme: dark) {
-    .hl {
-      --hl-bg: #0e1016;
-      --hl-line: #d7dbe6;
-      --hl-faint: #d7dbe655;
-    }
-  }
   .l {
     fill: none;
     stroke: var(--hl-line);

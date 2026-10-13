@@ -265,14 +265,6 @@
     font: 12px ui-monospace, Menlo, Consolas, monospace;
     letter-spacing: 0.06em;
   }
-  @media (prefers-color-scheme: dark) {
-    .hl-wrap {
-      --hl-bg: #0e1016;
-      --hl-line: #d7dbe6;
-      --hl-faint: #d7dbe655;
-      --hl-txt: #8b90a0;
-    }
-  }
   .hl {
     display: block;
     height: auto;
@@ -305,9 +297,7 @@
     stroke: var(--hl-hi);
     stroke-width: 1.8;
   }
-  .read {
-    min-height: 1.2em;
-  }
+  .read { min-height: 1.2em; }
   .ctl {
     display: flex;
     gap: 10px;

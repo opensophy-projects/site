@@ -2,10 +2,12 @@
   /**
    * Обёртка над AsciiObject (WebGL/ASCII-рендер).
    *
-   * На слабых устройствах (смартфоны, планшеты, маломощные ПК) тяжёлый
-   * ASCII-рендер не запускается — вместо него показывается обычная
-   * картинка (<img>) с тем же src. Это чинит «белые экраны» и
-   * неработающие иллюстрации в секции «Услуги» и логотип на главной.
+   * По умолчанию на слабых устройствах (смартфоны, планшеты, маломощные ПК)
+   * тяжёлый ASCII-рендер не запускается — вместо него показывается обычная
+   * картинка (<img>) с тем же src.
+   *
+   * Для конкретного места fallback можно отключить: forceAscii={true}.
+   * Тогда ASCII-рендер запускается на любом устройстве, включая мобильные.
    */
   import type { ComponentProps } from "svelte";
   import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
@@ -22,6 +24,8 @@
     imgClass?: string;
     /** Альтернативный текст для картинки на слабых устройствах */
     alt?: string;
+    /** Всегда рендерить ASCII, без картинки-замены на слабых устройствах */
+    forceAscii?: boolean;
   };
 
   let {
@@ -29,6 +33,7 @@
     imgClass = "h-full w-full object-contain",
     alt = "",
     src = "",
+    forceAscii = false,
     ...options
   }: Props = $props();
 
@@ -37,7 +42,7 @@
   let mounted = $state(false);
 
   $effect(() => {
-    heavy = canRunHeavyEffects();
+    heavy = forceAscii || canRunHeavyEffects();
     mounted = true;
   });
 </script>

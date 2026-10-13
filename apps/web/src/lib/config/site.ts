@@ -11,10 +11,10 @@ export const siteConfig = {
 	url: 'https://opensophy.com',
 	/** Default SEO description for the homepage. */
 	description:
-		'Opensophy — инициатива, развивающая DevSecOps и Open Source и делающая их доступнее для разработчиков и команд.',
+		'Opensophy — команда DevSecOps и информационной безопасности. Пентест сайтов и приложений, аудит инфраструктуры, code review, поиск утечек, автоматизация IT и разработка веб-приложений.',
 	/** Fallback SEO description used on content pages without a frontmatter description. */
 	fallbackDescription:
-		'Opensophy — DevSecOps, Open Source, безопасность, инфраструктура и инструменты для разработчиков и команд.',
+		'Opensophy: услуги кибербезопасности и DevSecOps, пентест, аудит безопасности, защита инфраструктуры, автоматизация, веб-разработка и open-source инструменты.',
 	/** Author shown in metadata and structured data. */
 	author: 'opensophy',
 	/** Primary SEO keywords for indexing and discovery. */

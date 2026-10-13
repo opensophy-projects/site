@@ -174,20 +174,8 @@
         // без цикла: замираем на готовом кадре, самом широком кольце ряби
         for (let i = 0; i < N * N; i++) I[i] = Math.max(I[i] * decay, lit(3, Math.floor(i / N), i % N) * 0.8);
         readout = 'still';
-      } else {
-        for (let i = 0; i < N * N; i++) I[i] *= decay;
-        const g = painting ? 0 : Math.min(1, Math.max(0, (now - leftAt - RESUME) / RAMP));
-        if (g > 0) {
-          clock += dt * 1000;
-          const f = Math.floor(clock / FRAME) % LOOP.length;
-          if (f !== lastF) {
-            lastF = f;
-            for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) if (lit(f, r, c)) I[r * N + c] = Math.max(I[r * N + c], g);
-          }
-          readout = `loop · ${String(f + 1).padStart(2, '0')}/${LOOP.length}`;
-        } else readout = painting ? 'paint' : 'afterglow';
-      }
-      op = Array.from(I, (v) => 0.14 + 0.86 * Math.min(1, Math.max(0, v)));
+      } else readout = painting ? 'paint' : 'afterglow';
+      op = Array.from(I, (v) => 0.08 + 0.92 * Math.min(1, Math.max(0, v)));
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -255,14 +243,6 @@
     font: 12px ui-monospace, Menlo, Consolas, monospace;
     letter-spacing: 0.06em;
   }
-  @media (prefers-color-scheme: dark) {
-    .hl-wrap {
-      --hl-bg: #0e1016;
-      --hl-line: #d7dbe6;
-      --hl-faint: #d7dbe655;
-      --hl-txt: #8b90a0;
-    }
-  }
   .hl {
     display: block;
     height: auto;
@@ -280,9 +260,7 @@
     stroke-linejoin: round;
     stroke-linecap: round;
   }
-  .nostroke {
-    stroke: none;
-  }
+  .nostroke { stroke: none; }
   .n {
     fill: none;
     stroke: var(--hl-line);
@@ -301,9 +279,7 @@
   .dot {
     fill: var(--hl-accent);
   }
-  .read {
-    min-height: 1.2em;
-  }
+  .read { min-height: 1.2em; }
   .tau {
     display: flex;
     gap: 10px;

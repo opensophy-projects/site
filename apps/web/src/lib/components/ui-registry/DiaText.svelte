@@ -1,6 +1,4 @@
 <script lang="ts" module>
-  // Значения по умолчанию (замените на свои из ./const, если они у вас есть).
-  // Easing из reanimated не переносится, поэтому здесь CSS-аналоги.
   export const DEFAULT_SWEEP_COLORS = ["#ffffff", "#c4b5fd", "#ffffff"];
   export const DEFAULT_BASE_COLOR = "currentColor";
   export const DEFAULT_DURATION = 1200;
@@ -9,7 +7,7 @@
   export const DEFAULT_BAND_RATIO = 0.22;
   export const ENTER_DURATION = 350;
   export const EXIT_DURATION = 250;
-  export const SWAP_SHIFT = 8; // px
+  export const SWAP_SHIFT = 8;
   export const SWAP_EASING = "cubic-bezier(0.22, 1, 0.36, 1)";
   export const SWEEP_EASING = "cubic-bezier(0.4, 0, 0.2, 1)";
 
@@ -23,14 +21,14 @@
     loopDelay?: number;
     bandRatio?: number;
     autoPlay?: boolean;
-    /** CSS-строка со стилями шрифта: "font-size: 24px; font-weight: 700" */
     textStyle?: string;
-    /** CSS-строка для корневого элемента */
     style?: string;
-    /** Класс корневого элемента */
     class?: string;
-    /** Класс текста */
     textClass?: string;
+    /** Optional continuation revealed when the text is hovered. */
+    revealText?: string;
+    /** Reveal revealText on pointer hover/focus. */
+    revealOnHover?: boolean;
     onSweepEnd?: (finishedIndex: number) => void;
   };
 </script>
@@ -52,6 +50,8 @@
     style = "",
     class: className = "",
     textClass = "",
+    revealText = "",
+    revealOnHover = false,
     onSweepEnd,
   }: IDiaText = $props();
 
@@ -62,12 +62,12 @@
   let index = $state(0);
   let cycle = $state(0);
   let width = $state(0);
+  let hovered = $state(false);
 
   let contentEl: HTMLElement | undefined = $state();
   let sweepEl: HTMLElement | undefined = $state();
   let timer: ReturnType<typeof setTimeout> | undefined;
 
-  // Сброс на первый текст при смене набора текстов
   let previousTextKey = "";
   $effect(() => {
     if (previousTextKey !== textKey) {
@@ -81,7 +81,6 @@
   const ready = $derived(width > 0);
   const label = $derived(texts[index] ?? "");
 
-  // Градиент: базовый цвет, затем полоса sweepColors на ведущем краю, затем прозрачность
   const gradient = $derived.by(() => {
     if (!ready) return "none";
     const start = (width / strip) * 100;
@@ -124,7 +123,6 @@
 
     const playing = index;
 
-    // prefers-reduced-motion: без анимации, сразу итоговое состояние
     if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
       onSweepEnd?.(playing);
       return;
@@ -165,8 +163,14 @@
   onDestroy(() => clearTimeout(timer));
 </script>
 
-<span class="dia-text {className}" {style}>
-  <!-- Невидимый «измеритель» размера (и текст для скринридеров) -->
+<span
+  class="dia-text {className}"
+  {style}
+  onmouseenter={() => (hovered = true)}
+  onmouseleave={() => (hovered = false)}
+  onfocusin={() => (hovered = true)}
+  onfocusout={() => (hovered = false)}
+>
   <span class="sizer {textClass}" style={textStyle} bind:clientWidth={width}>{label}</span>
 
   {#if ready}
@@ -182,6 +186,14 @@
         style="{textStyle}; --strip: {strip}px; --travel: {strip}px; background-image: {gradient};"
       >{label}</span>
     </span>
+  {/if}
+
+  {#if revealOnHover && revealText}
+    <span
+      class="reveal"
+      class:visible={hovered}
+      aria-hidden={!hovered}
+    >{revealText}</span>
   {/if}
 </span>
 
@@ -209,7 +221,6 @@
   .sweep {
     display: inline-block;
     white-space: nowrap;
-    /* color не трогаем, чтобы currentColor в градиенте работал */
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
@@ -218,12 +229,38 @@
     background-position-x: calc(var(--travel) * -1);
   }
 
+  .reveal {
+    display: inline-block;
+    max-width: 0;
+    margin-left: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateX(-0.35rem);
+    white-space: nowrap;
+    color: var(--foreground-muted);
+    transition:
+      max-width 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      margin-left 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 220ms ease,
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .reveal.visible {
+    max-width: 40rem;
+    margin-left: 0.65em;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .content {
       opacity: 1 !important;
     }
     .sweep {
       background-position-x: 0 !important;
+    }
+    .reveal {
+      transition: none;
     }
   }
 </style>
