@@ -376,7 +376,7 @@
 
       {#if useCarousel}
         <LogoCarousel items={sponsors} count={groupSize}>
-          {#snippet children(item)}
+          {#snippet children(item: Sponsor)}
             {@render sponsor(item)}
           {/snippet}
         </LogoCarousel>
@@ -442,7 +442,7 @@
       <article class="component-cell">
         <div class="component-visual component-visual-radar">
           <!-- Радар следит за курсором только в пределах своего элемента, а не по всей странице -->
-          <Radar scope="element" />
+          <Radar scope="self" />
         </div>
         <div class="component-copy">
           <h2>Комплексная проверка безопасности и закрытие рисков</h2>
