@@ -135,12 +135,21 @@
 
 <style>
   .hl {
-    /* Цвета наследуются от контейнера темы страницы. */
+    --hl-bg: #ffffff;
+    --hl-line: #171717;
+    --hl-faint: rgba(23, 23, 23, 0.22);
     display: block;
     height: auto;
     max-height: 80vh;
     cursor: pointer;
     touch-action: none;
+  }
+
+  :global(.dark) .hl,
+  :global([data-theme='dark']) .hl {
+    --hl-bg: #090909;
+    --hl-line: #f5f5f5;
+    --hl-faint: rgba(245, 245, 245, 0.28);
   }
   .l {
     fill: none;
