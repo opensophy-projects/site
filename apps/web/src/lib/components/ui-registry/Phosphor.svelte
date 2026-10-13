@@ -15,7 +15,6 @@
   const N = 7, PITCH = 10, M = 8, EXT = M * 2 + PITCH * (N - 1);
   const T = 5, R = 2.5, DROP = 15, BT = 4, BO = 7;
   const K = 2.3, C = 0.7071, OX = 200, OY = 95;
-  const FRAME = 110, RESUME = 1200, RAMP = 400;
   const SPLASH: [number, number, number][] = [[0, 0, 1], [1, 0, 0.45], [-1, 0, 0.45], [0, 1, 0.45], [0, -1, 0.45]];
   /** Семь байтов строк на кадр (старший бит = левая колонка): рябь, пауза, диагональный проход, пауза. */
   const LOOP: number[][] = [
@@ -126,7 +125,7 @@
   let op: number[] = new Array<number>(N * N).fill(0.14);
   let readout = 'loop';
   const I = new Float32Array(N * N);
-  let clock = 0, lastF = -1, leftAt = -1e9, painting = false;
+  let painting = false;
   let prev: Pt | null = null;
 
   function excite(x: number, y: number, a: number): void {
@@ -158,9 +157,6 @@
   function leave(): void {
     painting = false;
     prev = null;
-    leftAt = performance.now();
-    clock = 0;
-    lastF = -1;
   }
 
   onMount(() => {
