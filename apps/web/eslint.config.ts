@@ -118,7 +118,7 @@ export default defineConfig(
 	{
 		files: [
 			'src/lib/components/ui-registry/FlameWrap.svelte',
-			src/lib/components/ui-registry/Laser.svelte',
+			'src/lib/components/ui-registry/Laser.svelte',
 			'src/lib/components/ui-registry/Liquid.svelte'
 		],
 		rules: {
