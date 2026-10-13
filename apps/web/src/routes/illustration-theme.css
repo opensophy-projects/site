@@ -16,6 +16,7 @@
   --hl-bg: #ffffff;
   --hl-line: #2b2f3a;
   --hl-faint: #2b2f3a66;
+  --hl-txt: #6b6f7a;
 }
 
 .dark .component-visual-shield .hl {
