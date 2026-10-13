@@ -22,12 +22,12 @@
 .dark .hl-wrap,
 .dark .radar {
   --hl-bg: #090909;
-  --hl-line: oklch(0.9674 0.0013 var(--base-hue));
-  --hl-faint: color-mix(in srgb, oklch(0.9674 0.0013 var(--base-hue)) 22%, transparent);
-  --hl-txt: oklch(0.669 0.0107 var(--base-hue));
-  --hl-ink: oklch(0.9674 0.0013 var(--base-hue));
+  --hl-line: #f5f5f5;
+  --hl-faint: rgba(245, 245, 245, 0.22);
+  --hl-txt: #a1a1aa;
+  --hl-ink: #f5f5f5;
   --hl-surface: #090909;
-  --hl-rim: oklch(0.9674 0.0013 var(--base-hue));
+  --hl-rim: #f5f5f5;
 }
 
 .radar-demo {
