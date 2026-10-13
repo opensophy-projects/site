@@ -1,0 +1,40 @@
+/* Service illustrations: keep surfaces white in light mode and black in dark mode. */
+.component-visual-shield .hl {
+  --hl-bg: #ffffff;
+  --hl-line: #2b2f3a;
+  --hl-faint: #2b2f3a55;
+}
+
+.component-visual-phosphor .hl-wrap {
+  --hl-bg: #ffffff;
+  --hl-line: #2b2f3a;
+  --hl-faint: #2b2f3a66;
+  --hl-txt: #6b6f7a;
+}
+
+.component-visual-terminal .hl-wrap {
+  --hl-bg: #ffffff;
+  --hl-line: #2b2f3a;
+  --hl-faint: #2b2f3a66;
+  --hl-txt: #6b6f7a;
+}
+
+.dark .component-visual-shield .hl {
+  --hl-bg: #000000;
+  --hl-line: #b8b8b8;
+  --hl-faint: #3a3a3a;
+}
+
+.dark .component-visual-phosphor .hl-wrap {
+  --hl-bg: #000000;
+  --hl-line: #b8b8b8;
+  --hl-faint: #3a3a3a;
+  --hl-txt: #8a8a8a;
+}
+
+.dark .component-visual-terminal .hl-wrap {
+  --hl-bg: #000000;
+  --hl-line: #b8b8b8;
+  --hl-faint: #3a3a3a;
+  --hl-txt: #8a8a8a;
+}
