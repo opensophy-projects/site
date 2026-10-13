@@ -1,26 +1,28 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
 
-  /** Accent colour of the infinity tube. */
+  type Pt = [number, number];
+
+  /** Акцентный цвет трубки бесконечности. */
   export let accent = '#f43f5e';
-  /** CSS width of the whole figure. */
+  /** CSS-ширина всей фигуры. */
   export let width = 'min(92vw, 560px)';
   export let label = 'Isometric shield with infinity symbol';
 
   const D =
     'M0,-120 C40,-100 80,-95 100,-95 L100,-10 C100,60 55,100 0,125 C-55,100 -100,60 -100,-10 L-100,-95 C-80,-95 -40,-100 0,-120Z';
-  const DEPTH = 14; // shield thickness (local units)
-  const H = 12; // infinity tube thickness (local units)
-  const corners = [
+  const DEPTH = 14; // толщина щита (в локальных единицах)
+  const H = 12; // толщина трубки бесконечности (в локальных единицах)
+  const corners: Pt[] = [
     [0, -120],
     [100, -95],
     [0, 125],
     [-100, -95]
   ];
 
-  // lemniscate outline
+  // контур лемнискаты
   const M = 240;
-  const pts = Array.from({ length: M + 1 }, (_, k) => {
+  const pts: Pt[] = Array.from({ length: M + 1 }, (_, k): Pt => {
     const t = (k / M) * Math.PI * 2;
     const e = 1 + Math.sin(t) ** 2;
     return [(68 * Math.cos(t)) / e, (68 * Math.sin(t) * Math.cos(t)) / e];
@@ -31,25 +33,25 @@
     return { i, mix: 25 + (1 - i / H) * 35 };
   });
 
-  let front;
-  let conn = []; // silhouette edges of the shield thickness
+  let front: SVGPathElement;
+  let conn: Pt[] = []; // рёбра силуэта толщины щита
   let tgt = 0;
   let hov = 0;
   let ph = 0;
-  let w = 7; // tube stroke width, px
-  let sc = 1; // tube pulse scale
+  let w = 7; // толщина обводки трубки, px
+  let sc = 1; // масштаб пульсации трубки
   let ech = [
     { f: 0, o: 0 },
     { f: 0, o: 0 }
   ];
 
   onMount(() => {
-    // edges where the outline runs parallel to the depth direction (lower curve only)
+    // рёбра, где контур идёт параллельно направлению глубины (только нижняя кривая)
     const len = front.getTotalLength();
     const N = 480;
-    const out = [];
+    const out: Pt[] = [];
     let pv = 0;
-    let pp = null;
+    let pp: DOMPoint | null = null;
     for (let i = 0; i <= N; i++) {
       const q = front.getPointAtLength((len * i) / N);
       if (pp) {
@@ -61,9 +63,9 @@
     }
     conn = out;
 
-    let raf;
+    let raf = 0;
     let last = performance.now();
-    const tick = (now) => {
+    const tick = (now: number): void => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       hov += (tgt - hov) * Math.min(1, dt * 8);
@@ -91,23 +93,25 @@
   on:pointerenter={() => (tgt = 1)}
   on:pointerleave={() => (tgt = 0)}
   on:pointerdown={() => (tgt = 1)}
-  on:pointerup={(e) => e.pointerType !== 'mouse' && (tgt = 0)}
+  on:pointerup={(e) => {
+    if (e.pointerType !== 'mouse') tgt = 0;
+  }}
 >
   <g transform="translate(300 300) rotate(8) scale(1.15) matrix(0.866 0.5 0 1 0 0)">
-    <!-- shield: back face, thickness edges, front face (opaque, hides what is behind) -->
+    <!-- щит: задняя грань, рёбра толщины, передняя грань (непрозрачная, скрывает то, что за ней) -->
     <path class="l bk" d={D} transform="translate({DEPTH} {-DEPTH})" />
     <g>
-      {#each corners as c}
+      {#each corners as c, i (i)}
         <line class="l" x1={c[0]} y1={c[1]} x2={c[0] + DEPTH} y2={c[1] - DEPTH} />
       {/each}
-      {#each conn as c}
+      {#each conn as c, i (i)}
         <line class="l" x1={c[0]} y1={c[1]} x2={c[0] + DEPTH} y2={c[1] - DEPTH} />
       {/each}
     </g>
     <path class="l fl" d={D} bind:this={front} />
     <path class="l f" d={D} transform="scale(.86) translate(0 4)" />
 
-    <!-- infinity: extruded tube -->
+    <!-- бесконечность: выдавленная трубка -->
     <g transform="translate(-4 10)">
       <g transform="scale({sc})">
         {#each slices as s (s.i)}
@@ -131,7 +135,7 @@
 
 <style>
   .hl {
-    /* override these from the outside to match your theme */
+    /* переопределяются снаружи под тему */
     --hl-bg: #f6f4f1;
     --hl-line: #2b2f3a;
     --hl-faint: #2b2f3a55;
