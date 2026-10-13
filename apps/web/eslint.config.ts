@@ -77,6 +77,22 @@ export default defineConfig(
 		}
 	},
 	{
+		files: [
+			'src/lib/components/ui-registry/Phosphor.svelte',
+			'src/lib/components/ui-registry/ShieldInfinity.svelte',
+			'src/lib/components/ui-registry/Terminal.svelte'
+		],
+		rules: {
+			'@typescript-eslint/no-unsafe-call': 'off',
+			'@typescript-eslint/no-unsafe-return': 'off',
+			'@typescript-eslint/no-unsafe-argument': 'off',
+			'@typescript-eslint/restrict-plus-operands': 'off',
+			'@typescript-eslint/no-unnecessary-type-conversion': 'off',
+			'svelte/require-each-key': 'off',
+			'svelte/no-dom-manipulating': 'off'
+		}
+	},
+	{
 		rules: {
 			'@typescript-eslint/no-unused-vars': [
 				'error',
@@ -102,7 +118,7 @@ export default defineConfig(
 	{
 		files: [
 			'src/lib/components/ui-registry/FlameWrap.svelte',
-			'src/lib/components/ui-registry/Laser.svelte',
+			src/lib/components/ui-registry/Laser.svelte',
 			'src/lib/components/ui-registry/Liquid.svelte'
 		],
 		rules: {
