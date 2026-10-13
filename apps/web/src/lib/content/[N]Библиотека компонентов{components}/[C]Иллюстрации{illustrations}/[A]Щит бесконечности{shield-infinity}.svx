@@ -5,14 +5,14 @@ keywords: 'Opensophy, Shield Infinity, SVG, illustration, UI components'
 ---
 
 <script lang="ts">
-\timport { ComponentPreview } from '$lib';
-\timport ShieldInfinity from '$lib/components/ui-registry/ShieldInfinity.svelte';
-\timport source from '$lib/components/ui-registry/ShieldInfinity.svelte?raw';
-\timport type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+	import { ComponentPreview } from '$lib';
+	import ShieldInfinity from '$lib/components/ui-registry/ShieldInfinity.svelte';
+	import source from '$lib/components/ui-registry/ShieldInfinity.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
-\tconst controls: ComponentPreviewControl[] = [
-\t\t{ type: 'color', name: 'accent', label: 'Акцент', defaultValue: '#f43f5e' }
-\t];
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'color', name: 'accent', label: 'Акцент', defaultValue: '#f43f5e' }
+	];
 </script>
 
 # Щит бесконечности
@@ -22,16 +22,16 @@ keywords: 'Opensophy, Shield Infinity, SVG, illustration, UI components'
 ## Интерактивное демо
 
 <ComponentPreview controls={controls} sources={[{ name: 'ShieldInfinity.svelte', code: source, language: 'svelte' }]}>
-\t{#snippet children(values)}
-\t\t<ShieldInfinity accent={values.accent as string} />
-\t{/snippet}
+	{#snippet children(values)}
+		<ShieldInfinity accent={values.accent as string} />
+	{/snippet}
 </ComponentPreview>
 
 ## Использование
 
 ```svelte
 <script lang="ts">
-\timport ShieldInfinity from '$lib/components/ui-registry/ShieldInfinity.svelte';
+	import ShieldInfinity from '$lib/components/ui-registry/ShieldInfinity.svelte';
 </script>
 
 <ShieldInfinity accent="#f43f5e" />

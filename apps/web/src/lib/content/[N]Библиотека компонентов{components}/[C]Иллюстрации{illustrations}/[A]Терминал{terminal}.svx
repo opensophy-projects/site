@@ -5,16 +5,16 @@ keywords: 'Opensophy, Terminal, SVG, illustration, UI components'
 ---
 
 <script lang="ts">
-\timport { ComponentPreview } from '$lib';
-\timport Terminal from '$lib/components/ui-registry/Terminal.svelte';
-\timport source from '$lib/components/ui-registry/Terminal.svelte?raw';
-\timport type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+	import { ComponentPreview } from '$lib';
+	import Terminal from '$lib/components/ui-registry/Terminal.svelte';
+	import source from '$lib/components/ui-registry/Terminal.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
-\tconst controls: ComponentPreviewControl[] = [
-\t\t{ type: 'color', name: 'accent', label: 'Акцент', defaultValue: '#f43f5e' },
-\t\t{ type: 'number', name: 'spread', label: 'Распространение', defaultValue: 3, min: 1, max: 8, step: 1 },
-\t\t{ type: 'boolean', name: 'showControls', label: 'Подсказка', defaultValue: true }
-\t];
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'color', name: 'accent', label: 'Акцент', defaultValue: '#f43f5e' },
+		{ type: 'number', name: 'spread', label: 'Распространение', defaultValue: 3, min: 1, max: 8, step: 1 },
+		{ type: 'boolean', name: 'showControls', label: 'Подсказка', defaultValue: true }
+	];
 </script>
 
 # Терминал
@@ -24,16 +24,16 @@ keywords: 'Opensophy, Terminal, SVG, illustration, UI components'
 ## Интерактивное демо
 
 <ComponentPreview controls={controls} sources={[{ name: 'Terminal.svelte', code: source, language: 'svelte' }]}>
-\t{#snippet children(values)}
-\t\t<Terminal accent={values.accent as string} spread={values.spread as number} showControls={values.showControls as boolean} />
-\t{/snippet}
+	{#snippet children(values)}
+		<Terminal accent={values.accent as string} spread={values.spread as number} showControls={values.showControls as boolean} />
+	{/snippet}
 </ComponentPreview>
 
 ## Использование
 
 ```svelte
 <script lang="ts">
-\timport Terminal from '$lib/components/ui-registry/Terminal.svelte';
+	import Terminal from '$lib/components/ui-registry/Terminal.svelte';
 </script>
 
 <Terminal accent="#f43f5e" spread={3} />
