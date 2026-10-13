@@ -1,42 +1,22 @@
-/* Service illustrations: keep surfaces white in light mode and black in dark mode. */
+/* Service illustrations use the same theme tokens as the rest of the site. */
 .component-visual-shield .hl {
-  --hl-bg: #ffffff;
-  --hl-line: #2b2f3a;
-  --hl-faint: #2b2f3a55;
+  --hl-bg: var(--background);
+  --hl-line: var(--foreground);
+  --hl-faint: color-mix(in srgb, var(--foreground) 22%, transparent);
 }
 
 .component-visual-phosphor .hl-wrap {
-  --hl-bg: #ffffff;
-  --hl-line: #2b2f3a;
-  --hl-faint: #2b2f3a66;
-  --hl-txt: #6b6f7a;
+  --hl-bg: var(--background);
+  --hl-line: var(--foreground);
+  --hl-faint: color-mix(in srgb, var(--foreground) 22%, transparent);
+  --hl-txt: var(--foreground-muted);
 }
 
 .component-visual-terminal .hl-wrap {
-  --hl-bg: #ffffff;
-  --hl-line: #2b2f3a;
-  --hl-faint: #2b2f3a66;
-  --hl-txt: #6b6f7a;
-}
-
-.dark .component-visual-shield .hl {
-  --hl-bg: #000000;
-  --hl-line: #b8b8b8;
-  --hl-faint: #3a3a3a;
-}
-
-.dark .component-visual-phosphor .hl-wrap {
-  --hl-bg: #000000;
-  --hl-line: #b8b8b8;
-  --hl-faint: #3a3a3a;
-  --hl-txt: #8a8a8a;
-}
-
-.dark .component-visual-terminal .hl-wrap {
-  --hl-bg: #000000;
-  --hl-line: #b8b8b8;
-  --hl-faint: #3a3a3a;
-  --hl-txt: #8a8a8a;
+  --hl-bg: var(--background);
+  --hl-line: var(--foreground);
+  --hl-faint: color-mix(in srgb, var(--foreground) 22%, transparent);
+  --hl-txt: var(--foreground-muted);
 }
 
 /* Do not spend the first paint on sections that are below the fold. */
