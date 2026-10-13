@@ -16,7 +16,7 @@
   const T = 5, R = 2.5, DROP = 15, BT = 4, BO = 7;
   const K = 2.3, C = 0.7071, OX = 200, OY = 95;
   const SPLASH: [number, number, number][] = [[0, 0, 1], [1, 0, 0.45], [-1, 0, 0.45], [0, 1, 0.45], [0, -1, 0.45]];
-  /** Семь байтов строк на кадр (старший бит = левая колонка): рябь, пауза, диагональный проход, пауза. */
+  /** Кадры автоматической анимации: рябь, пауза, диагональный проход, пауза. */
   const LOOP: number[][] = [
     [0, 0, 0, 8, 0, 0, 0], [0, 0, 8, 20, 8, 0, 0], [0, 28, 34, 34, 34, 28, 0], [28, 34, 65, 65, 65, 34, 28], [65, 0, 0, 0, 0, 0, 65],
     [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0],
@@ -26,7 +26,6 @@
   ];
   const lit = (f: number, r: number, c: number): number => (LOOP[f][r] >> (N - 1 - c)) & 1;
 
-  // ---- изометрическая проекция ----------------------------------------------
   const P = (u: number, v: number, z: number): Pt => [OX + (u - v) * C * K, OY + ((u + v) * C * 0.5 - z) * K];
   const U = (sx: number, sy: number, z: number): Pt => {
     const a = (sx - OX) / (C * K), b = ((sy - OY) / K + z) / (C * 0.5);
@@ -70,7 +69,6 @@
     return lo.concat(up);
   }
 
-  /** Плита: непрозрачная оболочка, видимая нижняя дуга, два бокововых ребра силуэта, верхний контур. */
   function slab(ring: Pt[], zt: number, zb: number): Slab {
     const t = ring.map((q) => P(q[0], q[1], zt));
     const b = ring.map((q) => P(q[0], q[1], zb));
@@ -120,7 +118,6 @@
     return { cx, cy };
   });
 
-  // ---- состояние ------------------------------------------------------------
   let svg: SVGSVGElement;
   let op: number[] = new Array<number>(N * N).fill(0.14);
   let readout = 'loop';
@@ -148,7 +145,6 @@
     painting = true;
     const q = at(e);
     if (prev) {
-      // добиваем промежуток между событиями, чтобы быстрый штрих оставлял линию, а не точки
       const n = Math.max(1, Math.ceil(Math.hypot(q[0] - prev[0], q[1] - prev[1]) / 3));
       for (let k = 1; k <= n; k++) excite(prev[0] + ((q[0] - prev[0]) * k) / n, prev[1] + ((q[1] - prev[1]) * k) / n, 1);
     } else excite(q[0], q[1], 1);
@@ -161,19 +157,55 @@
 
   onMount(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let raf = 0, last = performance.now();
+    const FRAME_MS = 95;
+    let raf = 0;
+    let last = performance.now();
+    let frame = 0;
+    let frameClock = 0;
+    let renderClock = 0;
+
+    const applyFrame = (f: number): void => {
+      for (let r = 0; r < N; r++) {
+        for (let c = 0; c < N; c++) {
+          if (lit(f, r, c)) I[r * N + c] = Math.max(I[r * N + c], 0.95);
+        }
+      }
+    };
+
+    applyFrame(0);
+
     const tick = (now: number): void => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const decay = Math.exp((-dt * 1000) / tau);
+      for (let i = 0; i < I.length; i++) I[i] *= decay;
+
+      frameClock += dt * 1000;
+      renderClock += dt * 1000;
+
+      if (!reduce && frameClock >= FRAME_MS) {
+        const steps = Math.floor(frameClock / FRAME_MS);
+        frame = (frame + steps) % LOOP.length;
+        frameClock %= FRAME_MS;
+        applyFrame(frame);
+        readout = 'loop';
+      }
+
       if (reduce && !painting) {
-        // без цикла: замираем на готовом кадре, самом широком кольце ряби
-        for (let i = 0; i < N * N; i++) I[i] = Math.max(I[i] * decay, lit(3, Math.floor(i / N), i % N) * 0.8);
+        for (let i = 0; i < N * N; i++) I[i] = Math.max(I[i], lit(3, Math.floor(i / N), i % N) * 0.8);
         readout = 'still';
-      } else readout = painting ? 'paint' : 'afterglow';
-      op = Array.from(I, (v) => 0.08 + 0.92 * Math.min(1, Math.max(0, v)));
+      } else if (painting) {
+        readout = 'paint';
+      }
+
+      if (renderClock >= 33 || painting) {
+        renderClock = 0;
+        op = Array.from(I, (v) => 0.08 + 0.92 * Math.min(1, Math.max(0, v)));
+      }
+
       raf = requestAnimationFrame(tick);
     };
+
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   });
@@ -194,14 +226,12 @@
       if (e.pointerType !== 'mouse') leave();
     }}
   >
-    <!-- нижняя плита -->
     <path class="s nostroke" d={plate.hull} />
     <path class="n" d={plate.arc} />
     {#each plate.edges as d, i (i)}<path class="n" {d} />{/each}
     <path class="s" d={plate.top} />
     <path class="lo" d={plateInset} />
 
-    <!-- пунктирные опоры, поверх них плитка -->
     {#each drops as d, i (i)}<path class="n dash" {d} />{/each}
     <path class="s nostroke" d={tile.hull} />
     <path class="n" d={tile.arc} />
@@ -226,8 +256,7 @@
 
 <style>
   .hl-wrap {
-    /* переопределяются снаружи под тему */
-    --hl-bg: #f6f4f1;
+    --hl-bg: #ffffff;
     --hl-line: #2b2f3a;
     --hl-faint: #2b2f3a66;
     --hl-txt: #6b6f7a;
@@ -238,6 +267,12 @@
     color: var(--hl-txt);
     font: 12px ui-monospace, Menlo, Consolas, monospace;
     letter-spacing: 0.06em;
+  }
+  :global(.dark) .hl-wrap {
+    --hl-bg: #090909;
+    --hl-line: oklch(0.9674 0.0013 var(--base-hue));
+    --hl-faint: color-mix(in srgb, oklch(0.9674 0.0013 var(--base-hue)) 22%, transparent);
+    --hl-txt: oklch(0.669 0.0107 var(--base-hue));
   }
   .hl {
     display: block;

@@ -1,0 +1,31 @@
+/* Service illustrations use the same theme tokens as the rest of the site. */
+.component-visual-shield .hl,
+.component-visual-phosphor .hl-wrap,
+.component-visual-terminal .hl-wrap {
+  --hl-bg: var(--background);
+  --hl-line: var(--foreground);
+  --hl-faint: color-mix(in srgb, var(--foreground) 22%, transparent);
+  --hl-txt: var(--foreground-muted);
+}
+
+/* Keep the dark illustration palette explicit so the first paint cannot use the
+   light component defaults while the theme is being applied. */
+.dark .component-visual-shield .hl,
+.dark .component-visual-phosphor .hl-wrap,
+.dark .component-visual-terminal .hl-wrap {
+  --hl-bg: #090909;
+  --hl-line: oklch(0.9674 0.0013 var(--base-hue));
+  --hl-faint: color-mix(in srgb, oklch(0.9674 0.0013 var(--base-hue)) 22%, transparent);
+  --hl-txt: oklch(0.669 0.0107 var(--base-hue));
+}
+
+/* Do not spend the first paint on sections that are below the fold. The
+   services showcase stays out of content-visibility because its SVG/canvas
+   illustrations must initialize and paint immediately. */
+.about-us-section,
+.products-section,
+.team-section,
+.timeline-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
+}
