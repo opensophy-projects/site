@@ -16,7 +16,6 @@
   --hl-bg: #ffffff;
   --hl-line: #2b2f3a;
   --hl-faint: #2b2f3a66;
-  --hl-txt: #6b6f7a;
 }
 
 .dark .component-visual-shield .hl {
@@ -37,4 +36,14 @@
   --hl-line: #b8b8b8;
   --hl-faint: #3a3a3a;
   --hl-txt: #8a8a8a;
+}
+
+/* Do not spend the first paint on sections that are below the fold. */
+.about-us-section,
+.component-showcase,
+.products-section,
+.team-section,
+.timeline-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 700px;
 }
