@@ -80,7 +80,7 @@
 
   onMount(() => {
     const mk = (n: string, a: Record<string, string>, p?: Element): SVGElement => {
-      const e = document.createElementNS(NS, n) as SVGElement;
+      const e = document.createElementNS(NS, n);
       for (const k in a) e.setAttribute(k, a[k]);
       (p ?? svg).appendChild(e);
       return e;
