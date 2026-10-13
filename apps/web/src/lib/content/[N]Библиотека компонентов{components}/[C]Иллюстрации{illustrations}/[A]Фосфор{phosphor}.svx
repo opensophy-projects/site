@@ -1,0 +1,51 @@
+---
+title: Фосфор
+description: Изометрическая матрица из светящихся точек с автоматической рябью и реакцией на указатель.
+keywords: 'Opensophy, Phosphor, SVG, illustration, UI components'
+---
+
+<script lang="ts">
+\timport { ComponentPreview } from '$lib';
+\timport Phosphor from '$lib/components/ui-registry/Phosphor.svelte';
+\timport source from '$lib/components/ui-registry/Phosphor.svelte?raw';
+\timport type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+\tconst controls: ComponentPreviewControl[] = [
+\t\t{ type: 'color', name: 'accent', label: 'Акцент', defaultValue: '#f43f5e' },
+\t\t{ type: 'number', name: 'tau', label: 'Послесвечение', defaultValue: 320, min: 80, max: 1000, step: 20 },
+\t\t{ type: 'boolean', name: 'showControls', label: 'Подсказка', defaultValue: true }
+\t];
+</script>
+
+# Фосфор
+
+`Phosphor` — компактная изометрическая матрица 7×7. Точки формируют рябь, диагональный проход и послесвечение, а указатель запускает локальную вспышку.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={[{ name: 'Phosphor.svelte', code: source, language: 'svelte' }]}>
+\t{#snippet children(values)}
+\t\t<Phosphor accent={values.accent as string} tau={values.tau as number} showControls={values.showControls as boolean} />
+\t{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+\timport Phosphor from '$lib/components/ui-registry/Phosphor.svelte';
+</script>
+
+<Phosphor accent="#f43f5e" tau={320} />
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `accent` | `string` | `'#f43f5e'` | Цвет светящихся точек |
+| `tau` | `number` | `320` | Время послесвечения в миллисекундах |
+| `width` | `string` | `'min(94vw, 560px)'` | CSS-ширина иллюстрации |
+| `showControls` | `boolean` | `true` | Показывать подсказку с состоянием |
+| `label` | `string` | — | Доступное имя SVG |
+```

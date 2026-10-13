@@ -1,0 +1,57 @@
+---
+title: Терминал
+description: Изометрическая иллюстрация терминального окна с интерактивными строками и пружинной анимацией.
+keywords: 'Opensophy, Terminal, SVG, illustration, UI components'
+---
+
+<script lang="ts">
+\timport { ComponentPreview } from '$lib';
+\timport Terminal from '$lib/components/ui-registry/Terminal.svelte';
+\timport source from '$lib/components/ui-registry/Terminal.svelte?raw';
+\timport type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+\tconst controls: ComponentPreviewControl[] = [
+\t\t{ type: 'color', name: 'accent', label: 'Акцент', defaultValue: '#f43f5e' },
+\t\t{ type: 'number', name: 'spread', label: 'Распространение', defaultValue: 3, min: 1, max: 8, step: 1 },
+\t\t{ type: 'boolean', name: 'showControls', label: 'Подсказка', defaultValue: true }
+\t];
+</script>
+
+# Терминал
+
+`Terminal` — живая SVG-иллюстрация изометрического терминального окна. Наведите курсор на строки, чтобы увидеть подъём и подсветку соседних элементов.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={[{ name: 'Terminal.svelte', code: source, language: 'svelte' }]}>
+\t{#snippet children(values)}
+\t\t<Terminal accent={values.accent as string} spread={values.spread as number} showControls={values.showControls as boolean} />
+\t{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+\timport Terminal from '$lib/components/ui-registry/Terminal.svelte';
+</script>
+
+<Terminal accent="#f43f5e" spread={3} />
+```
+
+## Особенности
+
+- SVG-иллюстрация без внешних изображений и зависимостей
+- Реакция на указатель и поддержка клавиатуры
+- Пружинная анимация строк с учётом `prefers-reduced-motion`
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `accent` | `string` | `'#f43f5e'` | Цвет подсветки строки, шеврона и курсора |
+| `spread` | `number` | `3` | Радиус распространения подъёма по строкам |
+| `width` | `string` | `'min(88vw, 420px)'` | CSS-ширина иллюстрации |
+| `showControls` | `boolean` | `true` | Показывать подсказку с текущим состоянием |
+| `label` | `string` | — | Доступное имя SVG |
+```
