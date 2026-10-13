@@ -1,0 +1,47 @@
+---
+title: Щит бесконечности
+description: Анимированная изометрическая иллюстрация щита с символом бесконечности и эффектом пульсации.
+keywords: 'Opensophy, Shield Infinity, SVG, illustration, UI components'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import ShieldInfinity from '$lib/components/ui-registry/ShieldInfinity.svelte';
+	import source from '$lib/components/ui-registry/ShieldInfinity.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'color', name: 'accent', label: 'Акцент', defaultValue: '#f43f5e' }
+	];
+</script>
+
+# Щит бесконечности
+
+`ShieldInfinity` — изометрический щит с объёмным контуром бесконечности. Наведение усиливает пульсацию и создаёт эхо вокруг символа.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={[{ name: 'ShieldInfinity.svelte', code: source, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<ShieldInfinity accent={values.accent as string} />
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import ShieldInfinity from '$lib/components/ui-registry/ShieldInfinity.svelte';
+</script>
+
+<ShieldInfinity accent="#f43f5e" />
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `accent` | `string` | `'#f43f5e'` | Цвет трубки бесконечности и акцентов |
+| `width` | `string` | `'min(92vw, 560px)'` | CSS-ширина иллюстрации |
+| `label` | `string` | `'Isometric shield with infinity symbol'` | Доступное имя SVG |
+```

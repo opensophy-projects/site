@@ -1,22 +1,42 @@
 /* Service illustrations use the same theme tokens as the rest of the site. */
 .component-visual-shield .hl,
 .component-visual-phosphor .hl-wrap,
-.component-visual-terminal .hl-wrap {
+.component-visual-terminal .hl-wrap,
+.hl-wrap,
+.radar {
   --hl-bg: var(--background);
   --hl-line: var(--foreground);
   --hl-faint: color-mix(in srgb, var(--foreground) 22%, transparent);
   --hl-txt: var(--foreground-muted);
+  --hl-ink: var(--foreground);
+  --hl-surface: var(--background);
+  --hl-rim: var(--accent);
+  --hl-accent: #f43f5e;
 }
 
 /* Keep the dark illustration palette explicit so the first paint cannot use the
    light component defaults while the theme is being applied. */
 .dark .component-visual-shield .hl,
 .dark .component-visual-phosphor .hl-wrap,
-.dark .component-visual-terminal .hl-wrap {
+.dark .component-visual-terminal .hl-wrap,
+.dark .hl-wrap,
+.dark .radar {
   --hl-bg: #090909;
-  --hl-line: oklch(0.9674 0.0013 var(--base-hue));
-  --hl-faint: color-mix(in srgb, oklch(0.9674 0.0013 var(--base-hue)) 22%, transparent);
-  --hl-txt: oklch(0.669 0.0107 var(--base-hue));
+  --hl-line: #f5f5f5;
+  --hl-faint: rgba(245, 245, 245, 0.22);
+  --hl-txt: #a1a1aa;
+  --hl-ink: #f5f5f5;
+  --hl-surface: #090909;
+  --hl-rim: #f5f5f5;
+}
+
+.radar-demo {
+  width: min(100%, 620px);
+  margin-inline: auto;
+}
+
+.radar-demo .radar {
+  width: 100%;
 }
 
 /* Do not spend the first paint on sections that are below the fold. The

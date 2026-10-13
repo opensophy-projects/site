@@ -1,0 +1,58 @@
+---
+title: Радар
+description: Изометрическая иллюстрация параболической антенны, которая следует за курсором и управляется с клавиатуры.
+keywords: 'Opensophy, Radar, SVG, illustration, UI components'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import Radar from '$lib/components/ui-registry/Radar.svelte';
+	import source from '$lib/components/ui-registry/Radar.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'number', name: 'reach', label: 'Диапазон', defaultValue: 70, min: 20, max: 120, step: 5 },
+		{ type: 'select', name: 'scope', label: 'Область курсора', defaultValue: 'self', options: [{ label: 'Внутри', value: 'self' }, { label: 'Вся страница', value: 'window' }] }
+	];
+</script>
+
+# Радар
+
+`Radar` — параболическая антенна на двухосном подвесе. Она наводится на курсор, поддерживает стрелки на клавиатуре и возвращается в положение покоя по Escape.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={[{ name: 'Radar.svelte', code: source, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<div class="radar-demo">
+			<Radar reach={values.reach as number} scope={values.scope as 'self' | 'window'} />
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import Radar from '$lib/components/ui-registry/Radar.svelte';
+</script>
+
+<Radar reach={70} scope="self" />
+```
+
+## Управление
+
+- Наводите курсор на иллюстрацию или выбирайте область `window`
+- Сфокусируйте радар и используйте стрелки
+- Нажмите Escape, чтобы вернуть антенну в положение покоя
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `reach` | `number` | `70` | Диапазон хода по азимуту в градусах |
+| `scope` | `'self' \| 'window'` | `'self'` | Следить за курсором внутри компонента или окна |
+| `az` / `el` | `number` | — | Текущие азимут и угол места, доступны для bind |
+| `class` | `string` | — | Дополнительный класс SVG |
+| `label` | `string` | — | Доступное имя иллюстрации |
+```
