@@ -5,15 +5,15 @@ keywords: 'Opensophy, Radar, SVG, illustration, UI components'
 ---
 
 <script lang="ts">
-\timport { ComponentPreview } from '$lib';
-\timport Radar from '$lib/components/ui-registry/Radar.svelte';
-\timport source from '$lib/components/ui-registry/Radar.svelte?raw';
-\timport type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+	import { ComponentPreview } from '$lib';
+	import Radar from '$lib/components/ui-registry/Radar.svelte';
+	import source from '$lib/components/ui-registry/Radar.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
-\tconst controls: ComponentPreviewControl[] = [
-\t\t{ type: 'number', name: 'reach', label: 'Диапазон', defaultValue: 70, min: 20, max: 120, step: 5 },
-\t\t{ type: 'select', name: 'scope', label: 'Область курсора', defaultValue: 'self', options: [{ label: 'Внутри', value: 'self' }, { label: 'Вся страница', value: 'window' }] }
-\t];
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'number', name: 'reach', label: 'Диапазон', defaultValue: 70, min: 20, max: 120, step: 5 },
+		{ type: 'select', name: 'scope', label: 'Область курсора', defaultValue: 'self', options: [{ label: 'Внутри', value: 'self' }, { label: 'Вся страница', value: 'window' }] }
+	];
 </script>
 
 # Радар
@@ -23,16 +23,16 @@ keywords: 'Opensophy, Radar, SVG, illustration, UI components'
 ## Интерактивное демо
 
 <ComponentPreview controls={controls} sources={[{ name: 'Radar.svelte', code: source, language: 'svelte' }]}>
-\t{#snippet children(values)}
-\t\t<Radar reach={values.reach as number} scope={values.scope as 'self' | 'window'} />
-\t{/snippet}
+	{#snippet children(values)}
+		<Radar reach={values.reach as number} scope={values.scope as 'self' | 'window'} />
+	{/snippet}
 </ComponentPreview>
 
 ## Использование
 
 ```svelte
 <script lang="ts">
-\timport Radar from '$lib/components/ui-registry/Radar.svelte';
+	import Radar from '$lib/components/ui-registry/Radar.svelte';
 </script>
 
 <Radar reach={70} scope="self" />
