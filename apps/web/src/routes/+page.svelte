@@ -466,34 +466,34 @@
   </section>
 
   <!-- Projects Section -->
-  <section class="section-block products-section w-full max-w-5xl mx-auto px-4">
-    <div class="products-glow" aria-hidden="true"></div>
+  <section class="section-block products-section w-full px-4">
+    <div class="products-panel">
+      <p class="section-overline"><Badge variant="default">Продукты</Badge></p>
 
-    <p class="section-overline"><Badge variant="default">Продукты</Badge></p>
-
-    <div class="projects-grid">
-      {#each projects as project, i (project.title)}
-        {@const wide = projects.length % 2 === 1 && i === projects.length - 1}
-        {#if project.flame}
-          <!-- Огонь — только вокруг этой карточки (os.dokploy) -->
-          <div class="flame-slot" class:project-shell-wide={wide}>
-            <FlameWrap
-              color={flameColor}
-              radius={12}
-              height={90}
-              spread={8}
-              intensity={0.5}
-              sparks={1.2}
-              smoke={1}
-              scorch={0}
-            >
-              {@render projectCard(project, false)}
-            </FlameWrap>
-          </div>
-        {:else}
-          {@render projectCard(project, wide)}
-        {/if}
-      {/each}
+      <div class="projects-grid">
+        {#each projects as project, i (project.title)}
+          {@const wide = projects.length % 2 === 1 && i === projects.length - 1}
+          {#if project.flame}
+            <!-- Огонь — только вокруг этой карточки (os.dokploy) -->
+            <div class="flame-slot" class:project-shell-wide={wide}>
+              <FlameWrap
+                color={flameColor}
+                radius={12}
+                height={90}
+                spread={8}
+                intensity={0.5}
+                sparks={1.2}
+                smoke={1}
+                scorch={0}
+              >
+                {@render projectCard(project, false)}
+              </FlameWrap>
+            </div>
+          {:else}
+            {@render projectCard(project, wide)}
+          {/if}
+        {/each}
+      </div>
     </div>
   </section>
 
@@ -1137,34 +1137,42 @@
     z-index: 1;
   }
 
-  .products-glow {
-    position: absolute;
-    top: -2.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 92rem;
-    max-width: calc(100vw - 2rem);
-    height: calc(100% + 5rem);
-    z-index: -1;
-    overflow: hidden;
-    pointer-events: none;
+  /* Розовая подложка секции «Продукты»: обычный блок до 92rem
+     со скруглёнными углами, прозрачность вшита в цвета градиента */
+  .products-panel {
+    width: 100%;
+    max-width: 92rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 2.5rem 1.25rem;
     border-radius: var(--radius-3xl, 3.3rem);
     background: radial-gradient(
       farthest-corner at 50% 50%,
-      color-mix(in srgb, #f43f5e 85%, white) 0%,
-      #f43f5e 55%,
-      color-mix(in srgb, #f43f5e 80%, black) 100%
+      color-mix(in srgb, color-mix(in srgb, #f43f5e 85%, white) 32%, transparent) 0%,
+      color-mix(in srgb, #f43f5e 32%, transparent) 55%,
+      color-mix(in srgb, color-mix(in srgb, #f43f5e 80%, black) 32%, transparent) 100%
     );
-    opacity: 0.32;
   }
 
-  :global(.dark) .products-glow {
-    opacity: 0.22;
+  :global(.dark) .products-panel {
+    background: radial-gradient(
+      farthest-corner at 50% 50%,
+      color-mix(in srgb, color-mix(in srgb, #f43f5e 85%, white) 22%, transparent) 0%,
+      color-mix(in srgb, #f43f5e 22%, transparent) 55%,
+      color-mix(in srgb, color-mix(in srgb, #f43f5e 80%, black) 22%, transparent) 100%
+    );
   }
 
-  @media (max-width: 600px) {
-    .products-glow {
-      width: 160%;
+  /* Карточки остаются прежней ширины по центру панели */
+  .products-panel .projects-grid {
+    max-width: 64rem;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 767px) {
+    .products-panel {
+      padding: 2rem 0.75rem;
+      border-radius: 1.75rem;
     }
   }
 
@@ -1463,7 +1471,7 @@
     color: var(--accent);
   }
 
-  /* Ширина как у розового блока секции «Продукты» (.products-glow) */
+  /* Ширина как у розового блока секции «Продукты» (.products-panel) */
   .timeline-section {
     width: 92rem;
     max-width: calc(100vw - 2rem);
@@ -1527,10 +1535,8 @@
 
   /* ─── Мобильные поправки: «Команда» и «Контакты» ───────────── */
   @media (max-width: 767px) {
-    /* Свечение .products-glow выступает вниз на 2.5rem — компенсируем,
-       чтобы бейдж «Команда» не прижимался к розовому блоку */
     .products-section {
-      padding-bottom: 3.5rem;
+      padding-bottom: 1.5rem;
     }
 
     .team-section {
