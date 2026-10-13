@@ -19,6 +19,11 @@
   --hl-txt: oklch(0.669 0.0107 var(--base-hue));
 }
 
+/* Preserve the rounded pink background of the Products section. */
+.products-section .products-glow {
+  border-radius: 3.3rem;
+}
+
 /* Do not spend the first paint on sections that are below the fold. The
    services showcase stays out of content-visibility because its SVG/canvas
    illustrations must initialize and paint immediately. */
