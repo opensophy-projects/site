@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount, type Component } from "svelte";
   import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
-  import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
   import ArcFlame from "$lib/components/ui-registry/ArcFlame.svelte";
   import ArcTimeline from "$lib/components/ui-registry/ArcTimeline.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
@@ -12,12 +11,10 @@
   import Terminal from "$lib/components/ui-registry/Terminal.svelte";
   import Radar from "$lib/components/ui-registry/Radar.svelte";
   import GhostCursor from "$lib/components/ui-registry/GhostCursor.svelte";
-  import DockerLogo from "$lib/components/ui-registry/DockerLogo.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
   import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
   import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
-  import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
   import { canRunHeavyEffects } from "$lib/utils/perf";
 
@@ -142,8 +139,7 @@
     description: string;
     icon: Component<{ size?: number; class?: string }>;
     status: ProjectStatus;
-    /** Огонь вокруг карточки (только у os.dokploy) */
-    flame?: boolean;
+
   };
 
   // Цвет пламени совпадает с акцентом сайта (#f43f5e)
@@ -187,27 +183,13 @@
       },
     },
     {
-      title: "os.compose",
-      // Логотип Docker — Docker Compose-шаблоны
-      icon: DockerLogo,
-      description: "Библиотека готовых Docker Compose-шаблонов для DevSecOps.",
+      title: "NPMOS",
+      icon: Network_3,
+      description:
+        "Nginx Proxy Manager by OpenSophy — система управления обратным прокси на базе Nginx с веб-интерфейсом и встроенными механизмами безопасности.",
       status: {
         variant: "in-progress",
-        label: "Проект развивается",
-        href: "https://opensophy.com/templates/docker",
-      },
-    },
-    {
-      title: "os.dokploy",
-      // Контейнеры веб-сервисов — деплой и управление серверами
-      icon: WebServicesContainer,
-      flame: true,
-      description:
-        "Форк проекта Dokploy — платформа для управления серверами и деплоя приложений. Бесплатная enterprise-версия с обновлённым дизайном, встроенным управлением mTLS и русификацией.",
-      status: {
-        variant: "released",
-        label: "Проект в релизе",
-        href: "https://opensophy.com/dokploy",
+        label: "В разработке",
       },
     },
   ];
@@ -253,7 +235,6 @@
       time: "Сентябрь 2026",
       steps: [
         { icon: "01.09", content: "Создание os.ui" },
-        { icon: "10.09", content: "Создание os.dokploy" },
         { icon: "15.09", content: "Создание os.mtls" },
       ],
     },
@@ -473,25 +454,7 @@
       <div class="projects-grid">
         {#each projects as project, i (project.title)}
           {@const wide = projects.length % 2 === 1 && i === projects.length - 1}
-          {#if project.flame}
-            <!-- Огонь — только вокруг этой карточки (os.dokploy) -->
-            <div class="flame-slot" class:project-shell-wide={wide}>
-              <FlameWrap
-                color={flameColor}
-                radius={12}
-                height={90}
-                spread={8}
-                intensity={0.5}
-                sparks={1.2}
-                smoke={1}
-                scorch={0}
-              >
-                {@render projectCard(project, false)}
-              </FlameWrap>
-            </div>
-          {:else}
-            {@render projectCard(project, wide)}
-          {/if}
+          {@render projectCard(project, wide)}
         {/each}
       </div>
     </div>
@@ -1239,7 +1202,7 @@
     color: #fff;
   }
 
-  /* ─── Products: карточки с иконками, огонь только у os.dokploy ── */
+  /* ─── Products: карточки с иконками ── */
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

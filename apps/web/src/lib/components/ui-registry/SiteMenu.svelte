@@ -4,7 +4,6 @@
   import FloatingMenu from "$lib/components/ui-registry/FloatingMenu.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
   import ThemeToggle from "$lib/components/ui-registry/ThemeToggle.svelte";
-  import DockerLogo from "$lib/components/ui-registry/DockerLogo.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
   import { searchState } from "$lib/stores/search.svelte";
   import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
@@ -16,24 +15,15 @@
   import Policy from "carbon-icons-svelte/lib/Policy.svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
   import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
-  import WebServicesContainer from "carbon-icons-svelte/lib/WebServicesContainer.svelte";
   import IbmCloudGateKeeper from "carbon-icons-svelte/lib/IbmCloudGateKeeper.svelte";
-  import UserFavoriteAltFilled from "carbon-icons-svelte/lib/UserFavoriteAltFilled.svelte";
   import Book from "carbon-icons-svelte/lib/Book.svelte";
   import LocationCurrent from "carbon-icons-svelte/lib/LocationCurrent.svelte";
 
-  // ---- Продукты: 3 колонки ----
+  // ---- Продукты ----
   const productColumns = [
     {
       title: "Платформы",
       links: [
-        {
-          label: "os.dokploy",
-          description:
-            "Платформа для управления серверами и деплоя приложений.",
-          href: "/dokploy",
-          icon: WebServicesContainer,
-        },
         {
           label: "os.docs",
           description: "Платформа для документации и публикации контента.",
@@ -51,13 +41,6 @@
             "Библиотека готовых UI-компонентов с живым превью и гибкими настройками.",
           href: "/components/overview",
           icon: QHintonPlot,
-        },
-        {
-          label: "os.compose",
-          description:
-            "Библиотека готовых Docker Compose-шаблонов для DevSecOps.",
-          href: "/templates/docker/",
-          icon: DockerLogo,
         },
       ],
     },
@@ -101,12 +84,6 @@
 
   // ---- Ресурсы: плоский ряд карточек ----
   const resourceLinks = [
-    {
-      label: "Кейсы",
-      description: "Примеры моих работ.",
-      href: "/cases",
-      icon: UserFavoriteAltFilled,
-    },
     {
       label: "Новости",
       description: "Последние новости и изменения в проекте.",
@@ -236,10 +213,7 @@
 {/snippet}
 
 {#snippet resourcesPanel(isMobile: boolean)}
-  <div
-    data-slot="row"
-    class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3"
-  >
+  <div data-slot="row" class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2">
     {#each resourceLinks as link (link.href)}
       {@const Icon = link.icon}
       <a

@@ -28,7 +28,8 @@ const overviewParagraphs = [
 	'## Услуги', '',
 	'- Проверка безопасности (blackbox, graybox, whitebox).', '- Code review безопасности.', '- Поиск утечек данных (Data Leak Search).', '- Интеграция DevSecOps.', '- Консультация.', '- Поиск и устранение неполадок.', '',
 	'## Продукты', '',
-	'- os.docs — платформа для документации и публикации контента.', '- os.mtls — управление mTLS-сертификатами для Traefik.', '- os.ui — библиотека UI-компонентов.', '- os.dokploy — платформа управления серверами и деплоями.', '- os.compose — библиотека готовых Docker Compose-шаблонов для DevSecOps.', '',
+		'- os.docs — платформа для документации и публикации контента.', '- os.mtls — управление mTLS-сертификатами для Traefik.', '- os.ui — библиотека UI-компонентов.', '- NPMOS — Nginx Proxy Manager by OpenSophy, система управления обратным прокси на базе Nginx.', '',
+
 	'## LLM guidance', '', 'Use canonical URLs. Use /sitemap.xml for discovery and raw Markdown links for documentation content.'
 ];
 
@@ -42,10 +43,9 @@ const staticPages: StaticPage[] = [
 	{ title: 'Главная', path: '/', description: 'Обзор Opensophy, услуг DevSecOps и open-source продуктов.' },
 	{ title: 'Услуги', path: '/solutions', description: 'Аудит безопасности, Code review, DevSecOps, консультации и устранение неполадок.' },
 	{ title: 'os.mtls', path: '/mtls', description: 'Инструмент для создания и управления mTLS-сертификатами для Traefik.' },
-	{ title: 'os.dokploy', path: '/dokploy', description: 'Страница проекта — форка Dokploy с управлением серверами, деплоями и mTLS.' },
-	{ title: 'Шаблоны Docker Compose', path: '/templates/docker', description: 'Библиотека готовых Docker Compose-шаблонов для DevSecOps.' },
+
 	{ title: 'Новости', path: '/news', description: 'Новости, обновления и материалы об Opensophy.' },
-	{ title: 'Кейсы', path: '/cases', description: 'Примеры задач, решений и результатов работы Opensophy.' },
+
 	{ title: 'Статус проектов', path: '/status', description: 'Текущий статус и прогресс проектов Opensophy.' },
 	{ title: 'Политика сервиса', path: '/service-policy', description: 'Условия и политика предоставления сервисов Opensophy.' }
 ];

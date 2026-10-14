@@ -29,7 +29,7 @@
 
 	const siteName = siteConfig.name;
 	const authorName = siteConfig.author;
-	const homeTitle = `${siteConfig.name} — DevSecOps, кибербезопасность и веб-разработка`;
+	const homeTitle = `${siteConfig.name} — Мастерская DevSecOps`;
 	const homeDescription = siteConfig.description;
 	const homeKeywords = siteConfig.keywords.join(', ');
 	const sharedOgImage = new URL(siteConfig.ogImage, siteOrigin).href;
@@ -75,10 +75,10 @@
 		itemListElement: [
 			{ '@type': 'SiteNavigationElement', position: 1, name: 'Новости', url: `${siteOrigin}/news` },
 			{ '@type': 'SiteNavigationElement', position: 2, name: 'База Знаний', url: `${siteOrigin}/article/general` },
-			{ '@type': 'SiteNavigationElement', position: 3, name: 'os.dokploy', url: `${siteOrigin}/dokploy` },
-			{ '@type': 'SiteNavigationElement', position: 4, name: 'os.ui', url: `${siteOrigin}/components/overview` },
-			{ '@type': 'SiteNavigationElement', position: 5, name: 'Политика оказания услуг', url: `${siteOrigin}/service-policy` },
-			{ '@type': 'SiteNavigationElement', position: 6, name: 'Статус', url: `${siteOrigin}/status` }
+			{ '@type': 'SiteNavigationElement', position: 3, name: 'os.ui', url: `${siteOrigin}/components/overview` },
+			{ '@type': 'SiteNavigationElement', position: 4, name: 'Политика оказания услуг', url: `${siteOrigin}/service-policy` },
+			{ '@type': 'SiteNavigationElement', position: 5, name: 'NPMOS', url: `${siteOrigin}/#products` },
+				{ '@type': 'SiteNavigationElement', position: 6, name: 'Статус', url: `${siteOrigin}/status` }
 		]
 	});
 </script>
@@ -113,7 +113,7 @@
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:image" content={sharedOgImage} />
-		<meta property="og:image:alt" content="Opensophy — DevSecOps, кибербезопасность и веб-разработка" />
+		<meta property="og:image:alt" content="Opensophy — Мастерская DevSecOps" />
 		<meta property="og:image:type" content="image/jpeg" />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />

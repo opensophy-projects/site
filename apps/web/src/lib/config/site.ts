@@ -11,7 +11,7 @@ export const siteConfig = {
 	url: 'https://opensophy.com',
 	/** Default SEO description for the homepage. */
 	description:
-		'Opensophy — команда DevSecOps и информационной безопасности. Пентест сайтов и приложений, аудит инфраструктуры, code review, поиск утечек, автоматизация IT и разработка веб-приложений.',
+		'Opensophy — мастерская DevSecOps: кибербезопасность, безопасная инфраструктура, open-source инструменты и веб-разработка.',
 	/** Fallback SEO description used on content pages without a frontmatter description. */
 	fallbackDescription:
 		'Opensophy: услуги кибербезопасности и DevSecOps, пентест, аудит безопасности, защита инфраструктуры, автоматизация, веб-разработка и open-source инструменты.',
@@ -59,8 +59,8 @@ export const siteConfig = {
 		'os.docs',
 		'os.ui',
 		'os.mtls',
-		'os.compose',
-		'os.dokploy',
+		'NPMOS',
+		'Nginx Proxy Manager by OpenSophy',
 		'WAF',
 		'web application firewall',
 		'VPN',
