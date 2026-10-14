@@ -1,7 +1,7 @@
 {
 	"name": "opensophy",
 	"short_name": "opensophy",
-	"description": "Opensophy — DevSecOps, кибербезопасность и open-source инструменты для безопасной инфраструктуры.",
+	"description": "Opensophy — Мастерская DevSecOps. Безопасная инфраструктура, open-source инструменты и веб-разработка.",
 	"icons": [
 		{
 			"src": "/favicon.png",
