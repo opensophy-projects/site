@@ -1,7 +1,5 @@
 import type { RequestHandler } from './$types';
 import { siteConfig } from '$lib';
-import { getTemplateEntries } from '$lib/templates/registry';
-
 export const prerender = true;
 import { contentSections } from '$lib/content/sections';
 import {
@@ -65,14 +63,6 @@ const buildContentEntry = (origin: string, entry: ContentEntry) => {
 const buildStaticPageEntry = (origin: string, page: StaticPage) =>
 	`- [${page.title}](${new URL(page.path, origin).href}): ${page.description}`;
 
-const buildTemplateEntry = (
-	origin: string,
-	template: ReturnType<typeof getTemplateEntries>[number]
-) =>
-	`- [${template.title}](${new URL(`/templates/${template.slug}`, origin).href}): ${
-		template.description || 'Docker Compose шаблон.'
-	}`;
-
 const dedupeEntries = (entries: ContentEntry[]) => {
 	const map = new Map<string, ContentEntry>();
 	for (const entry of entries) {
@@ -132,14 +122,6 @@ export const GET: RequestHandler = () => {
 			'Основные страницы',
 			staticPages.map((page) => buildStaticPageEntry(canonicalOrigin, page))
 		),
-		'',
-		...buildSection(
-			'Шаблоны Docker Compose',
-			getTemplateEntries().map((template) =>
-				buildTemplateEntry(canonicalOrigin, template)
-			)
-		),
-		'',
 		...sectionBlocks,
 		'',
 		...buildSection('Optional', optionalLinks),

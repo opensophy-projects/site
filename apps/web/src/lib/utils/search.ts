@@ -251,51 +251,7 @@ function parseDocsContentIndex(): ContentSearchEntry[] {
 }
 
 
-function slugFromTemplatePath(path: string) {
-	return path
-		.replace(/^.*\/templates\//, '')
-		.replace(/\.svx$/, '')
-		.split('/')
-		.map((part) =>
-			part
-				.replace(/[^a-zA-Z0-9а-яА-ЯёЁ]+/g, '-')
-				.replace(/^-+|-+$/g, '')
-				.toLowerCase()
-		)
-		.filter(Boolean)
-		.join('/');
-}
-
-function parseTemplateIndex(): ContentSearchEntry[] {
-	const index: ContentSearchEntry[] = [];
-	const modules = import.meta.glob<string>('../../../../templates/**/*.svx', {
-		query: '?raw',
-		eager: true,
-		import: 'default'
-	});
-
-	for (const path in modules) {
-		const rawContent = modules[path];
-		if (typeof rawContent !== 'string') continue;
-		const { metadata: meta, body: contentBody } = parseContentSource(rawContent);
-		const slugValue = (meta as Record<string, unknown>).slug;
-		const pageSlug = typeof slugValue === 'string' ? slugValue : slugFromTemplatePath(path);
-		const slug = `/templates/${pageSlug}`;
-		const title = meta.title ?? meta.name ?? pageSlug;
-		const description = meta.description ?? '';
-		index.push({ title, slug, matchType: 'title', score: 0, source: 'registry' });
-		if (description) {
-			index.push({ title, slug, anchor: '', matchType: 'content', content: description, score: 0, source: 'registry' });
-		}
-		indexFileContent(contentBody.split('\n'), title, slug, index);
-		for (const entry of index) {
-			entry.source ??= 'registry';
-		}
-	}
-	return index;
-}
-
-const searchIndex = [...parseDocsContentIndex(), ...parseTemplateIndex()];
+const searchIndex = parseDocsContentIndex();
 
 const pageLookup = new Map<string, string>();
 searchIndex.forEach((item) => {
