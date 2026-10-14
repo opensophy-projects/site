@@ -16,7 +16,6 @@ keywords: 'Opensophy, Плавающее меню, UI, UI components, библи
 			links: [
 				{ label: 'Документация', href: '/docs' },
 				{ label: 'Компоненты', href: '/components' },
-				{ label: 'Компоненты', href: '/components' }
 			]
 		},
 		{
@@ -25,7 +24,6 @@ keywords: 'Opensophy, Плавающее меню, UI, UI components, библи
 			links: [
 				{ label: 'Безопасность', href: '/service-policy' },
 				{ label: 'Автоматизация', href: '/mtls' },
-				{ label: 'Инфраструктура', href: '/dokploy' }
 			]
 		},
 		{
