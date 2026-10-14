@@ -30,13 +30,6 @@
           href: "/docs/opensophy-docs",
           icon: DocumentMultiple_01,
         },
-        {
-          label: "NPMOS",
-          description:
-            "Nginx Proxy Manager by OpenSophy — обратный прокси на базе Nginx с веб-интерфейсом и механизмами безопасности. В разработке, 0%.",
-          href: "/#products",
-          icon: Network_3,
-        },
       ],
     },
     {
@@ -220,10 +213,7 @@
 {/snippet}
 
 {#snippet resourcesPanel(isMobile: boolean)}
-  <div
-    data-slot="row"
-    class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3"
-  >
+  <div data-slot="row" class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2">
     {#each resourceLinks as link (link.href)}
       {@const Icon = link.icon}
       <a
