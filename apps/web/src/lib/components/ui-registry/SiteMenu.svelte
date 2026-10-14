@@ -148,3 +148,267 @@
               class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
             >
               <span
+                class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
+              >
+                <span
+                  class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
+                >
+                  <Icon size={20} />
+                </span>
+              </span>
+              <span class="min-w-0 flex-1 leading-tight">
+                <span class="block text-sm font-medium text-foreground">
+                  {link.label}
+                </span>
+                <span
+                  class="mt-1 block text-sm leading-snug text-foreground-muted"
+                >
+                  {link.description}
+                </span>
+              </span>
+              <ChevronRight
+                class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/link:text-accent"
+                size={16}
+              />
+            </a>
+          {/each}
+        </div>
+      </div>
+    {/each}
+  </div>
+  {#if !isMobile}
+    <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
+      <a
+        href="/status"
+        class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
+      >
+        Статус
+        <ChevronRight size={14} />
+      </a>
+    </div>
+  {/if}
+{/snippet}
+
+{#snippet solutionsPanel(_isMobile: boolean)}
+  <div data-slot="row" class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2">
+    {#each solutionLinks as link (link.href)}
+      {@const Icon = link.icon}
+      <a
+        href={link.href}
+        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
+      >
+        <span
+          class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
+        >
+          <span
+            class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
+          >
+            <Icon size={20} />
+          </span>
+        </span>
+        <span class="min-w-0 flex-1 leading-tight">
+          <span class="block text-sm font-medium text-foreground">
+            {link.label}
+          </span>
+          <span class="mt-1 block text-sm leading-snug text-foreground-muted">
+            {link.description}
+          </span>
+        </span>
+      </a>
+    {/each}
+  </div>
+{/snippet}
+
+{#snippet resourcesPanel(isMobile: boolean)}
+  <div
+    data-slot="row"
+    class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2 lg:grid-cols-3"
+  >
+    {#each resourceLinks as link (link.href)}
+      {@const Icon = link.icon}
+      <a
+        href={link.href}
+        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
+      >
+        <span
+          class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
+        >
+          <span
+            class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
+          >
+            <Icon size={20} />
+          </span>
+        </span>
+        <span class="min-w-0 flex-1 leading-tight">
+          <span class="block text-sm font-medium text-foreground">
+            {link.label}
+          </span>
+          <span class="mt-1 block text-sm leading-snug text-foreground-muted">
+            {link.description}
+          </span>
+        </span>
+      </a>
+    {/each}
+  </div>
+  {#if !isMobile}
+    <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
+      <button
+        type="button"
+        onclick={() => {
+          contactsState.open();
+        }}
+        class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
+      >
+        Контакты
+        <ChevronRight size={14} />
+      </button>
+    </div>
+  {/if}
+{/snippet}
+
+<FloatingMenu
+  triggers={[
+    { id: "products", label: "Продукты", panel: productsPanel },
+    { id: "solutions", label: "Решения", panel: solutionsPanel },
+    { id: "resources", label: "Ресурсы", panel: resourcesPanel },
+  ]}
+>
+  {#snippet logo()}
+    <img src="/logo.png" alt={brandingConfig.name} class="size-7 shrink-0" />
+    <span class="font-medium lowercase tracking-tight text-foreground"
+      >{brandingConfig.name}</span
+    >
+  {/snippet}
+  {#snippet actionsEnd()}
+    <ThemeToggle />
+    <span class="inset-shadow inline-flex rounded-xl bg-background-inset p-1.5">
+      <button
+        type="button"
+        class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 hover:border-accent/60 active:scale-[0.95]"
+        onclick={() => {
+          searchState.open();
+        }}
+        aria-label="Открыть поиск"
+      >
+        <span class="sr-only">Открыть поиск</span>
+        <Search size={16} />
+      </button>
+    </span>
+  {/snippet}
+  {#snippet mobileFooter()}
+    <div class="mobile-footer-btn w-full">
+      <Button variant="secondary" size="lg" href="/status">Статус</Button>
+    </div>
+    <div class="mobile-footer-btn w-full">
+      <Button
+        variant="primary"
+        size="lg"
+        onclick={() => {
+          contactsState.open();
+        }}
+      >
+        Контакты
+      </Button>
+    </div>
+  {/snippet}
+</FloatingMenu>
+
+{#if contactsState.isOpen}
+  <div
+    class="contacts-overlay fixed inset-0 z-[100] flex items-center justify-center bg-background-inset/80 backdrop-blur-sm"
+    onclick={() => {
+      contactsState.close();
+    }}
+    onkeydown={handleOverlayKeydown}
+    role="button"
+    tabindex="-1"
+    aria-label="Закрыть контакты"
+  >
+    <div
+      class="contacts-modal relative w-full max-w-sm rounded-lg border border-border bg-background p-6"
+      onclick={(e) => {
+        e.stopPropagation();
+      }}
+      onkeydown={(e) => {
+        e.stopPropagation();
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Контакты"
+      tabindex="-1"
+    >
+      <button
+        type="button"
+        class="absolute top-3 right-3 flex size-8 items-center justify-center rounded-sm text-foreground-muted transition-colors hover:bg-background-muted hover:text-foreground"
+        onclick={() => {
+          contactsState.close();
+        }}
+        aria-label="Закрыть"
+      >
+        <Close size={18} />
+      </button>
+      <h2 class="mb-1 text-lg font-medium tracking-tight text-foreground">
+        Контакты
+      </h2>
+      <p class="mb-5 text-sm text-foreground-muted">
+        Свяжитесь через удобный канал.
+      </p>
+      <div class="flex flex-col gap-2">
+        {#each contacts as contact (contact.href)}
+          {@const Icon = contact.icon}
+          <a
+            href={contact.href}
+            target={contact.href.startsWith("http") ? "_blank" : undefined}
+            rel={contact.href.startsWith("http") ? "external" : undefined}
+            class="flex items-center gap-3 rounded-sm border border-border bg-background-inset px-4 py-3 text-sm font-medium text-foreground-muted transition-colors duration-150 ease-out hover:bg-background-muted hover:text-foreground"
+          >
+            <Icon size={18} />
+            <span class="truncate">{contact.label}</span>
+          </a>
+        {/each}
+      </div>
+    </div>
+  </div>
+{/if}
+
+<style>
+  .mobile-footer-btn :global(span) {
+    display: flex;
+    width: 100%;
+  }
+  .mobile-footer-btn :global(a),
+  .mobile-footer-btn :global(button) {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+  .status-link {
+    color: var(--accent);
+  }
+  .status-link:hover {
+    color: var(--accent-secondary);
+  }
+  .contacts-overlay {
+    animation: fade-in 200ms ease-out;
+  }
+  .contacts-modal {
+    animation: scale-in 250ms ease-out;
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+</style>
