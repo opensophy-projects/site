@@ -16,7 +16,6 @@ keywords: 'Opensophy, Плавающее меню, UI, UI components, библи
 			links: [
 				{ label: 'Документация', href: '/docs' },
 				{ label: 'Компоненты', href: '/components' },
-				{ label: 'Шаблоны', href: '/templates' }
 			]
 		},
 		{
