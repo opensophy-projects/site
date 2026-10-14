@@ -22,6 +22,21 @@ keywords: 'Opensophy, Новости, opensophy news, open-source, IT'
 
 		<div class="news-content w-full max-w-4xl">
 
+## Обновление от 13 октября 2026
+
+<Badge variant="accent">продукты</Badge>
+<Badge variant="outline">архив</Badge>
+<Badge variant="success">NPMOS</Badge>
+
+Обновили каталог проектов Opensophy: удалили страницы **os.dokploy**, кейсов и Docker Compose-шаблонов с OWASP ZAP, а также убрали связанные упоминания с главной страницы.
+
+**os.compose** и **os.dokploy** перенесены в архив на странице статуса. В секции продуктов теперь остаются **os.ui**, **os.docs**, **os.mtls** и новый проект **NPMOS**.
+
+**NPMOS (Nginx Proxy Manager by OpenSophy)** — система управления обратным прокси на базе Nginx с веб-интерфейсом и встроенными механизмами безопасности. Проект находится в разработке: **0%**.
+
+---
+
+
 ## Обновление от 12 октября 2026
 
 <Badge variant="accent">сайт</Badge>
