@@ -1,7 +1,5 @@
 import type { RequestHandler } from './$types';
 import { siteConfig } from '$lib';
-import { getTemplateEntries } from '$lib/templates/registry';
-
 export const prerender = true;
 import { contentSections, getContentSectionHref, getContentSectionManifest } from '$lib/content/sections';
 
@@ -16,7 +14,6 @@ const staticPages: SitemapEntry[] = [
 	{ path: '/llms.txt', changefreq: 'weekly', priority: '0.4' },
 	{ path: '/solutions', changefreq: 'monthly', priority: '0.8' },
 	{ path: '/mtls', changefreq: 'weekly', priority: '0.8' },
-	{ path: '/templates', changefreq: 'weekly', priority: '0.8' },
 	{ path: '/news', changefreq: 'weekly', priority: '0.7' },
 
 	{ path: '/status', changefreq: 'daily', priority: '0.6' },
@@ -60,15 +57,8 @@ export const GET: RequestHandler = () => {
 			priority: '0.8'
 		}))
 	);
-	const templateEntries: SitemapEntry[] = getTemplateEntries().map((template) => ({
-		path: `/templates/${template.slug}`,
-		changefreq: 'weekly',
-		priority: '0.7'
-	}));
-
 	const uniqueEntries = dedupeEntries([
 		...staticPages,
-		...templateEntries,
 		...sectionRootEntries,
 		...sectionEntries
 	]);

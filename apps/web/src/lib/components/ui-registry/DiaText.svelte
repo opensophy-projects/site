@@ -165,6 +165,7 @@
 
 <span
   class="dia-text {className}"
+  role="group"
   {style}
   onmouseenter={() => (hovered = true)}
   onmouseleave={() => (hovered = false)}
