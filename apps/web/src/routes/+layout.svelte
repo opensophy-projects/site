@@ -2,8 +2,10 @@
 	import './layout.css';
 	import './illustration-theme.css';
 	import 'katex/dist/katex.min.css';
+	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { CommandPalette, contentUiDefaults, siteConfig } from '$lib';
+	import Latticeloader from '$lib/components/ui-registry/Latticeloader.svelte';
 	import { getContentSectionByPathname, getContentSectionUiConfig } from '$lib/content/sections';
 	import type { SectionUiConfig } from '$lib/config/content-ui';
 	import { type Snippet } from 'svelte';
@@ -11,6 +13,23 @@
 	const { children }: { children: Snippet } = $props();
 
 	const currentPage = page;
+	let isIntroVisible = $state(true);
+
+	onMount(() => {
+		const hideIntro = () => {
+			requestAnimationFrame(() => {
+				isIntroVisible = false;
+			});
+		};
+
+		if (document.readyState === 'complete') {
+			hideIntro();
+			return;
+		}
+
+		window.addEventListener('load', hideIntro, { once: true });
+		return () => window.removeEventListener('load', hideIntro);
+	});
 
 	const isHomePath = (path?: string) => path === '/';
 
@@ -132,5 +151,50 @@
 	{/if}
 </svelte:head>
 
+{#if isIntroVisible}
+	<div class="site-intro" role="status" aria-label="Загрузка Opensophy">
+		<div class="site-intro__brand" aria-hidden="true">opensophy</div>
+		<Latticeloader
+			label="Загрузка"
+			status="working"
+			pattern="orbit"
+			grid={4}
+			color="var(--accent, #f43f5e)"
+			glow
+			showTimer={false}
+			fontSize={13}
+			cellSize={7}
+			gap={2}
+		/>
+	</div>
+{/if}
+
 <CommandPalette {searchConfig} />
 {@render children()}
+
+<style>
+	.site-intro {
+		position: fixed;
+		inset: 0;
+		z-index: 1000;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1.25rem;
+		background: var(--background, #090909);
+		color: var(--foreground, #fff);
+	}
+
+	.site-intro__brand {
+		font-size: clamp(1.35rem, 4vw, 2rem);
+		font-weight: 650;
+		letter-spacing: -0.04em;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.site-intro :global(.ll-run) {
+			animation: none !important;
+		}
+	}
+</style>
