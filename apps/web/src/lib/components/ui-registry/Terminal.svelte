@@ -197,6 +197,7 @@
     }
     retarget();
     rows.forEach((rw) => (rw.sp.x = rw.sp.t));
+    for (const rw of rows) drawRow(rw, top.x);
 
     const toSvg = (e: PointerEvent): DOMPoint => {
       const pt = svg.createSVGPoint();

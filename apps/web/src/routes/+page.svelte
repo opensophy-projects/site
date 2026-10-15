@@ -1,6 +1,10 @@
+<svelte:head>
+  <link rel="preload" as="image" href="/logo.png" fetchpriority="high" />
+</svelte:head>
+
 <script lang="ts">
   import { onMount, type Component } from "svelte";
-  import AsciiVisual from "$lib/components/ui-registry/AsciiVisual.svelte";
+  import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
   import ArcFlame from "$lib/components/ui-registry/ArcFlame.svelte";
   import ArcTimeline from "$lib/components/ui-registry/ArcTimeline.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
@@ -175,7 +179,7 @@
       // Сеть — mTLS-сертификаты и доступ к сервисам
       icon: Network_3,
       description:
-        "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik. Позволяет надёжно закрыть доступ к сервисам и серверам без лишних сложностей.",
+        "Инструмент для быстрого создания и управления mTLS-сертифик��тами для Traefik. Позволяет надёжно закрыть доступ к сервисам и серверам без лишних сложностей.",
       status: {
         variant: "released",
         label: "Проект в релизе",
@@ -313,9 +317,8 @@
       </h1>
 
       <div class="hero-logo" aria-label="Opensophy ASCII logo" bind:this={logoEl}>
-        <AsciiVisual
+        <AsciiObject
           src="/logo.png"
-          forceAscii={true}
           ascii={true}
           colored={false}
           color="#f43f5e"
