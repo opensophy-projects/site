@@ -47,5 +47,5 @@ keywords: 'Opensophy, Phosphor, SVG, illustration, UI components'
 | `tau` | `number` | `320` | Время послесвечения в миллисекундах |
 | `width` | `string` | `'min(94vw, 560px)'` | CSS-ширина иллюстрации |
 | `showControls` | `boolean` | `true` | Показывать подсказку с состоянием |
-| `label` | `string` | — | Доступное имя SVG |
-```
+ | `label` | `string` | — | Доступное имя SVG |
+

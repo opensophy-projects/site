@@ -14,9 +14,6 @@ const staticPages: SitemapEntry[] = [
 	{ path: '/llms.txt', changefreq: 'weekly', priority: '0.4' },
 	{ path: '/solutions', changefreq: 'monthly', priority: '0.8' },
 	{ path: '/mtls', changefreq: 'weekly', priority: '0.8' },
-	{ path: '/news', changefreq: 'weekly', priority: '0.7' },
-
-	{ path: '/status', changefreq: 'daily', priority: '0.6' },
 	{ path: '/service-policy', changefreq: 'yearly', priority: '0.5' }
 ];
 
