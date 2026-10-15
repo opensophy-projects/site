@@ -4,7 +4,7 @@
     contentUiDefaults,
     type SectionUiConfig,
   } from "$lib/config/content-ui";
-  import { searchContent, type SearchMode } from "$lib/utils/search";
+  import { searchContent } from "$lib/utils/search";
   import { scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { goto, onNavigate } from "$app/navigation";
@@ -15,22 +15,13 @@
   import { onMount } from "svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
   import Return from "carbon-icons-svelte/lib/Return.svelte";
-  import Book from "carbon-icons-svelte/lib/Book.svelte";
-  import Wikis from "carbon-icons-svelte/lib/Wikis.svelte";
-  import DockerLogo from "$lib/components/ui-registry/DockerLogo.svelte";
 
   const {
     searchConfig = contentUiDefaults.search,
   }: { searchConfig?: SectionUiConfig["search"] } = $props();
 
   let query = $state("");
-  let mode = $state<SearchMode>("global");
-  const modes: { value: SearchMode; label: string; icon: typeof Wikis }[] = [
-    { value: "global", label: "Везде", icon: Wikis },
-    { value: "docs", label: "Документация", icon: Book },
-    { value: "registry", label: "Реестр", icon: DockerLogo },
-  ];
-  let results = $derived(searchContent(query, searchConfig, mode));
+  let results = $derived(searchContent(query, searchConfig));
   let selectedIndex = $state(0);
   let inputRef = $state<HTMLInputElement>();
   let contentHeight = $state(0);
@@ -70,8 +61,7 @@
   $effect(() => {
     if (!searchConfig.enabled) return;
     if (searchState.isOpen && inputRef) {
-      const initialMode = searchState.consumeInitialMode();
-      if (initialMode) mode = initialMode;
+      searchState.consumeInitialMode();
       inputRef.focus();
     }
   });
@@ -261,26 +251,6 @@
           placeholder={searchConfig.dialogPlaceholder}
           aria-label={searchConfig.dialogPlaceholder}
         />
-        <div
-          class="mr-2 flex shrink-0 items-center rounded-md border border-border bg-background-inset p-0.5"
-          aria-label="Режим поиска"
-        >
-          {#each modes as item (item.value)}
-            {@const Icon = item.icon}
-            <button
-              type="button"
-              class={cn(
-                "flex size-7 items-center justify-center rounded-sm text-foreground-muted transition",
-                mode === item.value && "bg-background text-accent shadow-sm",
-              )}
-              onclick={() => (mode = item.value)}
-              aria-label={item.label}
-              title={item.label}
-            >
-              <Icon size={15} />
-            </button>
-          {/each}
-        </div>
         <kbd
           class="pointer-events-none inset-shadow relative hidden h-5 items-center gap-1 rounded-[calc(var(--radius-base)*1.5)] bg-background-inset px-1.5 font-mono text-[10px] font-medium tracking-normal text-foreground-muted/70 select-none sm:flex"
         >

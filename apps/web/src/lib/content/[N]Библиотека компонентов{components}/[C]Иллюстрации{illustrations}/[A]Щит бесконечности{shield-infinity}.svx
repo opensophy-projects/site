@@ -43,5 +43,5 @@ keywords: 'Opensophy, Shield Infinity, SVG, illustration, UI components'
 | --- | --- | --- | --- |
 | `accent` | `string` | `'#f43f5e'` | Цвет трубки бесконечности и акцентов |
 | `width` | `string` | `'min(92vw, 560px)'` | CSS-ширина иллюстрации |
-| `label` | `string` | `'Isometric shield with infinity symbol'` | Доступное имя SVG |
-```
+ | `label` | `string` | `'Isometric shield with infinity symbol'` | Доступное имя SVG |
+

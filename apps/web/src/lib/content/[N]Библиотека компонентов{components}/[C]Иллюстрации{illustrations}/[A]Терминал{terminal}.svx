@@ -53,5 +53,5 @@ keywords: 'Opensophy, Terminal, SVG, illustration, UI components'
 | `spread` | `number` | `3` | Радиус распространения подъёма по строкам |
 | `width` | `string` | `'min(88vw, 420px)'` | CSS-ширина иллюстрации |
 | `showControls` | `boolean` | `true` | Показывать подсказку с текущим состоянием |
-| `label` | `string` | — | Доступное имя SVG |
-```
+ | `label` | `string` | — | Доступное имя SVG |
+

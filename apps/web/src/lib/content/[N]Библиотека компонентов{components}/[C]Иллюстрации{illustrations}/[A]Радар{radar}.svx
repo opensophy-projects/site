@@ -55,4 +55,3 @@ keywords: 'Opensophy, Radar, SVG, illustration, UI components'
 | `az` / `el` | `number` | — | Текущие азимут и угол места, доступны для bind |
 | `class` | `string` | — | Дополнительный класс SVG |
 | `label` | `string` | — | Доступное имя иллюстрации |
-```
