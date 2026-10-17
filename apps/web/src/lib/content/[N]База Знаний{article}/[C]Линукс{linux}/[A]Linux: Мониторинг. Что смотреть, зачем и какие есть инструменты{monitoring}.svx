@@ -1,5 +1,0 @@
----
-title: "Linux: Мониторинг. Что смотреть, зачем и какие есть инструменты"
-description:  часть серии о Linux для DevOps и DevSecOps
-priority: 5
----
