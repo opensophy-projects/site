@@ -1,120 +1,128 @@
-<script lang="ts">
-	type Props = {
-		/** Позиция при вложении в другой <svg> (в координатах родителя). */
-		x?: number;
-		y?: number;
-		/** Размер; пропорции 150×180. */
-		width?: number;
-		height?: number;
-		/** Светодиоды горят (сервер получил запрос). */
-		lit?: boolean;
-		/** Подпись для скринридеров. Без неё иллюстрация считается декоративной. */
-		title?: string;
-		class?: string;
-	};
+<!--
+  Server.svelte: a rack server drawn as an isometric line figure.
 
-	let {
-		x = 0,
-		y = 0,
-		width = 150,
-		height = 180,
-		lit = false,
-		title,
-		class: className = ''
-	}: Props = $props();
+  Props
+    units   number of rack units in the stack (1 to 6).                    default 3
+    label   accessible name.
+    class   extra class for the <svg>.
 
-	const UNITS = [0, 1, 2];
-	const BAYS = [0, 1, 2, 3];
+  Theming (CSS custom properties, all optional)
+    --srv-ink       line colour                 default CanvasText
+    --srv-surface   fill behind lines           default Canvas
+    --srv-led       status light                default #2fbf7f
+    --srv-accent    focus outline               default #1f62d0
+    --srv-sw        stroke width                default 2.6 (view-box units)
+
+  Hover or focus a unit and it slides out like a drawer. Tab moves between units.
+  Everything is in this one file: the geometry sits in the module script below.
+-->
+<script module>
+  // ---- geometry: isometric, pure functions
+  const S = 2.5, K = Math.sqrt(3) / 2;
+  const H = 32, UH = 18, UP = 20, PULL = 14, PAD = 14;
+
+  const P = (x, y, z) => [(x - y) * K * S, ((x + y) / 2 - z) * S];
+  const r1 = (v) => Math.round(v * 100) / 100;
+  const pts = (list) => list.map((q) => P(q[0], q[1], q[2])).map((p) => r1(p[0]) + ' ' + r1(p[1])).join('L');
+  const quad = (...q) => 'M' + pts(q) + 'Z';
+  const seg = (a, b) => 'M' + pts([a, b]);
+  const dot = (q) => { const p = P(q[0], q[1], q[2]); return 'M' + r1(p[0]) + ' ' + r1(p[1]) + 'h.01'; };
+
+  /** One rack unit: its faces, drive bays, handle, side vents and lights. */
+  function unitModel(k) {
+    const z0 = k * UP, z1 = z0 + UH, y = H, c = 3;
+    const bays = [-27, -15.67, -4.33, 7];
+    return {
+      front: quad([-H, y, z0], [H, y, z0], [H, y, z1], [-H, y, z1]),
+      side: quad([H, -H, z0], [H, H, z0], [H, H, z1], [H, -H, z1]),
+      top: quad([-H, -H, z1], [H, -H, z1], [H, H, z1], [-H, H, z1]),
+      inset: quad([-H + c, -H + c, z1], [H - c, -H + c, z1], [H - c, H - c, z1], [-H + c, H - c, z1]),
+      bay: quad([bays[0], y, z0 + 4], [bays[3], y, z0 + 4], [bays[3], y, z0 + 14], [bays[0], y, z0 + 14]),
+      dividers: [bays[1], bays[2]].map((x) => seg([x, y, z0 + 4], [x, y, z0 + 14])).join(''),
+      handles: bays.slice(0, 3).map((x, i) => seg([x + 2.2, y, z0 + 9 + 0], [bays[i + 1] - 2.2, y, z0 + 9])).join(''),
+      power: dot([20, y, z0 + 9]),
+      led: dot([26, y, z0 + 9]),
+      vents: [-22, -15, -8, -1, 6, 13, 20].map((v) => seg([H, v, z0 + 5], [H, v, z1 - 5])).join(''),
+    };
+  }
+
+  /** The whole stack and the view box that holds it, also when a drawer is pulled out. */
+  function model(units) {
+    const n = Math.max(1, Math.min(6, Math.round(units) || 1));
+    const top = n * UP - (UP - UH);
+    const corners = [];
+    for (const x of [-H - 6, H + 6]) for (const y of [-H - 6, H + 6 + PULL]) for (const z of [0, top]) corners.push(P(x, y, z));
+    const xs = corners.map((p) => p[0]), ys = corners.map((p) => p[1]);
+    const x0 = Math.min(...xs) - PAD, x1 = Math.max(...xs) + PAD, y0 = Math.min(...ys) - PAD, y1 = Math.max(...ys) + PAD;
+    return {
+      viewBox: r1(x0) + ' ' + r1(y0) + ' ' + r1(x1 - x0) + ' ' + r1(y1 - y0),
+      shadow: quad([-H - 6, -H - 6, 0], [H + 6, -H - 6, 0], [H + 6, H + 6, 0], [-H - 6, H + 6, 0]),
+      pull: r1(-PULL * K * S) + 'px ' + r1((PULL / 2) * S) + 'px',
+      units: Array.from({ length: n }, (_, k) => unitModel(k)),
+    };
+  }
 </script>
 
-<svg
-	{x}
-	{y}
-	{width}
-	{height}
-	viewBox="0 0 150 180"
-	class={['server', className]}
-	role={title ? 'img' : undefined}
-	aria-label={title}
-	aria-hidden={title ? undefined : 'true'}
->
-	<!-- корпус -->
-	<rect class="body" x="1" y="1" width="148" height="170" rx="10" />
+<script>
+  let { units = 3, label = 'Сервер: стойка из блоков', class: klass = '' } = $props();
+  const m = $derived(model(units));
+</script>
 
-	<!-- ножки -->
-	<rect class="foot" x="18" y="171" width="26" height="7" rx="2" />
-	<rect class="foot" x="106" y="171" width="26" height="7" rx="2" />
-
-	<!-- юниты -->
-	{#each UNITS as k (k)}
-		{@const u = 10 + k * 54}
-		<rect class="unit" x="10" y={u} width="130" height="46" rx="6" />
-
-		<!-- отсеки для дисков -->
-		{#each BAYS as j (j)}
-			<rect class="bay" x={20 + j * 19} y={u + 9} width="14" height="28" rx="2.5" />
-			<path class="grip" d="M{23 + j * 19} {u + 15}H{31 + j * 19}" />
-		{/each}
-
-		<!-- светодиод, кнопка питания и вентиляция -->
-		<circle class="led" class:on={lit} cx="120" cy={u + 15} r="5" />
-		<circle class="btn" cx="106" cy={u + 15} r="3" />
-		<path class="vent" d="M100 {u + 28}H130M100 {u + 34}H130" />
-	{/each}
+<svg class="server {klass}" viewBox={m.viewBox} role="group" aria-label={label} style:--pull={m.pull}>
+  <path class="shadow" d={m.shadow} />
+  {#each m.units as u, i (i)}
+    <g class="unit" tabindex="0" role="group" aria-label={'Блок ' + (i + 1)} style:--i={i}>
+      <path class="ln face-l" d={u.front} />
+      <path class="ln face-r" d={u.side} />
+      <path class="ln face-t" d={u.top} />
+      <path class="ln lo" d={u.inset} />
+      <path class="ln lo" d={u.bay} />
+      <path class="ln lo" d={u.dividers} />
+      <path class="ln lo" d={u.handles} />
+      <path class="ln lo" d={u.vents} />
+      <path class="light" d={u.power} />
+      <path class="light blink" d={u.led} />
+    </g>
+  {/each}
 </svg>
 
 <style>
-	.server {
-		--s-line: var(--mt-line, color-mix(in srgb, var(--color-foreground-muted, #888) 75%, transparent));
-		--s-soft: var(--mt-soft, var(--color-border, #ddd));
-		--s-accent: var(--mt-accent, var(--color-accent, #f43f5e));
-		overflow: visible;
-	}
+  .server {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    --ink: var(--srv-ink, CanvasText);
+    --surface: var(--srv-surface, Canvas);
+    --led: var(--srv-led, #2fbf7f);
+    --accent: var(--srv-accent, #1f62d0);
+    --sw: var(--srv-sw, 2.6);
+  }
+  .shadow { fill: var(--ink); opacity: 0.07; }
 
-	.body {
-		fill: var(--color-background-inset, #f4f4f5);
-		stroke: var(--s-line);
-		stroke-width: 1.4;
-	}
-	.foot {
-		fill: var(--s-line);
-	}
-	.unit {
-		fill: var(--color-background, #fff);
-		stroke: var(--s-soft);
-		stroke-width: 1.2;
-	}
-	.bay {
-		fill: var(--color-background-inset, #f4f4f5);
-		stroke: var(--s-soft);
-		stroke-width: 1.2;
-	}
-	.grip,
-	.vent {
-		fill: none;
-		stroke: var(--s-soft);
-		stroke-width: 2;
-		stroke-linecap: round;
-	}
-	.btn {
-		fill: none;
-		stroke: var(--s-line);
-		stroke-width: 1.2;
-	}
-	.led {
-		fill: var(--s-soft);
-		stroke: var(--s-line);
-		stroke-width: 1.2;
-		transition: fill 150ms ease-out;
-	}
-	.led.on {
-		fill: var(--s-accent);
-		stroke: var(--s-accent);
-	}
+  .ln {
+    stroke: var(--ink);
+    stroke-width: var(--sw);
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .face-l { fill: color-mix(in srgb, var(--ink) 4%, var(--surface)); }
+  .face-r { fill: color-mix(in srgb, var(--ink) 9%, var(--surface)); }
+  .face-t { fill: var(--surface); }
+  .lo { stroke-width: calc(var(--sw) * 0.6); opacity: 0.7; }
 
-	@media (prefers-reduced-motion: reduce) {
-		.led {
-			transition: none;
-		}
-	}
+  .light { fill: none; stroke: var(--led); stroke-width: 6; stroke-linecap: round; }
+  .blink { animation: blink 1.4s ease-in-out infinite; animation-delay: calc(var(--i) * 0.33s); }
+  @keyframes blink { 50% { opacity: 0.25; } }
+
+  .unit { outline: none; cursor: pointer; transition: transform 0.35s cubic-bezier(0.3, 1.3, 0.5, 1); }
+  .unit:hover, .unit:focus-visible { transform: translate(var(--pull)); }
+  .unit:hover .ln, .unit:focus-visible .ln { stroke: var(--accent); }
+  .unit:hover .lo, .unit:focus-visible .lo { stroke: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .unit { transition: none; }
+    .blink { animation: none; }
+  }
 </style>
