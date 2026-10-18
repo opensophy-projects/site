@@ -4,6 +4,7 @@
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import Faq from "$lib/components/docs/markdown/Faq.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
+  import MtlsRevocation from "$lib/components/ui-registry/MtlsRevocation.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
   import Checkmark from "carbon-icons-svelte/lib/Checkmark.svelte";
   import Renew from "carbon-icons-svelte/lib/Renew.svelte";
@@ -204,6 +205,14 @@
   <section class="section-block w-full max-w-5xl px-4">
     <p class="section-overline">FAQ</p>
     <Faq items={faqItems} />
+  </section>
+
+  <section class="section-block w-full max-w-5xl px-4">
+    <p class="section-overline">Отзыв сертификатов вживую</p>
+    <h2 class="section-heading">Что меняется при отзыве клиента</h2>
+    <div class="flex justify-center">
+      <MtlsRevocation />
+    </div>
   </section>
 
   <section class="bottom-gradient-section" aria-hidden="true">
