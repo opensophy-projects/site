@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { cn } from '$lib/utils/cn';
+	import ServerIllustration from './ServerIllustration.svelte';
 
 	type Mode = 'naive' | 'script';
 	type Lane = { x: number; y: number; op: number; xo: number; arm: number; lit: boolean };
@@ -244,12 +245,7 @@
 				{/each}
 
 				<!-- бэкенд: один сервер -->
-				<rect class="srv" x={BX} y={MY - 86} width={SW} height="172" rx="10" />
-				{#each [0, 1, 2] as k (k)}
-					<rect class="srv-u" x={BX + 10} y={MY - 76 + k * 54} width={SW - 20} height="46" rx="6" />
-					<path class="dl" d="M{BX + 24} {MY - 62 + k * 54}H{BX + 90}M{BX + 24} {MY - 46 + k * 54}H{BX + 110}" />
-					<circle class="led" class:on={frame.lit} cx={BX + SW - 28} cy={MY - 53 + k * 54} r="5" />
-				{/each}
+				<ServerIllustration x={BX} y={MY - 86} width={SW} height={(SW * 180) / 150} lit={frame.lit} />
 				<text class="t c" x={BX + SW / 2} y="392">бэкенд</text>
 
 				<!-- анимация: двери, документы -->
@@ -457,16 +453,6 @@
 		stroke-dasharray: 5 4;
 		stroke-width: 1.2;
 	}
-	.srv {
-		fill: var(--color-background-inset);
-		stroke: var(--mt-line);
-		stroke-width: 1.4;
-	}
-	.srv-u {
-		fill: var(--color-background);
-		stroke: var(--color-border);
-		stroke-width: 1.2;
-	}
 	.rail {
 		fill: none;
 		stroke: var(--mt-soft);
@@ -537,17 +523,6 @@
 		stroke-width: 3;
 		stroke-linecap: round;
 	}
-	.led {
-		fill: var(--mt-soft);
-		stroke: var(--mt-line);
-		stroke-width: 1.2;
-		transition: fill 150ms ease-out;
-	}
-	.led.on {
-		fill: var(--mt-accent);
-		stroke: var(--mt-accent);
-	}
-
 	.hit {
 		fill: transparent;
 		cursor: pointer;
@@ -570,8 +545,7 @@
 	@media (prefers-reduced-motion: reduce) {
 		.client-shell,
 		.client-card,
-		.rail,
-		.led {
+		.rail {
 			transition: none;
 		}
 	}
