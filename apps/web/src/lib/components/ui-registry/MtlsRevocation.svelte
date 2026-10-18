@@ -3,8 +3,8 @@
 	import { cn } from '$lib/utils/cn';
 
 	type Mode = 'naive' | 'script';
-	type Lane = { x: number; op: number; xo: number; arm: number; lit: boolean };
-	type Frame = { lanes: Lane[]; hiC: number[]; badC: number[]; msg: string };
+	type Lane = { x: number; y: number; op: number; xo: number; arm: number; lit: boolean };
+	type Frame = { lanes: Lane[]; hiC: number[]; badC: number[]; msg: string; lit: boolean };
 
 	type Props = {
 		/** 'naive' — без скрипта (в bundle только Root CA); 'script' — с mtls.sh (по CA на клиента). */
@@ -36,6 +36,9 @@
 	const X0 = 224; // где документ появляется
 	const BX = 700; // левый край сервера
 	const SW = 150; // ширина сервера
+	const MY = 248; // общая линия к серверу
+	const MX = GX + GW + 40; // где дорожки начинают сходиться
+	const MS = 90; // длина схождения
 	const WALL = [
 		[122, 143],
 		[193, 223],
@@ -46,10 +49,11 @@
 	let revoked = $state([false, true]); // клиент 1, клиент 2
 	let hovered = $state(-1);
 	let frame = $state<Frame>({
-		lanes: LY.map(() => ({ x: X0, op: 0, xo: 0, arm: 0, lit: false })),
+		lanes: LY.map((y) => ({ x: X0, y, op: 0, xo: 0, arm: 0, lit: false })),
 		hiC: [],
 		badC: [],
-		msg: ''
+		msg: '',
+		lit: false
 	});
 
 	const naive = $derived(mode === 'naive');
@@ -130,10 +134,12 @@
 				}
 
 				const arm = allowed ? sm(pr(ph, 0.4, 0.56)) * (1 - sm(pr(ph, 0.88, 0.97))) : 0;
-				return { x, op, xo, arm, lit };
+				// после шлюза документ сходится на общую линию к серверу
+				const y = LY[i] + (MY - LY[i]) * sm(pr(x, MX, MX + MS));
+				return { x, y, op, xo, arm, lit };
 			});
 
-			frame = { lanes, hiC: [...new Set(hiC)], badC, msg };
+			frame = { lanes, hiC: [...new Set(hiC)], badC, msg, lit: lanes.some((l) => l.lit) };
 			if (visible) raf = requestAnimationFrame(tick);
 		};
 
@@ -223,7 +229,11 @@
 
 				<!-- дорожки и клиенты -->
 				{#each LY as y, i (y)}
-					<path class="rail" class:hi={hovered === i} d="M{CARD_X + CARD_W} {y}H{GX}M{GX + GW} {y}H{BX}" />
+					<path class="rail" class:hi={hovered === i} d="M{CARD_X + CARD_W} {y}H{GX}" />
+					<path
+						class="rail"
+						d="M{GX + GW} {y}H{MX}C{MX + MS / 3} {y} {MX + (2 * MS) / 3} {MY} {MX + MS} {MY}H{BX}"
+					/>
 					<rect class="client-shell" class:hi={hovered === i} x={CARD_X} y={y - 26} width={CARD_W} height="52" rx="12" />
 					<rect class="client-card" class:hi={hovered === i} x={CARD_X + 3} y={y - 23} width={CARD_W - 6} height="46" rx="9" />
 					<text class="t" x={CARD_X + 16} y={y - 3}>{NAMES[i]}</text>
@@ -233,11 +243,12 @@
 					{#if i > 0 && revoked[i - 1]}<path class="xm" d={crossD(CARD_X + CARD_W - 20, y - 8, 7)} />{/if}
 				{/each}
 
-				<!-- бэкенд: сервер (стойка из трёх юнитов, по одному на дорожку) -->
-				{#each LY as y, i (y)}
-					<rect class="srv" x={BX} y={y - 28} width={SW} height="56" rx="8" />
-					<path class="dl" d="M{BX + 18} {y - 8}H{BX + 84}M{BX + 18} {y + 8}H{BX + 104}" />
-					<circle class="led" class:on={frame.lanes[i].lit} cx={BX + SW - 22} cy={y} r="5" />
+				<!-- бэкенд: один сервер -->
+				<rect class="srv" x={BX} y={MY - 86} width={SW} height="172" rx="10" />
+				{#each [0, 1, 2] as k (k)}
+					<rect class="srv-u" x={BX + 10} y={MY - 76 + k * 54} width={SW - 20} height="46" rx="6" />
+					<path class="dl" d="M{BX + 24} {MY - 62 + k * 54}H{BX + 90}M{BX + 24} {MY - 46 + k * 54}H{BX + 110}" />
+					<circle class="led" class:on={frame.lit} cx={BX + SW - 28} cy={MY - 53 + k * 54} r="5" />
 				{/each}
 				<text class="t c" x={BX + SW / 2} y="392">бэкенд</text>
 
@@ -246,12 +257,12 @@
 					{@const L = frame.lanes[i]}
 					<rect class="door" x={GX + 5} y={y - 22} width={GW - 10} height={44 * (1 - L.arm)} rx="3" />
 					<g opacity={L.op}>
-						<rect class="dc" x={L.x - 24} y={y - 17} width="48" height="34" rx="6" />
+						<rect class="dc" x={L.x - 24} y={L.y - 17} width="48" height="34" rx="6" />
 						{#each [0, 1, 2] as j (j)}
-							<path class="dl" d="M{L.x - 17} {y - 8 + j * 8}H{L.x + (j === 2 ? -2 : 4)}" />
+							<path class="dl" d="M{L.x - 17} {L.y - 8 + j * 8}H{L.x + (j === 2 ? -2 : 4)}" />
 						{/each}
 						{#if i > 0}
-							<circle class={revoked[i - 1] ? 'sealr' : 'seal'} cx={L.x + 14} cy={y + 4} r="7" />
+							<circle class={revoked[i - 1] ? 'sealr' : 'seal'} cx={L.x + 14} cy={L.y + 4} r="7" />
 						{/if}
 					</g>
 					{#if L.xo}<path class="xm" opacity={L.xo} d={crossD(GX - 26, y, 9)} />{/if}
@@ -450,6 +461,11 @@
 		fill: var(--color-background-inset);
 		stroke: var(--mt-line);
 		stroke-width: 1.4;
+	}
+	.srv-u {
+		fill: var(--color-background);
+		stroke: var(--color-border);
+		stroke-width: 1.2;
 	}
 	.rail {
 		fill: none;
