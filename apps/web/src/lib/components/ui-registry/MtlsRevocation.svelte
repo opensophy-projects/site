@@ -3,8 +3,8 @@
 	import { cn } from '$lib/utils/cn';
 
 	type Mode = 'naive' | 'script';
-	type Lane = { x: number; op: number; xo: number; arm: number };
-	type Frame = { lanes: Lane[]; hiC: number[]; badC: number[]; msg: string; lit: boolean };
+	type Lane = { x: number; op: number; xo: number; arm: number; lit: boolean };
+	type Frame = { lanes: Lane[]; hiC: number[]; badC: number[]; msg: string };
 
 	type Props = {
 		/** 'naive' — без скрипта (в bundle только Root CA); 'script' — с mtls.sh (по CA на клиента). */
@@ -24,12 +24,18 @@
 		class: className = ''
 	}: Props = $props();
 
+	// Геометрия схемы (viewBox 880×400, без масштабирования — шрифты не растягиваются)
 	const LY = [168, 248, 328];
 	const NAMES = ['обычный запрос', 'клиент 1', 'клиент 2'];
-	const GX = 326;
-	const GW = 28;
-	const DOC = 300;
-	const BX = 500;
+	const CARD_X = 24;
+	const CARD_W = 160;
+	const GX = 470;
+	const GW = 36;
+	const CX = GX + GW / 2; // центр шлюза и bundle
+	const DOC = GX - 26; // где документ останавливается перед дверью
+	const X0 = 224; // где документ появляется
+	const BX = 700; // левый край сервера
+	const SW = 150; // ширина сервера
 	const WALL = [
 		[122, 143],
 		[193, 223],
@@ -40,11 +46,10 @@
 	let revoked = $state([false, true]); // клиент 1, клиент 2
 	let hovered = $state(-1);
 	let frame = $state<Frame>({
-		lanes: LY.map(() => ({ x: 140, op: 0, xo: 0, arm: 0 })),
+		lanes: LY.map(() => ({ x: X0, op: 0, xo: 0, arm: 0, lit: false })),
 		hiC: [],
 		badC: [],
-		msg: '',
-		lit: false
+		msg: ''
 	});
 
 	const naive = $derived(mode === 'naive');
@@ -55,7 +60,8 @@
 			: `${NAMES[hovered]} · ${revoked[hovered - 1] ? 'отозван' : 'действует'} · ${pass[hovered] ? 'пропущен' : 'отклонён'}`
 	);
 
-	const chipC = (m: Mode, i: number) => (m === 'naive' ? 340 : i === 1 ? 265 : 415);
+	const chipC = (m: Mode, i: number) => (m === 'naive' ? CX : i === 1 ? CX - 80 : CX + 80);
+	const chipW = (m: Mode) => (m === 'naive' ? 170 : 140);
 	const crossD = (x: number, y: number, a: number) =>
 		`M${String(x - a)} ${String(y - a)}L${String(x + a)} ${String(y + a)}M${String(x + a)} ${String(y - a)}L${String(x - a)} ${String(y + a)}`;
 	const sm = (p: number) => {
@@ -88,7 +94,6 @@
 			const hiC: number[] = [];
 			const badC: number[] = [];
 			let msg = '';
-			let lit = false;
 
 			const lanes = LY.map((_, i): Lane => {
 				const ph = (t / 4.4 + i * 0.3) % 1;
@@ -96,8 +101,9 @@
 				let x: number;
 				let op = 1;
 				let xo = 0;
+				let lit = false;
 
-				if (ph < 0.5) x = 140 + (DOC - 140) * sm(ph / 0.5);
+				if (ph < 0.5) x = X0 + (DOC - X0) * sm(ph / 0.5);
 				else if (ph < 0.62) x = DOC;
 				else if (allowed) {
 					x = DOC + (BX - 30 - DOC) * sm(pr(ph, 0.62, 0.92));
@@ -106,14 +112,14 @@
 						if (ph < 0.9) lit = true;
 					}
 				} else {
-					x = DOC - (DOC - 150) * sm(pr(ph, 0.62, 0.92));
+					x = DOC - (DOC - (X0 + 10)) * sm(pr(ph, 0.62, 0.92));
 					op = Math.max(0, 1 - pr(ph, 0.64, 0.92));
 					xo = ph > 0.5 && ph < 0.82 ? 1 : 0;
 				}
 				if (ph > 0.94) op = 0;
 
 				if (ph > 0.48 && ph < 0.64 && i > 0) {
-					if (naive) hiC.push(340);
+					if (naive) hiC.push(CX);
 					else if (!revoked[i - 1]) hiC.push(chipC(mode, i));
 					else badC.push(chipC(mode, i));
 				}
@@ -124,10 +130,10 @@
 				}
 
 				const arm = allowed ? sm(pr(ph, 0.4, 0.56)) * (1 - sm(pr(ph, 0.88, 0.97))) : 0;
-				return { x, op, xo, arm };
+				return { x, op, xo, arm, lit };
 			});
 
-			frame = { lanes, hiC: [...new Set(hiC)], badC, msg, lit };
+			frame = { lanes, hiC: [...new Set(hiC)], badC, msg };
 			if (visible) raf = requestAnimationFrame(tick);
 		};
 
@@ -168,69 +174,72 @@
 		<!-- Схема -->
 		<div class="px-2 pt-2">
 			<svg
-				viewBox="0 0 896 400"
+				viewBox="0 0 880 400"
 				role="img"
-				aria-label="Вид сверху: клиенты, шлюз Traefik с bundle сертификатов и бэкенд"
+				aria-label="Вид сверху: клиенты, шлюз Traefik с bundle сертификатов и бэкенд-сервер"
 				class="block h-auto w-full"
 			>
-				<g transform="scale(1.4 1)">
 				<!-- Root CA -->
-				<rect class="bx" x="24" y="26" width="116" height="52" rx="12" />
-				<text class="t c" x="82" y="50">Root CA</text>
-				<text class="s c" x="82" y="67">{naive ? 'подписывает всех' : 'подписывает CA'}</text>
+				<rect class="client-shell" x={CARD_X} y="26" width={CARD_W} height="52" rx="12" />
+				<rect class="client-card" x={CARD_X + 3} y="29" width={CARD_W - 6} height="46" rx="9" />
+				<text class="t c" x={CARD_X + CARD_W / 2} y="49">Root CA</text>
+				<text class="s c" x={CARD_X + CARD_W / 2} y="66">{naive ? 'подписывает всех' : 'подписывает CA'}</text>
 
 				<!-- bundle -->
-				<rect class="bx" x="186" y="14" width="308" height="80" rx="14" />
-				<text class="s c" x="340" y="34">bundle у Traefik: каким CA он доверяет</text>
+				<rect class="client-shell" x={CX - 220} y="14" width="440" height="80" rx="14" />
+				<rect class="client-card" x={CX - 217} y="17" width="434" height="74" rx="11" />
+				<text class="s c" x={CX} y="35">bundle у Traefik: каким CA он доверяет</text>
 				{#if naive}
-					<rect class="chip" x="265" y="48" width="150" height="30" rx="15" />
-					<text class="t c" x="340" y="68">Root CA</text>
+					<rect class="client-shell" x={CX - 85} y="46" width="170" height="34" rx="17" />
+					<rect class="client-card" x={CX - 82} y="49" width="164" height="28" rx="14" />
+					<text class="t c" x={CX} y="68">Root CA</text>
 				{:else}
 					{#each [1, 2] as i (i)}
 						{#if revoked[i - 1]}
 							<rect
 								class="bx dash"
-								x={chipC(mode, i) - 66}
-								y="48"
-								width="132"
-								height="30"
-								rx="15"
+								x={chipC(mode, i) - chipW(mode) / 2}
+								y="46"
+								width={chipW(mode)}
+								height="34"
+								rx="17"
 							/>
 							<text class="t c gone" x={chipC(mode, i)} y="68">CA клиента {i}</text>
 						{:else}
-							<rect class="chip" x={chipC(mode, i) - 66} y="48" width="132" height="30" rx="15" />
+							<rect class="client-shell" x={chipC(mode, i) - chipW(mode) / 2} y="46" width={chipW(mode)} height="34" rx="17" />
+							<rect class="client-card" x={chipC(mode, i) - chipW(mode) / 2 + 3} y="49" width={chipW(mode) - 6} height="28" rx="14" />
 							<text class="t c" x={chipC(mode, i)} y="68">CA клиента {i}</text>
 						{/if}
 					{/each}
 				{/if}
-				<path class="ln" d="M140 52H186" />
-				<path class="ln" d="M340 94V122" />
+				<path class="ln" d="M{CARD_X + CARD_W} 52H{CX - 220}" />
+				<path class="ln" d="M{CX} 94V122" />
 
 				<!-- стена шлюза -->
 				{#each WALL as r (r[0])}
 					<rect class="wall" x={GX} y={r[0]} width={GW} height={r[1] - r[0]} rx="5" />
 				{/each}
-				<text class="t c" x="340" y="392">шлюз Traefik</text>
+				<text class="t c" x={CX} y="392">шлюз Traefik</text>
 
 				<!-- дорожки и клиенты -->
 				{#each LY as y, i (y)}
-					<path class="rail" class:hi={hovered === i} d="M124 {y}H{GX}M{GX + GW} {y}H{BX}" />
-					<rect class="client-shell" class:hi={hovered === i} x="24" y={y - 26} width="100" height="52" rx="12" />
-					<rect class="client-card" class:hi={hovered === i} x="27" y={y - 23} width="94" height="46" rx="9" />
-					<text class="t" x="34" y={y - 3}>{NAMES[i]}</text>
-					<text class="s" x="34" y={y + 15}>
+					<path class="rail" class:hi={hovered === i} d="M{CARD_X + CARD_W} {y}H{GX}M{GX + GW} {y}H{BX}" />
+					<rect class="client-shell" class:hi={hovered === i} x={CARD_X} y={y - 26} width={CARD_W} height="52" rx="12" />
+					<rect class="client-card" class:hi={hovered === i} x={CARD_X + 3} y={y - 23} width={CARD_W - 6} height="46" rx="9" />
+					<text class="t" x={CARD_X + 16} y={y - 3}>{NAMES[i]}</text>
+					<text class="s" x={CARD_X + 16} y={y + 15}>
 						{i === 0 ? 'без сертификата' : revoked[i - 1] ? 'отозван' : 'mTLS'}
 					</text>
-					{#if i > 0 && revoked[i - 1]}<path class="xm" d={crossD(108, y - 12, 7)} />{/if}
+					{#if i > 0 && revoked[i - 1]}<path class="xm" d={crossD(CARD_X + CARD_W - 20, y - 8, 7)} />{/if}
 				{/each}
 
-				<!-- бэкенд -->
-				<rect class="bx" x={BX} y="150" width="116" height="196" rx="14" />
-				<text class="t c" x={BX + 58} y="176">бэкенд</text>
-				{#each [0, 1, 2, 3] as k (k)}
-					<path class="dl" d="M{BX + 18} {204 + k * 24}H{BX + 98}" />
+				<!-- бэкенд: сервер (стойка из трёх юнитов, по одному на дорожку) -->
+				{#each LY as y, i (y)}
+					<rect class="srv" x={BX} y={y - 28} width={SW} height="56" rx="8" />
+					<path class="dl" d="M{BX + 18} {y - 8}H{BX + 84}M{BX + 18} {y + 8}H{BX + 104}" />
+					<circle class="led" class:on={frame.lanes[i].lit} cx={BX + SW - 22} cy={y} r="5" />
 				{/each}
-				<circle class="led" class:on={frame.lit} cx={BX + 96} cy="168" r="5" />
+				<text class="t c" x={BX + SW / 2} y="392">бэкенд</text>
 
 				<!-- анимация: двери, документы -->
 				{#each LY as y, i (y)}
@@ -250,15 +259,9 @@
 
 				<!-- подсветка проверки в bundle -->
 				{#each frame.hiC as c (c)}
-					<rect
-						class="chip on"
-						x={c - (naive ? 75 : 66)}
-						y="48"
-						width={naive ? 150 : 132}
-						height="30"
-						rx="15"
-					/>
-					<text class="t c" x={c} y="68">{naive ? 'Root CA' : `CA клиента ${c === 265 ? 1 : 2}`}</text>
+					<rect class="client-shell on" x={c - chipW(mode) / 2} y="46" width={chipW(mode)} height="34" rx="17" />
+					<rect class="client-card on" x={c - chipW(mode) / 2 + 3} y="49" width={chipW(mode) - 6} height="28" rx="14" />
+					<text class="t c" x={c}  y="68">{naive ? 'Root CA' : `CA клиента ${c === CX - 80 ? 1 : 2}`}</text>
 				{/each}
 				{#each frame.badC as c (c)}
 					<path class="xm" d={crossD(c, 63, 12)} />
@@ -269,9 +272,9 @@
 					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 					<rect
 						class="hit"
-						x="24"
+						x={CARD_X}
 						y={LY[i] - 38}
-						width={GX - 24}
+						width={GX - CARD_X}
 						height="76"
 						role="button"
 						tabindex="0"
@@ -285,7 +288,6 @@
 						onkeydown={(e) => { onLaneKey(e, i); }}
 					/>
 				{/each}
-				</g>
 			</svg>
 		</div>
 
@@ -383,16 +385,21 @@
 		line-height: 1.25rem;
 		overflow: hidden;
 	}
+
+	/* Единый стиль карточек: внешняя «оболочка» + внутренняя карточка */
 	.client-shell {
 		fill: var(--color-background-inset);
 		stroke: color-mix(in srgb, var(--color-foreground-muted) 22%, transparent);
 		stroke-width: 1;
+		transition: stroke 150ms ease-out;
 	}
 	.client-card {
 		fill: var(--color-background);
 		stroke: var(--color-border);
 		stroke-width: 1.2;
-		transition: stroke 150ms ease-out, fill 150ms ease-out;
+		transition:
+			stroke 150ms ease-out,
+			fill 150ms ease-out;
 	}
 	.client-card.hi {
 		stroke: var(--mt-accent);
@@ -401,6 +408,15 @@
 	.client-shell.hi {
 		stroke: color-mix(in srgb, var(--mt-accent) 35%, transparent);
 	}
+	.client-card.on {
+		fill: var(--mt-hi-fill);
+		stroke: var(--mt-accent);
+		stroke-width: 2;
+	}
+	.client-shell.on {
+		stroke: color-mix(in srgb, var(--mt-accent) 35%, transparent);
+	}
+
 	.mtls {
 		--mt-accent: var(--color-accent);
 		--mt-line: color-mix(in srgb, var(--color-foreground-muted) 75%, transparent);
@@ -424,18 +440,16 @@
 		fill: var(--color-background-inset);
 		stroke: var(--mt-line);
 		stroke-width: 1.4;
-		transition:
-			stroke 150ms ease-out,
-			stroke-width 150ms ease-out;
-	}
-	.bx.hi {
-		stroke: var(--mt-accent);
-		stroke-width: 2.2;
 	}
 	.bx.dash {
 		fill: none;
 		stroke-dasharray: 5 4;
 		stroke-width: 1.2;
+	}
+	.srv {
+		fill: var(--color-background-inset);
+		stroke: var(--mt-line);
+		stroke-width: 1.4;
 	}
 	.rail {
 		fill: none;
@@ -472,17 +486,6 @@
 	.gone {
 		text-decoration: line-through;
 		fill: var(--color-foreground-muted);
-	}
-
-	.chip {
-		fill: var(--color-background);
-		stroke: var(--mt-line);
-		stroke-width: 1.4;
-	}
-	.chip.on {
-		fill: var(--mt-hi-fill);
-		stroke: var(--mt-accent);
-		stroke-width: 2.2;
 	}
 
 	.ln {
@@ -549,7 +552,8 @@
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.bx,
+		.client-shell,
+		.client-card,
 		.rail,
 		.led {
 			transition: none;
