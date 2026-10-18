@@ -153,7 +153,7 @@
 
 <div
 	bind:this={root}
-	class={cn('mtls inset-shadow w-full max-w-175 rounded-xl bg-background-inset p-1.5', className)}
+	class={cn('mtls mx-auto w-full rounded-xl bg-background-inset p-1.5', className)}
 	style:--mt-accent={accent}
 >
 	<div class="overflow-hidden rounded-lg border border-border bg-background card">
@@ -162,17 +162,18 @@
 			class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-border px-5 py-3"
 		>
 			<h3 class="text-base font-medium tracking-tight text-foreground">mTLS в Traefik</h3>
-			<span class="font-mono text-xs text-foreground-muted">{status}</span>
+			<span class="status-line font-mono text-xs text-foreground-muted">{status}</span>
 		</div>
 
 		<!-- Схема -->
 		<div class="px-2 pt-2">
 			<svg
-				viewBox="0 0 640 400"
+				viewBox="0 0 896 400"
 				role="img"
 				aria-label="Вид сверху: клиенты, шлюз Traefik с bundle сертификатов и бэкенд"
 				class="block h-auto w-full"
 			>
+				<g transform="scale(1.4 1)">
 				<!-- Root CA -->
 				<rect class="bx" x="24" y="26" width="116" height="52" rx="12" />
 				<text class="t c" x="82" y="50">Root CA</text>
@@ -214,7 +215,8 @@
 				<!-- дорожки и клиенты -->
 				{#each LY as y, i (y)}
 					<path class="rail" class:hi={hovered === i} d="M124 {y}H{GX}M{GX + GW} {y}H{BX}" />
-					<rect class="bx" class:hi={hovered === i} x="24" y={y - 26} width="100" height="52" rx="12" />
+					<rect class="client-shell" class:hi={hovered === i} x="24" y={y - 26} width="100" height="52" rx="12" />
+					<rect class="client-card" class:hi={hovered === i} x="27" y={y - 23} width="94" height="46" rx="9" />
 					<text class="t" x="34" y={y - 3}>{NAMES[i]}</text>
 					<text class="s" x="34" y={y + 15}>
 						{i === 0 ? 'без сертификата' : revoked[i - 1] ? 'отозван' : 'mTLS'}
@@ -283,10 +285,11 @@
 						onkeydown={(e) => { onLaneKey(e, i); }}
 					/>
 				{/each}
+				</g>
 			</svg>
 		</div>
 
-		<div class="min-h-6 px-5 pb-2 text-sm font-medium text-accent-fixed">{frame.msg}</div>
+		<div class="message-line px-5 text-sm font-medium text-accent-fixed" aria-live="polite">{frame.msg}</div>
 
 		{#if showCaption || showControls}
 			<div class="relative flex flex-col gap-4 px-5 pt-5 pb-5 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-border">
@@ -362,6 +365,42 @@
 </div>
 
 <style>
+	.status-line {
+		flex: 0 0 auto;
+		min-width: 19rem;
+		max-width: 100%;
+		min-height: 1.25rem;
+		text-align: right;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.message-line {
+		display: flex;
+		align-items: center;
+		min-height: 2.75rem;
+		max-height: 2.75rem;
+		line-height: 1.25rem;
+		overflow: hidden;
+	}
+	.client-shell {
+		fill: var(--color-background-inset);
+		stroke: color-mix(in srgb, var(--color-foreground-muted) 22%, transparent);
+		stroke-width: 1;
+	}
+	.client-card {
+		fill: var(--color-background);
+		stroke: var(--color-border);
+		stroke-width: 1.2;
+		transition: stroke 150ms ease-out, fill 150ms ease-out;
+	}
+	.client-card.hi {
+		stroke: var(--mt-accent);
+		stroke-width: 2;
+	}
+	.client-shell.hi {
+		stroke: color-mix(in srgb, var(--mt-accent) 35%, transparent);
+	}
 	.mtls {
 		--mt-accent: var(--color-accent);
 		--mt-line: color-mix(in srgb, var(--color-foreground-muted) 75%, transparent);
@@ -499,6 +538,14 @@
 		stroke: var(--mt-accent);
 		stroke-width: 2;
 		rx: 12;
+	}
+
+	@media (max-width: 640px) {
+		.status-line {
+			min-width: 0;
+			width: 100%;
+			text-align: left;
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
