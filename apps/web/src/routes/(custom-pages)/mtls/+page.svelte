@@ -207,12 +207,14 @@
     <Faq items={faqItems} />
   </section>
 
-  <section class="section-block w-full max-w-5xl px-4">
+  <section class="section-block w-full max-w-none px-4">
+    <div class="mx-auto w-full" style="max-width: 92rem;">
     <p class="section-overline">Отзыв сертификатов вживую</p>
     <h2 class="section-heading">Что меняется при отзыве клиента</h2>
     <div class="flex justify-center">
       <MtlsRevocation />
     </div>
+  </div>
   </section>
 
   <section class="bottom-gradient-section" aria-hidden="true">
