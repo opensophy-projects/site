@@ -38,6 +38,12 @@ keywords: 'Opensophy, Server, ServerIllustration, SVG, illustration, UI componen
 <ServerIllustration units={4} lit standalone />
 ```
 
+Размер standalone-версии ограничен по умолчанию `min(88vw, 420px)`, чтобы иллюстрация не растягивалась на всю ширину блока демо. При необходимости размер можно переопределить через `width`.
+
+```svelte
+<ServerIllustration units={4} lit standalone width="320px" />
+```
+
 ### Встраивание в SVG-схему
 
 По умолчанию компонент не создаёт собственный `<svg>` и рендерит `<g>`, поэтому его можно позиционировать координатами `x` и `y` внутри другой SVG-сцены.
@@ -55,6 +61,7 @@ keywords: 'Opensophy, Server, ServerIllustration, SVG, illustration, UI componen
 - Настраиваемое состояние индикаторов через `lit`
 - Два режима: встроенный `<g>` и самостоятельный `<svg>` через `standalone`
 - Автоматический расчёт `viewBox` для standalone-режима
+- Контролируемая CSS-ширина standalone-режима через `width`
 - Поддержка `prefers-reduced-motion`
 - Цвета наследуются из дизайн-токенов проекта с возможностью переопределить акцент через `--mt-accent`
 
@@ -67,6 +74,7 @@ keywords: 'Opensophy, Server, ServerIllustration, SVG, illustration, UI componen
 | `units` | `number` | `3` | Количество серверных блоков, от 1 до 6 |
 | `lit` | `boolean` | `false` | Включить подсветку индикаторов |
 | `standalone` | `boolean` | `false` | Обернуть иллюстрацию в собственный `<svg>` |
+| `width` | `string` | `'min(88vw, 420px)'` | CSS-ширина standalone SVG |
 | `label` | `string` | `'Сервер'` | Доступное имя для standalone SVG |
 | `class` | `string` | `''` | CSS-класс standalone SVG |
 
