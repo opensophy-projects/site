@@ -2,7 +2,6 @@
 	import PageSeo from '$lib/components/seo/PageSeo.svelte';
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import Card from "$lib/components/docs/markdown/Card.svelte";
-  import Faq from "$lib/components/docs/markdown/Faq.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
   import MtlsRevocation from "$lib/components/ui-registry/MtlsRevocation.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
@@ -115,38 +114,6 @@
       "Без аргументов скрипт открывает интерактивное меню: сертификаты, сервисы, пути, резервная копия. С аргументами работает как CLI: ca, cert, service, preset, config, gen, audit.",
     ],
   ];
-
-  const requirements = [
-    ["openssl", "выпуск и проверка сертификатов"],
-    ["python3", "служебная обработка данных"],
-    ["bash ≥4", "исполнение CLI-скрипта"],
-    ["flock", "безопасная блокировка БД"],
-    ["gzip", "ротация audit-лога"],
-    ["root (UID 0)", "работа с приватным ключевым материалом CA и клиентов"],
-  ];
-
-  const faqItems = [
-    {
-      question: "Нужен ли root?",
-      answer: "Да, всегда — скрипт создаёт и читает приватные ключи CA и клиентов, поэтому требует UID 0 (sudo или root-shell).",
-    },
-    {
-      question: "Как передать пароль сертификата?",
-      answer: "Через интерактивный режим или временный файл с правами 0600 — не через --pass в production, иначе значение может попасть в history или process list.",
-    },
-    {
-      question: "Что будет, если Traefik перезагрузить?",
-      answer: "Ничего: hot-reload работает через file provider, пересборка bundle подхватывается автоматически.",
-    },
-    {
-      question: "Как отозвать доступ клиенту?",
-      answer: "Командой cert revoke — она пересобирает CA bundle, эффект мгновенный, reload Traefik не требуется.",
-    },
-    {
-      question: "Лицензия?",
-      answer: "MIT.",
-    },
-  ];
 </script>
 
 <PageSeo title="os.mtls — mTLS-сертификаты для Traefik" description="Bash-скрипт для выпуска, перевыпуска и отзыва клиентских mTLS-сертификатов Traefik." type="website" />
@@ -156,25 +123,27 @@
 >
   <SiteMenu />
 
-  <section
-    class="hero-section relative flex w-full items-center justify-center px-6 py-20 md:py-28"
-  >
-    <div class="hero-card" aria-hidden="true"><div class="hero-bg"></div></div>
-    <div
-      class="relative z-10 flex w-full max-w-4xl flex-col items-center gap-6 text-center"
-    >
+  <!-- Hero -->
+  <section class="hero-section relative flex w-full items-center justify-center">
+    <!-- Изогнутое свечение (горизонт), как на главной -->
+    <div class="hero-card" aria-hidden="true">
+      <div class="hero-halo"></div>
+      <div class="hero-arc"></div>
+    </div>
+
+    <div class="hero-inner">
       <p
         class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted"
       >
         os.mtls
       </p>
       <h1 class="hero-heading">mTLS-сертификаты для Traefik без CRL и OCSP</h1>
-      <p class="max-w-2xl text-lg text-foreground-muted md:text-xl">
+      <p class="hero-sub">
         Bash-скрипт, который выпускает, перевыпускает и отзывает клиентские
         сертификаты. Отзыв работает через пересборку CA bundle, перезапуск
         Traefik не нужен.
       </p>
-      <div class="flex flex-wrap items-center justify-center gap-3">
+      <div class="hero-actions">
         <Button href={githubUrl}>Открыть на GitHub</Button>
         <a class="hero-link" href="#how">Как это работает<ArrowRight size={16} /></a>
       </div>
@@ -186,15 +155,17 @@
     </div>
   </section>
 
-  <section class="section-block w-full max-w-5xl px-4">
-    <p class="section-overline">Почему это вообще нужно</p>
-    <div class="grid gap-4 md:grid-cols-3">
+  <!-- Почему это вообще нужно -->
+  <section class="section-block wide px-4">
+    <p class="section-overline"><Badge variant="default">Почему это вообще нужно</Badge></p>
+    <div class="grid-3">
       {#each problems as [title, text] (title)}<Card {title}>{text}</Card>{/each}
     </div>
   </section>
 
-  <section id="how" class="section-block how w-full max-w-5xl px-4">
-    <p class="section-overline">Как работает</p>
+  <!-- Как работает -->
+  <section id="how" class="section-block how wide px-4">
+    <p class="section-overline"><Badge variant="accent">Как работает</Badge></p>
     <h2 class="section-heading">Отзыв через bundle: у каждого клиента свой CA</h2>
     <p class="how-lead">
       Traefik проверяет только подпись: сертификат проходит, если его выпустил
@@ -203,110 +174,93 @@
       bundle, и клиент больше не проходит.
     </p>
 
-    <div class="how-illustration">
-      <MtlsRevocation />
-    </div>
+    <div class="how-body">
+      <div class="how-illustration">
+        <MtlsRevocation />
+      </div>
 
-    <div class="trust" aria-label="Цепочка доверия">
-      <div class="trust-node">
-        <span class="trust-tag">корень</span>
-        <strong>Root CA</strong>
-        <span class="trust-note">подписывает промежуточные CA</span>
-      </div>
-      <ArrowRight class="trust-arrow" size={20} />
-      <div class="trust-node trust-node--hot">
-        <span class="trust-tag trust-tag--hot">лежит в bundle</span>
-        <strong>CA клиента</strong>
-        <span class="trust-note">свой на каждого клиента</span>
-      </div>
-      <ArrowRight class="trust-arrow" size={20} />
-      <div class="trust-node">
-        <span class="trust-tag">клиент</span>
-        <strong>client.crt</strong>
-        <span class="trust-note">подписан CA клиента, лежит в .p12</span>
-      </div>
-    </div>
-
-    <div class="steps">
-      {#each steps as [n, title, text] (n)}
-        <div class="step">
-          <span class="step-n">{n}</span>
-          <h3 class="step-title">{title}</h3>
-          <p class="step-text">{text}</p>
+      <div class="trust" aria-label="Цепочка доверия">
+        <div class="trust-node">
+          <span class="trust-tag">корень</span>
+          <strong>Root CA</strong>
+          <span class="trust-note">подписывает промежуточные CA</span>
         </div>
-      {/each}
-    </div>
-
-    <div class="bundles">
-      <div class="bundle">
-        <div class="bundle-head">
-          <code>clients-bundle.crt</code><span>до отзыва</span>
+        <ArrowRight class="trust-arrow" size={20} />
+        <div class="trust-node trust-node--hot">
+          <span class="trust-tag trust-tag--hot">лежит в bundle</span>
+          <strong>CA клиента</strong>
+          <span class="trust-note">свой на каждого клиента</span>
         </div>
-        <div class="bundle-row">int-ca.crt <span>alice</span></div>
-        <div class="bundle-row">int-ca.crt <span>bob</span></div>
-      </div>
-      <ArrowRight class="bundles-arrow" size={20} />
-      <div class="bundle">
-        <div class="bundle-head">
-          <code>clients-bundle.crt</code><span>после cert revoke для bob</span>
+        <ArrowRight class="trust-arrow" size={20} />
+        <div class="trust-node">
+          <span class="trust-tag">клиент</span>
+          <strong>client.crt</strong>
+          <span class="trust-note">подписан CA клиента, лежит в .p12</span>
         </div>
-        <div class="bundle-row">int-ca.crt <span>alice</span></div>
-        <div class="bundle-row bundle-row--gone">int-ca.crt <span>bob</span></div>
       </div>
-    </div>
 
-    <div class="modes">
-      <Card title="shared (по умолчанию)">
-        Один bundle на все сервисы. Сертификат, выпущенный для одного сервиса,
-        проходит и на остальных.
-      </Card>
-      <Card title="per-service">
-        Отдельный bundle на каждый сервис, клиенты изолированы друг от друга.
-      </Card>
-    </div>
+      <div class="steps">
+        {#each steps as [n, title, text] (n)}
+          <div class="step">
+            <span class="step-n">{n}</span>
+            <h3 class="step-title">{title}</h3>
+            <p class="step-text">{text}</p>
+          </div>
+        {/each}
+      </div>
 
-    <div class="mt-6 grid gap-3 md:grid-cols-3">
-      <div class="benefit"><Checkmark />Отзыв одного клиента</div>
-      <div class="benefit"><Renew />Без перезапуска Traefik</div>
-      <div class="benefit"><Terminal />Один bash-скрипт</div>
+      <div class="bundles">
+        <div class="bundle">
+          <div class="bundle-head">
+            <code>clients-bundle.crt</code><span>до отзыва</span>
+          </div>
+          <div class="bundle-row">int-ca.crt <span>alice</span></div>
+          <div class="bundle-row">int-ca.crt <span>bob</span></div>
+        </div>
+        <ArrowRight class="bundles-arrow" size={20} />
+        <div class="bundle">
+          <div class="bundle-head">
+            <code>clients-bundle.crt</code><span>после cert revoke для bob</span>
+          </div>
+          <div class="bundle-row">int-ca.crt <span>alice</span></div>
+          <div class="bundle-row bundle-row--gone">int-ca.crt <span>bob</span></div>
+        </div>
+      </div>
+
+      <div class="modes">
+        <Card title="shared (по умолчанию)">
+          Один bundle на все сервисы. Сертификат, выпущенный для одного сервиса,
+          проходит и на остальных.
+        </Card>
+        <Card title="per-service">
+          Отдельный bundle на каждый сервис, клиенты изолированы друг от друга.
+        </Card>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit"><Checkmark />Отзыв одного клиента</div>
+        <div class="benefit"><Renew />Без перезапуска Traefik</div>
+        <div class="benefit"><Terminal />Один bash-скрипт</div>
+      </div>
     </div>
   </section>
 
-  <section class="section-block w-full max-w-5xl px-4">
-    <p class="section-overline">Кому подойдёт</p>
-    <div class="grid gap-4 md:grid-cols-2">
+  <!-- Кому подойдёт -->
+  <section class="section-block wide px-4">
+    <p class="section-overline"><Badge variant="default">Кому подойдёт</Badge></p>
+    <div class="grid-4">
       {#each audiences as [title, text] (title)}<Card {title}>{text}</Card>{/each}
     </div>
   </section>
 
-  <section class="section-block w-full max-w-5xl px-4">
-    <p class="section-overline">Что внутри</p>
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {#each features as [title, text] (title)}<Card {title}>{text}</Card>{/each}
+  <!-- Что внутри: розовая панель, как «Продукты» на главной -->
+  <section class="section-block features-section w-full px-4">
+    <div class="features-panel">
+      <p class="section-overline"><Badge variant="default">Что внутри</Badge></p>
+      <div class="grid-3 features-grid">
+        {#each features as [title, text] (title)}<Card {title}>{text}</Card>{/each}
+      </div>
     </div>
-  </section>
-
-  <section class="section-block w-full max-w-5xl px-4">
-    <p class="section-overline">Требования</p>
-    <div class="overflow-hidden rounded-lg border border-border">
-      {#each requirements as [name, text] (name)}<div
-          class="grid grid-cols-[9rem_1fr] gap-4 border-b border-border p-4 last:border-b-0"
-        >
-          <strong>{name}</strong><span class="text-foreground-muted"
-            >{text}</span
-          >
-        </div>{/each}
-    </div>
-    <p class="mt-4 text-center text-foreground-muted">
-      <strong class="text-foreground"
-        >Только Linux. Запуск строго от root — скрипт работает с приватным ключевым материалом.</strong
-      >
-    </p>
-  </section>
-
-  <section class="section-block w-full max-w-5xl px-4">
-    <p class="section-overline">FAQ</p>
-    <Faq items={faqItems} />
   </section>
 
   <section class="bottom-gradient-section" aria-hidden="true">
@@ -317,38 +271,80 @@
 </main>
 
 <style>
+  /* ─── Hero ─────────────────────────────────────────────────── */
   .hero-section {
-    min-height: 56vh;
+    position: relative;
+    min-height: 34rem;
+    padding: 6rem 0 5rem;
   }
+
   .hero-card {
     position: absolute;
-    top: -5rem;
-    right: 0;
-    bottom: 0;
+    top: 0;
+    bottom: -4rem;
     left: 0;
-    max-width: 80rem;
-    margin: auto;
+    right: 0;
+    width: 100%;
     overflow: hidden;
-    border-top-left-radius: var(--radius-3xl, 3.3rem);
-    border-top-right-radius: var(--radius-3xl, 3.3rem);
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent 100%);
   }
-  .hero-bg {
+
+  .hero-halo {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.28;
-    background: radial-gradient(
-      125% 125% at 50% 100%,
-      transparent 40%,
-      #f43f5e 68%,
-      #fda4af 86%,
-      #fff1f2 100%
-    );
+    background:
+      radial-gradient(
+        ellipse 75% 55% at 50% 100%,
+        rgba(244, 63, 94, 0.5) 0%,
+        rgba(244, 63, 94, 0.22) 38%,
+        transparent 72%
+      ),
+      radial-gradient(
+        ellipse 100% 70% at 50% 100%,
+        rgba(244, 63, 94, 0.12) 0%,
+        transparent 75%
+      );
   }
-  :global(.dark) .hero-bg,
-  :global(.dark) .bottom-gradient-bg {
-    opacity: 0.22;
+
+  .hero-arc {
+    position: absolute;
+    left: 50%;
+    top: calc(100% - 8rem);
+    width: 165%;
+    height: 42rem;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: var(--background);
+    border-top: 1px solid rgba(253, 164, 175, 0.85);
+    box-shadow:
+      0 -2px 14px rgba(253, 164, 175, 0.55),
+      0 -10px 40px rgba(244, 63, 94, 0.55),
+      0 -28px 90px rgba(244, 63, 94, 0.3),
+      inset 0 3px 22px rgba(244, 63, 94, 0.35);
+    pointer-events: none;
   }
+
+  :global(.dark) .hero-halo {
+    opacity: 0.9;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: calc(100% - 2rem);
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    text-align: center;
+  }
+
   .hero-heading {
     max-width: 52rem;
     margin: 0;
@@ -357,6 +353,25 @@
     letter-spacing: -0.04em;
     line-height: 1.07;
   }
+
+  .hero-sub {
+    max-width: 40rem;
+    margin: 0;
+    font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    color: var(--foreground-muted);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
   .hero-link {
     display: inline-flex;
     align-items: center;
@@ -371,53 +386,104 @@
   .hero-link:hover {
     color: var(--color-accent);
   }
-  .section-block {
-    position: relative;
-    padding-top: clamp(2.5rem, 5vw, 4rem);
-    padding-bottom: clamp(2.5rem, 5vw, 4rem);
-  }
-  .section-overline {
-    margin-bottom: 1rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--foreground-muted);
-  }
-  .section-heading {
-    margin: 0 0 1.5rem;
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 500;
-    letter-spacing: -0.03em;
-  }
-  .benefit {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 0.9rem;
-    background: var(--background);
-  }
-  .benefit :global(svg) {
-    color: var(--color-accent);
+
+  @media (max-width: 1023px) {
+    .hero-section {
+      min-height: 0;
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
+    .hero-arc {
+      top: calc(100% - 7rem);
+      width: 220%;
+      height: 26rem;
+    }
   }
 
-  /* ───── Как работает ───── */
+  /* ─── Раскладка секций ───────────────────────────────────── */
+  /* Ширина как у блоков главной: 92rem */
+  .wide {
+    width: 92rem;
+    max-width: calc(100vw - 2rem);
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .section-block {
+    position: relative;
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .section-overline {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--foreground-muted);
+    margin-bottom: 1rem;
+  }
+
+  .section-heading {
+    margin: 0 0 1rem;
+    text-align: center;
+    font-size: clamp(1.75rem, 3.5vw, 2.6rem);
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 1099px) {
+    .grid-3 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .grid-4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 639px) {
+    .grid-3,
+    .grid-4 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ─── Как работает ───────────────────────────────────────── */
   .how {
     scroll-margin-top: 6rem;
   }
   .how-lead {
     max-width: 46rem;
-    margin: -0.5rem 0 2rem;
-    font-size: 1.05rem;
-    line-height: 1.65;
+    margin: 0 auto 2rem;
+    text-align: center;
+    font-size: clamp(1.05rem, 1.4vw, 1.25rem);
+    font-weight: 500;
+    line-height: 1.55;
+    letter-spacing: -0.01em;
     color: var(--foreground-muted);
   }
   .how-lead code {
     font-family: monospace;
     font-size: 0.95em;
     color: var(--foreground);
+  }
+  .how-body {
+    max-width: 76rem;
+    margin: 0 auto;
   }
   .how-illustration {
     margin-bottom: 1.5rem;
@@ -473,11 +539,10 @@
   .steps {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    gap: 0.75rem;
     margin-top: 1.5rem;
   }
   .step {
-    position: relative;
     padding: 1.25rem 1.25rem 1.35rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -571,8 +636,27 @@
   .modes {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 0.75rem;
     margin-top: 1.5rem;
+  }
+
+  .benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .benefit {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem;
+    background: var(--background);
+  }
+  .benefit :global(svg) {
+    color: var(--color-accent);
   }
 
   @media (max-width: 820px) {
@@ -586,11 +670,55 @@
       transform: rotate(90deg);
     }
     .steps,
-    .modes {
+    .modes,
+    .benefits {
       grid-template-columns: 1fr;
     }
   }
 
+  /* ─── Что внутри: розовая панель ─────────────────────────── */
+  .features-section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .features-panel {
+    width: 100%;
+    max-width: 92rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+    padding: 2.5rem 1.25rem;
+    border-radius: var(--radius-3xl, 3.3rem);
+    background: radial-gradient(
+      farthest-corner at 50% 50%,
+      color-mix(in srgb, color-mix(in srgb, #f43f5e 85%, white) 32%, transparent) 0%,
+      color-mix(in srgb, #f43f5e 32%, transparent) 55%,
+      color-mix(in srgb, color-mix(in srgb, #f43f5e 80%, black) 32%, transparent) 100%
+    );
+  }
+
+  :global(.dark) .features-panel {
+    background: radial-gradient(
+      farthest-corner at 50% 50%,
+      color-mix(in srgb, color-mix(in srgb, #f43f5e 85%, white) 22%, transparent) 0%,
+      color-mix(in srgb, #f43f5e 22%, transparent) 55%,
+      color-mix(in srgb, color-mix(in srgb, #f43f5e 80%, black) 22%, transparent) 100%
+    );
+  }
+
+  .features-grid {
+    max-width: 80rem;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 767px) {
+    .features-panel {
+      padding: 2rem 0.75rem;
+      border-radius: 1.75rem;
+    }
+  }
+
+  /* ─── Нижнее свечение ────────────────────────────────────── */
   .bottom-gradient-section {
     position: relative;
     min-height: clamp(12rem, 28vw, 22rem);
@@ -617,5 +745,8 @@
       #fff1f2 100%
     );
     opacity: 0.28;
+  }
+  :global(.dark) .bottom-gradient-bg {
+    opacity: 0.22;
   }
 </style>
