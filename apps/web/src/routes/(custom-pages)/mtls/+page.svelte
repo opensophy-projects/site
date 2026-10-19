@@ -3,14 +3,10 @@
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import Faq from "$lib/components/docs/markdown/Faq.svelte";
-  import Badge from "$lib/components/ui-registry/Badge.svelte";
   import MtlsRevocation from "$lib/components/ui-registry/MtlsRevocation.svelte";
-  import Button from "$lib/components/ui-registry/Button.svelte";
   import Checkmark from "carbon-icons-svelte/lib/Checkmark.svelte";
   import Renew from "carbon-icons-svelte/lib/Renew.svelte";
   import Terminal from "carbon-icons-svelte/lib/Terminal.svelte";
-
-  const githubUrl = "https://github.com/opensophy-projects/mtls";
 
   const problems = [
     [
@@ -94,40 +90,23 @@
   ];
 </script>
 
-<PageSeo title="os.mtls — mTLS-сертификаты для Traefik" description="Bash-скрипт для выпуска, продления и мгновенного отзыва клиентских mTLS-сертификатов Traefik." type="website" />
+<PageSeo title="os.mtls — mTLS-сертификаты для Traefik" description="Bash-скрипт для выпуска, перевыпуска и отзыва клиентских mTLS-сертификатов Traefik." type="website" />
 
 <main
   class="relative flex min-h-dvh w-full flex-col items-center bg-background pt-20 text-foreground"
 >
   <SiteMenu />
 
+  <!-- Hero: только иллюстрация. h1 оставлен для SEO и скринридеров, визуально скрыт. -->
   <section
-    class="hero-section relative flex w-full items-center justify-center px-6 py-20 md:py-28"
+    class="hero-section relative flex w-full items-center justify-center px-4 py-10 md:py-16"
   >
     <div class="hero-card" aria-hidden="true"><div class="hero-bg"></div></div>
-    <div
-      class="relative z-10 flex w-full max-w-5xl flex-col items-center gap-7 text-center"
-    >
-      <p
-        class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted"
-      >
-        os.mtls
-      </p>
-      <h1 class="hero-heading">
-        mTLS-сертификаты для Traefik без CRL, OCSP и лишней боли
-      </h1>
-      <p class="max-w-3xl text-lg text-foreground-muted md:text-xl">
-        Bash-скрипт, который выпускает, продлевает и мгновенно отзывает
-        клиентские сертификаты — без перезагрузки Traefik, без передачи паролей через argv и без сетевых уведомлений.
-      </p>
-      <div class="flex flex-wrap justify-center gap-3">
-        <Button href={githubUrl}>Открыть на GitHub</Button>
-      </div>
-      <div class="flex flex-wrap justify-center gap-2">
-        <Badge>MIT License</Badge><Badge>Bash + OpenSSL + Python3</Badge><Badge
-          >Требует root</Badge
-        >
-      </div>
+    <h1 class="sr-only">
+      os.mtls — mTLS-сертификаты для Traefik: отзыв клиентов без CRL и OCSP
+    </h1>
+    <div class="relative z-10 w-full hero-illustration">
+      <MtlsRevocation />
     </div>
   </section>
 
@@ -207,16 +186,6 @@
     <Faq items={faqItems} />
   </section>
 
-  <section class="section-block w-full max-w-none px-4">
-    <div class="mx-auto w-full" style="max-width: 92rem;">
-    <p class="section-overline">Отзыв сертификатов вживую</p>
-    <h2 class="section-heading">Что меняется при отзыве клиента</h2>
-    <div class="flex justify-center">
-      <MtlsRevocation />
-    </div>
-  </div>
-  </section>
-
   <section class="bottom-gradient-section" aria-hidden="true">
     <div class="bottom-gradient-card">
       <div class="bottom-gradient-bg"></div>
@@ -227,6 +196,9 @@
 <style>
   .hero-section {
     min-height: 56vh;
+  }
+  .hero-illustration {
+    max-width: 72rem;
   }
   .hero-card {
     position: absolute;
@@ -256,14 +228,6 @@
   :global(.dark) .hero-bg,
   :global(.dark) .bottom-gradient-bg {
     opacity: 0.22;
-  }
-  .hero-heading {
-    max-width: 64rem;
-    margin: 0;
-    font-size: clamp(2.3rem, 7vw, 5.2rem);
-    font-weight: 500;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
   }
   .section-block {
     position: relative;
