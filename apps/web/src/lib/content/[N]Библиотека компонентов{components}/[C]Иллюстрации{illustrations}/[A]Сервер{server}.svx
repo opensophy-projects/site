@@ -1,0 +1,72 @@
+---
+title: Сервер
+description: Изометрическая иллюстрация серверной стойки с настраиваемым количеством блоков и состоянием индикаторов.
+keywords: 'Opensophy, Server, ServerIllustration, SVG, illustration, UI components'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import ServerIllustration from '$lib/components/ui-registry/ServerIllustration.svelte';
+	import source from '$lib/components/ui-registry/ServerIllustration.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'number', name: 'units', label: 'Блоки', defaultValue: 3, min: 1, max: 6, step: 1 },
+		{ type: 'boolean', name: 'lit', label: 'Индикаторы', defaultValue: true }
+	];
+</script>
+
+# Сервер
+
+`ServerIllustration` — компактная изометрическая иллюстрация серверной стойки. Компонент можно использовать как самостоятельный SVG или встроить в существующую SVG-схему.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={[{ name: 'ServerIllustration.svelte', code: source, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<ServerIllustration units={values.units as number} lit={values.lit as boolean} standalone />
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import ServerIllustration from '$lib/components/ui-registry/ServerIllustration.svelte';
+</script>
+
+<ServerIllustration units={4} lit standalone />
+```
+
+### Встраивание в SVG-схему
+
+По умолчанию компонент не создаёт собственный `<svg>` и рендерит `<g>`, поэтому его можно позиционировать координатами `x` и `y` внутри другой SVG-сцены.
+
+```svelte
+<svg viewBox="-80 -80 160 160">
+	<ServerIllustration x={0} y={0} units={3} lit />
+</svg>
+```
+
+## Особенности
+
+- Самодостаточная SVG-иллюстрация без внешних изображений и зависимостей
+- От 1 до 6 серверных блоков
+- Настраиваемое состояние индикаторов через `lit`
+- Два режима: встроенный `<g>` и самостоятельный `<svg>` через `standalone`
+- Автоматический расчёт `viewBox` для standalone-режима
+- Поддержка `prefers-reduced-motion`
+- Цвета наследуются из дизайн-токенов проекта с возможностью переопределить акцент через `--mt-accent`
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `x` | `number` | `0` | X-координата центра основания во внешней SVG-схеме |
+| `y` | `number` | `0` | Y-координата центра основания во внешней SVG-схеме |
+| `units` | `number` | `3` | Количество серверных блоков, от 1 до 6 |
+| `lit` | `boolean` | `false` | Включить подсветку индикаторов |
+| `standalone` | `boolean` | `false` | Обернуть иллюстрацию в собственный `<svg>` |
+| `label` | `string` | `'Сервер'` | Доступное имя для standalone SVG |
+| `class` | `string` | `''` | CSS-класс standalone SVG |
+
