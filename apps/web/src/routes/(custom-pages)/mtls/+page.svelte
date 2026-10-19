@@ -66,18 +66,54 @@
   ];
 
   const features = [
-    ["Управление CA", "ca create / info / backup / restore — свой корневой центр сертификации."],
-    ["Жизненный цикл сертификатов", "cert issue / list / renew / verify / scan — без ручного OpenSSL."],
-    ["Мгновенный отзыв", "cert revoke пересобирает CA bundle, доступ блокируется без reload Traefik."],
-    ["Защищённые PKCS#12", "Клиентские .p12-файлы и зашифрованный приватный ключ CA."],
-    ["Shared / per-service bundle", "Общий bundle или отдельный на сервис — гибкая изоляция клиентов."],
-    ["Сервисы new / patch", "service add / list / delete / delete-full с двумя режимами применения."],
-    ["Именованные пресеты", "preset save / apply / list / delete — сохранённые наборы путей и конфигурации."],
-    ["JSONL-аудит с ротацией", "История действий: кто, когда и зачем выпускал или отзывал сертификат."],
-    ["Безопасные пароли", "Пароль OpenSSL передаётся через временный файл 0600, а не через argv/history."],
-    ["Safe-replace конфигурации", "Traefik YAML валидируется перед заменой, исходник сохраняется как .bak."],
-    ["Блокировка БД", "flock защищает состояние от конкурентных запусков."],
-    ["CI", "Bash syntax check, ShellCheck, smoke- и security-тесты на каждый push/PR."],
+    [
+      "Корневой CA",
+      "ca create / info / backup / restore. Ключ CA можно зашифровать паролем (--encrypt). Резервная копия включает CA, базу, конфиг, пресеты и журнал, restore отклоняет небезопасные архивы.",
+    ],
+    [
+      "Выпуск сертификатов",
+      "cert issue: ключ клиента, собственный промежуточный CA, подпись, проверка цепочки и .p12. Выпуск идёт через временный каталог, при ошибке существующие файлы не затрагиваются. cert verify показывает данные сертификата и проверяет цепочку.",
+    ],
+    [
+      "Перевыпуск",
+      "cert renew выпускает сертификат заново: новый ключ и новый промежуточный CA под тем же именем. Старый отзывается только после успешного выпуска нового. Клиенту нужен новый .p12.",
+    ],
+    [
+      "Отзыв и удаление",
+      "cert revoke убирает CA клиента из bundle и перезаписывает конфиг Traefik. cert delete отзывает сертификат и удаляет его файлы с диска.",
+    ],
+    [
+      "Контроль сроков",
+      "cert scan находит истёкшие, скоро истекающие (по умолчанию за 30 дней) и сертификаты с нераспознанной датой. Если есть что показать, команда завершается с ненулевым кодом. Уведомления наружу не отправляются.",
+    ],
+    [
+      "PKCS#12 и пароли",
+      "Пароль .p12 обязателен по умолчанию (REQUIRE_P12_PASSWORD=1). Пароли для openssl передаются через временный файл 0600, а не через argv. Пароль из --pass виден в history и ps, безопаснее MTLS_P12_PASSWORD или ввод в меню.",
+    ],
+    [
+      "Shared / per-service bundle",
+      "Режим shared (по умолчанию): один bundle на все сервисы. Режим per-service: отдельный bundle на каждый сервис.",
+    ],
+    [
+      "Сервисы new / patch",
+      "new: скрипт создаёт роутер и сервис Traefik для домена. patch: добавляет mTLS-опцию в существующий роутер в другом yml-файле, например Dokploy. service delete снимает патч, delete-full отзывает и удаляет все сертификаты сервиса, его файлы и блок конфига.",
+    ],
+    [
+      "Пресеты путей",
+      "preset save / apply / list / delete сохраняют пути Traefik dynamic, CA и клиентов и имя выходного файла. В меню есть встроенные пресеты: Dokploy, Traefik и локальный.",
+    ],
+    [
+      "Журнал аудита",
+      "JSONL: время, действие, пользователь и детали, просмотр через audit --last N. После 10 МиБ журнал архивируется в .1.gz, предыдущий архив заменяется.",
+    ],
+    [
+      "Безопасная запись",
+      "Файлы состояния и конфиги заменяются атомарно, запись по symlink отклоняется. Патчи чужих роутеров проверяются до замены, перед записью делается копия .bak с меткой времени. Имена сервисов и сертификатов ограничены латиницей, цифрами, «.», «_» и «-». Параллельные запуски блокируются через flock.",
+    ],
+    [
+      "Меню и CLI",
+      "Без аргументов скрипт открывает интерактивное меню: сертификаты, сервисы, пути, резервная копия. С аргументами работает как CLI: ca, cert, service, preset, config, gen, audit.",
+    ],
   ];
 
   const requirements = [
@@ -121,10 +157,9 @@
   <SiteMenu />
 
   <section
-    class="hero-section relative flex w-full flex-col items-center px-4 pt-14 pb-10 md:pt-20 md:pb-16"
+    class="hero-section relative flex w-full items-center justify-center px-6 py-20 md:py-28"
   >
     <div class="hero-card" aria-hidden="true"><div class="hero-bg"></div></div>
-
     <div
       class="relative z-10 flex w-full max-w-4xl flex-col items-center gap-6 text-center"
     >
@@ -149,10 +184,6 @@
         >
       </div>
     </div>
-
-    <div class="relative z-10 mt-10 w-full hero-illustration md:mt-14">
-      <MtlsRevocation />
-    </div>
   </section>
 
   <section class="section-block w-full max-w-5xl px-4">
@@ -171,6 +202,10 @@
       собственный промежуточный CA и кладёт в bundle именно его. Убрали CA из
       bundle, и клиент больше не проходит.
     </p>
+
+    <div class="how-illustration">
+      <MtlsRevocation />
+    </div>
 
     <div class="trust" aria-label="Цепочка доверия">
       <div class="trust-node">
@@ -285,9 +320,6 @@
   .hero-section {
     min-height: 56vh;
   }
-  .hero-illustration {
-    max-width: 72rem;
-  }
   .hero-card {
     position: absolute;
     top: -5rem;
@@ -387,6 +419,9 @@
     font-size: 0.95em;
     color: var(--foreground);
   }
+  .how-illustration {
+    margin-bottom: 1.5rem;
+  }
 
   /* цепочка доверия: Root CA → CA клиента → сертификат клиента */
   .trust {
@@ -472,9 +507,6 @@
     font-size: 0.95rem;
     line-height: 1.6;
     color: var(--foreground-muted);
-  }
-  .step-text :global(code) {
-    font-family: monospace;
   }
 
   /* bundle до и после отзыва */
