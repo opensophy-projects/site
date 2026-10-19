@@ -465,19 +465,20 @@
 				{#if showCaption}
 					<div>
 						<div class="text-lg font-medium tracking-tight text-foreground">
-							Как Traefik отзывает сертификаты
+							Как работает отзыв сертификатов
 						</div>
-						<p class="mt-2 min-h-24 text-base leading-relaxed text-pretty text-foreground-muted sm:min-h-20">
+						<p class="mt-2 min-h-28 text-base leading-relaxed text-pretty text-foreground-muted sm:min-h-24">
 							{#if naive}
 								<strong class="font-medium text-accent-fixed">Проблема.</strong>
 								Шлюз пропускает только тех, чей сертификат подписан CA из bundle. Здесь это один
-								Root CA, а проверки отзыва (<code class="font-mono text-sm">crlFile</code>) у
-								Traefik нет. Поэтому отозванный клиент (пунктирная печать) всё равно проходит.
+								Root CA, а проверки отзыва (CRL, OCSP) у Traefik нет. Поэтому отозванный клиент
+								(пунктирная печать) всё равно проходит.
 							{:else}
 								<strong class="font-medium text-accent-fixed">Решение.</strong>
-								У каждого клиента свой промежуточный CA, и в bundle лежат только живые. Отозвали
-								клиента, скрипт убрал его CA из bundle: шлюз не находит, чем проверить
-								сертификат, и дверь остаётся закрытой. CRL не нужен.
+								У каждого клиента свой промежуточный CA, им подписан его сертификат, и в bundle
+								лежат только CA живых клиентов. Отозвали клиента: скрипт убрал его CA из bundle и
+								обновил конфиг, шлюз не находит, чем проверить сертификат, и дверь остаётся
+								закрытой. CRL не нужен.
 							{/if}
 						</p>
 					</div>
