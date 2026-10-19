@@ -3,10 +3,15 @@
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import Card from "$lib/components/docs/markdown/Card.svelte";
   import Faq from "$lib/components/docs/markdown/Faq.svelte";
+  import Badge from "$lib/components/ui-registry/Badge.svelte";
   import MtlsRevocation from "$lib/components/ui-registry/MtlsRevocation.svelte";
+  import Button from "$lib/components/ui-registry/Button.svelte";
+  import ArrowRight from "carbon-icons-svelte/lib/ArrowRight.svelte";
   import Checkmark from "carbon-icons-svelte/lib/Checkmark.svelte";
   import Renew from "carbon-icons-svelte/lib/Renew.svelte";
   import Terminal from "carbon-icons-svelte/lib/Terminal.svelte";
+
+  const githubUrl = "https://github.com/opensophy-projects/mtls";
 
   const problems = [
     [
@@ -20,6 +25,24 @@
     [
       "Ручное управление не масштабируется",
       "openssl командами на память, файлы разбросаны по серверу, нет истории — кто, когда и зачем выпустил сертификат.",
+    ],
+  ];
+
+  const steps = [
+    [
+      "1",
+      "Выпуск",
+      "cert issue создаёт для клиента собственный промежуточный CA, подписывает им клиентский сертификат, проверяет цепочку и добавляет этот CA в bundle. Клиент получает .p12.",
+    ],
+    [
+      "2",
+      "Отзыв",
+      "cert revoke помечает клиента отозванным, пересобирает bundle без его CA и заново записывает mtls-manager.yml.",
+    ],
+    [
+      "3",
+      "Результат",
+      "Traefik перечитывает конфиг и больше не находит CA для сертификата клиента. Перезапуск не нужен.",
     ],
   ];
 
@@ -97,15 +120,37 @@
 >
   <SiteMenu />
 
-  <!-- Hero: только иллюстрация. h1 оставлен для SEO и скринридеров, визуально скрыт. -->
   <section
-    class="hero-section relative flex w-full items-center justify-center px-4 py-10 md:py-16"
+    class="hero-section relative flex w-full flex-col items-center px-4 pt-14 pb-10 md:pt-20 md:pb-16"
   >
     <div class="hero-card" aria-hidden="true"><div class="hero-bg"></div></div>
-    <h1 class="sr-only">
-      os.mtls — mTLS-сертификаты для Traefik: отзыв клиентов без CRL и OCSP
-    </h1>
-    <div class="relative z-10 w-full hero-illustration">
+
+    <div
+      class="relative z-10 flex w-full max-w-4xl flex-col items-center gap-6 text-center"
+    >
+      <p
+        class="text-sm font-medium uppercase tracking-[0.18em] text-foreground-muted"
+      >
+        os.mtls
+      </p>
+      <h1 class="hero-heading">mTLS-сертификаты для Traefik без CRL и OCSP</h1>
+      <p class="max-w-2xl text-lg text-foreground-muted md:text-xl">
+        Bash-скрипт, который выпускает, перевыпускает и отзывает клиентские
+        сертификаты. Отзыв работает через пересборку CA bundle, перезапуск
+        Traefik не нужен.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <Button href={githubUrl}>Открыть на GitHub</Button>
+        <a class="hero-link" href="#how">Как это работает<ArrowRight size={16} /></a>
+      </div>
+      <div class="flex flex-wrap justify-center gap-2">
+        <Badge>MIT License</Badge><Badge>Bash + OpenSSL + Python3</Badge><Badge
+          >Требует root</Badge
+        >
+      </div>
+    </div>
+
+    <div class="relative z-10 mt-10 w-full hero-illustration md:mt-14">
       <MtlsRevocation />
     </div>
   </section>
@@ -117,35 +162,78 @@
     </div>
   </section>
 
-  <section class="section-block w-full max-w-5xl px-4">
+  <section id="how" class="section-block how w-full max-w-5xl px-4">
     <p class="section-overline">Как работает</p>
-    <h2 class="section-heading">
-      CA bundle на сервис + мгновенная пересборка при отзыве
-    </h2>
-    <div class="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
-      <div class="space-y-4 text-foreground-muted">
-        <p>
-          Traefik доверяет не клиентским сертификатам напрямую, а bundle-файлу
-          (caFiles) — общему или отдельному для каждого сервиса. Скрипт
-          управляет содержимым bundle: выпуск клиента добавляет запись, отзыв
-          — удаляет её и пересобирает файл.
-        </p>
-        <p>
-          File provider Traefik подхватывает изменение сам, поэтому доступ
-          блокируется мгновенно и без перезагрузки. Файл <code>crl.pem</code>
-          — дополнительный артефакт для внешних потребителей, а не основной
-          механизм отзыва.
-        </p>
+    <h2 class="section-heading">Отзыв через bundle: у каждого клиента свой CA</h2>
+    <p class="how-lead">
+      Traefik проверяет только подпись: сертификат проходит, если его выпустил
+      один из CA в <code>caFiles</code>. Поэтому скрипт выпускает каждому клиенту
+      собственный промежуточный CA и кладёт в bundle именно его. Убрали CA из
+      bundle, и клиент больше не проходит.
+    </p>
+
+    <div class="trust" aria-label="Цепочка доверия">
+      <div class="trust-node">
+        <span class="trust-tag">корень</span>
+        <strong>Root CA</strong>
+        <span class="trust-note">подписывает промежуточные CA</span>
       </div>
-      <div class="grid gap-3">
-        <div class="chain-row">bundle[api].caFiles ← client.crt (alice)</div>
-        <div class="chain-row">bundle[api].caFiles ← client.crt (bob)</div>
+      <ArrowRight class="trust-arrow" size={20} />
+      <div class="trust-node trust-node--hot">
+        <span class="trust-tag trust-tag--hot">лежит в bundle</span>
+        <strong>CA клиента</strong>
+        <span class="trust-note">свой на каждого клиента</span>
+      </div>
+      <ArrowRight class="trust-arrow" size={20} />
+      <div class="trust-node">
+        <span class="trust-tag">клиент</span>
+        <strong>client.crt</strong>
+        <span class="trust-note">подписан CA клиента, лежит в .p12</span>
       </div>
     </div>
+
+    <div class="steps">
+      {#each steps as [n, title, text] (n)}
+        <div class="step">
+          <span class="step-n">{n}</span>
+          <h3 class="step-title">{title}</h3>
+          <p class="step-text">{text}</p>
+        </div>
+      {/each}
+    </div>
+
+    <div class="bundles">
+      <div class="bundle">
+        <div class="bundle-head">
+          <code>clients-bundle.crt</code><span>до отзыва</span>
+        </div>
+        <div class="bundle-row">int-ca.crt <span>alice</span></div>
+        <div class="bundle-row">int-ca.crt <span>bob</span></div>
+      </div>
+      <ArrowRight class="bundles-arrow" size={20} />
+      <div class="bundle">
+        <div class="bundle-head">
+          <code>clients-bundle.crt</code><span>после cert revoke для bob</span>
+        </div>
+        <div class="bundle-row">int-ca.crt <span>alice</span></div>
+        <div class="bundle-row bundle-row--gone">int-ca.crt <span>bob</span></div>
+      </div>
+    </div>
+
+    <div class="modes">
+      <Card title="shared (по умолчанию)">
+        Один bundle на все сервисы. Сертификат, выпущенный для одного сервиса,
+        проходит и на остальных.
+      </Card>
+      <Card title="per-service">
+        Отдельный bundle на каждый сервис, клиенты изолированы друг от друга.
+      </Card>
+    </div>
+
     <div class="mt-6 grid gap-3 md:grid-cols-3">
-      <div class="benefit"><Checkmark />Гранулярный отзыв</div>
-      <div class="benefit"><Renew />Без reload Traefik</div>
-      <div class="benefit"><Terminal />Только openssl и python3</div>
+      <div class="benefit"><Checkmark />Отзыв одного клиента</div>
+      <div class="benefit"><Renew />Без перезапуска Traefik</div>
+      <div class="benefit"><Terminal />Один bash-скрипт</div>
     </div>
   </section>
 
@@ -229,6 +317,28 @@
   :global(.dark) .bottom-gradient-bg {
     opacity: 0.22;
   }
+  .hero-heading {
+    max-width: 52rem;
+    margin: 0;
+    font-size: clamp(2.2rem, 6vw, 4.2rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.07;
+  }
+  .hero-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.55rem 0.9rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--foreground);
+    transition: color 150ms ease-out;
+  }
+  .hero-link:hover {
+    color: var(--color-accent);
+  }
   .section-block {
     position: relative;
     padding-top: clamp(2.5rem, 5vw, 4rem);
@@ -248,14 +358,6 @@
     font-weight: 500;
     letter-spacing: -0.03em;
   }
-  .chain-row {
-    border-left: 2px solid var(--color-accent);
-    padding: 0.75rem 1rem;
-    background: var(--background);
-    border-radius: var(--radius-sm);
-    font-family: monospace;
-    color: var(--foreground);
-  }
   .benefit {
     display: flex;
     align-items: center;
@@ -268,6 +370,195 @@
   .benefit :global(svg) {
     color: var(--color-accent);
   }
+
+  /* ───── Как работает ───── */
+  .how {
+    scroll-margin-top: 6rem;
+  }
+  .how-lead {
+    max-width: 46rem;
+    margin: -0.5rem 0 2rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--foreground-muted);
+  }
+  .how-lead code {
+    font-family: monospace;
+    font-size: 0.95em;
+    color: var(--foreground);
+  }
+
+  /* цепочка доверия: Root CA → CA клиента → сертификат клиента */
+  .trust {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+  .trust :global(.trust-arrow) {
+    align-self: center;
+    color: var(--foreground-muted);
+  }
+  .trust-node {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--background);
+  }
+  .trust-node strong {
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .trust-node--hot {
+    border-color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 7%, var(--background));
+  }
+  .trust-tag {
+    align-self: flex-start;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--foreground-muted);
+  }
+  .trust-tag--hot {
+    color: var(--color-accent);
+  }
+  .trust-note {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--foreground-muted);
+  }
+
+  /* три шага */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .step {
+    position: relative;
+    padding: 1.25rem 1.25rem 1.35rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--background);
+  }
+  .step-n {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-bottom: 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 12%, var(--background));
+  }
+  .step-title {
+    margin: 0 0 0.4rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .step-text {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--foreground-muted);
+  }
+  .step-text :global(code) {
+    font-family: monospace;
+  }
+
+  /* bundle до и после отзыва */
+  .bundles {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .bundles :global(.bundles-arrow) {
+    color: var(--foreground-muted);
+  }
+  .bundle {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--background);
+  }
+  .bundle-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    padding: 0.7rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--foreground-muted);
+  }
+  .bundle-head code {
+    font-family: monospace;
+    color: var(--foreground);
+  }
+  .bundle-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    border-left: 2px solid var(--color-accent);
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--foreground);
+  }
+  .bundle-row + .bundle-row {
+    border-top: 1px solid var(--border);
+  }
+  .bundle-row span {
+    color: var(--foreground-muted);
+  }
+  .bundle-row--gone {
+    border-left-color: var(--border);
+    border-left-style: dashed;
+    color: var(--foreground-muted);
+    text-decoration: line-through;
+    background: repeating-linear-gradient(
+      135deg,
+      transparent 0 6px,
+      color-mix(in srgb, var(--foreground-muted) 8%, transparent) 6px 7px
+    );
+  }
+
+  .modes {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 820px) {
+    .trust,
+    .bundles {
+      grid-template-columns: 1fr;
+    }
+    .trust :global(.trust-arrow),
+    .bundles :global(.bundles-arrow) {
+      justify-self: center;
+      transform: rotate(90deg);
+    }
+    .steps,
+    .modes {
+      grid-template-columns: 1fr;
+    }
+  }
+
   .bottom-gradient-section {
     position: relative;
     min-height: clamp(12rem, 28vw, 22rem);
