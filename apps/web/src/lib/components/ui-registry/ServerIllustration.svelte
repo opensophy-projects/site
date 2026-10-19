@@ -6,6 +6,7 @@
     units       сколько блоков в стойке (1–6)                                 по умолчанию 3
     lit         подсветить индикаторы акцентом (пришёл запрос)
     standalone  нарисовать собственный <svg> (для использования отдельно от схемы)
+    width       CSS-ширина standalone SVG                                      по умолчанию min(88vw, 420px)
     label       подпись для скринридера (только при standalone)
 
   Цвета берутся из токенов проекта:
@@ -100,6 +101,7 @@
 		units?: number;
 		lit?: boolean;
 		standalone?: boolean;
+		width?: string;
 		label?: string;
 		class?: string;
 	};
@@ -110,6 +112,7 @@
 		units = 3,
 		lit = false,
 		standalone = false,
+		width = 'min(88vw, 420px)',
 		label = 'Сервер',
 		class: className = ''
 	}: Props = $props();
@@ -129,6 +132,7 @@
 {#if standalone}
 	<svg
 		class="srv-root {className}"
+		style:width={width}
 		viewBox={bounds.join(' ')}
 		role="img"
 		aria-label={label}
@@ -142,7 +146,6 @@
 <style>
 	.srv-root {
 		display: block;
-		width: 100%;
 		height: auto;
 		overflow: visible;
 	}
