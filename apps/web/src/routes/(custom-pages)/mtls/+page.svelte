@@ -124,12 +124,10 @@
   <SiteMenu />
 
   <!-- Hero -->
-  <section class="hero-section relative flex w-full items-center justify-center">
-    <!-- Изогнутое свечение (горизонт), как на главной -->
-    <div class="hero-card" aria-hidden="true">
-      <div class="hero-halo"></div>
-      <div class="hero-arc"></div>
-    </div>
+  <section
+    class="hero-section relative flex w-full items-center justify-center px-6 py-20 md:py-28"
+  >
+    <div class="hero-card" aria-hidden="true"><div class="hero-bg"></div></div>
 
     <div class="hero-inner">
       <p
@@ -253,13 +251,11 @@
     </div>
   </section>
 
-  <!-- Что внутри: розовая панель, как «Продукты» на главной -->
-  <section class="section-block features-section w-full px-4">
-    <div class="features-panel">
-      <p class="section-overline"><Badge variant="default">Что внутри</Badge></p>
-      <div class="grid-3 features-grid">
-        {#each features as [title, text] (title)}<Card {title}>{text}</Card>{/each}
-      </div>
+  <!-- Что внутри -->
+  <section class="section-block wide px-4">
+    <p class="section-overline"><Badge variant="default">Что внутри</Badge></p>
+    <div class="grid-3">
+      {#each features as [title, text] (title)}<Card {title}>{text}</Card>{/each}
     </div>
   </section>
 
@@ -273,62 +269,38 @@
 <style>
   /* ─── Hero ─────────────────────────────────────────────────── */
   .hero-section {
-    position: relative;
-    min-height: 34rem;
-    padding: 6rem 0 5rem;
+    min-height: 56vh;
   }
 
+  /* Свечение: карточка шире прежней (92rem), скруглена сверху */
   .hero-card {
     position: absolute;
-    top: 0;
-    bottom: -4rem;
-    left: 0;
+    top: -5rem;
     right: 0;
-    width: 100%;
+    bottom: 0;
+    left: 0;
+    max-width: 92rem;
+    margin: auto;
     overflow: hidden;
-    pointer-events: none;
-    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent 100%);
+    border-top-left-radius: var(--radius-3xl, 3.3rem);
+    border-top-right-radius: var(--radius-3xl, 3.3rem);
   }
-
-  .hero-halo {
+  .hero-bg {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background:
-      radial-gradient(
-        ellipse 75% 55% at 50% 100%,
-        rgba(244, 63, 94, 0.5) 0%,
-        rgba(244, 63, 94, 0.22) 38%,
-        transparent 72%
-      ),
-      radial-gradient(
-        ellipse 100% 70% at 50% 100%,
-        rgba(244, 63, 94, 0.12) 0%,
-        transparent 75%
-      );
+    opacity: 0.28;
+    background: radial-gradient(
+      125% 125% at 50% 100%,
+      transparent 40%,
+      #f43f5e 68%,
+      #fda4af 86%,
+      #fff1f2 100%
+    );
   }
-
-  .hero-arc {
-    position: absolute;
-    left: 50%;
-    top: calc(100% - 8rem);
-    width: 165%;
-    height: 42rem;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    background: var(--background);
-    border-top: 1px solid rgba(253, 164, 175, 0.85);
-    box-shadow:
-      0 -2px 14px rgba(253, 164, 175, 0.55),
-      0 -10px 40px rgba(244, 63, 94, 0.55),
-      0 -28px 90px rgba(244, 63, 94, 0.3),
-      inset 0 3px 22px rgba(244, 63, 94, 0.35);
-    pointer-events: none;
-  }
-
-  :global(.dark) .hero-halo {
-    opacity: 0.9;
+  :global(.dark) .hero-bg,
+  :global(.dark) .bottom-gradient-bg {
+    opacity: 0.22;
   }
 
   .hero-inner {
@@ -338,10 +310,8 @@
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
-    width: calc(100% - 2rem);
+    width: 100%;
     max-width: 56rem;
-    margin: 0 auto;
-    padding: 0 1.25rem;
     text-align: center;
   }
 
@@ -385,19 +355,6 @@
   }
   .hero-link:hover {
     color: var(--color-accent);
-  }
-
-  @media (max-width: 1023px) {
-    .hero-section {
-      min-height: 0;
-      padding-top: 5rem;
-      padding-bottom: 5rem;
-    }
-    .hero-arc {
-      top: calc(100% - 7rem);
-      width: 220%;
-      height: 26rem;
-    }
   }
 
   /* ─── Раскладка секций ───────────────────────────────────── */
@@ -676,48 +633,6 @@
     }
   }
 
-  /* ─── Что внутри: розовая панель ─────────────────────────── */
-  .features-section {
-    position: relative;
-    z-index: 1;
-  }
-
-  .features-panel {
-    width: 100%;
-    max-width: 92rem;
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding: 2.5rem 1.25rem;
-    border-radius: var(--radius-3xl, 3.3rem);
-    background: radial-gradient(
-      farthest-corner at 50% 50%,
-      color-mix(in srgb, color-mix(in srgb, #f43f5e 85%, white) 32%, transparent) 0%,
-      color-mix(in srgb, #f43f5e 32%, transparent) 55%,
-      color-mix(in srgb, color-mix(in srgb, #f43f5e 80%, black) 32%, transparent) 100%
-    );
-  }
-
-  :global(.dark) .features-panel {
-    background: radial-gradient(
-      farthest-corner at 50% 50%,
-      color-mix(in srgb, color-mix(in srgb, #f43f5e 85%, white) 22%, transparent) 0%,
-      color-mix(in srgb, #f43f5e 22%, transparent) 55%,
-      color-mix(in srgb, color-mix(in srgb, #f43f5e 80%, black) 22%, transparent) 100%
-    );
-  }
-
-  .features-grid {
-    max-width: 80rem;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 767px) {
-    .features-panel {
-      padding: 2rem 0.75rem;
-      border-radius: 1.75rem;
-    }
-  }
-
   /* ─── Нижнее свечение ────────────────────────────────────── */
   .bottom-gradient-section {
     position: relative;
@@ -727,7 +642,7 @@
   .bottom-gradient-card {
     position: absolute;
     inset: 0;
-    max-width: 80rem;
+    max-width: 92rem;
     margin: auto;
     overflow: hidden;
     border-bottom-left-radius: var(--radius-3xl, 3.3rem);
@@ -745,8 +660,5 @@
       #fff1f2 100%
     );
     opacity: 0.28;
-  }
-  :global(.dark) .bottom-gradient-bg {
-    opacity: 0.22;
   }
 </style>
