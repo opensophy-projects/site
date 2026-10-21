@@ -198,7 +198,7 @@
       {@const Icon = link.icon}
       <a
         href={link.href}
-        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200 {link.href === '/solutions' ? 'md:col-span-2 border-b border-border rounded-none pb-5' : ''}"
+        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200 {link.href === '/solutions' ? 'md:col-span-2 md:justify-center rounded-none pb-5' : ''}"
       >
         <span
           class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
@@ -213,8 +213,16 @@
           <span class="block text-sm font-medium text-foreground">
             {link.label}
           </span>
+          {#if link.description}
+            <span class="mt-1 block text-sm leading-snug text-foreground-muted">
+              {link.description}
+            </span>
+          {/if}
         </span>
       </a>
+      {#if link.href === "/solutions"}
+        <div class="hidden h-px w-full bg-border md:col-span-2 md:block" aria-hidden="true"></div>
+      {/if}
     {/each}
   </div>
 {/snippet}
@@ -366,7 +374,7 @@
             <input
               type="checkbox"
               bind:checked={acceptedPolicies}
-              class="mt-1 size-4 shrink-0 accent-[var(--accent)]"
+              class="mt-1 size-4 shrink-0" style="accent-color: var(--accent)"
             />
             <span>
               Я согласен с <a class="underline" href="/service-policy" target="_blank" rel="noreferrer">Политикой оказания услуг</a>
@@ -377,7 +385,7 @@
             type="button"
             disabled={!acceptedPolicies}
             onclick={openServiceEmail}
-            class="mt-3 w-full rounded-sm bg-accent px-4 py-3 text-sm font-medium text-background transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+            class="mt-3 w-full rounded-sm border border-transparent bg-accent px-4 py-3 text-sm font-medium text-background transition-colors disabled:cursor-not-allowed disabled:border-border disabled:bg-background-muted disabled:text-foreground-muted"
           >
             Написать на почту
           </button>
