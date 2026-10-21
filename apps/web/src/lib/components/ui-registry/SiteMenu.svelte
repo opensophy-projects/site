@@ -69,8 +69,6 @@
   const solutionLinks = [
     {
       label: "Услуги",
-      description:
-        "Аудит безопасности, DevSecOps, консультации и помощь с инфраструктурой.",
       href: "/solutions",
       icon: IbmCloudGateKeeper,
     },
