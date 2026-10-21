@@ -118,6 +118,13 @@
     },
   ];
 
+  let acceptedPolicies = $state(false);
+
+  function openServiceEmail() {
+    if (!acceptedPolicies) return;
+    window.location.href = "mailto:opensophy@mail.ru";
+  }
+
   function handleOverlayKeydown(e: KeyboardEvent) {
     if (e.key === "Escape") contactsState.close();
   }
@@ -340,21 +347,43 @@
         Контакты
       </h2>
       <p class="mb-5 text-sm text-foreground-muted">
-        Свяжитесь через удобный канал.
+        Для сотрудничества и общения пишите в Telegram. По вопросам покупки услуг и решений — на почту.
       </p>
-      <div class="flex flex-col gap-2">
-        {#each contacts as contact (contact.href)}
-          {@const Icon = contact.icon}
-          <a
-            href={contact.href}
-            target={contact.href.startsWith("http") ? "_blank" : undefined}
-            rel={contact.href.startsWith("http") ? "external" : undefined}
-            class="flex items-center gap-3 rounded-sm border border-border bg-background-inset px-4 py-3 text-sm font-medium text-foreground-muted transition-colors duration-150 ease-out hover:bg-background-muted hover:text-foreground"
+      <div class="flex flex-col gap-3">
+        <a
+          href="https://t.me/opensophy"
+          target="_blank"
+          rel="noreferrer"
+          class="flex items-center gap-3 rounded-sm border border-border bg-background-inset px-4 py-3 text-sm font-medium text-foreground-muted transition-colors duration-150 ease-out hover:bg-background-muted hover:text-foreground"
+        >
+          <LocationCurrent size={18} />
+          <span>Telegram: @opensophy</span>
+        </a>
+        <div class="rounded-sm border border-border bg-background-inset p-4">
+          <p class="mb-3 text-sm font-medium text-foreground">Покупка услуг и решений</p>
+          <label class="flex items-start gap-2 text-sm leading-relaxed text-foreground-muted">
+            <input
+              type="checkbox"
+              bind:checked={acceptedPolicies}
+              class="mt-1 size-4 shrink-0 accent-[var(--accent)]"
+            />
+            <span>
+              Я согласен с <a class="underline" href="/service-policy" target="_blank" rel="noreferrer">Политикой оказания услуг</a>
+              и <a class="underline" href="/data-policy" target="_blank" rel="noreferrer">Политикой обработки данных</a>.
+            </span>
+          </label>
+          <button
+            type="button"
+            disabled={!acceptedPolicies}
+            onclick={openServiceEmail}
+            class="mt-3 w-full rounded-sm bg-accent px-4 py-3 text-sm font-medium text-background transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <Icon size={18} />
-            <span class="truncate">{contact.label}</span>
-          </a>
-        {/each}
+            Написать на почту
+          </button>
+          <p class="mt-2 select-none text-center text-xs text-foreground-muted" aria-label="Адрес электронной почты">
+            Почта откроется после согласия с обеими политиками
+          </p>
+        </div>
       </div>
     </div>
   </div>
