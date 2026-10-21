@@ -439,13 +439,7 @@
     </div>
 
     <div class="services-actions showcase-actions">
-      <a class="services-action" href="/solutions">Посмотреть все услуги</a>
-      <button
-        type="button"
-        class="services-action services-action-primary"
-        onclick={() => contactsState.open()}>Заказать услуги</button
-      >
-      <a class="services-action" href="/service-policy">Политика оказания услуг</a>
+      <a class="services-action services-action-primary" href="/solutions">Посмотреть все услуги</a>
     </div>
   </section>
 
