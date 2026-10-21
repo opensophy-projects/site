@@ -122,9 +122,13 @@
 
     <ServicesGrid />
 
-    <section class="mt-14 flex flex-wrap gap-3">
+    <section class="mt-14 flex flex-wrap justify-center gap-3 text-center">
+      <a class="action" href="/data-policy">
+        Политика обработки данных
+      </a>
+
       <button class="action primary" onclick={() => contactsState.open()}>
-        Заказать услуги
+        Заказать услугу
       </button>
 
       <a class="action" href="/service-policy">
