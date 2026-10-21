@@ -76,8 +76,14 @@
     },
     {
       label: "Политика оказания услуг",
-      description: "Узнайте, как я работаю перед тем, как заказать услугу.",
+      description: "Узнайте, как мы работаем перед тем, как заказать услугу.",
       href: "/service-policy",
+      icon: Policy,
+    },
+    {
+      label: "Политика обработки данных",
+      description: "Как мы обрабатываем и защищаем данные.",
+      href: "/data-policy",
       icon: Policy,
     },
   ];
@@ -183,12 +189,12 @@
 {/snippet}
 
 {#snippet solutionsPanel(_isMobile: boolean)}
-  <div data-slot="row" class="grid grid-cols-1 gap-2 p-4 sm:grid-cols-2">
+  <div data-slot="row" class="grid grid-cols-1 gap-2 p-4 md:grid-cols-2">
     {#each solutionLinks as link (link.href)}
       {@const Icon = link.icon}
       <a
         href={link.href}
-        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
+        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200 {link.href === '/solutions' ? 'md:col-span-2' : ''}"
       >
         <span
           class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
