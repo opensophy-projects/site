@@ -69,20 +69,16 @@
   const solutionLinks = [
     {
       label: "Услуги",
-      description:
-        "Аудит безопасности, DevSecOps, консультации и помощь с инфраструктурой.",
       href: "/solutions",
       icon: IbmCloudGateKeeper,
     },
     {
       label: "Политика оказания услуг",
-      description: "Узнайте, как мы работаем перед тем, как заказать услугу.",
       href: "/service-policy",
       icon: Policy,
     },
     {
       label: "Политика обработки данных",
-      description: "Как мы обрабатываем и защищаем данные.",
       href: "/data-policy",
       icon: Policy,
     },
@@ -194,7 +190,7 @@
       {@const Icon = link.icon}
       <a
         href={link.href}
-        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200 {link.href === '/solutions' ? 'md:col-span-2' : ''}"
+        class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200 {link.href === '/solutions' ? 'md:col-span-2 border-b border-border rounded-none pb-5' : ''}"
       >
         <span
           class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
@@ -208,9 +204,6 @@
         <span class="min-w-0 flex-1 leading-tight">
           <span class="block text-sm font-medium text-foreground">
             {link.label}
-          </span>
-          <span class="mt-1 block text-sm leading-snug text-foreground-muted">
-            {link.description}
           </span>
         </span>
       </a>
