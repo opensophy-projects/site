@@ -149,11 +149,6 @@
           </ul>{/if}
       </section>
     {/each}
-    <p class="final-note">
-      Есть вопросы о том, как мы работаем? <a href="mailto:opensophy@gmail.com"
-        >Напишите нам</a
-      > перед заказом — обсудим детали.
-    </p>
   </article>
 </main>
 
@@ -192,14 +187,6 @@
   ul {
     margin: 0;
     padding-left: 1.25rem;
-  }
-  .final-note {
-    margin-top: 2rem;
-    padding: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 0.75rem;
-    background: var(--background-inset);
-    color: var(--foreground);
   }
   a {
     color: var(--accent);
