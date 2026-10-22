@@ -1,7 +1,7 @@
 {
   "name": "@opensophy/site",
   "private": true,
-  "version": "2",
+  "version": "1",
   "type": "module",
   "scripts": {
     "dev": "npm run dev --workspace=apps/web",
