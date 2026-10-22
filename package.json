@@ -26,6 +26,7 @@
     "three": "^0.185.1"
   },
   "overrides": {
-    "cookie": "0.7.2"
+    "cookie": "0.7.2",
+    "katex": "^0.18.2"
   }
 }
