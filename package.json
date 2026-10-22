@@ -22,11 +22,12 @@
   },
   "dependencies": {
     "carbon-icons-svelte": "^13.13.0",
+    "katex": "^0.18.2",
     "ogl": "^1.0.11",
     "three": "^0.185.1"
   },
   "overrides": {
     "cookie": "0.7.2",
-    "katex": "^0.18.2"
+    "katex": "$katex"
   }
 }
