@@ -1,5 +1,7 @@
 <script module lang="ts">
-	import { SERVER, type PathItem } from './ServerIllustration.svelte';
+	import { SERVER } from './ServerIllustration.svelte';
+
+	type PathItem = { k: 'p'; d: string; c: string; o?: number };
 
 	export type Mode = 'naive' | 'script';
 	type TextItem = { k: 't'; x: number; y: number; c: string; s: string };
@@ -432,7 +434,6 @@
 
 				<!-- зоны клика: клиент 1 и клиент 2 -->
 				{#each [1, 2] as i (i)}
-					<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 					<rect
 						class="hit"
 						x={HIT_X}
