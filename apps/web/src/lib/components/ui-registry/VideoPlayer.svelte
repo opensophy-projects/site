@@ -196,7 +196,9 @@
 
 	function onPause() {
 		isPlaying = false;
-		cancelAnimationFrame(rafId);
+		if (typeof cancelAnimationFrame !== "undefined") {
+			cancelAnimationFrame(rafId);
+		}
 	}
 
 	function onLoadedMetadata() {
@@ -238,7 +240,9 @@
 	});
 
 	onDestroy(() => {
-		cancelAnimationFrame(rafId);
+		if (typeof cancelAnimationFrame !== "undefined") {
+			cancelAnimationFrame(rafId);
+		}
 		if (
 			isLayoutFullscreen &&
 			containerRef &&
