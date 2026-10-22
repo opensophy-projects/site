@@ -1,6 +1,5 @@
 <script lang="ts">
   import { brandingConfig } from "$lib/config/branding";
-  import { siteConfig } from "$lib/config/site";
   import FloatingMenu from "$lib/components/ui-registry/FloatingMenu.svelte";
   import Button from "$lib/components/ui-registry/Button.svelte";
   import ThemeToggle from "$lib/components/ui-registry/ThemeToggle.svelte";
@@ -10,7 +9,6 @@
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
   import Email from "carbon-icons-svelte/lib/Email.svelte";
-  import LogoGithub from "carbon-icons-svelte/lib/LogoGithub.svelte";
   import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
   import Policy from "carbon-icons-svelte/lib/Policy.svelte";
   import Search from "carbon-icons-svelte/lib/Search.svelte";
@@ -98,24 +96,6 @@
       description: "Понятные статьи и гайды по DevSecOps и не только.",
       href: "/article/general",
       icon: Book,
-    },
-  ];
-
-  const contacts = [
-    {
-      label: "GitHub",
-      href: siteConfig.links.github,
-      icon: LogoGithub,
-    },
-    {
-      label: "@opensophy",
-      href: siteConfig.links.telegram,
-      icon: LocationCurrent,
-    },
-    {
-      label: siteConfig.links.email,
-      href: `mailto:${siteConfig.links.email}`,
-      icon: Email,
     },
   ];
 
