@@ -1,5 +1,4 @@
 <script module lang="ts">
-	import { SERVER } from './ServerIllustration.svelte';
 
 	type PathItem = { k: 'p'; d: string; c: string; o?: number };
 
@@ -30,7 +29,8 @@
 	const X0 = 236; // где сертификат появляется
 	const DOC = GCX - 66; // где он останавливается перед дверью
 	const SX = 730; // центр сервера
-	const SERVER_LEFT = SX - 2 * K * SERVER.H; // левый угол сервера: сюда впадают все линии
+	const SERVER_H = 30;
+	const SERVER_LEFT = SX - 2 * K * SERVER_H; // левый угол сервера: сюда впадают все линии
 	const END = SERVER_LEFT - 16; // где сертификат гаснет у сервера
 	const MX = GCX + 2 * K * GH + 30; // где линии начинают сходиться
 	const MS = 100; // длина схождения
@@ -292,7 +292,7 @@
 			if (frame.badC.includes(id)) front.push(p(crossD(c - 46, SLAB_MID - SLAB.z - 4, 11), 'xm'));
 		}
 		front.push(tx(GCX, 424, 't c', 'шлюз Traefik'));
-		front.push(tx(SX, MY + SERVER.H + 28, 't c', 'бэкенд'));
+		front.push(tx(SX, MY + SERVER_H + 28, 't c', 'бэкенд'));
 
 		LY.forEach((y, i) => {
 			front.push(tx(LABEL_X, y - 3, 't', NAMES[i] ?? ''));
