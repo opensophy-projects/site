@@ -37,15 +37,11 @@ keywords: 'Opensophy, Видеоплеер, UI, UI components, библиоте�
 	sources={[{ name: 'VideoPlayer.svelte', code: VideoPlayerSource, language: 'svelte' }]}
 >
 	{#snippet children(values)}
-		<iframe
-			src="https://www.youtube.com/embed/RiUvtWyNpXo"
-			title="Video Player Demo"
-			frameborder="0"
-			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-			referrerpolicy="strict-origin-when-cross-origin"
-			allowfullscreen
-			class="aspect-video w-full rounded-lg"
-		></iframe>
+		<VideoPlayer
+			src="/meetdevsecops.mp4"
+			muted={values.muted as boolean}
+			loop={values.loop as boolean}
+		/>
 	{/snippet}
 </ComponentPreview>
 
