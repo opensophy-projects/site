@@ -12,10 +12,10 @@ keywords: 'Opensophy, Бесконечная физическая галерея
 	import type { InfinitePhysicsGalleryItem } from '$lib/components/ui-registry/InfinitePhysicsGallery.types';
 
 	const items: InfinitePhysicsGalleryItem[] = [
-		{ type: 'image', image: { src: 'https://habrastorage.org/r/w1560/getpro/habr/upload_files/a29/091/152/a2909115275f79c8875cf6cff7883390.png', alt: 'Image 1' } },
-		{ type: 'image', image: { src: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/3ec/0cf/dd2/3ec0cfdd29d3d793f9d00bf0e08be589.jpg', alt: 'Image 2' } },
-		{ type: 'image', image: { src: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/6f2/748/9f8/6f27489f8cce5207d5c32afde5ca41de.jpeg', alt: 'Image 3' } },
-		{ type: 'image', image: { src: 'https://habrastorage.org/r/w780/getpro/habr/upload_files/ad8/e34/e2b/ad8e34e2bd9be3570741b3eae9881711.jpeg', alt: 'Image 4' } },
+		{ type: 'image', image: { src: '/og/components/accordion-gallery.png', alt: 'Image 1' } },
+		{ type: 'image', image: { src: '/og/components/infinite-physics-gallery.png', alt: 'Image 2' } },
+		{ type: 'image', image: { src: '/og/components/drift-wall.png', alt: 'Image 3' } },
+		{ type: 'image', image: { src: '/og/components/depth-carousel.png', alt: 'Image 4' } },
 	];
 
 	const controls: ComponentPreviewControl[] = [
