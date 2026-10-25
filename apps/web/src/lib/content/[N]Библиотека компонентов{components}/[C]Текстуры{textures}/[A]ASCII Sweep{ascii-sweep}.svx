@@ -1,6 +1,6 @@
 ---
-title: ASCII Sweep
-description: Интерактивный переход между двумя HTML-панелями с помощью светящихся ASCII-символов и WebGL.
+title: ASCII-свайп
+description: Переход между двумя панелями интерфейса с акцентным ASCII-следом Opensophy.
 keywords: 'Opensophy, AsciiSweep, ASCII, WebGL, GLSL, UI components, библиотека компонентов'
 ---
 
@@ -16,44 +16,44 @@ keywords: 'Opensophy, AsciiSweep, ASCII, WebGL, GLSL, UI components, библи�
 		{ type: 'number', name: 'band', label: 'Ширина полосы', defaultValue: 0.28, min: 0.08, max: 0.65, step: 0.01 },
 		{ type: 'number', name: 'scale', label: 'Размер символов', defaultValue: 2, min: 1, max: 4, step: 0.5, unit: 'px' },
 		{ type: 'select', name: 'charset', label: 'Набор символов', defaultValue: 'ascii', options: [{ label: 'ASCII', value: 'ascii' }, { label: 'Блоки', value: 'blocks' }, { label: 'Бинарный', value: 'binary' }] },
-		{ type: 'color', name: 'color', label: 'Цвет символов', defaultValue: '#74f7a1' },
+		{ type: 'color', name: 'color', label: 'Цвет символов', defaultValue: 'var(--accent)' },
 		{ type: 'number', name: 'glow', label: 'Свечение', defaultValue: 1.2, min: 0, max: 2, step: 0.1 }
 	];
 
-	const source = '<script lang="ts">\n  import AsciiSweep from "$lib/components/ui-registry/AsciiSweep.svelte";\n  let index = $state(0);\n<\/script>\n\n<button onclick={() => (index = index === 0 ? 1 : 0)}>Switch panel</button>\n\n<AsciiSweep {index} duration={2} color="#74f7a1">\n  {#snippet children()}<div>First panel</div>{/snippet}\n  {#snippet alternate()}<div>Second panel</div>{/snippet}\n</AsciiSweep>';
+	const source = '<script lang="ts">\n  import AsciiSweep from "$lib/components/ui-registry/AsciiSweep.svelte";\n  let index = $state(0);\n<\/script>\n\n<button onclick={() => (index = index === 0 ? 1 : 0)}>Switch panel</button>\n\n<AsciiSweep {index} duration={2} color="var(--accent)">\n  {#snippet children()}<div>First panel</div>{/snippet}\n  {#snippet alternate()}<div>Second panel</div>{/snippet}\n</AsciiSweep>';
 </script>
 
-# ASCII Sweep
+# ASCII-свайп
 
 AsciiSweep выполняет переход между двумя HTML-панелями: движущаяся полоса ASCII-символов проявляет целевую панель и скрывает исходную. Эффект рисуется на WebGL2, а содержимое панелей остаётся обычной разметкой Svelte.
 
 ## Интерактивное демо
 
-Меняйте параметры в панели управления. Целевая панель задаётся через индекс; направление, длительность и визуальные параметры эффекта можно подобрать интерактивно.
+Настройте переход прямо здесь. Изменения параметров применяются на лету; акцентный цвет берётся из темы Opensophy.
 
 <ComponentPreview controls={controls} sources={[{ name: 'Usage.svelte', code: source, language: 'svelte' }]}>
 	{#snippet children(values)}
-		<div class="relative min-h-[360px] w-full overflow-hidden rounded-lg bg-[#101411]">
-			<AsciiSweep index={values.index as number} duration={values.duration as number} angle={values.angle as number} band={values.band as number} scale={values.scale as number} charset={values.charset as 'ascii' | 'blocks' | 'binary'} color={values.color as string} glow={values.glow as number} turbulence={0.45} trail={0.75} tint={0.8} background="#101411" class="h-[360px] w-full">
+		<div class="relative min-h-[360px] w-full overflow-hidden rounded-xl border border-border bg-background">
+			<AsciiSweep index={values.index as number} duration={values.duration as number} angle={values.angle as number} band={values.band as number} scale={values.scale as number} charset={values.charset as 'ascii' | 'blocks' | 'binary'} color={values.color as string} glow={values.glow as number} turbulence={0.45} trail={0.75} tint={0.8} background="var(--background)" class="h-[360px] w-full">
 				{#snippet children()}
-					<div class="flex h-full min-h-[360px] flex-col justify-between bg-[#101411] p-6 text-[#edf5ef]">
-						<div><p class="mb-3 font-mono text-xs tracking-[0.18em] text-[#74f7a1]">HUMAN WORKFLOW</p><h3 class="mb-3 max-w-md text-3xl font-semibold tracking-tight">Люди принимают решения.</h3><p class="max-w-md text-sm leading-6 text-[#9ca99f]">Общая рабочая область для обсуждения, проверки и совместного создания.</p></div>
+					<div class="flex h-full min-h-[360px] flex-col justify-between bg-[var(--background)] p-6 text-[var(--foreground)]">
+						<div><p class="mb-3 font-mono text-xs tracking-[0.18em] text-[var(--accent)]">OPENSOPHY / WORKFLOW</p><h3 class="mb-3 max-w-md text-3xl font-semibold tracking-tight">Люди принимают решения.</h3><p class="max-w-md text-sm leading-6 text-[var(--foreground-muted)]">Общая рабочая область для обсуждения, проверки и совместного создания.</p></div>
 						<div class="grid grid-cols-2 gap-3 text-sm">
-							<div class="border-t border-[#29332c] pt-3"><span class="block text-[#849087]">Создание</span><strong>Вручную</strong></div>
-							<div class="border-t border-[#29332c] pt-3"><span class="block text-[#849087]">Доступ</span><strong>По ролям</strong></div>
-							<div class="border-t border-[#29332c] pt-3"><span class="block text-[#849087]">Процесс</span><strong>Совместный</strong></div>
-							<div class="border-t border-[#29332c] pt-3"><span class="block text-[#849087]">Статус</span><strong class="text-[#74f7a1]">Активен</strong></div>
+							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Создание</span><strong>Вручную</strong></div>
+							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Доступ</span><strong>По ролям</strong></div>
+							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Процесс</span><strong>Совместный</strong></div>
+							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Статус</span><strong class="text-[var(--accent)]">Активен</strong></div>
 						</div>
 					</div>
 				{/snippet}
 				{#snippet alternate()}
-					<div class="flex h-full min-h-[360px] flex-col justify-between bg-[#101411] p-6 text-[#edf5ef]">
-						<div><p class="mb-3 font-mono text-xs tracking-[0.18em] text-[#74f7a1]">AGENT WORKFLOW</p><h3 class="mb-3 max-w-md text-3xl font-semibold tracking-tight">Рутина движется быстрее.</h3><p class="max-w-md text-sm leading-6 text-[#9ca99f]">Агенты выполняют повторяемые задачи, а человек сохраняет контроль над решениями.</p></div>
+					<div class="flex h-full min-h-[360px] flex-col justify-between bg-[var(--background)] p-6 text-[var(--foreground)]">
+						<div><p class="mb-3 font-mono text-xs tracking-[0.18em] text-[var(--accent)]">OPENSOPHY / AUTOMATION</p><h3 class="mb-3 max-w-md text-3xl font-semibold tracking-tight">Рутина движется быстрее.</h3><p class="max-w-md text-sm leading-6 text-[var(--foreground-muted)]">Агенты выполняют повторяемые задачи, а человек сохраняет контроль над решениями.</p></div>
 						<div class="grid grid-cols-2 gap-3 text-sm">
-							<div class="border-t border-[#29332c] pt-3"><span class="block text-[#849087]">Создание</span><strong>С помощью агента</strong></div>
-							<div class="border-t border-[#29332c] pt-3"><span class="block text-[#849087]">Доступ</span><strong>Ограниченный</strong></div>
-							<div class="border-t border-[#29332c] pt-3"><span class="block text-[#849087]">Процесс</span><strong>Автоматизация</strong></div>
-							<div class="border-t border-[#29332c] pt-3"><span class="block text-[#849087]">Статус</span><strong class="text-[#74f7a1]">Готов</strong></div>
+							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Создание</span><strong>С помощью агента</strong></div>
+							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Доступ</span><strong>Ограниченный</strong></div>
+							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Процесс</span><strong>Автоматизация</strong></div>
+							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Статус</span><strong class="text-[var(--accent)]">Готов</strong></div>
 						</div>
 					</div>
 				{/snippet}
@@ -76,7 +76,7 @@ AsciiSweep выполняет переход между двумя HTML-пане
 
 <button onclick={() => (index = index === 0 ? 1 : 0)}>Переключить панель</button>
 
-<AsciiSweep {index} duration={2} color="#74f7a1">
+<AsciiSweep {index} duration={2} color="var(--accent)">
 	{#snippet children()}<div>Первая панель</div>{/snippet}
 	{#snippet alternate()}<div>Вторая панель</div>{/snippet}
 </AsciiSweep>
@@ -85,7 +85,7 @@ AsciiSweep выполняет переход между двумя HTML-пане
 ### Направление и визуальные параметры
 
 ~~~svelte
-<AsciiSweep {index} angle={90} duration={1.6} band={0.32} softness={0.45} turbulence={0.5} trail={0.75} scale={2} charset="blocks" color="#74f7a1" glow={1.2} tint={0.8} background="#101411">
+<AsciiSweep {index} angle={90} duration={1.6} band={0.32} softness={0.45} turbulence={0.5} trail={0.75} scale={2} charset="blocks" color="var(--accent)" glow={1.2} tint={0.8} background="var(--background)">
 	{#snippet children()}<div>Исходное содержимое</div>{/snippet}
 	{#snippet alternate()}<div>Целевое содержимое</div>{/snippet}
 </AsciiSweep>
