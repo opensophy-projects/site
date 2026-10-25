@@ -24,9 +24,25 @@ keywords: 'Opensophy, Карточка со свечением, glowcard, UI, б
 			defaultValue: 'Карточка со свечением'
 		},
 		{
+			type: 'select',
+			name: 'radius',
+			label: 'Форма углов',
+			defaultValue: 'lg',
+			options: [
+				{ label: 'Без скругления', value: 'none' },
+				{ label: 'Маленькое', value: 'sm' },
+				{ label: 'Среднее', value: 'md' },
+				{ label: 'Большое', value: 'lg' },
+				{ label: 'Очень большое', value: 'xl' },
+				{ label: '2XL', value: '2xl' },
+				{ label: '3XL', value: '3xl' },
+				{ label: 'Полностью круглое', value: 'full' }
+			]
+		},
+		{
 			type: 'boolean',
-			name: 'square',
-			label: 'Квадратные углы',
+			name: 'disableBorder',
+			label: 'Отключить обводку при наведении',
 			defaultValue: false
 		}
 	];
@@ -38,7 +54,7 @@ keywords: 'Opensophy, Карточка со свечением, glowcard, UI, б
 
 ## Интерактивное демо
 
-Меняйте надзаголовок, заголовок и форму углов в панели управления. Наведите курсор на карточку, чтобы увидеть оформление в контексте интерфейса.
+Меняйте надзаголовок, заголовок, форму углов и видимость обводки в панели управления. Наведите курсор на карточку, чтобы увидеть оформление в контексте интерфейса.
 
 <ComponentPreview
 	controls={controls}
@@ -49,7 +65,8 @@ keywords: 'Opensophy, Карточка со свечением, glowcard, UI, б
 			<GlowCard
 				eyebrow={values.eyebrow as string}
 				title={values.title as string}
-				square={values.square as boolean}
+				radius={values.radius as 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full'}
+				disableBorder={values.disableBorder as boolean}
 			>
 				<p>Короткое описание компонента, функции или проекта. Свечение использует цвет акцента текущей темы.</p>
 			</GlowCard>
@@ -83,10 +100,10 @@ keywords: 'Opensophy, Карточка со свечением, glowcard, UI, б
 </GlowCard>
 ```
 
-### Квадратные углы и дополнительные классы
+### Выбор формы углов и отключение обводки
 
 ```svelte
-<GlowCard square class="my-custom-card" title="Без скругления">
+<GlowCard radius="none" disableBorder class="my-custom-card" title="Без скругления и обводки">
 	<p>Содержимое карточки.</p>
 </GlowCard>
 ```
