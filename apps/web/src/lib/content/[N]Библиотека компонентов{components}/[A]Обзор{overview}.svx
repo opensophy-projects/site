@@ -50,12 +50,13 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 
 <Cards>
 <Card eyebrow="15" title="Светящаяся карточка" href="/components/glow-card">Карточка с интерактивным mesh-gradient glow при наведении.</Card>
-<Card eyebrow="16" title="Секция карточек" href="/components/card-section">Секция из 6 карточек услуг с кастомными SVG-визуализациями.</Card>
-<Card eyebrow="17" title="Карточка" href="/components/card">Универсальная карточка с eyebrow, заголовком и поддержкой ссылок.</Card>
-<Card eyebrow="18" title="Карточки с иконками" href="/components/icon-cards">Сетка карточек с иконками для компактного представления возможностей.</Card>
-<Card eyebrow="19" title="Отзыв" href="/components/testimonial">Карточка отзыва с аватаром, именем и текстом.</Card>
-<Card eyebrow="20" title="Подсвеченный блок" href="/components/highlight-box">Блок с подсветкой для акцентирования внимания.</Card>
-<Card eyebrow="21" title="Огненная карточка" href="/components/flame-wrap">WebGL-карточка с акцентной огненной рамкой, искрами и тепловым искажением.</Card>
+<Card eyebrow="16" title="Карточка со свечением" href="/components/glowcard2">Карточка с мягким градиентным свечением, настраиваемым скруглением углов и отключаемой обводкой при наведении.</Card>
+<Card eyebrow="17" title="Секция карточек" href="/components/card-section">Секция из 6 карточек услуг с кастомными SVG-визуализациями.</Card>
+<Card eyebrow="18" title="Карточка" href="/components/card">Универсальная карточка с eyebrow, заголовком и поддержкой ссылок.</Card>
+<Card eyebrow="19" title="Карточки с иконками" href="/components/icon-cards">Сетка карточек с иконками для компактного представления возможностей.</Card>
+<Card eyebrow="20" title="Отзыв" href="/components/testimonial">Карточка отзыва с аватаром, именем и текстом.</Card>
+<Card eyebrow="21" title="Подсвеченный блок" href="/components/highlight-box">Блок с подсветкой для акцентирования внимания.</Card>
+<Card eyebrow="22" title="Огненная карточка" href="/components/flame-wrap">WebGL-карточка с акцентной огненной рамкой, искрами и тепловым искажением.</Card>
 </Cards>
 
 ### Типографика
@@ -63,16 +64,16 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 Эффекты для текста и заголовков:
 
 <Cards>
-<Card eyebrow="22" title="Цикличный текст" href="/components/text-loop">Анимированная смена текста через GSAP — для hero-секций и заголовков.</Card>
-<Card eyebrow="23" title="Бегущая строка" href="/components/marquee">Бесконечная горизонтальная прокрутка контента с плавной анимацией.</Card>
-<Card eyebrow="24" title="Волна веса" href="/components/weight-wave">Анимация изменения веса шрифта по волне.</Card>
-<Card eyebrow="25" title="Раздвижение текста" href="/components/text-split-hover">Эффект раздвижения текста при наведении.</Card>
-<Card eyebrow="26" title="Разделённое появление" href="/components/split-reveal">Появление текста с разделением на части.</Card>
-<Card eyebrow="27" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
-<Card eyebrow="28" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
-<Card eyebrow="29" title="Рандомизированный текст" href="/components/randomized-text">Плавное появление текста по словам или символам.</Card>
-<Card eyebrow="30" title="Диагональный текст" href="/components/dia-text">Световая полоса проходит по тексту с поддержкой циклической смены строк.</Card>
-<Card eyebrow="31" title="Желейный текст" href="/components/gooey-text">«Желейный» морфинг между словами на SVG-фильтре порога и блюре.</Card>
+<Card eyebrow="23" title="Цикличный текст" href="/components/text-loop">Анимированная смена текста через GSAP — для hero-секций и заголовков.</Card>
+<Card eyebrow="24" title="Бегущая строка" href="/components/marquee">Бесконечная горизонтальная прокрутка контента с плавной анимацией.</Card>
+<Card eyebrow="25" title="Волна веса" href="/components/weight-wave">Анимация изменения веса шрифта по волне.</Card>
+<Card eyebrow="26" title="Раздвижение текста" href="/components/text-split-hover">Эффект раздвижения текста при наведении.</Card>
+<Card eyebrow="27" title="Разделённое появление" href="/components/split-reveal">Появление текста с разделением на части.</Card>
+<Card eyebrow="28" title="Разлёт текста" href="/components/text-repel">Эффект разлёта символов текста от курсора.</Card>
+<Card eyebrow="29" title="Скремблирование текста" href="/components/text-scramble">Эффект скремблирования (перемешивания) текста.</Card>
+<Card eyebrow="30" title="Рандомизированный текст" href="/components/randomized-text">Плавное появление текста по словам или символам.</Card>
+<Card eyebrow="31" title="Диагональный текст" href="/components/dia-text">Световая полоса проходит по тексту с поддержкой циклической смены строк.</Card>
+<Card eyebrow="32" title="Желейный текст" href="/components/gooey-text">«Желейный» морфинг между словами на SVG-фильтре порога и блюре.</Card>
 </Cards>
 
 ### Медиа
@@ -80,12 +81,12 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 Компоненты для изображений, галерей и видео:
 
 <Cards>
-<Card eyebrow="32" title="Бесконечная физическая галерея" href="/components/infinite-physics-gallery">Галерея с физикой инерции, drag-прокруткой и бесконечным повторением контента.</Card>
-<Card eyebrow="33" title="Аккордеонная галерея" href="/components/accordion-gallery">Галерея с аккордеонным раскрытием панелей при наведении.</Card>
-<Card eyebrow="34" title="Карусель с глубиной" href="/components/depth-carousel">3D-карусель с перспективным смещением и параллаксом.</Card>
-<Card eyebrow="35" title="Дрейфующая стена" href="/components/drift-wall">Стена изображений с плавным дрейфом и параллакс-эффектом.</Card>
-<Card eyebrow="36" title="Видеоплеер" href="/components/video-player">Кастомизируемый видеоплеер с управлением и поддержкой плакатов.</Card>
-<Card eyebrow="37" title="Карусель логотипов" href="/components/logo-carousel">Групповая карусель с плавной сменой логотипов и настраиваемым количеством элементов.</Card>
+<Card eyebrow="33" title="Бесконечная физическая галерея" href="/components/infinite-physics-gallery">Галерея с физикой инерции, drag-прокруткой и бесконечным повторением контента.</Card>
+<Card eyebrow="34" title="Аккордеонная галерея" href="/components/accordion-gallery">Галерея с аккордеонным раскрытием панелей при наведении.</Card>
+<Card eyebrow="35" title="Карусель с глубиной" href="/components/depth-carousel">3D-карусель с перспективным смещением и параллаксом.</Card>
+<Card eyebrow="36" title="Дрейфующая стена" href="/components/drift-wall">Стена изображений с плавным дрейфом и параллакс-эффектом.</Card>
+<Card eyebrow="37" title="Видеоплеер" href="/components/video-player">Кастомизируемый видеоплеер с управлением и поддержкой плакатов.</Card>
+<Card eyebrow="38" title="Карусель логотипов" href="/components/logo-carousel">Групповая карусель с плавной сменой логотипов и настраиваемым количеством элементов.</Card>
 </Cards>
 
 ### Иллюстрации
@@ -93,11 +94,11 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 Интерактивные SVG-иллюстрации для hero-секций, лендингов и декоративных блоков:
 
 <Cards>
-<Card eyebrow="38" title="Терминал" href="/components/terminal">Изометрическое терминальное окно с интерактивными строками и пружинной анимацией.</Card>
-<Card eyebrow="39" title="Щит бесконечности" href="/components/shield-infinity">Анимированный изометрический щит с объёмным символом бесконечности.</Card>
-<Card eyebrow="40" title="Радар" href="/components/radar">Параболическая антенна, которая следует за курсором и управляется с клавиатуры.</Card>
-<Card eyebrow="41" title="Фосфор" href="/components/phosphor">Изометрическая матрица светящихся точек с рябью и послесвечением.</Card>
-<Card eyebrow="42" title="Сервер" href="/components/server">Изометрическая иллюстрация серверной стойки с настраиваемым количеством блоков и состоянием индикаторов.</Card>
+<Card eyebrow="39" title="Терминал" href="/components/terminal">Изометрическое терминальное окно с интерактивными строками и пружинной анимацией.</Card>
+<Card eyebrow="40" title="Щит бесконечности" href="/components/shield-infinity">Анимированный изометрический щит с объёмным символом бесконечности.</Card>
+<Card eyebrow="41" title="Радар" href="/components/radar">Параболическая антенна, которая следует за курсором и управляется с клавиатуры.</Card>
+<Card eyebrow="42" title="Фосфор" href="/components/phosphor">Изометрическая матрица светящихся точек с рябью и послесвечением.</Card>
+<Card eyebrow="43" title="Сервер" href="/components/server">Изометрическая иллюстрация серверной стойки с настраиваемым количеством блоков и состоянием индикаторов.</Card>
 </Cards>
 
 ### Текстуры
@@ -105,14 +106,14 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 Декоративные фоны и текстуры:
 
 <Cards>
-<Card eyebrow="43" title="Текстуры фона" href="/components/texture-panel">Шесть CSS-текстур: штриховка, сетка, точки, линии — на основе токена border.</Card>
-<Card eyebrow="44" title="Свечение" href="/components/glow-horizon">Розовое радиальное свечение как в hero-секции. Четыре стороны, настройка прозрачности.</Card>
-<Card eyebrow="45" title="Лазер" href="/components/laser">WebGL-текстура с акцентным лазерным лучом, тепловым свечением и реакцией на прокрутку.</Card>
-<Card eyebrow="46" title="Жидкость" href="/components/liquid">Интерактивная WebGL-текстура с акцентным жидкостным следом от движения курсора.</Card>
-<Card eyebrow="47" title="Лазерный поток" href="/components/laser-flow">Интерактивный WebGL-фон с лазерными лучами, туманом и световыми нитями.</Card>
-<Card eyebrow="48" title="ASCII-объект" href="/components/ascii-object">3D-объект и изображения, отрисованные ASCII-символами через WebGL.</Card>
-<Card eyebrow="49" title="Электрический логотип" href="/components/electric-logo">Логотип Opensophy с электрическими разрядами, свечением и реакцией на курсор.</Card>
-<Card eyebrow="50" title="ASCII-свайп" href="/components/ascii-sweep">Переход между двумя панелями с WebGL-эффектом ASCII-символов и настраиваемым акцентным цветом.</Card>
+<Card eyebrow="44" title="Текстуры фона" href="/components/texture-panel">Шесть CSS-текстур: штриховка, сетка, точки, линии — на основе токена border.</Card>
+<Card eyebrow="45" title="Свечение" href="/components/glow-horizon">Розовое радиальное свечение как в hero-секции. Четыре стороны, настройка прозрачности.</Card>
+<Card eyebrow="46" title="Лазер" href="/components/laser">WebGL-текстура с акцентным лазерным лучом, тепловым свечением и реакцией на прокрутку.</Card>
+<Card eyebrow="47" title="Жидкость" href="/components/liquid">Интерактивная WebGL-текстура с акцентным жидкостным следом от движения курсора.</Card>
+<Card eyebrow="48" title="Лазерный поток" href="/components/laser-flow">Интерактивный WebGL-фон с лазерными лучами, туманом и световыми нитями.</Card>
+<Card eyebrow="49" title="ASCII-объект" href="/components/ascii-object">3D-объект и изображения, отрисованные ASCII-символами через WebGL.</Card>
+<Card eyebrow="50" title="Электрический логотип" href="/components/electric-logo">Логотип Opensophy с электрическими разрядами, свечением и реакцией на курсор.</Card>
+<Card eyebrow="51" title="ASCII-свайп" href="/components/ascii-sweep">Переход между двумя панелями с WebGL-эффектом ASCII-символов и настраиваемым акцентным цветом.</Card>
 </Cards>
 
 ### Документация
@@ -120,9 +121,9 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 Компоненты для разметки и структурирования документации:
 
 <Cards>
-<Card eyebrow="51" title="Блоки уведомления" href="/components/admonition">Пять вариантов callout-блоков: note, tip, important, warning, caution.</Card>
-<Card eyebrow="52" title="Шаги со статусами" href="/components/steps">Нумерованные шаги с индикаторами: todo, active, done, warning.</Card>
-<Card eyebrow="53" title="Блок кода" href="/components/codeblock">Блоки кода с подсветкой Shiki, копированием и встроенным поиском.</Card>
-<Card eyebrow="54" title="Графики" href="/components/charts">Все типы графиков через `:::chart`: line, bar, pie, radar и другие.</Card>
-<Card eyebrow="55" title="TOC индикатор" href="/components/toc-indicator">Оглавление с активным индикатором, SVG-линиями и pulse-анимацией.</Card>
+<Card eyebrow="52" title="Блоки уведомления" href="/components/admonition">Пять вариантов callout-блоков: note, tip, important, warning, caution.</Card>
+<Card eyebrow="53" title="Шаги со статусами" href="/components/steps">Нумерованные шаги с индикаторами: todo, active, done, warning.</Card>
+<Card eyebrow="54" title="Блок кода" href="/components/codeblock">Блоки кода с подсветкой Shiki, копированием и встроенным поиском.</Card>
+<Card eyebrow="55" title="Графики" href="/components/charts">Все типы графиков через `:::chart`: line, bar, pie, radar и другие.</Card>
+<Card eyebrow="56" title="TOC индикатор" href="/components/toc-indicator">Оглавление с активным индикатором, SVG-линиями и pulse-анимацией.</Card>
 </Cards>

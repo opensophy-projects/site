@@ -1,0 +1,130 @@
+---
+title: Карточка со свечением
+description: Карточка с мягким светящимся градиентом, заголовком и дополнительными метаданными.
+keywords: 'Opensophy, Карточка со свечением, glowcard, UI, библиотека компонентов'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import GlowCard from '$lib/components/ui-registry/glowcard.svelte';
+	import { GlowCardSource } from '$lib/components/ui-registry/ui-demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'text',
+			name: 'eyebrow',
+			label: 'Надзаголовок',
+			defaultValue: 'FEATURED'
+		},
+		{
+			type: 'text',
+			name: 'title',
+			label: 'Заголовок',
+			defaultValue: 'Карточка со свечением'
+		},
+		{
+			type: 'select',
+			name: 'radius',
+			label: 'Форма углов',
+			defaultValue: 'lg',
+			options: [
+				{ label: 'Без скругления', value: 'none' },
+				{ label: 'Маленькое', value: 'sm' },
+				{ label: 'Среднее', value: 'md' },
+				{ label: 'Большое', value: 'lg' },
+				{ label: 'Очень большое', value: 'xl' },
+				{ label: '2XL', value: '2xl' },
+				{ label: '3XL', value: '3xl' },
+				{ label: 'Полностью круглое', value: 'full' }
+			]
+		},
+		{
+			type: 'boolean',
+			name: 'disableBorder',
+			label: 'Отключить обводку при наведении',
+			defaultValue: false
+		}
+	];
+</script>
+
+# Карточка со свечением
+
+`glowcard.svelte` — карточка с мягким градиентным свечением на фоне. Поддерживает надзаголовок, заголовок, произвольное содержимое, ссылку и настраиваемую форму углов. Это отдельный компонент; существующая страница «Светящаяся карточка» остаётся без изменений.
+
+## Интерактивное демо
+
+Меняйте надзаголовок, заголовок, форму углов и видимость обводки в панели управления. Наведите курсор на карточку, чтобы увидеть оформление в контексте интерфейса.
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'glowcard.svelte', code: GlowCardSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="w-full max-w-lg p-8">
+			<GlowCard
+				eyebrow={values.eyebrow as string}
+				title={values.title as string}
+				radius={values.radius as 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full'}
+				disableBorder={values.disableBorder as boolean}
+			>
+				<p>Короткое описание компонента, функции или проекта. Свечение использует цвет акцента текущей темы.</p>
+			</GlowCard>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовый вариант
+
+```svelte
+<script lang="ts">
+	import GlowCard from '$lib/components/ui-registry/glowcard.svelte';
+</script>
+
+<GlowCard eyebrow="FEATURED" title="Новый проект">
+	<p>Описание проекта или дополнительная информация.</p>
+</GlowCard>
+```
+
+### Карточка-ссылка
+
+```svelte
+<GlowCard
+	eyebrow="ДОКУМЕНТАЦИЯ"
+	title="Изучить компоненты"
+	href="/components"
+>
+	<p>Открыть библиотеку компонентов.</p>
+</GlowCard>
+```
+
+### Выбор формы углов и отключение обводки
+
+```svelte
+<GlowCard radius="none" disableBorder class="my-custom-card" title="Без скругления и обводки">
+	<p>Содержимое карточки.</p>
+</GlowCard>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `children` | `Snippet` | — | Произвольное содержимое внутри карточки |
+| `eyebrow` | `string` | — | Небольшой надзаголовок над основным заголовком |
+| `title` | `string` | — | Заголовок карточки |
+| `href` | `string` | — | Если задан, карточка рендерится как ссылка `<a>` |
+| `radius` | `'none' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| 'full'` | `'lg'` | Форма скругления углов, выбирается из списка доступных вариантов |\n| `disableBorder` | `boolean` | `false` | Отключает обводку карточки и её изменение при наведении |
+| `class` | `string` | `''` | Дополнительные CSS-классы внешней обёртки |
+
+## Как работает свечение
+
+- Фоновый градиент строится на основе CSS-переменной `--accent`.
+- Внутренний блок использует цвета и границы текущей темы.
+- Эффект не требует дополнительных зависимостей JavaScript.
+
+## Исходный код
+
+Полный исходный код `glowcard.svelte` доступен во вкладке исходников в интерактивном демо выше.
