@@ -8,7 +8,7 @@ keywords: 'Opensophy, AsciiSweep, ASCII, WebGL, GLSL, UI components, библи�
 	import { ComponentPreview } from '$lib';
 	import AsciiSweep from '$lib/components/ui-registry/AsciiSweep.svelte';
 	import Card from '$lib/components/docs/markdown/Card.svelte';
-	let index = 0;
+	let index = $state(0);
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [
@@ -34,7 +34,7 @@ AsciiSweep выполняет переход между двумя HTML-пане
 <ComponentPreview controls={controls} sources={[{ name: 'Usage.svelte', code: source, language: 'svelte' }]}>
 	{#snippet children(values)}
 		<div class="w-full rounded-xl border border-border bg-background p-3 sm:p-5">
-			<AsciiSweep index={index} duration={values.duration as number} angle={values.angle as number} band={values.band as number} scale={values.scale as number} charset={values.charset as 'ascii' | 'blocks' | 'binary'} color="#74f7a1" glow={values.glow as number} turbulence={0.45} trail={0.75} tint={0.8} background="auto" class="w-full">
+			<AsciiSweep index={index} duration={values.duration as number} angle={values.angle as number} band={values.band as number} scale={values.scale as number} charset={values.charset as 'ascii' | 'blocks' | 'binary'} color="#74f7a1" glow={values.glow as number} turbulence={0.45} trail={0.75} tint={0.8} background="auto" class="h-[360px] w-full">
 				{#snippet children()}
 					<div class="flex h-full min-h-[340px] flex-col justify-center">
 						<Card eyebrow="OPENSOPHY / WORKFLOW" title="Люди принимают решения." class="w-full">
