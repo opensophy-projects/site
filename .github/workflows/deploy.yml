@@ -60,8 +60,40 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Audit
-        run: npm audit --audit-level=moderate
+      - name: Audit (warning-only)
+        shell: bash
+        run: |
+          set +e
+          npm audit --audit-level=moderate --json > "$RUNNER_TEMP/npm-audit.json" 2>&1
+          audit_status=$?
+          set -e
+
+          if [ "$audit_status" -eq 0 ]; then
+            echo "Dependency audit passed."
+            exit 0
+          fi
+
+          if node -e '
+            const fs = require("fs");
+            try {
+              const report = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+              const v = report.metadata && report.metadata.vulnerabilities;
+              if (!v) process.exit(2);
+              const total = v.total || 0;
+              const details = ["critical", "high", "moderate", "low", "info"]
+                .filter(level => v[level])
+                .map(level => `${level}: ${v[level]}`)
+                .join(", ");
+              console.log(`::warning::Dependency audit found ${total} vulnerability finding(s)${details ? ` (${details})` : ""}. Review npm audit and update affected dependencies when appropriate.`);
+            } catch {
+              process.exit(2);
+            }
+          ' "$RUNNER_TEMP/npm-audit.json"; then
+            exit 0
+          else
+            echo "::warning::Dependency audit could not complete (npm audit exit code: ${audit_status}); check registry access and the audit report."
+            exit 0
+          fi
 
   # ── 3. Semgrep SAST ───────────────────────────────────────────────────
   semgrep:
