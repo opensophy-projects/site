@@ -7,16 +7,16 @@ keywords: 'Opensophy, AsciiSweep, ASCII, WebGL, GLSL, UI components, библи�
 <script lang="ts">
 	import { ComponentPreview } from '$lib';
 	import AsciiSweep from '$lib/components/ui-registry/AsciiSweep.svelte';
+	import Card from '$lib/components/docs/markdown/Card.svelte';
+	let index = $state(0);
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [
-		{ type: 'select', name: 'index', label: 'Целевая панель', defaultValue: 1, options: [{ label: 'Первая', value: 0 }, { label: 'Вторая', value: 1 }] },
 		{ type: 'number', name: 'duration', label: 'Длительность', defaultValue: 2, min: 0.5, max: 4, step: 0.1, unit: 'с' },
 		{ type: 'number', name: 'angle', label: 'Угол перехода', defaultValue: 0, min: 0, max: 360, step: 15, unit: '°' },
 		{ type: 'number', name: 'band', label: 'Ширина полосы', defaultValue: 0.28, min: 0.08, max: 0.65, step: 0.01 },
 		{ type: 'number', name: 'scale', label: 'Размер символов', defaultValue: 2, min: 1, max: 4, step: 0.5, unit: 'px' },
 		{ type: 'select', name: 'charset', label: 'Набор символов', defaultValue: 'ascii', options: [{ label: 'ASCII', value: 'ascii' }, { label: 'Блоки', value: 'blocks' }, { label: 'Бинарный', value: 'binary' }] },
-		{ type: 'color', name: 'color', label: 'Цвет символов', defaultValue: '#74f7a1' },
 		{ type: 'number', name: 'glow', label: 'Свечение', defaultValue: 1.2, min: 0, max: 2, step: 0.1 }
 	];
 
@@ -31,30 +31,32 @@ AsciiSweep выполняет переход между двумя HTML-пане
 
 Настройте переход прямо здесь. Изменения параметров применяются на лету; акцентный цвет берётся из темы Opensophy.
 
-<ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'Usage.svelte', code: source, language: 'svelte' }]}>
+<ComponentPreview controls={controls} sources={[{ name: 'Usage.svelte', code: source, language: 'svelte' }]}>
 	{#snippet children(values)}
-		<div class="relative min-h-[360px] w-full overflow-hidden rounded-xl border border-border bg-background">
-			<AsciiSweep index={values.index as number} duration={values.duration as number} angle={values.angle as number} band={values.band as number} scale={values.scale as number} charset={values.charset as 'ascii' | 'blocks' | 'binary'} color={values.color as string} glow={values.glow as number} turbulence={0.45} trail={0.75} tint={0.8} background="var(--background)" class="h-[360px] w-full">
+		<div class="w-full rounded-xl border border-border bg-background p-3 sm:p-5">
+			<AsciiSweep index={index} duration={values.duration as number} angle={values.angle as number} band={values.band as number} scale={values.scale as number} charset={values.charset as 'ascii' | 'blocks' | 'binary'} color="#74f7a1" glow={values.glow as number} turbulence={0.45} trail={0.75} tint={0.8} background="auto" class="w-full">
 				{#snippet children()}
-					<div class="flex h-full min-h-[360px] flex-col justify-between bg-[var(--background)] p-6 text-[var(--foreground)]">
-						<div><p class="mb-3 font-mono text-xs tracking-[0.18em] text-[var(--accent)]">OPENSOPHY / WORKFLOW</p><h3 class="mb-3 max-w-md text-3xl font-semibold tracking-tight">Люди принимают решения.</h3><p class="max-w-md text-sm leading-6 text-[var(--foreground-muted)]">Общая рабочая область для обсуждения, проверки и совместного создания.</p></div>
-						<div class="grid grid-cols-2 gap-3 text-sm">
-							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Создание</span><strong>Вручную</strong></div>
-							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Доступ</span><strong>По ролям</strong></div>
-							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Процесс</span><strong>Совместный</strong></div>
-							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Статус</span><strong class="text-[var(--accent)]">Активен</strong></div>
-						</div>
+					<div class="flex h-full min-h-[340px] flex-col justify-center">
+						<Card eyebrow="OPENSOPHY / WORKFLOW" title="Люди принимают решения." class="w-full">
+							<p class="text-sm text-foreground-muted">Общая рабочая область для обсуждения, проверки и совместного создания.</p>
+							<div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+								<div class="border-t border-border pt-3"><span class="block text-foreground-muted">Создание</span><strong>Вручную</strong></div>
+								<div class="border-t border-border pt-3"><span class="block text-foreground-muted">Доступ</span><strong>По ролям</strong></div>
+							</div>
+							<button type="button" class="mt-5 rounded-lg border border-border px-4 py-2 text-sm transition hover:border-accent hover:text-accent" onclick={() => (index = 1)}>Свайп к огненной карточке →</button>
+						</Card>
 					</div>
 				{/snippet}
 				{#snippet alternate()}
-					<div class="flex h-full min-h-[360px] flex-col justify-between bg-[var(--background)] p-6 text-[var(--foreground)]">
-						<div><p class="mb-3 font-mono text-xs tracking-[0.18em] text-[var(--accent)]">OPENSOPHY / AUTOMATION</p><h3 class="mb-3 max-w-md text-3xl font-semibold tracking-tight">Рутина движется быстрее.</h3><p class="max-w-md text-sm leading-6 text-[var(--foreground-muted)]">Агенты выполняют повторяемые задачи, а человек сохраняет контроль над решениями.</p></div>
-						<div class="grid grid-cols-2 gap-3 text-sm">
-							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Создание</span><strong>С помощью агента</strong></div>
-							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Доступ</span><strong>Ограниченный</strong></div>
-							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Процесс</span><strong>Автоматизация</strong></div>
-							<div class="border-t border-[var(--border)] pt-3"><span class="block text-[var(--foreground-muted)]">Статус</span><strong class="text-[var(--accent)]">Готов</strong></div>
-						</div>
+					<div class="flex h-full min-h-[340px] flex-col justify-center">
+						<Card eyebrow="OPENSOPHY / IGNITION" title="Идея становится действием." class="w-full">
+							<p class="text-sm text-foreground-muted">Огненная карточка — акцентный режим для важных событий, смелых решений и быстрых запусков.</p>
+							<div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+								<div class="border-t border-border pt-3"><span class="block text-foreground-muted">Энергия</span><strong class="text-accent">Высокая</strong></div>
+								<div class="border-t border-border pt-3"><span class="block text-foreground-muted">Статус</span><strong>Запущено</strong></div>
+							</div>
+							<button type="button" class="mt-5 rounded-lg border border-border px-4 py-2 text-sm transition hover:border-accent hover:text-accent" onclick={() => (index = 0)}>← Вернуться к обычной карточке</button>
+						</Card>
 					</div>
 				{/snippet}
 			</AsciiSweep>
