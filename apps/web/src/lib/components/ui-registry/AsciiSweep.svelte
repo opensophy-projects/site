@@ -1,4 +1,5 @@
 <script module lang="ts">
+/* eslint-disable @typescript-eslint/no-non-null-assertion -- WebGL resources are initialized and validated before the render loop. */
 const canvasDimensionLimits = new WeakMap<WebGLRenderingContext | WebGL2RenderingContext, number>();
 
 /** Keep the existing DPR budget, then account for browser pinch zoom. */
@@ -16,8 +17,8 @@ function getCanvasPixelRatio(
     if (limit === undefined) {
       limit = Math.min(
         maxDimension,
-        context.getParameter(context.MAX_TEXTURE_SIZE),
-        context.getParameter(context.MAX_RENDERBUFFER_SIZE),
+        Number(context.getParameter(context.MAX_TEXTURE_SIZE)),
+        Number(context.getParameter(context.MAX_RENDERBUFFER_SIZE)),
       );
       canvasDimensionLimits.set(context, limit);
     }
@@ -65,7 +66,7 @@ function createCanvasResizeObserver(onResize: () => void) {
 }
 
 type HtmlInCanvasContext = CanvasRenderingContext2D & {
-  drawElementImage: (element: Element, x: number, y: number) => DOMMatrix | void;
+  drawElementImage: (element: Element, x: number, y: number) => DOMMatrix | undefined;
 };
 
 type HtmlInCanvasElement = HTMLCanvasElement & {
@@ -106,7 +107,7 @@ export type AsciiSweepCharset = "ascii" | "blocks" | "binary";
 
 export type AsciiSweepBlend = "auto" | "add" | "over";
 
-export interface AsciiSweepOptions {
+export type AsciiSweepOptions = {
   /** Sweep direction in degrees. 0 sweeps left to right, 90 sweeps bottom to top. */
   angle?: number;
   /** Seconds the sweep takes from one panel to the other. */
@@ -163,21 +164,21 @@ export interface AsciiSweepOptions {
   onSweepEnd?: (to: number) => void;
 }
 
-export interface AsciiSweepSlot {
+export type AsciiSweepSlot = {
   /** Canvas with layoutsubtree that hosts this panel's HTML. */
   source: HTMLCanvasElement;
   /** The element inside the source canvas that gets captured. */
   content: HTMLElement;
 }
 
-export interface AsciiSweepElements {
+export type AsciiSweepElements = {
   /** The two panel slots the effect sweeps between. */
   slots: [AsciiSweepSlot, AsciiSweepSlot];
   /** Canvas the WebGL effect renders to. */
   output: HTMLCanvasElement;
 }
 
-export interface AsciiSweepInstance {
+export type AsciiSweepInstance = {
   /** Update effect options live. */
   setOptions: (options: AsciiSweepOptions) => void;
   /** Sweep to slot 0 or 1. Pass an angle to override the configured direction for this sweep only. */
@@ -233,8 +234,8 @@ const DEFAULTS: Required<AsciiSweepOptions> = {
   fade: 0.75,
   blend: "auto",
   background: "auto",
-  onSweepStart: () => {},
-  onSweepEnd: () => {},
+  onSweepStart: () => undefined,
+  onSweepEnd: () => undefined,
 };
 
 type PaintableCanvas = HTMLCanvasElement & {
@@ -517,14 +518,14 @@ export function supportsHtmlInCanvas(): boolean {
   );
 }
 
-interface FallbackRect {
+type FallbackRect = {
   left: number;
   top: number;
   right: number;
   bottom: number;
 }
 
-interface FallbackPaintState {
+type FallbackPaintState = {
   style: CSSStyleDeclaration;
   visible: boolean;
   opacity: number;
@@ -726,7 +727,9 @@ function paintFallbackMedia(
       targetWidth,
       targetHeight,
     );
-  } catch {}
+  } catch {
+          // Ignore unsupported fallback rendering operations.
+        }
 }
 
 function isFallbackMediaOriginClean(
@@ -929,7 +932,7 @@ export function createAsciiSweep(
   }
 }
 
-interface SlotState {
+type SlotState = {
   source: HTMLCanvasElement;
   content: HTMLElement;
   ctx: ElementImageContext | null;
@@ -988,7 +991,7 @@ function initializeAsciiSweep(
   }
 
   let destroyed = false;
-  let wake = () => {};
+  let wake = () => undefined;
 
   function compile(type: number, text: string): WebGLShader {
     const shader = gl!.createShader(type)!;
@@ -1101,7 +1104,9 @@ function initializeAsciiSweep(
           drawHtmlInCanvas(state.source, state.ctx!, state.content);
           state.dirty = true;
           wake();
-        } catch {}
+        } catch {
+          // Ignore unsupported fallback rendering operations.
+        }
       };
     }
   }
@@ -1758,7 +1763,7 @@ function initializeAsciiSweep(
 <script lang="ts">
   import { onMount, tick } from "svelte";
 
-  interface Props extends AsciiSweepOptions {
+  type Props = AsciiSweepOptions & {
     class?: string;
     /** The first panel. */
     children?: import("svelte").Snippet;
@@ -1818,7 +1823,7 @@ function initializeAsciiSweep(
   onMount(() => {
     native = supportsHtmlInCanvas();
     let disposed = false;
-    (async () => {
+    void (async () => {
       await tick();
       if (disposed) return;
       instance = create();
