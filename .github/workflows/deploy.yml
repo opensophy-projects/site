@@ -1,27 +1,21 @@
 name: CI / Deploy
-
 on:
   push:
     branches: [main, prod]
   pull_request:
     branches: [main, prod]
   workflow_dispatch:
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
   pages: write
   id-token: write
   security-events: write
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 jobs:
-  # ── 1. Lint ───────────────────────────────────────────────────────────
   lint:
     name: Lint & Test
     runs-on: ubuntu-latest
@@ -29,73 +23,62 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Test
-        run: npm test
-
-  # ── 2. Dependency Audit ───────────────────────────────────────────────
+      - run: npm ci
+      - run: npm run lint
+        name: Lint
+      - run: npm test
+        name: Test
   audit:
     name: Dependency Audit
     needs: lint
     runs-on: ubuntu-latest
+    outputs:
+      summary: ${{ steps.audit.outputs.summary }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
+      - run: npm ci
       - name: Audit (warning-only)
+        id: audit
         shell: bash
         run: |
           set +e
           npm audit --audit-level=moderate --json > "$RUNNER_TEMP/npm-audit.json" 2>&1
-          audit_status=$?
+          rc=$?
           set -e
-
-          if [ "$audit_status" -eq 0 ]; then
-            echo "Dependency audit passed."
+          if [ "$rc" -eq 0 ]; then
+            echo "summary=No dependency vulnerabilities reported." >> "$GITHUB_OUTPUT"
+            echo "### Dependency audit" >> "$GITHUB_STEP_SUMMARY"
+            echo "✅ No dependency vulnerabilities reported." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-
           if node -e '
             const fs = require("fs");
             try {
-              const report = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
-              const v = report.metadata && report.metadata.vulnerabilities;
+              const r = JSON.parse(fs.readFileSync(process.argv[1], "utf8"));
+              const v = r.metadata?.vulnerabilities;
               if (!v) process.exit(2);
-              const total = v.total || 0;
-              const details = ["critical", "high", "moderate", "low", "info"]
-                .filter(level => v[level])
-                .map(level => `${level}: ${v[level]}`)
-                .join(", ");
-              console.log(`::warning::Dependency audit found ${total} vulnerability finding(s)${details ? ` (${details})` : ""}. Review npm audit and update affected dependencies when appropriate.`);
-            } catch {
-              process.exit(2);
-            }
+              const d = ["critical","high","moderate","low","info"].filter(k => v[k]).map(k => k + ": " + v[k]).join(", ") || "no severity breakdown";
+              const s = (v.total || 0) + " finding(s) (" + d + ")";
+              fs.appendFileSync(process.env.GITHUB_OUTPUT, "summary=" + s + "\n");
+              fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, "### Dependency audit\n⚠️ " + s + "\n\nRun `npm audit` locally for package details.\n");
+              console.log("::warning::Dependency audit found " + s);
+            } catch { process.exit(2); }
           ' "$RUNNER_TEMP/npm-audit.json"; then
             exit 0
-          else
-            echo "::warning::Dependency audit could not complete (npm audit exit code: ${audit_status}); check registry access and the audit report."
-            exit 0
           fi
-
-  # ── 3. Semgrep SAST ───────────────────────────────────────────────────
+          echo "summary=Audit could not produce a parseable report (exit code: $rc)." >> "$GITHUB_OUTPUT"
+          echo "### Dependency audit" >> "$GITHUB_STEP_SUMMARY"
+          echo "⚠️ Audit could not produce a parseable report (exit code: $rc); inspect the logs." >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning::Dependency audit could not complete; check registry access and the audit report."
+          exit 0
   semgrep:
     name: Semgrep SAST
     needs: audit
@@ -104,7 +87,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Semgrep Scan
         uses: semgrep/semgrep-action@v1
         with:
@@ -115,8 +97,6 @@ jobs:
             p/typescript
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-
-  # ── 4. SonarCloud ─────────────────────────────────────────────────────
   sonarcloud:
     name: SonarCloud
     needs: semgrep
@@ -125,21 +105,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
+      - run: npm ci
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  # ── 5. Build ──────────────────────────────────────────────────────────
   build:
     name: Build
     needs: sonarcloud
@@ -148,24 +122,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - run: npm ci
+      - run: npm run build
+        name: Build
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/web/build
-
-  # ── 6. Deploy ─────────────────────────────────────────────────────────
   deploy:
     name: Deploy
     needs: build
@@ -178,3 +144,57 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+  summary:
+    name: Pipeline Summary
+    if: always()
+    needs: [lint, audit, semgrep, sonarcloud, build, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish unified summary
+        shell: bash
+        env:
+          LINT: ${{ needs.lint.result }}
+          AUDIT: ${{ needs.audit.result }}
+          AUDIT_DETAILS: ${{ needs.audit.outputs.summary }}
+          SEMGREP: ${{ needs.semgrep.result }}
+          SONAR: ${{ needs.sonarcloud.result }}
+          BUILD: ${{ needs.build.result }}
+          DEPLOY: ${{ needs.deploy.result }}
+          EVENT: ${{ github.event_name }}
+        run: |
+          status() {
+            case "$1" in
+              success) echo "✅ Passed" ;;
+              failure) echo "❌ Failed" ;;
+              cancelled) echo "⏹️ Cancelled" ;;
+              skipped) echo "➖ Skipped" ;;
+              *) echo "⚠️ $1" ;;
+            esac
+          }
+          {
+            echo "# CI / Deploy — Summary"
+            echo
+            echo "| Check | Status | Details |"
+            echo "|---|---|---|"
+            echo "| Lint & Test | $(status "$LINT") | Lint and test suite |"
+            echo "| Dependency Audit | $(status "$AUDIT") | ${AUDIT_DETAILS:-No details available} |"
+            echo "| Semgrep SAST | $(status "$SEMGREP") | Static security analysis; open job logs for findings |"
+            echo "| SonarCloud | $(status "$SONAR") | Code quality analysis; open job logs for findings |"
+            echo "| Build | $(status "$BUILD") | Production build |"
+            if [ "$EVENT" = "pull_request" ]; then
+              echo "| Deploy | ➖ Skipped | Pull requests are not deployed |"
+            else
+              echo "| Deploy | $(status "$DEPLOY") | Publish site |"
+            fi
+            echo
+            if [ "$LINT" = failure ] || [ "$SEMGREP" = failure ] || [ "$SONAR" = failure ] || [ "$BUILD" = failure ] || { [ "$EVENT" != pull_request ] && [ "$DEPLOY" = failure ]; }; then
+              echo "## Attention required"
+              echo "One or more blocking checks failed. Open the relevant job for full errors."
+            elif [ -n "$AUDIT_DETAILS" ] && [ "$AUDIT_DETAILS" != "No dependency vulnerabilities reported." ]; then
+              echo "## Warnings"
+              echo "Dependency audit: $AUDIT_DETAILS"
+            else
+              echo "## Result"
+              echo "All required checks completed successfully."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
