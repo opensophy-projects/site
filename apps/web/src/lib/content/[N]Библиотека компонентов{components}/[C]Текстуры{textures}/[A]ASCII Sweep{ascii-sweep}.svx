@@ -8,7 +8,7 @@ keywords: 'Opensophy, AsciiSweep, ASCII, WebGL, GLSL, UI components, библи�
 	import { ComponentPreview } from '$lib';
 	import AsciiSweep from '$lib/components/ui-registry/AsciiSweep.svelte';
 	import Card from '$lib/components/docs/markdown/Card.svelte';
-	let index = $state(0);
+	let index = 0;
 	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
 	const controls: ComponentPreviewControl[] = [
