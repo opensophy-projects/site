@@ -1,0 +1,113 @@
+---
+title: Карточка со свечением
+description: Карточка с мягким светящимся градиентом, заголовком и дополнительными метаданными.
+keywords: 'Opensophy, Карточка со свечением, glowcard, UI, библиотека компонентов'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import GlowCard from '$lib/components/ui-registry/glowcard.svelte';
+	import { GlowCardSource } from '$lib/components/ui-registry/ui-demo-sources';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'text',
+			name: 'eyebrow',
+			label: 'Надзаголовок',
+			defaultValue: 'FEATURED'
+		},
+		{
+			type: 'text',
+			name: 'title',
+			label: 'Заголовок',
+			defaultValue: 'Карточка со свечением'
+		},
+		{
+			type: 'boolean',
+			name: 'square',
+			label: 'Квадратные углы',
+			defaultValue: false
+		}
+	];
+</script>
+
+# Карточка со свечением
+
+`glowcard.svelte` — карточка с мягким градиентным свечением на фоне. Поддерживает надзаголовок, заголовок, произвольное содержимое, ссылку и вариант с квадратными углами. Это отдельный компонент; существующая страница «Светящаяся карточка» остаётся без изменений.
+
+## Интерактивное демо
+
+Меняйте надзаголовок, заголовок и форму углов в панели управления. Наведите курсор на карточку, чтобы увидеть оформление в контексте интерфейса.
+
+<ComponentPreview
+	controls={controls}
+	sources={[{ name: 'glowcard.svelte', code: GlowCardSource, language: 'svelte' }]}
+>
+	{#snippet children(values)}
+		<div class="w-full max-w-lg p-8">
+			<GlowCard
+				eyebrow={values.eyebrow as string}
+				title={values.title as string}
+				square={values.square as boolean}
+			>
+				<p>Короткое описание компонента, функции или проекта. Свечение использует цвет акцента текущей темы.</p>
+			</GlowCard>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Базовый вариант
+
+```svelte
+<script lang="ts">
+	import GlowCard from '$lib/components/ui-registry/glowcard.svelte';
+</script>
+
+<GlowCard eyebrow="FEATURED" title="Новый проект">
+	<p>Описание проекта или дополнительная информация.</p>
+</GlowCard>
+```
+
+### Карточка-ссылка
+
+```svelte
+<GlowCard
+	eyebrow="ДОКУМЕНТАЦИЯ"
+	title="Изучить компоненты"
+	href="/components"
+>
+	<p>Открыть библиотеку компонентов.</p>
+</GlowCard>
+```
+
+### Квадратные углы и дополнительные классы
+
+```svelte
+<GlowCard square class="my-custom-card" title="Без скругления">
+	<p>Содержимое карточки.</p>
+</GlowCard>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `children` | `Snippet` | — | Произвольное содержимое внутри карточки |
+| `eyebrow` | `string` | — | Небольшой надзаголовок над основным заголовком |
+| `title` | `string` | — | Заголовок карточки |
+| `href` | `string` | — | Если задан, карточка рендерится как ссылка `<a>` |
+| `square` | `boolean` | `false` | Отключает скругление внешней обёртки и карточки |
+| `class` | `string` | `''` | Дополнительные CSS-классы внешней обёртки |
+
+## Как работает свечение
+
+- Фоновый градиент строится на основе CSS-переменной `--accent`.
+- Внутренний блок использует цвета и границы текущей темы.
+- Эффект не требует дополнительных зависимостей JavaScript.
+
+## Исходный код
+
+Полный исходный код `glowcard.svelte` доступен во вкладке исходников в интерактивном демо выше.
