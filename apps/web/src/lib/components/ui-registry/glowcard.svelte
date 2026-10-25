@@ -1,30 +1,47 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { cn } from '$lib/utils/cn';
+
+	type Radius = 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full';
+
 	let {
 		children,
 		eyebrow,
 		title,
 		href,
-		square = false,
+		radius = 'lg',
+		disableBorder = false,
 		class: className = ''
 	}: {
 		children?: Snippet;
 		eyebrow?: string;
 		title?: string;
 		href?: string;
-		square?: boolean;
+		radius?: Radius;
+		disableBorder?: boolean;
 		class?: string;
 	} = $props();
+
+	const radiusClasses: Record<Radius, { wrapper: string; card: string }> = {
+		none: { wrapper: 'rounded-none', card: 'rounded-none' },
+		sm: { wrapper: 'rounded-md', card: 'rounded-sm' },
+		md: { wrapper: 'rounded-lg', card: 'rounded-md' },
+		lg: { wrapper: 'rounded-xl', card: 'rounded-lg' },
+		xl: { wrapper: 'rounded-2xl', card: 'rounded-xl' },
+		'2xl': { wrapper: 'rounded-3xl', card: 'rounded-2xl' },
+		'3xl': { wrapper: 'rounded-[2rem]', card: 'rounded-3xl' },
+		full: { wrapper: 'rounded-full', card: 'rounded-full' }
+	};
 </script>
 
-<div class={cn('inset-shadow bg-background-inset p-1.5', square ? 'rounded-none' : 'rounded-xl', className)}>
+<div class={cn('inset-shadow bg-background-inset p-1.5', radiusClasses[radius].wrapper, className)}>
 	<svelte:element
 		this={href ? 'a' : 'div'}
 		{href}
 		class={cn(
-			'group relative isolate block overflow-hidden border border-border bg-background p-5 card transition-colors duration-150 hover:border-accent/60',
-			square ? 'rounded-none' : 'rounded-lg'
+			'group relative isolate block overflow-hidden bg-background p-5 card transition-colors duration-150',
+			!disableBorder && 'border border-border hover:border-accent/60',
+			radiusClasses[radius].card
 		)}
 	>
 		<div class="card-glow pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
