@@ -31,7 +31,7 @@ AsciiSweep выполняет переход между двумя HTML-пане
 
 Настройте переход прямо здесь. Изменения параметров применяются на лету; акцентный цвет берётся из темы Opensophy.
 
-<ComponentPreview controls={controls} sources={[{ name: 'Usage.svelte', code: source, language: 'svelte' }]}>
+<ComponentPreview controls={controls} refreshOnControlChange={true} sources={[{ name: 'Usage.svelte', code: source, language: 'svelte' }]}>
 	{#snippet children(values)}
 		<div class="relative min-h-[360px] w-full overflow-hidden rounded-xl border border-border bg-background">
 			<AsciiSweep index={values.index as number} duration={values.duration as number} angle={values.angle as number} band={values.band as number} scale={values.scale as number} charset={values.charset as 'ascii' | 'blocks' | 'binary'} color={values.color as string} glow={values.glow as number} turbulence={0.45} trail={0.75} tint={0.8} background="var(--background)" class="h-[360px] w-full">
