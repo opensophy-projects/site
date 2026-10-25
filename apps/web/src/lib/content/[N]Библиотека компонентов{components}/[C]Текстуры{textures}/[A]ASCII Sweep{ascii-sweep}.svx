@@ -37,8 +37,8 @@ AsciiSweep выполняет переход между двумя HTML-пане
 		<div class="w-full rounded-xl border border-border bg-background p-3 sm:p-5">
 			<AsciiSweep index={index} duration={values.duration as number} angle={values.angle as number} band={values.band as number} scale={values.scale as number} charset={values.charset as 'ascii' | 'blocks' | 'binary'} color={values.color as string} glow={values.glow as number} turbulence={0.45} trail={0.75} tint={0.8} background="auto" class="h-[360px] w-full">
 				{#snippet children()}
-					<div class="flex h-full min-h-[340px] flex-col justify-center overflow-hidden rounded-xl">
-						<Card eyebrow="OPENSOPHY / WORKFLOW" title="Люди принимают решения." class="w-full rounded-xl overflow-hidden">
+					<div class="flex h-full min-h-[340px] flex-col justify-center">
+						<Card eyebrow="OPENSOPHY / WORKFLOW" title="Люди принимают решения." class="w-full">
 							<p class="text-sm text-foreground-muted">Общая рабочая область для обсуждения, проверки и совместного создания.</p>
 							<div class="mt-5 grid grid-cols-2 gap-3 text-sm">
 								<div class="border-t border-border pt-3"><span class="block text-foreground-muted">Создание</span><strong>Вручную</strong></div>
