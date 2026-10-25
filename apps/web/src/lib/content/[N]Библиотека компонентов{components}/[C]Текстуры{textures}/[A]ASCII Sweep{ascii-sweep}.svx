@@ -1,0 +1,194 @@
+---
+title: ASCII-свайп
+description: Переход между двумя панелями интерфейса с акцентным ASCII-следом Opensophy.
+keywords: 'Opensophy, AsciiSweep, ASCII, WebGL, GLSL, UI components, библиотека компонентов'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import AsciiSweep from '$lib/components/ui-registry/AsciiSweep.svelte';
+	import Card from '$lib/components/docs/markdown/Card.svelte';
+	import { AsciiSweepSource } from '$lib/components/ui-registry/demo-sources';
+	let index = 0;
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'number', name: 'duration', label: 'Длительность', defaultValue: 2, min: 0.5, max: 4, step: 0.1, unit: 'с' },
+		{ type: 'number', name: 'angle', label: 'Угол перехода', defaultValue: 0, min: 0, max: 360, step: 15, unit: '°' },
+		{ type: 'number', name: 'band', label: 'Ширина полосы', defaultValue: 0.28, min: 0.08, max: 0.65, step: 0.01 },
+		{ type: 'number', name: 'scale', label: 'Размер символов', defaultValue: 2, min: 1, max: 4, step: 0.5, unit: 'px' },
+		{ type: 'color', name: 'color', label: 'Цвет свайпа', defaultValue: '#ff315b' },
+		{ type: 'select', name: 'charset', label: 'Набор символов', defaultValue: 'ascii', options: [{ label: 'ASCII', value: 'ascii' }, { label: 'Блоки', value: 'blocks' }, { label: 'Бинарный', value: 'binary' }] },
+		{ type: 'number', name: 'glow', label: 'Свечение', defaultValue: 1.2, min: 0, max: 2, step: 0.1 }
+	];
+
+	const source = '<script lang="ts">\n  import AsciiSweep from "$lib/components/ui-registry/AsciiSweep.svelte";\n  let index = 0;\n<\/script>\n\n<button onclick={() => (index = index === 0 ? 1 : 0)}>Switch panel</button>\n\n<AsciiSweep {index} duration={2} color="#ff315b">\n  {#snippet children()}<div>First panel</div>{/snippet}\n  {#snippet alternate()}<div>Second panel</div>{/snippet}\n</AsciiSweep>';
+</script>
+
+# ASCII-свайп
+
+AsciiSweep выполняет переход между двумя HTML-панелями: движущаяся полоса ASCII-символов проявляет целевую панель и скрывает исходную. Эффект рисуется на WebGL2, а содержимое панелей остаётся обычной разметкой Svelte.
+
+## Интерактивное демо
+
+Настройте переход прямо здесь: длительность, направление, ширину полосы, размер и набор символов, свечение и цвет свайпа. По умолчанию в демо используется фирменный розовый Opensophy.
+
+<ComponentPreview controls={controls} sources={[{ name: 'Usage.svelte', code: source, language: 'svelte' }, { name: 'AsciiSweep.svelte', code: AsciiSweepSource, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<div class="w-full rounded-xl border border-border bg-background p-3 sm:p-5">
+			<AsciiSweep index={index} duration={values.duration as number} angle={values.angle as number} band={values.band as number} scale={values.scale as number} charset={values.charset as 'ascii' | 'blocks' | 'binary'} color={values.color as string} glow={values.glow as number} turbulence={0.45} trail={0.75} tint={0.8} background="auto" class="h-[360px] w-full">
+				{#snippet children()}
+					<div class="flex h-full min-h-[340px] flex-col justify-center">
+						<Card eyebrow="OPENSOPHY / WORKFLOW" title="Люди принимают решения." square class="w-full">
+							<p class="text-sm text-foreground-muted">Общая рабочая область для обсуждения, проверки и совместного создания.</p>
+							<div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+								<div class="border-t border-border pt-3"><span class="block text-foreground-muted">Создание</span><strong>Вручную</strong></div>
+								<div class="border-t border-border pt-3"><span class="block text-foreground-muted">Доступ</span><strong>По ролям</strong></div>
+							</div>
+							<button type="button" class="mt-5 rounded-lg border border-border px-4 py-2 text-sm transition hover:border-accent hover:text-accent" onclick={() => (index = 1)}>Свайп к огненной карточке →</button>
+						</Card>
+					</div>
+				{/snippet}
+				{#snippet alternate()}
+					<div class="flex h-full min-h-[340px] flex-col justify-center">
+						<Card eyebrow="OPENSOPHY / IGNITION" title="Идея становится действием." square class="w-full">
+							<p class="text-sm text-foreground-muted">Огненная карточка — акцентный режим для важных событий, смелых решений и быстрых запусков.</p>
+							<div class="mt-5 grid grid-cols-2 gap-3 text-sm">
+								<div class="border-t border-border pt-3"><span class="block text-foreground-muted">Энергия</span><strong class="text-accent">Высокая</strong></div>
+								<div class="border-t border-border pt-3"><span class="block text-foreground-muted">Статус</span><strong>Запущено</strong></div>
+							</div>
+							<button type="button" class="mt-5 rounded-lg border border-border px-4 py-2 text-sm transition hover:border-accent hover:text-accent" onclick={() => (index = 0)}>← Вернуться к обычной карточке</button>
+						</Card>
+					</div>
+				{/snippet}
+			</AsciiSweep>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+### Две панели и переключение
+
+Передайте основной контент через snippet <code>children</code>, второй — через <code>alternate</code>. Свойство <code>index</code> задаёт целевую панель: 0 или 1.
+
+~~~svelte
+<script lang="ts">
+	import AsciiSweep from '$lib/components/ui-registry/AsciiSweep.svelte';
+	let index = 0;
+</script>
+
+<button onclick={() => (index = index === 0 ? 1 : 0)}>Переключить панель</button>
+
+<AsciiSweep {index} duration={2} color="#74f7a1">
+	{#snippet children()}<div>Первая панель</div>{/snippet}
+	{#snippet alternate()}<div>Вторая панель</div>{/snippet}
+</AsciiSweep>
+~~~
+
+### Направление и визуальные параметры
+
+~~~svelte
+<AsciiSweep {index} angle={90} duration={1.6} band={0.32} softness={0.45} turbulence={0.5} trail={0.75} scale={2} charset="blocks" color="#ff315b" glow={1.2} tint={0.8} background="var(--background)">
+	{#snippet children()}<div>Исходное содержимое</div>{/snippet}
+	{#snippet alternate()}<div>Целевое содержимое</div>{/snippet}
+</AsciiSweep>
+~~~
+
+### Ручное управление прогрессом
+
+Задайте <code>progress</code> в диапазоне 0–1, чтобы управлять положением перехода извне. Значение -1 (по умолчанию) включает автоматическую анимацию по <code>duration</code>.
+
+~~~svelte
+<AsciiSweep {index} progress={progress} duration={2}>
+	{#snippet children()}<div>Панель A</div>{/snippet}
+	{#snippet alternate()}<div>Панель B</div>{/snippet}
+</AsciiSweep>
+~~~
+
+## Пропсы
+
+### Переход
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| <code>index</code> | <code>0 \| 1</code> | 0 | Индекс целевой панели. Изменение запускает переход |
+| <code>angle</code> | number | 0 | Направление в градусах: 0 — слева направо, 90 — снизу вверх |
+| <code>duration</code> | number | 2 | Длительность перехода в секундах |
+| <code>progress</code> | number | -1 | Ручной прогресс от 0 до 1; -1 включает автоматическую анимацию |
+| <code>band</code> | number | 0.28 | Ширина полосы относительно пути (0–1) |
+| <code>softness</code> | number | 0.45 | Мягкость краёв полосы (0–1) |
+| <code>turbulence</code> | number | 0.5 | Неровность края, усиливает разрывы по строкам |
+| <code>trail</code> | number | 0.75 | Длина светящегося следа относительно полосы |
+
+### Символы и свечение
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| <code>scale</code> | number | 2 | Размер пикселя символа в CSS-пикселях; глифы имеют сетку 5×5 |
+| <code>spacing</code> | number | 1 | Пустой отступ вокруг символа (0–3) |
+| <code>charset</code> | <code>'ascii' \| 'blocks' \| 'binary'</code> | ascii | Встроенный набор символов |
+| <code>glyphs</code> | <code>number[]</code> | [] | Пользовательский набор упакованных 5×5 bitmap-глифов; переопределяет charset |
+| <code>color</code> | string | #4ade80 | Цвет символов в любом CSS-формате; демо использует фирменный розовый #ff315b |
+| <code>tint</code> | number | 0.75 | Сила замены исходного цвета цветом символов (0–1) |
+| <code>glow</code> | number | 2 | Интенсивность фосфорного свечения (0–2) |
+| <code>aberration</code> | number | 5 | Хроматическое смещение в CSS-пикселях |
+| <code>flicker</code> | number | 0.35 | Интенсивность мерцания символов (0–1) |
+| <code>density</code> | number | 0.9 | Доля ячеек, загорающихся внутри полосы (0–1) |
+
+### Обработка изображения
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| <code>displace</code> | number | 14 | Горизонтальное смещение строк в CSS-пикселях |
+| <code>contrast</code> | number | 1.2 | Контраст перед выбором глифа |
+| <code>brightness</code> | number | 0 | Смещение плотности перед выбором глифа (-1–1) |
+| <code>invert</code> | number | 0 | Инверсия плотности символов (0–1) |
+| <code>threshold</code> | number | 0.1 | Порог контраста для определения деталей |
+| <code>fade</code> | number | 0.75 | Насколько затемняется содержимое под полосой (0–1) |
+| <code>blend</code> | <code>'auto' \| 'add' \| 'over'</code> | auto | Режим наложения: авто, аддитивный или поверх изображения |
+| <code>background</code> | string | auto | Цвет фона под содержимым или auto для чтения из DOM |
+
+### События и атрибуты
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| <code>onSweepStart</code> | <code>(to: number) => void</code> | — | Вызывается при начале перехода |
+| <code>onSweepEnd</code> | <code>(to: number) => void</code> | — | Вызывается, когда целевая панель полностью показана |
+| <code>class</code> | string | — | Дополнительные CSS-классы контейнера |
+
+## Instance API
+
+Через <code>bind:this</code> можно получить экземпляр и управлять эффектом программно.
+
+~~~svelte
+<script lang="ts">
+	import AsciiSweep from '$lib/components/ui-registry/AsciiSweep.svelte';
+	import type { AsciiSweepInstance } from '$lib/components/ui-registry/AsciiSweep.svelte';
+	let sweep: AsciiSweepInstance;
+</script>
+
+<AsciiSweep bind:this={sweep} index={0}>
+	{#snippet children()}<div>Первая панель</div>{/snippet}
+	{#snippet alternate()}<div>Вторая панель</div>{/snippet}
+</AsciiSweep>
+
+<button onclick={() => sweep?.sweep(1, { angle: 90 })}>Показать вторую</button>
+<button onclick={() => sweep?.capture()}>Обновить снимки</button>
+~~~
+
+| Метод | Описание |
+| --- | --- |
+| <code>setOptions(options: AsciiSweepOptions)</code> | Обновить параметры эффекта на лету |
+| <code>sweep(to: 0 или 1, options?)</code> | Перейти к панели 0 или 1; можно переопределить угол для одного перехода |
+| <code>current()</code> | Вернуть панель, на которой эффект остановился или к которой движется |
+| <code>capture()</code> | Повторно захватить содержимое обеих панелей |
+| <code>resize()</code> | Повторно измерить размеры canvas |
+| <code>destroy()</code> | Остановить цикл и освободить ресурсы GPU |
+
+## Ограничения
+
+- Для точного захвата DOM в Canvas требуется экспериментальный HTML-in-Canvas API в браузере Chrome. Если он недоступен, компонент использует упрощённый fallback через Canvas 2D.
+- Компонент рассчитан на две панели. Содержимое слотов должно иметь определённые размеры, чтобы его можно было корректно захватить.
+- Эффект использует WebGL2; на устройствах без WebGL2 полноценный шейдерный переход недоступен.
+- Учитывайте стоимость захвата сложной DOM-разметки и медиа. Для стабильного результата задавайте панелям явные размеры.
