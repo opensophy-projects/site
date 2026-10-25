@@ -509,7 +509,7 @@ void main () {
 
 export function supportsHtmlInCanvas(): boolean {
   if (typeof document === "undefined") return false;
-  const probe = document.createElement("canvas") as PaintableCanvas;
+  const probe = document.createElement("canvas");
   const ctx = probe.getContext("2d") as ElementImageContext | null;
   return Boolean(
     ctx &&
@@ -1753,6 +1753,7 @@ function initializeAsciiSweep(
   };
 }
 
+  /* eslint-disable @typescript-eslint/consistent-type-definitions -- Module augmentation requires an interface. */
   declare module "svelte/elements" {
     interface HTMLCanvasAttributes {
       layoutsubtree?: string;
@@ -1761,6 +1762,7 @@ function initializeAsciiSweep(
 </script>
 
 <script lang="ts">
+  /* eslint-disable @typescript-eslint/no-non-null-assertion -- Bound elements are checked before initialization and WebGL resources are validated at setup. */
   import { onMount, tick } from "svelte";
 
   type Props = AsciiSweepOptions & {
