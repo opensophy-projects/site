@@ -6,22 +6,24 @@
 		eyebrow,
 		title,
 		href,
+		square = false,
 		class: className = ''
 	}: {
 		children?: Snippet;
 		eyebrow?: string;
 		title?: string;
 		href?: string;
+		square?: boolean;
 		class?: string;
 	} = $props();
 </script>
 
-<div class={cn('inset-shadow rounded-xl bg-background-inset p-1.5', className)}>
+<div class={cn('inset-shadow bg-background-inset p-1.5', square ? 'rounded-none' : 'rounded-xl', className)}>
 	<svelte:element
 		this={href ? 'a' : 'div'}
 		{href}
 		class={cn(
-			'group block rounded-lg border border-border bg-background p-5 card transition-colors duration-150 hover:border-accent/60'
+			cn('group block border border-border bg-background p-5 card transition-colors duration-150 hover:border-accent/60', square ? 'rounded-none' : 'rounded-lg')
 		)}
 	>
 		{#if eyebrow}<div class="mb-3 text-xs font-semibold tracking-widest text-accent uppercase">
