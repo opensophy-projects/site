@@ -1,4 +1,5 @@
 import ButtonSource from './Button.svelte?raw';
+import GlowCardSource from './glowcard.svelte?raw';
 import BadgeSource from './Badge.svelte?raw';
 import StatusBadgeSource from './StatusBadge.svelte?raw';
 import TestimonialSource from './Testimonial.svelte?raw';
@@ -32,6 +33,7 @@ import AsciiSweepSource from './AsciiSweep.svelte?raw';
 
 export {
 	ButtonSource,
+	GlowCardSource,
 	BadgeSource,
 	StatusBadgeSource,
 	TestimonialSource,
