@@ -20,7 +20,7 @@ keywords: 'Opensophy, AsciiSweep, ASCII, WebGL, GLSL, UI components, библи�
 		{ type: 'number', name: 'glow', label: 'Свечение', defaultValue: 1.2, min: 0, max: 2, step: 0.1 }
 	];
 
-	const source = '<script lang="ts">\\n  import AsciiSweep from "$lib/components/ui-registry/AsciiSweep.svelte";\\n  let index = $state(0);\\n</script>\\n\\n<button onclick={() => (index = index === 0 ? 1 : 0)}>Switch panel</button>\\n\\n<AsciiSweep {index} duration={2} color="#74f7a1">\\n  {#snippet children()}<div>First panel</div>{/snippet}\\n  {#snippet alternate()}<div>Second panel</div>{/snippet}\\n</AsciiSweep>';
+	const source = '<script lang="ts">\n  import AsciiSweep from "$lib/components/ui-registry/AsciiSweep.svelte";\n  let index = $state(0);\n</script>\n\n<button onclick={() => (index = index === 0 ? 1 : 0)}>Switch panel</button>\n\n<AsciiSweep {index} duration={2} color="#74f7a1">\n  {#snippet children()}<div>First panel</div>{/snippet}\n  {#snippet alternate()}<div>Second panel</div>{/snippet}\n</AsciiSweep>';
 </script>
 
 # ASCII Sweep
