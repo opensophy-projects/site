@@ -510,7 +510,7 @@ void main () {
 export function supportsHtmlInCanvas(): boolean {
   if (typeof document === "undefined") return false;
   const probe = document.createElement("canvas");
-  const ctx = probe.getContext("2d") as ElementImageContext | null;
+  const ctx = probe.getContext("2d");
   return Boolean(
     ctx &&
     typeof ctx.drawElementImage === "function" &&
@@ -1007,7 +1007,8 @@ function initializeAsciiSweep(
 
   const vertexShader = compile(gl.VERTEX_SHADER, VERT);
   const fragmentShader = compile(gl.FRAGMENT_SHADER, FRAG);
-  const program = gl.createProgram()!;
+  const program = gl.createProgram();
+  if (!program) throw new Error("Unable to create WebGL program");
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
@@ -1038,7 +1039,8 @@ function initializeAsciiSweep(
   gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
   function createSlotTexture(): WebGLTexture {
-    const texture = gl!.createTexture()!;
+    const texture = gl!.createTexture();
+    if (!texture) throw new Error("Unable to create WebGL texture");
     gl!.bindTexture(gl!.TEXTURE_2D, texture);
     gl!.texParameteri(
       gl!.TEXTURE_2D,
@@ -1062,9 +1064,7 @@ function initializeAsciiSweep(
     return texture;
   }
 
-  const firstCtx = slots[0].source.getContext(
-    "2d",
-  ) as ElementImageContext | null;
+  const firstCtx = slots[0].source.getContext("2d");
   const htmlInCanvas = Boolean(
     firstCtx &&
     typeof firstCtx.drawElementImage === "function" &&
@@ -1081,8 +1081,8 @@ function initializeAsciiSweep(
     ctx:
       index === 0
         ? firstCtx
-        : (slot.source.getContext("2d") as ElementImageContext | null),
-    paintable: slot.source as PaintableCanvas,
+        : slot.source.getContext("2d"),
+    paintable: slot.source,
     texture: createSlotTexture(),
     fallbackCanvas: null,
     dirty: false,
@@ -1742,13 +1742,13 @@ function initializeAsciiSweep(
         state.content.removeEventListener("scroll", onPanelScroll);
         window.clearTimeout(state.captureTimer);
         window.clearTimeout(state.scrollTimer);
-        gl!.deleteTexture(state.texture);
+        gl.deleteTexture(state.texture);
         if (htmlInCanvas) state.paintable.onpaint = null;
       }
-      gl!.deleteProgram(program);
-      gl!.deleteShader(vertexShader);
-      gl!.deleteShader(fragmentShader);
-      gl!.deleteBuffer(quad);
+      gl.deleteProgram(program);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
+      gl.deleteBuffer(quad);
     },
   };
 }
