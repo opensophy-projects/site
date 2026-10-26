@@ -828,13 +828,14 @@ void main() {
       raf = 0;
       if (disposed || !visible || document.hidden) return;
       const s = settings;
-      const dt = last ? clamp((now - last) / 1000, 0.001, 0.05) : 1 / 60;
-      last = now;
       // Keep the animation responsive while limiting expensive multi-pass WebGL draws to ~30 FPS.
+      // Measure elapsed time only on rendered frames so animation speed and intro progress stay correct.
       if (now - lastRender < 1000 / 30) {
         raf = requestAnimationFrame(frame);
         return;
       }
+      const dt = last ? clamp((now - last) / 1000, 0.001, 0.05) : 1 / 60;
+      last = now;
       lastRender = now;
       if (!reduce) {
         time += dt * s.speed * 0.5;
