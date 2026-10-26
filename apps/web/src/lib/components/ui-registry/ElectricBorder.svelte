@@ -1,7 +1,7 @@
 <script module lang="ts">
   import type { Snippet } from 'svelte';
 
-  export interface ElectricBorderProps {
+  export type ElectricBorderProps = {
     children?: Snippet;
     color?: string;
     glowColor?: string;
@@ -24,9 +24,9 @@
     class?: string;
     /** Строка inline-стилей (в Svelte style — это строка, а не объект). */
     style?: string;
-  }
+  };
 
-  interface Settings {
+  type Settings = {
     core: number[];
     glowColor: number[];
     speed: number;
@@ -45,14 +45,14 @@
     interactive: boolean;
     cursorRadius: number;
     light: boolean;
-  }
+  };
 
-  interface Program {
+  type Program = {
     program: WebGLProgram;
     uniforms: Record<string, WebGLUniformLocation | null>;
-  }
+  };
 
-  interface BorderPath {
+  type BorderPath = {
     hx: number;
     hy: number;
     r: number;
@@ -61,9 +61,9 @@
     ay: number;
     quarter: number;
     perimeter: number;
-  }
+  };
 
-  interface Spark {
+  type Spark = {
     ax: number;
     ay: number;
     bx: number;
@@ -72,12 +72,12 @@
     seed: number;
     born: number;
     life: number;
-  }
+  };
 
-  interface Pulse {
+  type Pulse = {
     s: number;
     born: number;
-  }
+  };
 
   const ARCS = 4;
   const PULSES = 3;
@@ -332,7 +332,7 @@ void main() {
   const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
   const parseColor = (value: string): number[] => {
-    const text = String(value || '').trim();
+    const text = value.trim();
     const hex = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(text);
     if (hex) {
       const full = hex[1].length === 3 ? hex[1].replace(/./g, (digit) => digit + digit) : hex[1];
@@ -345,7 +345,7 @@ void main() {
       if (context) {
         context.fillStyle = '#000000';
         context.fillStyle = text;
-        const normal = String(context.fillStyle);
+        const normal = context.fillStyle;
         if (normal !== '#000000' || /^(#0{3}|#0{6}|black)$/i.test(text)) return parseColor(normal);
       }
     }
@@ -525,7 +525,7 @@ void main() {
   // Аналог useEffect без зависимостей: при любом изменении настроек
   // пересчитываем размеры и будим цикл рендера.
   $effect(() => {
-    void settings;
+    JSON.stringify(settings);
     wakeHandle?.();
   });
 
