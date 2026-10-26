@@ -1,0 +1,59 @@
+---
+title: Ветвление
+description: Интерактивная изометрическая SVG-иллюстрация веток разработки с анимированными узлами коммитов.
+keywords: 'Opensophy, BranchesIllustration, Git branches, SVG, illustration, UI components'
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import BranchesIllustration from '$lib/components/ui-registry/BranchesIllustration.svelte';
+	import source from '$lib/components/ui-registry/BranchesIllustration.svelte?raw';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'number', name: 'reach', label: 'Радиус взаимодействия', defaultValue: 3, min: 0, max: 7, step: 1 }
+	];
+</script>
+
+# Ветвление
+
+`BranchesIllustration` — интерактивная изометрическая SVG-схема истории разработки. Наводите курсор на узлы коммитов, чтобы увидеть анимированный подъём связанных узлов и веток. Перемещайте курсор по доске, чтобы менять активный узел.
+
+## Интерактивное демо
+
+Настройте радиус распространения анимации. Чем выше значение, тем больше связанных коммитов реагирует на активный узел.
+
+<ComponentPreview controls={controls} sources={[{ name: 'BranchesIllustration.svelte', code: source, language: 'svelte' }]}>
+	{#snippet children(values)}
+		<BranchesIllustration reach={values.reach as number} />
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import BranchesIllustration from '$lib/components/ui-registry/BranchesIllustration.svelte';
+</script>
+
+<BranchesIllustration reach={3} />
+```
+
+## Особенности
+
+- Самодостаточная SVG-иллюстрация без внешних изображений и зависимостей
+- Изометрическая доска с основной и feature-веткой и узлами коммитов
+- Плавный подъём связанных узлов с последовательной задержкой
+- Интерактивность через указатель: перемещение, нажатие и выход с иллюстрации
+- Настраиваемый радиус анимации через `reach`
+- Встроенный индикатор текущей ветки и номера коммита
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `reach` | `number` | `3` | Радиус распространения подъёма по цепочке коммитов. Значение ограничивается диапазоном от 0 до 7. |
+
+## Исходный код
+
+Полный исходный код компонента доступен во вкладке кода интерактивного демо: `BranchesIllustration.svelte`.
