@@ -5,8 +5,6 @@
 	import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 	import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 
-	// Эти зависимости используются только в клиентском $effect, поэтому SSR-сборка иначе считает их неиспользуемыми.
-	void [EffectComposer, RenderPass, ShaderPass, UnrealBloomPass];
 
 	type Props = {
 		class?: string;
