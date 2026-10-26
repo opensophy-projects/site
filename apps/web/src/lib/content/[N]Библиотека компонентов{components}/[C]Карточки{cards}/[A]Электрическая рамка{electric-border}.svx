@@ -1,0 +1,150 @@
+---
+title: Электрическая рамка
+description: Анимированная электрическая рамка на WebGL с разрядами, свечением, интерактивностью и настройкой формы.
+keywords: 'Opensophy, ElectricBorder, WebGL, рамка, электричество, UI components'
+---
+
+<script lang="ts">
+  import { ComponentPreview } from '$lib';
+  import ElectricBorder from '$lib/components/ui-registry/ElectricBorder.svelte';
+  import Card from '$lib/components/docs/markdown/Card.svelte';
+  import source from '$lib/components/ui-registry/ElectricBorder.svelte?raw';
+  import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+  const controls: ComponentPreviewControl[] = [
+    { type: 'color', name: 'color', label: 'Цвет разрядов', defaultValue: '#f43f5e' },
+    { type: 'color', name: 'glowColor', label: 'Цвет свечения', defaultValue: '#7df9ff' },
+    { type: 'number', name: 'speed', label: 'Скорость', defaultValue: 1, min: 0, max: 5, step: 0.1 },
+    { type: 'number', name: 'chaos', label: 'Хаос', defaultValue: 0.5, min: 0, max: 2, step: 0.05 },
+    { type: 'number', name: 'spread', label: 'Распространение', defaultValue: 0.6, min: 0, max: 2, step: 0.05 },
+    { type: 'number', name: 'thickness', label: 'Толщина разрядов', defaultValue: 1.5, min: 0.25, max: 5, step: 0.25 },
+    { type: 'number', name: 'strands', label: 'Количество нитей', defaultValue: 3, min: 1, max: 6, step: 1 },
+    { type: 'number', name: 'glow', label: 'Свечение', defaultValue: 0.6, min: 0, max: 3, step: 0.1 },
+    { type: 'number', name: 'intensity', label: 'Интенсивность', defaultValue: 0.8, min: 0, max: 3, step: 0.1 },
+    { type: 'number', name: 'arcs', label: 'Частота дуг', defaultValue: 1, min: 0, max: 5, step: 1 },
+    { type: 'number', name: 'flicker', label: 'Мерцание', defaultValue: 0.5, min: 0, max: 1, step: 0.05 },
+    { type: 'number', name: 'borderRadius', label: 'Скругление углов', defaultValue: 24, min: 0, max: 100, step: 1 },
+    { type: 'number', name: 'offset', label: 'Смещение контура', defaultValue: 0, min: -40, max: 40, step: 1 },
+    { type: 'boolean', name: 'active', label: 'Активна', defaultValue: true },
+    { type: 'boolean', name: 'intro', label: 'Анимация появления', defaultValue: true },
+    { type: 'boolean', name: 'interactive', label: 'Реакция на курсор', defaultValue: true },
+    { type: 'number', name: 'cursorRadius', label: 'Радиус реакции курсора', defaultValue: 90, min: 1, max: 300, step: 1 },
+    { type: 'select', name: 'theme', label: 'Тема рамки', defaultValue: 'dark', options: [
+      { label: 'Тёмная', value: 'dark' },
+      { label: 'Светлая', value: 'light' }
+    ] }
+  ];
+</script>
+
+# Электрическая рамка
+
+`ElectricBorder` — декоративная рамка с электрическими нитями, короткими дугами и мягким свечением. Эффект рендерится через WebGL 2, адаптируется к размеру контейнера и реагирует на указатель.
+
+## Интерактивное демо
+
+Настраивайте палитру и поведение рамки через панель управления. Наводите курсор и нажимайте внутри превью, чтобы вызвать локальные разряды и импульсы.
+
+<ComponentPreview controls={controls} sources={[{ name: 'ElectricBorder.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children(values)}
+    <div class="flex min-h-[320px] w-full items-center justify-center p-10">
+      <ElectricBorder
+        color={values.color as string}
+        glowColor={values.glowColor as string}
+        speed={values.speed as number}
+        chaos={values.chaos as number}
+        spread={values.spread as number}
+        thickness={values.thickness as number}
+        strands={values.strands as number}
+        glow={values.glow as number}
+        intensity={values.intensity as number}
+        arcs={values.arcs as number}
+        flicker={values.flicker as number}
+        borderRadius={values.borderRadius as number}
+        offset={values.offset as number}
+        active={values.active as boolean}
+        intro={values.intro as boolean}
+        interactive={values.interactive as boolean}
+        cursorRadius={values.cursorRadius as number}
+        theme={values.theme as 'dark' | 'light'}
+        class="block w-full max-w-2xl"
+      >
+        <Card eyebrow="OPENSOPHY / UI" title="Электрическая рамка" class="h-full">
+          <div class="space-y-4">
+            <p>Карточка с электрическим контуром — эффект подчёркивает содержимое, не отвлекая от него.</p>
+            <div class="flex items-center justify-between gap-4 border-t border-border pt-4">
+              <span class="text-xs text-foreground-muted">Интерактивный компонент</span>
+              <span class="rounded-md border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent">Посмотреть</span>
+            </div>
+          </div>
+        </Card>
+      </ElectricBorder>
+    </div>
+  {/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+  import ElectricBorder from '$lib/components/ui-registry/ElectricBorder.svelte';
+</script>
+
+<ElectricBorder
+  color="#f43f5e"
+  glowColor="#f43f5e"
+  speed={1}
+  chaos={0.5}
+  spread={0.6}
+  thickness={1.5}
+  strands={3}
+  glow={0.6}
+  intensity={0.8}
+  arcs={1}
+  flicker={0.5}
+  borderRadius={24}
+  active
+  intro
+  interactive
+  theme="dark"
+  class="block w-full"
+>
+  <div class="rounded-[inherit] border border-current/10 bg-background p-8">
+    Контент внутри электрической рамки
+  </div>
+</ElectricBorder>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `children` | `Snippet` | — | Контент, который отображается внутри рамки. |
+| `color` | `string` | `'#f43f5e'` | Основной цвет электрического контура в HEX. |
+| `glowColor` | `string` | Цвет `color` | Цвет ореола; если не задан, используется основной цвет. |
+| `speed` | `number` | `1` | Множитель скорости анимации. |
+| `chaos` | `number` | `0.5` | Неровность и хаотичность разрядов (внутренний диапазон 0–2). |
+| `spread` | `number` | `0.6` | Насколько далеко нити отклоняются от границы (0–2). |
+| `thickness` | `number` | `1.5` | Толщина электрических нитей. |
+| `strands` | `number` | `3` | Количество одновременно отображаемых нитей (1–6). |
+| `glow` | `number` | `0.6` | Интенсивность внешнего свечения (0–3). |
+| `intensity` | `number` | `0.8` | Общая интенсивность светового эффекта. |
+| `arcs` | `number` | `1` | Частота появления коротких электрических дуг; 0 отключает их. |
+| `flicker` | `number` | `0.5` | Интенсивность мерцания (0–1). |
+| `borderRadius` | `number` | `24` | Радиус скругления рамки в пикселях. |
+| `offset` | `number` | `0` | Смещение пути рамки относительно контейнера. |
+| `active` | `boolean` | `true` | Включает эффект. При отключении свечение плавно затухает. |
+| `intro` | `boolean` | `true` | Включает анимацию появления контура при инициализации. |
+| `interactive` | `boolean` | `true` | Включает реакцию на движение указателя и клики. |
+| `cursorRadius` | `number` | `90` | Радиус реакции на указатель в пикселях. |
+| `theme` | `'dark' \| 'light'` | `'dark'` | Вариант цветового рендеринга контура. |
+| `class` | `string` | `''` | Дополнительные CSS-классы корневого контейнера. |
+| `style` | `string` | — | Inline-стили корневого контейнера. |
+| Остальные атрибуты | `HTMLAttributes<HTMLDivElement>` | — | Передаются корневому контейнеру. |
+
+## Производительность и доступность
+
+Компонент использует WebGL 2 и ограничивает разрешение canvas бюджетом пикселей. Анимация приостанавливается, когда компонент не виден или вкладка скрыта, и учитывает системную настройку `prefers-reduced-motion`. Для браузеров без WebGL 2 электрический эффект не отобразится; содержимое внутри рамки остаётся доступным.
+
+## Исходный код
+
+Полный исходник `ElectricBorder.svelte` доступен во вкладке кода интерактивного демо.
