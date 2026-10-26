@@ -253,11 +253,11 @@
 
 <style>
   .hl-wrap {
-    /* переопределяются снаружи под тему */
-    --hl-bg: #f6f4f1;
-    --hl-line: #2b2f3a;
-    --hl-faint: #2b2f3a66;
-    --hl-txt: #6b6f7a;
+    /* Палитра следует теме сайта и совпадает с иллюстрацией на главной. */
+    --hl-bg: var(--background, #ffffff);
+    --hl-line: var(--foreground, #2b2f3a);
+    --hl-faint: color-mix(in srgb, var(--foreground, #2b2f3a) 22%, transparent);
+    --hl-txt: var(--foreground-muted, #6b6f7a);
     display: flex;
     flex-direction: column;
     align-items: center;
