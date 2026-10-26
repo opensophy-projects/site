@@ -369,7 +369,6 @@
     --ink: var(--hl-ink, CanvasText);
     --surface: var(--hl-surface, Canvas);
     --accent: var(--hl-accent, #1f62d0);
-    --rim: var(--hl-rim, #fff);
     --sw: var(--hl-sw, 0.7);
   }
   .radar:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
@@ -382,9 +381,9 @@
   }
   .sil { fill: var(--surface); }
   .nf { fill: none; }
-  .ap { fill: color-mix(in srgb, var(--ink) 8%, var(--surface)); stroke: none; }
+  .ap { fill: var(--surface); stroke: none; }
   .lo { opacity: 0.6; }
-  .hi { stroke: var(--rim); stroke-width: calc(var(--sw) * 1.15); opacity: 1; }
+  .hi { stroke: var(--ink); stroke-width: calc(var(--sw) * 1.15); opacity: 1; }
   .dot { fill: var(--ink); opacity: 0.35; }
   .dot.major { opacity: 1; }
 </style>

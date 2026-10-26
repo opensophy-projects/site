@@ -211,7 +211,7 @@
   }
 
   let {
-    text = "NYX UI",
+    text = "OPENSOPHY",
     animation = "wave",
     speed = 1,
     fontSize = 14,
