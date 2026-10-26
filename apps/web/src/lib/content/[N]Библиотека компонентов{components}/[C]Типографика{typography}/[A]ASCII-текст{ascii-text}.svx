@@ -1,0 +1,192 @@
+---
+title: ASCII-текст
+description: Блочная ASCII-типографика с волной, сканированием, глитчем, печатью, пульсацией и статичным рендером.
+keywords: 'Opensophy, типографика, ASCII, AsciiText, Svelte, текстовые эффекты'
+---
+
+<script lang="ts">
+  import { ComponentPreview } from '$lib';
+  import AsciiText from '$lib/components/ui-registry/AsciiText.svelte';
+  import source from '$lib/components/ui-registry/AsciiText.svelte?raw';
+  import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+  const controls: ComponentPreviewControl[] = [
+    { type: 'text', name: 'text', label: 'Текст', defaultValue: 'NYX UI' },
+    { type: 'select', name: 'animation', label: 'Анимация', defaultValue: 'wave', options: [
+      { label: 'Волна', value: 'wave' },
+      { label: 'Сканирование', value: 'scan' },
+      { label: 'Глитч', value: 'glitch' },
+      { label: 'Печатная машинка', value: 'typewriter' },
+      { label: 'Пульсация', value: 'pulse' },
+      { label: 'Статика', value: 'none' }
+    ] },
+    { type: 'number', name: 'speed', label: 'Скорость', defaultValue: 1, min: 0, max: 4, step: 0.1 },
+    { type: 'number', name: 'fontSize', label: 'Размер шрифта', defaultValue: 14, min: 4, max: 48, step: 1 },
+    { type: 'boolean', name: 'autoFit', label: 'Автоподгонка', defaultValue: true },
+    { type: 'number', name: 'letterSpacing', label: 'Межбуквенный интервал', defaultValue: 2, min: 0, max: 6, step: 1 },
+    { type: 'text', name: 'color', label: 'Цвет (CSS)', defaultValue: '#ffffff' },
+    { type: 'boolean', name: 'glow', label: 'Свечение', defaultValue: false },
+    { type: 'text', name: 'ramp', label: 'Градиент символов', defaultValue: '░▒▓█' }
+  ];
+</script>
+
+# ASCII-текст
+
+`AsciiText` превращает поддерживаемые символы в блочную моноширинную сетку и рисует её с помощью Unicode-символов. Компонент поддерживает шесть режимов отображения, настраиваемый символический ramp, цвет и свечение. Неизвестные символы пропускаются; доступное имя изображения берётся из пропса `text`.
+
+## Интерактивное демо
+
+Изменяйте текст и все параметры в панели управления. Исходник компонента целиком доступен во вкладке кода.
+
+<ComponentPreview controls={controls} sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children(values)}
+    <AsciiText
+      text={values.text as string}
+      animation={values.animation as 'none' | 'wave' | 'glitch' | 'typewriter' | 'pulse' | 'scan'}
+      speed={values.speed as number}
+      fontSize={values.fontSize as number}
+      autoFit={values.autoFit as boolean}
+      letterSpacing={values.letterSpacing as number}
+      color={(values.color as string) || undefined}
+      glow={values.glow as boolean}
+      ramp={values.ramp as string}
+      class="py-4"
+    />
+  {/snippet}
+</ComponentPreview>
+
+## Варианты
+
+### Волна — `wave`
+
+Плотность символов меняется по синусоидальной волне, которая проходит по сетке.
+
+<ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <AsciiText text="NYX UI" animation="wave" speed={1} autoFit letterSpacing={2} class="py-3" />
+  {/snippet}
+</ComponentPreview>
+
+### Сканирование — `scan`
+
+Яркая полоса проходит сверху вниз по строкам глифов.
+
+<ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <AsciiText text="SCAN LINE" animation="scan" speed={1} color="#e5e7eb" autoFit letterSpacing={1} class="py-3" />
+  {/snippet}
+</ComponentPreview>
+
+### Глитч — `glitch`
+
+Детерминированный шум временно затемняет и скрывает отдельные ячейки.
+
+<ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <AsciiText text="GLITCH" animation="glitch" speed={1} color="#4ade80" glow autoFit letterSpacing={1} class="py-3" />
+  {/snippet}
+</ComponentPreview>
+
+### Печатная машинка — `typewriter`
+
+Символы открываются слева направо, после чего цикл начинается заново.
+
+<ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <AsciiText text="HELLO" animation="typewriter" speed={1} autoFit letterSpacing={1} class="py-3" />
+  {/snippet}
+</ComponentPreview>
+
+### Пульсация — `pulse`
+
+Вся надпись одновременно меняет плотность символов. Цвет и мягкое свечение можно настраивать отдельно.
+
+<ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <AsciiText text="PULSE" animation="pulse" speed={1} color="#f97316" glow autoFit letterSpacing={1} class="py-3" />
+  {/snippet}
+</ComponentPreview>
+
+### Статика — `none`
+
+Постоянная сетка без анимации.
+
+<ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <AsciiText text="STATIC" animation="none" autoFit letterSpacing={1} class="py-3" />
+  {/snippet}
+</ComponentPreview>
+
+### Пользовательский ramp
+
+Символы в `ramp` задаются от самых тёмных к самым ярким. Например, ` .:+*#%@` создаёт более тонкую градацию.
+
+<ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <AsciiText text="CUSTOM RAMP" animation="wave" ramp=" .:+*#%@" color="#60a5fa" autoFit letterSpacing={1} class="py-3" />
+  {/snippet}
+</ComponentPreview>
+
+### Фиксированный размер
+
+При `autoFit={false}` размер ячейки задаётся в пикселях через `fontSize`; при включённой автоподгонке строка масштабируется под ширину контейнера.
+
+<ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <AsciiText text="FIXED" animation="none" autoFit={false} fontSize={20} letterSpacing={1} class="py-3" />
+  {/snippet}
+</ComponentPreview>
+
+### Цифры и пунктуация
+
+Компонент поддерживает цифры и распространённую пунктуацию, включая `!`, `?`, `-`, `+`, `=`, `:`, `/`, скобки и символы `# @ _ *`.
+
+<ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <AsciiText text="404 - NOT_FOUND!" animation="none" autoFit letterSpacing={1} class="py-3" />
+  {/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+  import AsciiText from '$lib/components/ui-registry/AsciiText.svelte';
+</script>
+
+<AsciiText
+  text="HELLO"
+  animation="wave"
+  speed={1}
+  autoFit
+  letterSpacing={2}
+  color="#ffffff"
+  glow
+/>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `text` | `string` | `"NYX UI"` | Текст для отрисовки. Поддерживаемые буквы A–Z, цифры и перечисленные знаки пунктуации; неизвестные символы пропускаются. |
+| `animation` | `"none" \| "wave" \| "glitch" \| "typewriter" \| "pulse" \| "scan"` | `"wave"` | Режим отображения: статичный, волна, глитч, печать, пульсация или сканирование. |
+| `speed` | `number` | `1` | Множитель скорости анимации. |
+| `fontSize` | `number` | `14` | Размер моноширинной ячейки в пикселях; применяется при выключенном `autoFit` или пока ширина контейнера ещё неизвестна. |
+| `autoFit` | `boolean` | `true` | Масштабирует текст под ширину контейнера. |
+| `letterSpacing` | `number` | `2` | Количество пустых колонок между буквами; отрицательные значения обрезаются до нуля. |
+| `color` | `string` | Наследуется | Любой допустимый CSS-цвет. |
+| `glow` | `boolean` | `false` | Добавляет мягкое свечение через `text-shadow`. |
+| `ramp` | `string` | `"░▒▓█"` | Символы градации от тёмного к яркому. |
+| `class` | `string` | — | Дополнительные классы контейнера. |
+| HTML-атрибуты `div` | `HTMLAttributes<HTMLDivElement>` | — | Остальные атрибуты передаются корневому контейнеру. |
+
+## Доступность и движение
+
+Корневой контейнер имеет `role="img"` и `aria-label={text}`, а визуальная строка скрыта от скринридеров. При системной настройке `prefers-reduced-motion: reduce` компонент отображает неподвижный кадр.
+
+## Исходный код
+
+Полный исходник `AsciiText.svelte` приложен к каждому превью и доступен для копирования в блоке кода выше.
+
+---
