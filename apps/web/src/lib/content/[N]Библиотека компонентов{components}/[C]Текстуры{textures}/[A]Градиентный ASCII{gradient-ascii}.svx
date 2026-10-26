@@ -1,0 +1,198 @@
+---
+title: Градиентный ASCII
+description: Анимированная ASCII-текстура на WebGL с четырьмя формами градиента, настраиваемой палитрой, интерактивностью курсора и эффектами свечения.
+keywords: 'Opensophy, GradientASCII, ASCII, WebGL, текстуры, градиент, UI components'
+---
+
+<script lang="ts">
+  import { ComponentPreview } from '$lib';
+  import GradientASCII from '$lib/components/ui-registry/GradientASCII.svelte';
+  import source from '$lib/components/ui-registry/GradientASCII.svelte?raw';
+  import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+  const controls: ComponentPreviewControl[] = [
+    { type: 'select', name: 'shape', label: 'Форма', defaultValue: 'horizon', options: [
+      { label: 'Горизонт', value: 'horizon' },
+      { label: 'Перетяжка', value: 'pinch' },
+      { label: 'Подъём', value: 'rise' },
+      { label: 'Затмение', value: 'eclipse' }
+    ] },
+    { type: 'color', name: 'color1', label: 'Цвет 1', defaultValue: '#1e3fd8' },
+    { type: 'color', name: 'color2', label: 'Цвет 2', defaultValue: '#f6f8ff' },
+    { type: 'color', name: 'color3', label: 'Цвет 3', defaultValue: '#a5d8ff' },
+    { type: 'color', name: 'color4', label: 'Цвет 4', defaultValue: '#38bdf8' },
+    { type: 'text', name: 'characters', label: 'ASCII-символы', defaultValue: ' =+xX0S8#@' },
+    { type: 'number', name: 'cellSize', label: 'Размер ячейки', defaultValue: 18, min: 6, max: 64, step: 1 },
+    { type: 'number', name: 'density', label: 'Плотность', defaultValue: 0.8, min: 0, max: 1, step: 0.05 },
+    { type: 'number', name: 'glyphOpacity', label: 'Непрозрачность символов', defaultValue: 0.85, min: 0, max: 1, step: 0.05 },
+    { type: 'number', name: 'glow', label: 'Свечение', defaultValue: 0.2, min: 0, max: 2, step: 0.05 },
+    { type: 'number', name: 'depthOfField', label: 'Глубина резкости', defaultValue: 0, min: 0, max: 1, step: 0.05 },
+    { type: 'number', name: 'flicker', label: 'Мерцание', defaultValue: 0.2, min: 0, max: 1, step: 0.05 },
+    { type: 'number', name: 'softness', label: 'Мягкость', defaultValue: 0.5, min: 0, max: 1, step: 0.05 },
+    { type: 'number', name: 'scale', label: 'Масштаб поля', defaultValue: 1, min: 0.25, max: 3, step: 0.05 },
+    { type: 'number', name: 'flow', label: 'Искажение потока', defaultValue: 0.5, min: 0, max: 2, step: 0.05 },
+    { type: 'number', name: 'speed', label: 'Скорость', defaultValue: 1, min: 0, max: 3, step: 0.1 },
+    { type: 'number', name: 'gradientOpacity', label: 'Непрозрачность градиента', defaultValue: 0.9, min: 0, max: 1, step: 0.05 },
+    { type: 'number', name: 'grain', label: 'Зерно', defaultValue: 0.08, min: 0, max: 0.5, step: 0.01 },
+    { type: 'number', name: 'variation', label: 'Вариация', defaultValue: 0, min: 0, max: 1, step: 0.05 },
+    { type: 'boolean', name: 'mouseInteraction', label: 'Реакция на курсор', defaultValue: true },
+    { type: 'number', name: 'scrambleRadius', label: 'Радиус искажения', defaultValue: 0.1, min: 0.01, max: 0.5, step: 0.01 },
+    { type: 'select', name: 'clickEffect', label: 'Эффект клика', defaultValue: 'wave', options: [
+      { label: 'Нет', value: 'none' },
+      { label: 'Волна', value: 'wave' },
+      { label: 'Импульс', value: 'burst' }
+    ] },
+    { type: 'boolean', name: 'intro', label: 'Анимация появления', defaultValue: true },
+    { type: 'boolean', name: 'lightMode', label: 'Светлый режим рендера', defaultValue: false },
+    { type: 'text', name: 'fontFamily', label: 'Моноширинный шрифт', defaultValue: '"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace' },
+    { type: 'number', name: 'dpr', label: 'DPR (0 = авто)', defaultValue: 0, min: 0, max: 3, step: 0.25 }
+  ];
+</script>
+
+# Градиентный ASCII
+
+`GradientASCII` — анимированная ASCII-текстура на WebGL 2. Градиентное поле преобразуется в символы, а форма, палитра и поведение сцены настраиваются через пропсы. Компонент поддерживает интерактивное искажение от движения курсора, эффекты клика, свечение и анимацию появления.
+
+## Интерактивное демо
+
+Изменяйте параметры в панели управления. Для каждого из четырёх цветов доступен выбор через цветовую панель; можно настроить все основные пропсы компонента. Наведите курсор на превью и нажмите, чтобы увидеть интерактивные эффекты.
+
+<ComponentPreview controls={controls} sources={[{ name: 'GradientASCII.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children(values)}
+    <div class="h-[360px] w-full">
+      <GradientASCII
+        colors={[values.color1 as string, values.color2 as string, values.color3 as string, values.color4 as string]}
+        shape={values.shape as 'horizon' | 'pinch' | 'rise' | 'eclipse'}
+        characters={values.characters as string}
+        cellSize={values.cellSize as number}
+        density={values.density as number}
+        glyphOpacity={values.glyphOpacity as number}
+        glow={values.glow as number}
+        depthOfField={values.depthOfField as number}
+        flicker={values.flicker as number}
+        softness={values.softness as number}
+        scale={values.scale as number}
+        flow={values.flow as number}
+        speed={values.speed as number}
+        gradientOpacity={values.gradientOpacity as number}
+        grain={values.grain as number}
+        variation={values.variation as number}
+        mouseInteraction={values.mouseInteraction as boolean}
+        scrambleRadius={values.scrambleRadius as number}
+        clickEffect={values.clickEffect as 'wave' | 'burst' | 'none'}
+        intro={values.intro as boolean}
+        lightMode={values.lightMode as boolean}
+        fontFamily={values.fontFamily as string}
+        dpr={(values.dpr as number) || undefined}
+        class="h-full w-full"
+      />
+    </div>
+  {/snippet}
+</ComponentPreview>
+
+## Формы
+
+Компонент предлагает четыре формы градиентного поля. Они выбираются через пропс `shape`.
+
+### Горизонт — `horizon`
+
+Широкое поле с дугообразным краем, напоминающим линию горизонта.
+
+<ComponentPreview sources={[{ name: 'GradientASCII.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <div class="h-[260px] w-full"><GradientASCII shape="horizon" class="h-full w-full" /></div>
+  {/snippet}
+</ComponentPreview>
+
+### Перетяжка — `pinch`
+
+Световое поле с узкой центральной частью и мягкими боковыми расширениями.
+
+<ComponentPreview sources={[{ name: 'GradientASCII.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <div class="h-[260px] w-full"><GradientASCII shape="pinch" class="h-full w-full" /></div>
+  {/snippet}
+</ComponentPreview>
+
+### Подъём — `rise`
+
+Объёмное поле поднимается от нижнего края и мягко рассеивается кверху.
+
+<ComponentPreview sources={[{ name: 'GradientASCII.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <div class="h-[260px] w-full"><GradientASCII shape="rise" class="h-full w-full" /></div>
+  {/snippet}
+</ComponentPreview>
+
+### Затмение — `eclipse`
+
+Кольцевое свечение с неровными лучами и анимированным радиусом.
+
+<ComponentPreview sources={[{ name: 'GradientASCII.svelte', code: source, language: 'svelte' }]}>
+  {#snippet children()}
+    <div class="h-[260px] w-full"><GradientASCII shape="eclipse" class="h-full w-full" /></div>
+  {/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+  import GradientASCII from '$lib/components/ui-registry/GradientASCII.svelte';
+</script>
+
+<div class="h-[360px] w-full">
+  <GradientASCII
+    colors={['#1e3fd8', '#f6f8ff', '#a5d8ff', '#38bdf8']}
+    shape="horizon"
+    characters=" =+xX0S8#@"
+    cellSize={18}
+    density={0.8}
+    glow={0.2}
+    mouseInteraction
+    clickEffect="wave"
+    class="h-full w-full"
+  />
+</div>
+```
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `colors` | `string[]` | `['#1e3fd8', '#f6f8ff', '#a5d8ff', '#38bdf8']` | Палитра градиента; используется до восьми цветов. Если передан один цвет, он дублируется для корректной интерполяции. |
+| `shape` | `'horizon' \| 'pinch' \| 'rise' \| 'eclipse'` | `'horizon'` | Форма поля градиента. |
+| `characters` | `string` | `' =+xX0S8#@'` | Набор символов, используемый для ASCII-рендеринга. |
+| `cellSize` | `number` | `18` | Размер символьной ячейки в пикселях; внутри ограничивается диапазоном 6–64. |
+| `density` | `number` | `0.8` | Плотность отображаемых символов (0–1). |
+| `glyphOpacity` | `number` | `0.85` | Базовая непрозрачность символов (0–1). |
+| `glow` | `number` | `0.2` | Интенсивность свечения. |
+| `depthOfField` | `number` | `0` | Доля символов с эффектом глубины резкости. |
+| `flicker` | `number` | `0.2` | Интенсивность мерцания символов. |
+| `softness` | `number` | `0.5` | Мягкость поля формы. |
+| `scale` | `number` | `1` | Масштаб поля градиента. |
+| `flow` | `number` | `0.5` | Сила пространственного искажения поля. |
+| `speed` | `number` | `1` | Множитель скорости анимации. |
+| `gradientOpacity` | `number` | `0.9` | Непрозрачность цветового поля под символами. |
+| `grain` | `number` | `0.08` | Интенсивность зернистости. |
+| `variation` | `number` | `0` | Параметр вариации, передаваемый настройкам рендера. |
+| `mouseInteraction` | `boolean` | `true` | Включает реакцию на перемещение курсора. |
+| `scrambleRadius` | `number` | `0.1` | Радиус области, в которой курсор искажает символы. |
+| `clickEffect` | `'wave' \| 'burst' \| 'none'` | `'wave'` | Эффект при клике: волна, импульс или отключённый эффект. |
+| `intro` | `boolean` | `true` | Включает анимацию появления поля. |
+| `lightMode` | `boolean` | `false` | Включает светлый вариант рендеринга символов. |
+| `fontFamily` | `string` | `'"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace'` | CSS-стек моноширинных шрифтов для построения атласа символов. |
+| `dpr` | `number \| undefined` | Авто | Переопределяет pixel ratio устройства; при отсутствии значения используется автоматический DPR. |
+| `class` | `string` | `''` | Дополнительные классы контейнера. |
+| `style` | `string` | — | Строка inline-стилей контейнера. |
+| Остальные атрибуты `div` | `HTMLAttributes<HTMLDivElement>` | — | Передаются корневому контейнеру. |
+
+## Производительность и доступность
+
+Компонент использует WebGL 2. Для отображения нужен браузер с поддержкой WebGL 2; при большом количестве экземпляров стоит учитывать нагрузку на GPU. Канвас помечен как декоративный (`aria-hidden="true"`), поэтому важный текст или смысл изображения следует предоставлять отдельно.
+
+При необходимости можно отключить взаимодействие с указателем через `mouseInteraction={false}`, анимацию появления — через `intro={false}`, а эффекты клика — через `clickEffect="none"`.
+
+## Исходный код
+
+Полный исходник `GradientASCII.svelte` доступен во вкладке кода интерактивного демо.
