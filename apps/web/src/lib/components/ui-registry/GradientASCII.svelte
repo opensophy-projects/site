@@ -83,7 +83,7 @@
   const ATLAS_CELL_H = 100;
   const ATLAS_COLUMNS = 16;
   const FONT_SCALE = 0.78;
-  const DEFAULT_COLORS = ['#1e3fd8', '#f6f8ff', '#a5d8ff', '#38bdf8'];
+  const DEFAULT_COLORS = ['#9f1239', '#f6f8ff', '#f43f5e', '#fda4af'];
   const DEFAULT_CHARACTERS = ' =+xX0S8#@';
   const DEFAULT_FONT = '"Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
   const SHAPES: Record<string, number> = { horizon: 0, pinch: 1, rise: 2, eclipse: 3 };
@@ -642,6 +642,7 @@ void main() {
     let grainClock = 0;
     let raf = 0;
     let last = 0;
+    let lastRender = 0;
     let visible = true;
     let disposed = false;
 
@@ -776,7 +777,7 @@ void main() {
       const s = settings;
       view.width = Math.max(1, container.clientWidth);
       view.height = Math.max(1, container.clientHeight);
-      view.ratio = Math.min(s.dpr || window.devicePixelRatio || 1, 2);
+      view.ratio = Math.min(s.dpr || window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.max(1, Math.round(view.width * view.ratio));
       canvas.height = Math.max(1, Math.round(view.height * view.ratio));
       sizeTarget(
@@ -827,8 +828,15 @@ void main() {
       raf = 0;
       if (disposed || !visible || document.hidden) return;
       const s = settings;
+      // Keep the animation responsive while limiting expensive multi-pass WebGL draws to ~30 FPS.
+      // Measure elapsed time only on rendered frames so animation speed and intro progress stay correct.
+      if (now - lastRender < 1000 / 30) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
       const dt = last ? clamp((now - last) / 1000, 0.001, 0.05) : 1 / 60;
       last = now;
+      lastRender = now;
       if (!reduce) {
         time += dt * s.speed * 0.5;
         glyphTime += dt * Math.max(s.speed, 0.15);
