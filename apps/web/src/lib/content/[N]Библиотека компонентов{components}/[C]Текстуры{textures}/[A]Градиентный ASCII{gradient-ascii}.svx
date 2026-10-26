@@ -17,10 +17,10 @@ keywords: 'Opensophy, GradientASCII, ASCII, WebGL, текстуры, гради�
       { label: 'Подъём', value: 'rise' },
       { label: 'Затмение', value: 'eclipse' }
     ] },
-    { type: 'color', name: 'color1', label: 'Цвет 1', defaultValue: '#1e3fd8' },
+    { type: 'color', name: 'color1', label: 'Цвет 1', defaultValue: '#9f1239' },
     { type: 'color', name: 'color2', label: 'Цвет 2', defaultValue: '#f6f8ff' },
-    { type: 'color', name: 'color3', label: 'Цвет 3', defaultValue: '#a5d8ff' },
-    { type: 'color', name: 'color4', label: 'Цвет 4', defaultValue: '#38bdf8' },
+    { type: 'color', name: 'color3', label: 'Цвет 3', defaultValue: '#f43f5e' },
+    { type: 'color', name: 'color4', label: 'Цвет 4', defaultValue: '#fda4af' },
     { type: 'text', name: 'characters', label: 'ASCII-символы', defaultValue: ' =+xX0S8#@' },
     { type: 'number', name: 'cellSize', label: 'Размер ячейки', defaultValue: 18, min: 6, max: 64, step: 1 },
     { type: 'number', name: 'density', label: 'Плотность', defaultValue: 0.8, min: 0, max: 1, step: 0.05 },
@@ -143,7 +143,7 @@ keywords: 'Opensophy, GradientASCII, ASCII, WebGL, текстуры, гради�
 
 <div class="h-[360px] w-full">
   <GradientASCII
-    colors={['#1e3fd8', '#f6f8ff', '#a5d8ff', '#38bdf8']}
+    colors={['#9f1239', '#f6f8ff', '#f43f5e', '#fda4af']}
     shape="horizon"
     characters=" =+xX0S8#@"
     cellSize={18}
@@ -160,7 +160,7 @@ keywords: 'Opensophy, GradientASCII, ASCII, WebGL, текстуры, гради�
 
 | Пропс | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `colors` | `string[]` | `['#1e3fd8', '#f6f8ff', '#a5d8ff', '#38bdf8']` | Палитра градиента; используется до восьми цветов. Если передан один цвет, он дублируется для корректной интерполяции. |
+| `colors` | `string[]` | `['#9f1239', '#f6f8ff', '#f43f5e', '#fda4af']` | Палитра градиента; используется до восьми цветов. Если передан один цвет, он дублируется для корректной интерполяции. |
 | `shape` | `'horizon' \| 'pinch' \| 'rise' \| 'eclipse'` | `'horizon'` | Форма поля градиента. |
 | `characters` | `string` | `' =+xX0S8#@'` | Набор символов, используемый для ASCII-рендеринга. |
 | `cellSize` | `number` | `18` | Размер символьной ячейки в пикселях; внутри ограничивается диапазоном 6–64. |
