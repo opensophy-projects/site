@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import { SvelteMap } from "svelte/reactivity";
 
-  export let reach: number = 3;
+  export let reach = 3;
 
   type Point = [number, number];
   type Point3 = [number, number, number];
