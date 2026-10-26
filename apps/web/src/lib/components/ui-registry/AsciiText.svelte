@@ -188,8 +188,7 @@
 <script lang="ts">
   import type { HTMLAttributes } from "svelte/elements";
 
-  interface Props
-    extends Omit<HTMLAttributes<HTMLDivElement>, "children" | "color"> {
+  type Props = Omit<HTMLAttributes<HTMLDivElement>, "children" | "color"> & {
     /** Текст для отрисовки. Неподдерживаемые символы пропускаются. */
     text?: string;
     /** Тип анимации глифов. */
@@ -208,7 +207,7 @@
     glow?: boolean;
     /** Символы для «зажжённой» ячейки: от тёмного к светлому. */
     ramp?: string;
-  }
+  };
 
   let {
     text = "OPENSOPHY",
