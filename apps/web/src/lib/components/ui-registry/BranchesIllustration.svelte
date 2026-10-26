@@ -130,11 +130,6 @@
       </g>
     {/each}
   </svg>
-  <label>
-    <span>reach</span>
-    <input type="range" min="0" max="7" step="1" bind:value={reach} />
-    <b>{reach}</b>
-  </label>
 </figure>
 
 <style>
