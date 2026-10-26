@@ -467,7 +467,7 @@ void main() {
 
   let {
     children,
-    color = '#7df9ff',
+    color = '#f43f5e',
     glowColor,
     speed = 1,
     chaos = 0.5,
