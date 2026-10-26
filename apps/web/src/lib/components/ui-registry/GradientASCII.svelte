@@ -1,11 +1,12 @@
 <script module lang="ts">
   import type { HTMLAttributes } from 'svelte/elements';
+  import { SvelteMap } from 'svelte/reactivity';
 
   export type GradientASCIIShape = 'horizon' | 'pinch' | 'rise' | 'eclipse';
 
   export type GradientASCIIClickEffect = 'wave' | 'burst' | 'none';
 
-  export interface GradientASCIIProps extends Omit<HTMLAttributes<HTMLDivElement>, 'style'> {
+  export type GradientASCIIProps = Omit<HTMLAttributes<HTMLDivElement>, 'style'> & {
     colors?: string[];
     shape?: GradientASCIIShape;
     characters?: string;
@@ -31,7 +32,7 @@
     dpr?: number;
     /** Строка inline-стилей (в Svelte style — это строка, а не объект). */
     style?: string;
-  }
+  };
 
   type Settings = {
     colors: string[];
@@ -469,7 +470,8 @@ void main() {
     characters: string,
     fontFamily: string
   ): Atlas => {
-    const list = [...new Set([...characters].filter((char) => char !== '\n' && char !== '\r'))];
+    const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+    const list = [...new Set(Array.from(segmenter.segment(characters), ({ segment }) => segment).filter((char) => char !== '\n' && char !== '\r'))];
     if (!list.length) list.push(' ');
     const font = `300 ${Math.round(ATLAS_CELL_H * FONT_SCALE)}px ${fontFamily}`;
     const columns = Math.min(ATLAS_COLUMNS, list.length);
@@ -579,7 +581,7 @@ void main() {
   // Аналог второго useEffect без зависимостей: при любом изменении
   // настроек будим цикл рендера (он мог уснуть при reduced motion).
   $effect(() => {
-    void settings;
+    JSON.stringify(settings);
     wakeHandle?.();
   });
 
@@ -606,9 +608,9 @@ void main() {
     const haloB = createTarget(gl, 1);
 
     const probe = document.createElement('canvas').getContext('2d', { willReadFrequently: true });
-    const colorCache = new Map<string, number[]>();
+    const colorCache = new SvelteMap<string, number[]>();
     const parse = (value: string): number[] => {
-      const key = String(value);
+      const key = value;
       const cached = colorCache.get(key);
       if (cached) return cached;
       let rgb: number[] = [0, 0, 0];
@@ -660,7 +662,7 @@ void main() {
           atlas = buildAtlas(gl, s.characters, s.fontFamily);
           draw();
         },
-        () => {}
+        () => undefined
       );
     };
 
