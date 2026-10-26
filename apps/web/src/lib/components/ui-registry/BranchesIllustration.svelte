@@ -76,7 +76,7 @@
   }
   const wake = () => { if (!raf) raf = requestAnimationFrame(frame); };
 
-  let act = null, lit = null, held = new Map(), readout = "rest";
+  let act = null, lit = null, held = new Map();
   function lift(a, r, depth, instant) {
     const now = performance.now(), want = new Map();
     for (const [i, k] of chain(a)) if (k <= r) want.set(i, [LIFT * depth * clamp(1 - k / (r + 1), 0, 1), k]);
@@ -94,8 +94,8 @@
   function choose(a) {
     if (a === act) return;
     act = a;
-    if (a === null) { lift(REST, REST_REACH, REST_DEPTH); readout = "rest"; }
-    else { lift(a, reach, 1); readout = `${seeds[a].lane} · ${seeds[a].n}`; }
+    if (a === null) lift(REST, REST_REACH, REST_DEPTH);
+    else lift(a, reach, 1);
   }
   $: if (act !== null) { reach; lift(act, reach, 1); }
 
@@ -139,17 +139,17 @@
 </figure>
 
 <style>
-  figure { margin: 0; max-width: 640px; font: 13px system-ui, sans-serif; color: var(--ink, #111); }
+  figure { margin: 0 auto; width: 100%; max-width: 760px; font: 13px system-ui, sans-serif; color: var(--ink, CanvasText); }
   svg { width: 100%; height: auto; touch-action: none; display: block; }
-  .board { fill: var(--board, #fff); stroke: var(--line, #111); stroke-width: .6 }
-  .side { fill: var(--side, #ddd); stroke: var(--line, #111); stroke-width: .6 }
-  .side2 { fill: var(--side2, #c8c8c8); stroke: var(--line, #111); stroke-width: .6 }
-  .lo { fill: var(--rail2, #ddd) } .rail { fill: var(--rail, #fff); stroke: var(--line, #111); stroke-width: .4 }
-  .pad { fill: var(--board, #fff); stroke: var(--line, #111); stroke-width: .6 }
-  .pside { fill: var(--pside, #ddd); stroke: var(--line, #111); stroke-width: .6 }
-  .ptop { fill: var(--ptop, #fff); stroke: var(--line, #111); stroke-width: .6 }
-  .dash { stroke: var(--line, #111); stroke-dasharray: 2 2; stroke-width: .6 }
-  .hi .pside { fill: var(--hi2, #555) } .hi .ptop { fill: var(--hi, #222) }
+  .board { fill: var(--board, Canvas); stroke: var(--line, CanvasText); stroke-width: .6 }
+  .side { fill: var(--side, color-mix(in srgb, CanvasText 14%, Canvas)); stroke: var(--line, CanvasText); stroke-width: .6 }
+  .side2 { fill: var(--side2, color-mix(in srgb, CanvasText 22%, Canvas)); stroke: var(--line, CanvasText); stroke-width: .6 }
+  .lo { fill: var(--rail2, color-mix(in srgb, CanvasText 14%, Canvas)) } .rail { fill: var(--rail, Canvas); stroke: var(--line, CanvasText); stroke-width: .4 }
+  .pad { fill: var(--board, Canvas); stroke: var(--line, CanvasText); stroke-width: .6 }
+  .pside { fill: var(--pside, color-mix(in srgb, CanvasText 14%, Canvas)); stroke: var(--line, CanvasText); stroke-width: .6 }
+  .ptop { fill: var(--ptop, Canvas); stroke: var(--line, CanvasText); stroke-width: .6 }
+  .dash { stroke: var(--line, CanvasText); stroke-dasharray: 2 2; stroke-width: .6 }
+  .hi .pside { fill: var(--hi2, color-mix(in srgb, CanvasText 55%, Canvas)) } .hi .ptop { fill: var(--hi, color-mix(in srgb, CanvasText 80%, Canvas)) }
   label { display: flex; align-items: center; gap: 10px; margin-top: 8px }
-  input { flex: 1 } output { min-width: 90px; text-align: right; color: var(--mute, #666); font-variant-numeric: tabular-nums }
+  input { flex: 1 } b { min-width: 1ch; font-variant-numeric: tabular-nums; }
 </style>
