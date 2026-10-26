@@ -203,7 +203,4 @@
     margin: 0;
     padding-left: 1.25rem;
   }
-  a {
-    color: var(--accent);
-  }
 </style>
