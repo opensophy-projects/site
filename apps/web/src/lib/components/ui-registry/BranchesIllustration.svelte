@@ -112,7 +112,7 @@
     if (instant) zs = tw.map((t) => t.to);
     held = want;
     lit = a;
-    wake();
+    if (!instant) wake();
   }
   lift(REST, REST_REACH, REST_DEPTH, true);
 
@@ -148,7 +148,7 @@
 </script>
 
 <figure>
-  <svg bind:this={svg} viewBox="-70 -62 250 182" on:pointermove={hit} on:pointerdown={hit} on:pointerleave={() => choose(null)}>
+  <svg bind:this={svg} viewBox="-70 -62 250 182" role="application" aria-label="Интерактивная схема ветвления" on:pointermove={hit} on:pointerdown={hit} on:pointerleave={() => choose(null)}>
     <path d={board.left} class="side2" /><path d={board.right} class="side" /><path d={board.top} class="board" />
     {#each rails as r (r.top)}<path d={r.lo} class="lo" /><path d={r.top} class="rail" />{/each}
     {#each order as i (i)}
@@ -179,6 +179,4 @@
   .ptop { fill: var(--ptop, Canvas); stroke: var(--line, CanvasText); stroke-width: .6 }
   .dash { stroke: var(--line, CanvasText); stroke-dasharray: 2 2; stroke-width: .6 }
   .hi .pside { fill: var(--hi2, color-mix(in srgb, CanvasText 55%, Canvas)) } .hi .ptop { fill: var(--hi, color-mix(in srgb, CanvasText 80%, Canvas)) }
-  label { display: flex; align-items: center; gap: 10px; margin-top: 8px }
-  input { flex: 1 } b { min-width: 1ch; font-variant-numeric: tabular-nums; }
 </style>
