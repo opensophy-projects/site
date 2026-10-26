@@ -11,7 +11,7 @@ keywords: 'Opensophy, типографика, ASCII, AsciiText, Svelte, текс
   import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
 
   const controls: ComponentPreviewControl[] = [
-    { type: 'text', name: 'text', label: 'Текст', defaultValue: 'NYX UI' },
+    { type: 'text', name: 'text', label: 'Текст', defaultValue: 'OPENSOPHY' },
     { type: 'select', name: 'animation', label: 'Анимация', defaultValue: 'wave', options: [
       { label: 'Волна', value: 'wave' },
       { label: 'Сканирование', value: 'scan' },
@@ -24,7 +24,7 @@ keywords: 'Opensophy, типографика, ASCII, AsciiText, Svelte, текс
     { type: 'number', name: 'fontSize', label: 'Размер шрифта', defaultValue: 14, min: 4, max: 48, step: 1 },
     { type: 'boolean', name: 'autoFit', label: 'Автоподгонка', defaultValue: true },
     { type: 'number', name: 'letterSpacing', label: 'Межбуквенный интервал', defaultValue: 2, min: 0, max: 6, step: 1 },
-    { type: 'text', name: 'color', label: 'Цвет (CSS)', defaultValue: '#ffffff' },
+    { type: 'color', name: 'color', label: 'Цвет текста', defaultValue: '#ffffff' },
     { type: 'boolean', name: 'glow', label: 'Свечение', defaultValue: false },
     { type: 'text', name: 'ramp', label: 'Градиент символов', defaultValue: '░▒▓█' }
   ];
@@ -63,7 +63,7 @@ keywords: 'Opensophy, типографика, ASCII, AsciiText, Svelte, текс
 
 <ComponentPreview sources={[{ name: 'AsciiText.svelte', code: source, language: 'svelte' }]}>
   {#snippet children()}
-    <AsciiText text="NYX UI" animation="wave" speed={1} autoFit letterSpacing={2} class="py-3" />
+    <AsciiText text="OPENSOPHY" animation="wave" speed={1} autoFit letterSpacing={2} class="py-3" />
   {/snippet}
 </ComponentPreview>
 
@@ -169,7 +169,7 @@ keywords: 'Opensophy, типографика, ASCII, AsciiText, Svelte, текс
 
 | Пропс | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
-| `text` | `string` | `"NYX UI"` | Текст для отрисовки. Поддерживаемые буквы A–Z, цифры и перечисленные знаки пунктуации; неизвестные символы пропускаются. |
+| `text` | `string` | `"OPENSOPHY"` | Текст для отрисовки. Поддерживаемые буквы A–Z, цифры и перечисленные знаки пунктуации; неизвестные символы пропускаются. |
 | `animation` | `"none" \| "wave" \| "glitch" \| "typewriter" \| "pulse" \| "scan"` | `"wave"` | Режим отображения: статичный, волна, глитч, печать, пульсация или сканирование. |
 | `speed` | `number` | `1` | Множитель скорости анимации. |
 | `fontSize` | `number` | `14` | Размер моноширинной ячейки в пикселях; применяется при выключенном `autoFit` или пока ширина контейнера ещё неизвестна. |
