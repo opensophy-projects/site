@@ -71,10 +71,6 @@ keywords: 'Opensophy, ElectricBorder, WebGL, рамка, электричест�
         <Card eyebrow="OPENSOPHY / UI" title="Электрическая рамка" class="h-full">
           <div class="space-y-4">
             <p>Карточка с электрическим контуром — эффект подчёркивает содержимое, не отвлекая от него.</p>
-            <div class="flex items-center justify-between gap-4 border-t border-border pt-4">
-              <span class="text-xs text-foreground-muted">Интерактивный компонент</span>
-              <span class="rounded-md border border-accent/30 bg-accent/10 px-3 py-1.5 text-xs font-medium text-accent">Посмотреть</span>
-            </div>
           </div>
         </Card>
       </ElectricBorder>
