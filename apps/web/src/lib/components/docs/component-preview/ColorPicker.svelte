@@ -331,7 +331,7 @@
 				};
 			}}
 			transition:scale={{ duration: 120, start: 0.96 }}
-			class="fixed z-50 rounded-md bg-background p-1.5 shadow-2xl card"
+			class="fixed z-[100] rounded-md bg-background p-1.5 shadow-2xl card"
 			style={popoverStyle}
 		>
 			<div

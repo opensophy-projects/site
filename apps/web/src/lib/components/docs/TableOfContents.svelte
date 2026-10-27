@@ -74,7 +74,8 @@
 	const pulseTimers = new SvelteMap<string, number>();
 	const lastIndicatorIds = new SvelteSet<string>();
 	let pulsingDotIds = $state<string[]>([]);
-	const linksWrapperId = 'toc-links-wrapper';
+	const uid = $props.id();
+	const linksWrapperId = `toc-links-wrapper-${uid}`;
 
 	const currentPath = $derived(page.url.pathname);
 

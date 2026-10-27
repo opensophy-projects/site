@@ -143,6 +143,15 @@
 		sectionLinks
 	});
 
+	const breadcrumbs = $derived.by(() => {
+		const crumbs: { label: string; href?: string }[] = [
+			{ label: sectionConfig.label, href: sectionBasePath }
+		];
+		if (currentDoc?.category) crumbs.push({ label: currentDoc.category });
+		if (docTitle !== sectionConfig.label) crumbs.push({ label: docTitle });
+		return crumbs;
+	});
+
 	const tocSelector = $derived(resolveTocSelector(sectionUi.toc, docSlug));
 	const mainId = $derived(`${sectionId}-main-content`);
 	const scrollContainerId = $derived(`${sectionId}-content-container`);
@@ -188,7 +197,12 @@
 	showAside={showRightAside}
 	{innerViewportStyle}
 	{sidebarConfig}
-	headings={data.tocHeadings}
+	headings={showToc ? data.tocHeadings : []}
+	{breadcrumbs}
+	title={docTitle}
+	tocTitle={sectionUi.toc.title}
+	{tocSelector}
+	tocGroupTitle={currentDoc?.category ?? sectionConfig.label}
 >
 	{#snippet main()}
 		<section class="flex min-w-0 flex-1 flex-col space-y-8">

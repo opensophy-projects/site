@@ -8,15 +8,18 @@
 	import Maximize from 'carbon-icons-svelte/lib/Maximize.svelte';
 	import Minimize from 'carbon-icons-svelte/lib/Minimize.svelte';
 	import Reset from 'carbon-icons-svelte/lib/Reset.svelte';
+	import Terminal from 'carbon-icons-svelte/lib/Terminal.svelte';
 
 	type Props = {
 		children?: ComponentPreviewChildren;
 		values: ComponentPreviewValues;
 		previewKey: number;
 		isFullScreen: boolean;
+		isPlaygroundOpen?: boolean;
 		class?: string;
 		onReload: () => void;
 		onToggleFullScreen: () => void;
+		onOpenPlayground?: () => void;
 		previewRef?: HTMLElement;
 		placeholderRef?: HTMLElement;
 	};
@@ -26,9 +29,11 @@
 		values,
 		previewKey,
 		isFullScreen,
+		isPlaygroundOpen = false,
 		class: className = '',
 		onReload,
 		onToggleFullScreen,
+		onOpenPlayground,
 		previewRef = $bindable(),
 		placeholderRef = $bindable()
 	}: Props = $props();
@@ -46,6 +51,17 @@
 			isFullScreen ? 'z-50' : 'h-full w-full flex-1 rounded-md'
 		)}
 	>
+		{#if onOpenPlayground && !isFullScreen}
+			<button
+				type="button"
+				onclick={onOpenPlayground}
+				class="inset-shadow absolute top-2 right-[4.5rem] z-30 flex h-7 items-center gap-1.5 rounded-sm bg-background-inset px-2 text-xs font-medium text-foreground transition-[color,scale] duration-150 ease-out hover:text-accent active:scale-[0.95]"
+				aria-label="Открыть в Playground"
+			>
+				<Terminal size={14} />
+				<span>Playground</span>
+			</button>
+		{/if}
 		<button
 			onclick={onReload}
 			class="inset-shadow absolute top-2 right-10 z-30 flex size-7 items-center justify-center rounded-sm bg-background-inset text-foreground transition-transform duration-150 ease-out active:scale-[0.95]"
@@ -71,9 +87,20 @@
 			viewportClass="min-h-full w-full flex flex-col"
 		>
 			<div class="flex w-full flex-1 flex-col items-center justify-center">
-				{#key previewKey}
-					{@render children?.(values)}
-				{/key}
+				{#if isPlaygroundOpen}
+					<button
+						type="button"
+						onclick={onOpenPlayground}
+						class="flex flex-col items-center gap-2 p-6 text-sm text-foreground-muted transition-colors duration-150 ease-out hover:text-foreground"
+					>
+						<Terminal size={20} />
+						Превью открыто в Playground
+					</button>
+				{:else}
+					{#key previewKey}
+						{@render children?.(values)}
+					{/key}
+				{/if}
 			</div>
 		</ScrollArea>
 	</div>

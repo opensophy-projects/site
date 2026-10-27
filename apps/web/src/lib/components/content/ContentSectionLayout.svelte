@@ -5,6 +5,7 @@
 	import { SvelteMap } from 'svelte/reactivity';
 	import ContentSidebar from '$lib/components/content/ContentSidebar.svelte';
 	import MobileSidebar from '$lib/components/content/MobileSidebar.svelte';
+	import ShellHeader, { type ShellBreadcrumb } from '$lib/components/content/ShellHeader.svelte';
 	import ScrollArea from '$lib/components/ui-registry/ScrollArea.svelte';
 	import { type SectionUiConfig } from '$lib/config/content-ui';
 	import type { ContentItem, ContentSectionLink } from '$lib/config/navigation';
@@ -32,9 +33,11 @@
 	const DEFAULT_CONTENT_SHELL_CLASS =
 		'flex h-full min-h-0 w-full min-w-0 flex-1 lg:pt-2 lg:pr-2 lg:pb-2 lg:pl-4';
 	const DEFAULT_CONTENT_WRAPPER_CLASS_BASE =
-		'inset-shadow relative h-full max-h-full min-h-0 w-full min-w-0 overflow-hidden border border-border bg-background-inset pt-12 lg:grid lg:grid-cols-[minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:overflow-visible lg:rounded-xl lg:pt-0';
+		'inset-shadow relative flex h-full max-h-full min-h-0 w-full min-w-0 flex-col overflow-hidden border border-border bg-background-inset pt-12 lg:overflow-visible lg:rounded-xl lg:pt-0';
 	const DEFAULT_CONTENT_WRAPPER_CLASS_WITH_ASIDE = '';
-	const DEFAULT_SCROLL_AREA_CLASS_BASE = 'h-full max-h-full min-h-0 w-full min-w-0 lg:row-start-1';
+	// Mobile top bar (h-12) plus the sticky "on this page" bar (44px + border).
+	const DEFAULT_CONTENT_WRAPPER_CLASS_WITH_MOBILE_TOC = 'pt-[93px]';
+	const DEFAULT_SCROLL_AREA_CLASS_BASE = 'min-h-0 w-full min-w-0 flex-1';
 	const DEFAULT_SCROLL_AREA_CLASS_NO_ASIDE = '';
 	const DEFAULT_SCROLL_AREA_CLASS_WITH_ASIDE = '';
 	const DEFAULT_SCROLL_VIEWPORT_CLASS_BASE = 'rounded-lg overscroll-none flex flex-col';
@@ -58,6 +61,11 @@
 		innerViewportStyle = true,
 		sidebarConfig,
 		headings = [] as ContentTocHeading[],
+		breadcrumbs = [],
+		title,
+		tocTitle,
+		tocSelector,
+		tocGroupTitle,
 		main,
 		aside
 	}: {
@@ -72,6 +80,11 @@
 		innerViewportStyle?: boolean;
 		sidebarConfig: SidebarConfig;
 		headings?: ContentTocHeading[];
+		breadcrumbs?: ShellBreadcrumb[];
+		title?: string;
+		tocTitle?: string;
+		tocSelector?: string;
+		tocGroupTitle?: string;
 		main: Snippet;
 		aside?: Snippet;
 	} = $props();
@@ -84,7 +97,8 @@
 		contentWrapperClass ??
 			cn(
 				DEFAULT_CONTENT_WRAPPER_CLASS_BASE,
-				resolvedShowAside && DEFAULT_CONTENT_WRAPPER_CLASS_WITH_ASIDE
+				resolvedShowAside && DEFAULT_CONTENT_WRAPPER_CLASS_WITH_ASIDE,
+				headings.length > 0 && DEFAULT_CONTENT_WRAPPER_CLASS_WITH_MOBILE_TOC
 			)
 	);
 	const resolvedScrollAreaClass = $derived(
@@ -217,6 +231,11 @@
 		{searchConfig}
 		{sectionLinks}
 		{headings}
+		{title}
+		{tocTitle}
+		{tocSelector}
+		{tocGroupTitle}
+		{scrollContainerId}
 	/>
 
 	<div class={resolvedGridClass}>
@@ -226,7 +245,7 @@
 				{navigationLabel}
 				{basePath}
 				{showSearch}
-				{showThemeToggle}
+				showThemeToggle={false}
 				{showRepositoryLink}
 				{repositoryUrl}
 				{repositoryAriaLabel}
@@ -237,6 +256,7 @@
 
 		<div class={DEFAULT_CONTENT_SHELL_CLASS}>
 			<div class={resolvedContentWrapperClass}>
+				<ShellHeader {breadcrumbs} {showThemeToggle} />
 				<ScrollArea
 					mode="vertical"
 					id={scrollContainerId}
