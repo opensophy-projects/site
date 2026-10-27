@@ -1,5 +1,0 @@
----
-group:
-  label: "Advanced"
-  order: 700
----

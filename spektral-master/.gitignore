@@ -1,7 +1,0 @@
-node_modules/
-dist/
-.svelte-kit/
-.DS_Store
-packages/spektral/benchmarks/results/*.json
-packages/spektral/coverage/
-apps/web/test-results/

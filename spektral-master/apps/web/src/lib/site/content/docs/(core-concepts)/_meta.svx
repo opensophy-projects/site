@@ -1,5 +1,0 @@
----
-group:
-  label: "Core Concepts"
-  order: 100
----

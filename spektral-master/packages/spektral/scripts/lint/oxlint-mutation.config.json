@@ -1,6 +1,0 @@
-{
-	"plugins": ["eslint", "typescript", "oxc"],
-	"categories": {
-		"correctness": "error"
-	}
-}

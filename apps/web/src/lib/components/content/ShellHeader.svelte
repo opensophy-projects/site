@@ -15,6 +15,10 @@
 		onToggleAside?: () => void;
 	} = $props();
 
+	// Same raised inset look as the sidebar's search and section picker.
+	const buttonClass =
+		'inset-shadow relative inline-flex size-8 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground transition-scale duration-150 ease-out active:scale-[0.95]';
+
 	// Notch geometry: the slanted edge and the rounded step where it meets the card border.
 	const NOTCH_HEIGHT = 40;
 	const SLANT_WIDTH = 24;
@@ -45,22 +49,18 @@
 			/>
 		</svg>
 
-		<div class="relative flex items-center gap-1 bg-background pr-2 pl-1">
+		<div class="relative flex items-center gap-1.5 bg-background pr-2 pl-1">
 			<span class="absolute bottom-0 left-0 h-px bg-border" style={`right: ${CORNER}px`}></span>
 
 			{#if showThemeToggle}
-				<ShellThemeToggle />
-			{/if}
-
-			{#if showThemeToggle && showAsideToggle}
-				<span aria-hidden="true" class="mx-1 h-4 w-px bg-border"></span>
+				<ShellThemeToggle class={buttonClass} />
 			{/if}
 
 			{#if showAsideToggle}
 				<button
 					type="button"
 					onclick={onToggleAside}
-					class="relative inline-flex size-8 cursor-pointer items-center justify-center rounded-sm text-foreground-muted transition-[color,scale] duration-150 ease-out hover:text-foreground active:scale-[0.95]"
+					class={buttonClass}
 					aria-label={asideVisible ? 'Скрыть правую панель' : 'Показать правую панель'}
 					aria-pressed={!asideVisible}
 					title={asideVisible ? 'Скрыть правую панель' : 'Показать правую панель'}
