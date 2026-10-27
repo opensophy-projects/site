@@ -1,0 +1,12 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Versions shared verbatim by multiple workspaces. Framework and parser ranges
+# that intentionally differ remain local to their consumers.
+catalog:
+  '@eslint/js': ^10.0.1
+  eslint: ^10.8.1
+  eslint-config-prettier: ^10.1.8
+  oxfmt: ^0.63.0
+  typescript: ^5.9.3
