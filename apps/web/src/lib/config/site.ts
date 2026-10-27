@@ -119,6 +119,8 @@ export const siteConfig = {
 	/** External profile links used by docs actions and metadata. */
 	links: {
 		github: 'https://github.com/opensophy-projects',
+		/** Repository whose star count is shown in the docs header. */
+		repository: 'https://github.com/opensophy-projects/site',
 		telegram: 'https://t.me/opensophy',
 		email: 'opensophy@gmail.com'
 	},

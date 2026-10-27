@@ -188,7 +188,9 @@
 	showAside={showRightAside}
 	{innerViewportStyle}
 	{sidebarConfig}
-	headings={data.tocHeadings}
+	headings={showToc ? data.tocHeadings : []}
+	tocTitle={sectionUi.toc.title}
+	{tocSelector}
 >
 	{#snippet main()}
 		<section class="flex min-w-0 flex-1 flex-col space-y-8">

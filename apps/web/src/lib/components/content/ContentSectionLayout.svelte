@@ -5,6 +5,7 @@
 	import { SvelteMap } from 'svelte/reactivity';
 	import ContentSidebar from '$lib/components/content/ContentSidebar.svelte';
 	import MobileSidebar from '$lib/components/content/MobileSidebar.svelte';
+	import ShellHeader from '$lib/components/content/ShellHeader.svelte';
 	import ScrollArea from '$lib/components/ui-registry/ScrollArea.svelte';
 	import { type SectionUiConfig } from '$lib/config/content-ui';
 	import type { ContentItem, ContentSectionLink } from '$lib/config/navigation';
@@ -32,13 +33,13 @@
 	const DEFAULT_CONTENT_SHELL_CLASS =
 		'flex h-full min-h-0 w-full min-w-0 flex-1 lg:pt-2 lg:pr-2 lg:pb-2 lg:pl-4';
 	const DEFAULT_CONTENT_WRAPPER_CLASS_BASE =
-		'inset-shadow relative h-full max-h-full min-h-0 w-full min-w-0 overflow-hidden border border-border bg-background-inset pt-12 lg:grid lg:grid-cols-[minmax(0,1fr)] lg:grid-rows-[minmax(0,1fr)] lg:overflow-visible lg:rounded-xl lg:pt-0';
+		'inset-shadow relative flex h-full max-h-full min-h-0 w-full min-w-0 flex-col overflow-hidden border border-border bg-background-inset pt-12 lg:overflow-visible lg:rounded-xl lg:pt-0';
 	const DEFAULT_CONTENT_WRAPPER_CLASS_WITH_ASIDE = '';
-	const DEFAULT_SCROLL_AREA_CLASS_BASE = 'h-full max-h-full min-h-0 w-full min-w-0 lg:row-start-1';
+	const DEFAULT_SCROLL_AREA_CLASS_BASE = 'min-h-0 w-full min-w-0 flex-1';
 	const DEFAULT_SCROLL_AREA_CLASS_NO_ASIDE = '';
 	const DEFAULT_SCROLL_AREA_CLASS_WITH_ASIDE = '';
 	const DEFAULT_SCROLL_VIEWPORT_CLASS_BASE = 'rounded-lg overscroll-none flex flex-col';
-	const DEFAULT_SCROLL_VIEWPORT_CLASS_PADDED = 'gap-8 px-4 py-8 lg:px-8';
+	const DEFAULT_SCROLL_VIEWPORT_CLASS_PADDED = 'gap-8 px-4 py-8 lg:px-8 lg:pt-14';
 	const DEFAULT_SCROLL_VIEWPORT_CLASS_PADDED_WITH_ASIDE =
 		'max-w-none';
 	const DEFAULT_SCROLL_VIEWPORT_CLASS_COMPACT = 'h-full gap-6';
@@ -58,6 +59,8 @@
 		innerViewportStyle = true,
 		sidebarConfig,
 		headings = [] as ContentTocHeading[],
+		tocTitle,
+		tocSelector,
 		main,
 		aside
 	}: {
@@ -72,11 +75,25 @@
 		innerViewportStyle?: boolean;
 		sidebarConfig: SidebarConfig;
 		headings?: ContentTocHeading[];
+		tocTitle?: string;
+		tocSelector?: string;
 		main: Snippet;
 		aside?: Snippet;
 	} = $props();
 
-	const resolvedShowAside = $derived(showAside && Boolean(aside));
+	const ASIDE_HIDDEN_STORAGE_KEY = 'content-aside-hidden';
+	let asideHidden = $state(false);
+	const hasAside = $derived(showAside && Boolean(aside));
+	const resolvedShowAside = $derived(hasAside && !asideHidden);
+
+	function toggleAside() {
+		asideHidden = !asideHidden;
+		try {
+			localStorage.setItem(ASIDE_HIDDEN_STORAGE_KEY, asideHidden ? '1' : '0');
+		} catch {
+			// Storage unavailable — the choice just isn't remembered.
+		}
+	}
 	const resolvedGridClass = $derived(
 		gridClass ?? cn(DEFAULT_GRID_CLASS_BASE, resolvedShowAside && DEFAULT_GRID_CLASS_WITH_ASIDE)
 	);
@@ -183,6 +200,12 @@
 	});
 
 	onMount(() => {
+		try {
+			asideHidden = localStorage.getItem(ASIDE_HIDDEN_STORAGE_KEY) === '1';
+		} catch {
+			// Storage unavailable — keep the panel visible.
+		}
+
 		const handleHashChange = () => {
 			void scrollToHash(window.location.hash);
 		};
@@ -217,6 +240,9 @@
 		{searchConfig}
 		{sectionLinks}
 		{headings}
+		{tocTitle}
+		{tocSelector}
+		{scrollContainerId}
 	/>
 
 	<div class={resolvedGridClass}>
@@ -226,7 +252,7 @@
 				{navigationLabel}
 				{basePath}
 				{showSearch}
-				{showThemeToggle}
+				showThemeToggle={false}
 				{showRepositoryLink}
 				{repositoryUrl}
 				{repositoryAriaLabel}
@@ -237,6 +263,12 @@
 
 		<div class={DEFAULT_CONTENT_SHELL_CLASS}>
 			<div class={resolvedContentWrapperClass}>
+				<ShellHeader
+					{showThemeToggle}
+					showAsideToggle={hasAside}
+					asideVisible={!asideHidden}
+					onToggleAside={toggleAside}
+				/>
 				<ScrollArea
 					mode="vertical"
 					id={scrollContainerId}
