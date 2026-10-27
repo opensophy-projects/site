@@ -4,7 +4,6 @@
 	import { gsap } from 'gsap';
 	import { cn } from '$lib/utils/cn';
 	import CodePanel from './component-preview/CodePanel.svelte';
-	import ComponentPlayground from './component-preview/ComponentPlayground.svelte';
 	import ControlsPanel from './component-preview/ControlsPanel.svelte';
 	import PreviewFrame from './component-preview/PreviewFrame.svelte';
 	import {
@@ -31,9 +30,6 @@
 		refreshOnFullScreen?: boolean;
 		refreshOnControlChange?: boolean;
 		controlRefreshDelay?: number;
-		playground?: boolean;
-		/** Name used in the Playground usage snippet; derived from the first source file otherwise. */
-		componentName?: string;
 		class?: string;
 		[key: string]: unknown;
 	};
@@ -49,14 +45,11 @@
 		refreshOnFullScreen = false,
 		refreshOnControlChange = false,
 		controlRefreshDelay = 120,
-		playground = true,
-		componentName,
 		class: className = '',
 		...restProps
 	}: ComponentProps = $props();
 
 	let isFullScreen = $state(false);
-	let isPlaygroundOpen = $state(false);
 	let previewKey = $state(0);
 	let previewRef = $state<HTMLElement>();
 	let placeholderRef = $state<HTMLElement>();
@@ -284,11 +277,9 @@
 			values={controlValues}
 			{previewKey}
 			{isFullScreen}
-			{isPlaygroundOpen}
 			class={className}
 			onReload={reloadPreview}
 			onToggleFullScreen={toggleFullScreen}
-			onOpenPlayground={playground && children ? () => (isPlaygroundOpen = true) : undefined}
 		/>
 		<ControlsPanel
 			{controls}
@@ -299,18 +290,3 @@
 		<CodePanel {tabs} {codeSlot} />
 	</div>
 </section>
-
-{#if isPlaygroundOpen}
-	<ComponentPlayground
-		{children}
-		{controls}
-		values={controlValues}
-		sources={tabs}
-		{componentName}
-		{previewKey}
-		onChange={updateControl}
-		onReset={resetControls}
-		onReload={reloadPreview}
-		onClose={() => (isPlaygroundOpen = false)}
-	/>
-{/if}

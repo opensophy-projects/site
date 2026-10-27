@@ -30,8 +30,6 @@
 		searchConfig = contentUiDefaults.search,
 		sectionLinks = defaultSectionLinks,
 		headings = [],
-		title,
-		tocGroupTitle,
 		tocTitle,
 		tocSelector,
 		scrollContainerId
@@ -47,8 +45,6 @@
 		searchConfig?: SectionUiConfig['search'];
 		sectionLinks?: ContentSectionLink[];
 		headings?: ContentTocHeading[];
-		title?: string;
-		tocGroupTitle?: string;
 		tocTitle?: string;
 		tocSelector?: string;
 		scrollContainerId?: string;
@@ -63,7 +59,7 @@
 	const closeButtonId = 'mobile-sidebar-close';
 
 	const iconButtonClass =
-		'inline-flex size-9 cursor-pointer items-center justify-center rounded-sm text-foreground-muted transition-[color,scale] duration-150 ease-out hover:text-foreground active:scale-[0.95]';
+		'inset-shadow relative inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground transition-scale duration-150 ease-out active:scale-[0.95]';
 
 	function setBodyOverflow(value: string) {
 		if (!canUseDocument) return;
@@ -212,54 +208,47 @@
 
 <svelte:document onkeydown={handleDocumentKeydown} />
 
-<div class="fixed inset-x-0 top-0 z-40 lg:hidden">
-	<div class="flex h-12 items-center gap-1 border-b border-border bg-background px-2">
-		<button
-			id={toggleButtonId}
-			type="button"
-			onclick={toggle}
-			class={iconButtonClass}
-			aria-label="Открыть меню"
-			aria-expanded={isOpen}
-			aria-controls={panelId}
-		>
-			<OpenPanelFilledLeft size={16} />
+<div
+	class="fixed inset-x-0 top-0 z-40 flex h-12 items-center gap-1.5 border-b border-border bg-background px-3 lg:hidden"
+>
+	<button
+		id={toggleButtonId}
+		type="button"
+		onclick={toggle}
+		class={iconButtonClass}
+		aria-label="Открыть меню"
+		aria-expanded={isOpen}
+		aria-controls={panelId}
+	>
+		<OpenPanelFilledLeft size={16} />
+	</button>
+	{#if showSearch}
+		<button type="button" onclick={openSearch} class={iconButtonClass} aria-label="Открыть поиск">
+			<Search size={16} />
 		</button>
-		{#if showSearch}
-			<button type="button" onclick={openSearch} class={iconButtonClass} aria-label="Открыть поиск">
-				<Search size={16} />
-			</button>
-		{/if}
-		<span aria-hidden="true" class="mx-2 h-4 w-px shrink-0 bg-border"></span>
-		{#if title}
-			<span class="min-w-0 flex-1 truncate text-sm font-medium tracking-tight text-foreground">
-				{title}
-			</span>
-		{:else}
-			<a
-				href={resolve('/')}
-				class="inline-flex min-w-0 flex-1 items-center gap-1 text-sm tracking-tight text-foreground"
-			>
-				<span class="inline-flex shrink-0 items-center" aria-hidden="true">
-					<Logo size={6} />
-				</span>
-				<span class="truncate font-medium lowercase">{brandingConfig.name}</span>
-			</a>
-		{/if}
-		{#if showThemeToggle}
-			<ShellThemeToggle class="size-9 shrink-0" />
-		{/if}
-	</div>
-
+	{/if}
 	{#if headings.length > 0}
 		<MobileToc
 			{headings}
-			groupTitle={tocGroupTitle ?? title ?? navigationLabel}
 			title={tocTitle}
 			selector={tocSelector}
 			{scrollContainerId}
+			buttonClass={iconButtonClass}
 		/>
 	{/if}
+	{#if showThemeToggle}
+		<ShellThemeToggle class={iconButtonClass} />
+	{/if}
+	<a
+		href={resolve('/')}
+		class="ms-auto inline-flex shrink-0 items-center gap-1 px-1 text-sm tracking-tight text-foreground"
+		aria-label={brandingConfig.name}
+	>
+		<span class="inline-flex shrink-0 items-center" aria-hidden="true">
+			<Logo size={6} />
+		</span>
+		<span class="font-medium lowercase">{brandingConfig.name}</span>
+	</a>
 </div>
 
 {#if isVisible}
