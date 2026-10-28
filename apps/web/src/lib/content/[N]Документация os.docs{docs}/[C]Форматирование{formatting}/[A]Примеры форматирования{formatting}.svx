@@ -388,6 +388,44 @@ export function example(title: string) {
 :::
 ````
 
+Нормированная область (`[stack]expanded`) со штриховкой и фоном:
+
+:::chart
+[type]area
+[title]Доля трафика
+[stack]expanded
+[variant]hatched
+[curve]natural
+[background]dots
+
+| Месяц | Поиск | Соцсети | Прямые |
+|-------|-------|---------|--------|
+| Янв   | 420   | 180     | 120    |
+| Фев   | 380   | 260     | 140    |
+| Мар   | 450   | 310     | 160    |
+| Апр   | 400   | 350     | 210    |
+| Май   | 520   | 290     | 230    |
+:::
+
+````markdown
+:::chart
+[type]area
+[title]Доля трафика
+[stack]expanded
+[variant]hatched
+[curve]natural
+[background]dots
+
+| Месяц | Поиск | Соцсети | Прямые |
+|-------|-------|---------|--------|
+| Янв   | 420   | 180     | 120    |
+| Фев   | 380   | 260     | 140    |
+| Мар   | 450   | 310     | 160    |
+| Апр   | 400   | 350     | 210    |
+| Май   | 520   | 290     | 230    |
+:::
+````
+
 ### Линейный график (line)
 
 :::chart
@@ -424,6 +462,50 @@ export function example(title: string) {
 :::
 ````
 
+Ступенчатая линия (`[curve]step`) с точками и выбором диапазона (`[brush]`):
+
+:::chart
+[type]line
+[title]Активные серверы
+[curve]step
+[dots]colored-border
+[stroke]dashed
+[brush]true
+[yAxis]true
+
+| День | Прод | Стейдж |
+|------|------|--------|
+| Пн   | 12   | 4      |
+| Вт   | 14   | 5      |
+| Ср   | 14   | 3      |
+| Чт   | 17   | 6      |
+| Пт   | 16   | 6      |
+| Сб   | 11   | 2      |
+| Вс   | 10   | 2      |
+:::
+
+````markdown
+:::chart
+[type]line
+[title]Активные серверы
+[curve]step
+[dots]colored-border
+[stroke]dashed
+[brush]true
+[yAxis]true
+
+| День | Прод | Стейдж |
+|------|------|--------|
+| Пн   | 12   | 4      |
+| Вт   | 14   | 5      |
+| Ср   | 14   | 3      |
+| Чт   | 17   | 6      |
+| Пт   | 16   | 6      |
+| Сб   | 11   | 2      |
+| Вс   | 10   | 2      |
+:::
+````
+
 ### Столбчатая диаграмма (bar)
 
 :::chart
@@ -451,6 +533,74 @@ export function example(title: string) {
 | Q2      | 5800      | 4700      |
 | Q3      | 5200      | 5400      |
 | Q4      | 7100      | 6200      |
+:::
+````
+
+Горизонтальные столбцы с накоплением (`[layout]horizontal`, `[stack]stacked`):
+
+:::chart
+[type]bar
+[title]Задачи по командам
+[layout]horizontal
+[stack]stacked
+[variant]hatched
+[legend-variant]rounded-square
+
+| Команда  | Готово | В работе | Бэклог |
+|----------|--------|----------|--------|
+| Backend  | 42     | 12       | 8      |
+| Frontend | 35     | 15       | 11     |
+| Mobile   | 21     | 9        | 14     |
+| DevOps   | 18     | 6        | 4      |
+:::
+
+````markdown
+:::chart
+[type]bar
+[title]Задачи по командам
+[layout]horizontal
+[stack]stacked
+[variant]hatched
+[legend-variant]rounded-square
+
+| Команда  | Готово | В работе | Бэклог |
+|----------|--------|----------|--------|
+| Backend  | 42     | 12       | 8      |
+| Frontend | 35     | 15       | 11     |
+| Mobile   | 21     | 9        | 14     |
+| DevOps   | 18     | 6        | 4      |
+:::
+````
+
+Столбцы в процентах (`[stack]percent`) с подсветкой при наведении:
+
+:::chart
+[type]bar
+[title]Структура выручки
+[stack]percent
+[highlight]true
+
+| Квартал | Подписки | Услуги | Разовые |
+|---------|----------|--------|---------|
+| Q1      | 52       | 30     | 18      |
+| Q2      | 58       | 27     | 15      |
+| Q3      | 61       | 26     | 13      |
+| Q4      | 66       | 22     | 12      |
+:::
+
+````markdown
+:::chart
+[type]bar
+[title]Структура выручки
+[stack]percent
+[highlight]true
+
+| Квартал | Подписки | Услуги | Разовые |
+|---------|----------|--------|---------|
+| Q1      | 52       | 30     | 18      |
+| Q2      | 58       | 27     | 15      |
+| Q3      | 61       | 26     | 13      |
+| Q4      | 66       | 22     | 12      |
 :::
 ````
 
@@ -518,6 +668,36 @@ export function example(title: string) {
 :::
 ````
 
+Круговая диаграмма (`[type]pie`):
+
+:::chart
+[type]pie
+[title]Браузеры
+
+| Браузер | Посетители |
+|---------|------------|
+| Chrome  | 275        |
+| Safari  | 200        |
+| Firefox | 187        |
+| Edge    | 173        |
+| Другие  | 90         |
+:::
+
+````markdown
+:::chart
+[type]pie
+[title]Браузеры
+
+| Браузер | Посетители |
+|---------|------------|
+| Chrome  | 275        |
+| Safari  | 200        |
+| Firefox | 187        |
+| Edge    | 173        |
+| Другие  | 90         |
+:::
+````
+
 ### Радарная диаграмма (radar)
 
 :::chart
@@ -550,6 +730,42 @@ export function example(title: string) {
 :::
 ````
 
+Только контуры (`[variant]lines`) и круговая сетка (`[grid]circle`):
+
+:::chart
+[type]radar
+[title]Сравнение тарифов
+[variant]lines
+[grid]circle
+[legend-variant]circle
+
+| Параметр   | Базовый | Про |
+|------------|---------|-----|
+| Скорость   | 60      | 95  |
+| Хранилище  | 40      | 90  |
+| Поддержка  | 50      | 85  |
+| Интеграции | 30      | 80  |
+| Цена       | 90      | 55  |
+:::
+
+````markdown
+:::chart
+[type]radar
+[title]Сравнение тарифов
+[variant]lines
+[grid]circle
+[legend-variant]circle
+
+| Параметр   | Базовый | Про |
+|------------|---------|-----|
+| Скорость   | 60      | 95  |
+| Хранилище  | 40      | 90  |
+| Поддержка  | 50      | 85  |
+| Интеграции | 30      | 80  |
+| Цена       | 90      | 55  |
+:::
+````
+
 ### Радиальная диаграмма (radial)
 
 :::chart
@@ -575,6 +791,36 @@ export function example(title: string) {
 | Backend  | 82      |
 | Frontend | 64      |
 | Mobile   | 47      |
+:::
+````
+
+Полукруг (`[variant]semi`):
+
+:::chart
+[type]radial
+[title]Загрузка ресурсов
+[variant]semi
+[max]100
+
+| Ресурс | Процент |
+|--------|---------|
+| CPU    | 72      |
+| RAM    | 58      |
+| Диск   | 34      |
+:::
+
+````markdown
+:::chart
+[type]radial
+[title]Загрузка ресурсов
+[variant]semi
+[max]100
+
+| Ресурс | Процент |
+|--------|---------|
+| CPU    | 72      |
+| RAM    | 58      |
+| Диск   | 34      |
 :::
 ````
 
@@ -609,6 +855,42 @@ export function example(title: string) {
 | Лендинг | Отказ   | 18000        |
 | Товар   | Покупка | 24000        |
 | Товар   | Отказ   | 28000        |
+:::
+````
+
+Связи цветом источника и подписи внутри узлов (`[variant]source`, `[labels]inside`):
+
+:::chart
+[type]sankey
+[title]Распределение бюджета
+[variant]source
+[labels]inside
+[nodeWidth]80
+
+| Откуда    | Куда       | Сумма |
+|-----------|------------|-------|
+| Бюджет    | Разработка | 45    |
+| Бюджет    | Маркетинг  | 25    |
+| Бюджет    | Сервера    | 20    |
+| Разработка| Зарплаты   | 38    |
+| Разработка| Сервисы    | 7     |
+:::
+
+````markdown
+:::chart
+[type]sankey
+[title]Распределение бюджета
+[variant]source
+[labels]inside
+[nodeWidth]80
+
+| Откуда    | Куда       | Сумма |
+|-----------|------------|-------|
+| Бюджет    | Разработка | 45    |
+| Бюджет    | Маркетинг  | 25    |
+| Бюджет    | Сервера    | 20    |
+| Разработка| Зарплаты   | 38    |
+| Разработка| Сервисы    | 7     |
 :::
 ````
 

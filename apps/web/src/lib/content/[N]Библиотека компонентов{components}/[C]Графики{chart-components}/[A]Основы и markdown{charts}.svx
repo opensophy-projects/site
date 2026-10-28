@@ -75,7 +75,6 @@ const config = {
 			legend={{ variant: 'circle-outline', align: 'left', isClickable: true }}
 			tooltip={{ variant: 'frosted-glass', roundness: 'xl', indicator: 'line' }}
 			brush={{ formatLabel: shortMonth }}
-			backgroundVariant="grid"
 			yAxis
 			xAxis={{ tickFormatter: shortMonth }}
 			class="h-full w-full"
@@ -93,7 +92,6 @@ const config = {
 	legend={{ variant: 'circle-outline', align: 'left', isClickable: true }}
 	tooltip={{ variant: 'frosted-glass', roundness: 'xl', indicator: 'line' }}
 	brush={{ formatLabel: (v) => String(v).slice(0, 3) }}
-	backgroundVariant="grid"
 	yAxis
 />
 ```
