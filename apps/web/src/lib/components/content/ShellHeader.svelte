@@ -17,7 +17,7 @@
 
 	// Same raised inset look as the sidebar's search and section picker.
 	const buttonClass =
-		'inset-shadow relative inline-flex size-8 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground transition-scale duration-150 ease-out active:scale-[0.95]';
+		'inset-shadow relative inline-flex size-8 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground-muted transition-[color,scale] duration-150 ease-out hover:text-foreground active:scale-[0.95]';
 
 	// Notch geometry: the slanted edge and the rounded step where it meets the card border.
 	const NOTCH_HEIGHT = 40;

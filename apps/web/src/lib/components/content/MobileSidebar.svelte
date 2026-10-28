@@ -59,7 +59,7 @@
 	const closeButtonId = 'mobile-sidebar-close';
 
 	const iconButtonClass =
-		'inset-shadow relative inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground transition-scale duration-150 ease-out active:scale-[0.95]';
+		'inset-shadow relative inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-sm bg-background-inset text-foreground-muted transition-[color,scale] duration-150 ease-out hover:text-foreground active:scale-[0.95]';
 
 	function setBodyOverflow(value: string) {
 		if (!canUseDocument) return;
