@@ -1,0 +1,244 @@
+---
+title: Столбчатая диаграмма
+description: BarChart — столбцы с штриховкой, двухтонной и градиентной заливкой, стеками, горизонтальной раскладкой, подсветкой при наведении и «буферным» столбцом.
+keywords: 'Opensophy, BarChart, столбчатая диаграмма, графики, Svelte, UI components, библиотека компонентов, open-source'
+priority: 4
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import BarChart from '$lib/components/charts/BarChart.svelte';
+	import { chartSources } from '$lib/components/charts/chart-sources';
+	import {
+		monthlyData,
+		monthlyConfig,
+		gradientConfig,
+		shortMonth
+	} from '$lib/components/charts/chart-demo-data';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const variants = ['default', 'hatched', 'duotone', 'duotone-reverse', 'gradient', 'stripped'];
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'variant',
+			label: 'Заливка',
+			defaultValue: 'default',
+			options: variants.map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'stackType',
+			label: 'Стек',
+			defaultValue: 'default',
+			options: ['default', 'stacked', 'percent'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'layout',
+			label: 'Раскладка',
+			defaultValue: 'vertical',
+			options: ['vertical', 'horizontal'].map((v) => ({ label: v, value: v }))
+		},
+		{ type: 'number', name: 'barRadius', label: 'Скругление', defaultValue: 2, min: 0, max: 12, step: 1 },
+		{ type: 'boolean', name: 'glowing', label: 'Свечение', defaultValue: false },
+		{ type: 'boolean', name: 'highlight', label: 'Подсветка наведения', defaultValue: false },
+		{ type: 'boolean', name: 'buffer', label: 'Буферный столбец', defaultValue: false },
+		{ type: 'boolean', name: 'brush', label: 'Браш', defaultValue: false },
+		{ type: 'boolean', name: 'isLoading', label: 'Загрузка', defaultValue: false }
+	];
+</script>
+
+# Столбчатая диаграмма
+
+`BarChart` — столбчатая диаграмма на Svelte 5 без сторонних библиотек. Поддерживает шесть вариантов заливки, обычный и процентный стек, горизонтальную раскладку, свечение, подсветку столбца под курсором и «буферный» последний столбец для незавершённого периода.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={chartSources.bar}>
+	{#snippet children(values)}
+		<div class="h-[380px] w-full p-4 pt-12">
+			<BarChart
+				data={monthlyData}
+				config={monthlyConfig}
+				xDataKey="month"
+				variant={values.variant}
+				stackType={values.stackType}
+				layout={values.layout}
+				barRadius={values.barRadius}
+				glowing={values.glowing}
+				enableHoverHighlight={values.highlight}
+				bufferBar={values.buffer}
+				isClickable
+				legend={{ isClickable: true }}
+				brush={values.brush ? { formatLabel: shortMonth } : false}
+				isLoading={values.isLoading}
+				xAxis={values.layout === 'horizontal' ? false : { tickFormatter: shortMonth }}
+				yAxis={values.layout === 'horizontal' ? { tickFormatter: shortMonth } : false}
+				class="h-full w-full"
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import BarChart from '$lib/components/charts/BarChart.svelte';
+	import type { ChartConfig } from '$lib/components/charts/chart-utils';
+
+	const config = {
+		desktop: { label: 'Десктоп', colors: { light: ['#047857'], dark: ['#10b981'] } },
+		mobile: { label: 'Мобильные', colors: { light: ['#be123c'], dark: ['#f43f5e'] } }
+	} satisfies ChartConfig;
+</script>
+
+<BarChart
+	{data}
+	{config}
+	xDataKey="month"
+	legend={{ isClickable: true }}
+	series={[
+		{ dataKey: 'desktop', variant: 'hatched', isClickable: true },
+		{ dataKey: 'mobile', variant: 'duotone', isClickable: true }
+	]}
+	class="h-[320px] w-full"
+/>
+```
+
+## Примеры
+
+### Варианты заливки
+
+<div class="grid gap-4 md:grid-cols-2">
+{#each variants as v (v)}
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">variant="{v}"</div>
+		<BarChart data={monthlyData.slice(0, 8)} config={monthlyConfig} xDataKey="month" variant={v} xAxis={{ tickFormatter: shortMonth }} class="h-[220px] w-full" />
+	</div>
+{/each}
+</div>
+
+```svelte
+<BarChart {data} {config} xDataKey="month" variant="duotone" />
+```
+
+### Стек и процентный стек
+
+<div class="grid gap-4 md:grid-cols-2">
+	<BarChart data={monthlyData} config={monthlyConfig} xDataKey="month" stackType="stacked" legend xAxis={{ tickFormatter: shortMonth }} class="h-[260px] w-full" />
+	<BarChart data={monthlyData} config={monthlyConfig} xDataKey="month" stackType="percent" yAxis legend xAxis={{ tickFormatter: shortMonth }} class="h-[260px] w-full" />
+</div>
+
+```svelte
+<BarChart {data} {config} xDataKey="month" stackType="stacked" legend />
+<BarChart {data} {config} xDataKey="month" stackType="percent" yAxis legend />
+```
+
+### Горизонтальная раскладка
+
+<BarChart data={monthlyData.slice(0, 6)} config={monthlyConfig} xDataKey="month" layout="horizontal" barRadius={4} legend yAxis={{ tickFormatter: shortMonth }} class="h-[320px] w-full" />
+
+```svelte
+<BarChart {data} {config} xDataKey="month" layout="horizontal" barRadius={4} legend />
+```
+
+### Подсветка, свечение и буферный столбец
+
+<div class="grid gap-4 md:grid-cols-2">
+	<BarChart data={monthlyData} config={monthlyConfig} xDataKey="month" enableHoverHighlight glowing xAxis={{ tickFormatter: shortMonth }} class="h-[260px] w-full" />
+	<BarChart data={monthlyData} config={monthlyConfig} xDataKey="month" bufferBar isClickable legend={{ isClickable: true }} xAxis={{ tickFormatter: shortMonth }} class="h-[260px] w-full" />
+</div>
+
+```svelte
+<BarChart {data} {config} xDataKey="month" enableHoverHighlight glowing />
+<BarChart {data} {config} xDataKey="month" bufferBar isClickable legend={{ isClickable: true }} />
+```
+
+### Градиентные цвета и тултип frosted-glass
+
+<BarChart data={monthlyData} config={gradientConfig} xDataKey="month" barRadius={4} tooltip={{ variant: 'frosted-glass', roundness: 'xl', defaultIndex: 7 }} backgroundVariant="dots" xAxis={{ tickFormatter: shortMonth }} class="h-[280px] w-full" />
+
+```svelte
+<BarChart {data} {config} xDataKey="month" barRadius={4} backgroundVariant="dots"
+	tooltip={{ variant: 'frosted-glass', roundness: 'xl', defaultIndex: 7 }} />
+```
+
+### Состояние загрузки
+
+<BarChart data={[]} config={monthlyConfig} isLoading class="h-[240px] w-full" />
+
+## В markdown
+
+````markdown
+:::chart
+[type]bar
+[title]Продажи по кварталам
+[variant]hatched
+[stack]stacked
+
+| Квартал | Продукт А | Продукт Б |
+|---------|-----------|-----------|
+| Q1      | 4200      | 3100      |
+| Q2      | 5800      | 4700      |
+| Q3      | 5200      | 5400      |
+| Q4      | 7100      | 6200      |
+:::
+````
+
+:::chart
+[type]bar
+[title]Продажи по кварталам
+[variant]hatched
+[stack]stacked
+
+| Квартал | Продукт А | Продукт Б |
+|---------|-----------|-----------|
+| Q1      | 4200      | 3100      |
+| Q2      | 5800      | 4700      |
+| Q3      | 5200      | 5400      |
+| Q4      | 7100      | 6200      |
+:::
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `data` | `ChartRow[]` | — | Строки данных |
+| `config` | `ChartConfig` | — | Подписи и цвета серий |
+| `series` | `BarSeries[]` | все ключи `config` | Серии и их настройки |
+| `xDataKey` | `string` | — | Ключ категории |
+| `stackType` | `'default' \| 'stacked' \| 'percent'` | `'default'` | Группы, стек или стек 100% |
+| `layout` | `'vertical' \| 'horizontal'` | `'vertical'` | Ориентация столбцов |
+| `variant` | `'default' \| 'hatched' \| 'duotone' \| 'duotone-reverse' \| 'gradient' \| 'stripped'` | `'default'` | Заливка по умолчанию |
+| `barRadius` | `number` | `2` | Скругление углов |
+| `barGap` | `number` | `4` | Зазор между столбцами одной категории |
+| `barCategoryGap` | `number \| string` | `'10%'` | Отступ категории с каждой стороны |
+| `glowing` | `boolean` | `false` | Свечение столбцов |
+| `enableHoverHighlight` | `boolean` | `false` | Приглушать всё, кроме категории под курсором |
+| `bufferBar` | `boolean` | `false` | Штрихованный последний столбец |
+| `isClickable` | `boolean` | `false` | Выбор серии кликом |
+| `grid` | `boolean \| GridOptions` | `true` | Сетка |
+| `xAxis` / `yAxis` | `boolean \| AxisOptions` | зависит от `layout` | Нижняя и левая оси |
+| `tooltip` | `boolean \| TooltipOptions` | `true` | Тултип |
+| `legend` | `boolean \| LegendOptions` | `false` | Легенда |
+| `brush` | `boolean \| BrushOptions` | `false` | Выбор диапазона |
+| `backgroundVariant` | `BackgroundVariant` | — | Декоративный фон |
+| `onSelectionChange` | `(key: string \| null) => void` | — | Смена выбранной серии |
+| `isLoading` | `boolean` | `false` | Скелетон загрузки |
+| `loadingBars` | `number` | `12` | Столбцов в скелетоне |
+| `class` | `string` | — | Классы контейнера |
+
+### BarSeries
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `dataKey` | `string` | Ключ серии |
+| `variant` | `BarVariant` | Заливка серии |
+| `radius` | `number` | Скругление серии |
+| `isClickable` | `boolean` | Кликабельность |
+| `enableHoverHighlight` | `boolean` | Подсветка наведения |
+| `glowing` | `boolean` | Свечение |
+| `bufferBar` | `boolean` | Буферный последний столбец |

@@ -8,7 +8,7 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 
 [Ссылка на проект](https://github.com/opensophy-projects/site/tree/main/apps/web/src/lib/components/ui-registry)
 
-Коллекция готовых компонентов, используемых в платформе opensophy. Каждая страница содержит интерактивное демо и полный исходный код с подсветкой синтаксиса.
+Коллекция из 68 готовых компонентов, используемых в платформе opensophy. Каждая страница содержит интерактивное демо и полный исходный код с подсветкой синтаксиса.
 
 ## Стек
 
@@ -120,14 +120,29 @@ keywords: 'Opensophy, Библиотека компонентов, UI, UI compon
 <Card eyebrow="55" title="ASCII-свайп" href="/components/ascii-sweep">Переход между двумя панелями с WebGL-эффектом ASCII-символов и настраиваемым акцентным цветом.</Card>
 </Cards>
 
+### Графики
+
+Восемь типов графиков на чистом SVG с легендой, тултипом, точками и брашем, плюс markdown-блок `:::chart`:
+
+<Cards>
+<Card eyebrow="56" title="Основы и markdown" href="/components/charts">ChartConfig и цвета для светлой и тёмной темы, общие части и синтаксис блока `:::chart`.</Card>
+<Card eyebrow="57" title="Площадная диаграмма" href="/components/area-chart">Градиентные, точечные и штрихованные заливки, стеки и стек 100%.</Card>
+<Card eyebrow="58" title="Линейный график" href="/components/line-chart">Свечение, пунктир, буферный последний отрезок и фоновые паттерны.</Card>
+<Card eyebrow="59" title="Столбчатая диаграмма" href="/components/bar-chart">Шесть заливок, стеки, горизонтальная раскладка и подсветка наведения.</Card>
+<Card eyebrow="60" title="Комбинированный график" href="/components/composed-chart">Столбцы и линии на общей оси с независимыми стилями.</Card>
+<Card eyebrow="61" title="Круговая диаграмма" href="/components/pie-chart">Круг и кольцо со скруглением, отступами, подписями и свечением.</Card>
+<Card eyebrow="62" title="Радарная диаграмма" href="/components/radar-chart">Заливка или контур, полигональная или круговая сетка.</Card>
+<Card eyebrow="63" title="Радиальная диаграмма" href="/components/radial-chart">Концентрические дуги в полном круге или полукруге.</Card>
+<Card eyebrow="64" title="Диаграмма Санки" href="/components/sankey-chart">Потоки между узлами с подписями и подсветкой связей.</Card>
+</Cards>
+
 ### Документация
 
 Компоненты для разметки и структурирования документации:
 
 <Cards>
-<Card eyebrow="56" title="Блоки уведомления" href="/components/admonition">Пять вариантов callout-блоков: note, tip, important, warning, caution.</Card>
-<Card eyebrow="57" title="Шаги со статусами" href="/components/steps">Нумерованные шаги с индикаторами: todo, active, done, warning.</Card>
-<Card eyebrow="58" title="Блок кода" href="/components/codeblock">Блоки кода с подсветкой Shiki, копированием и встроенным поиском.</Card>
-<Card eyebrow="59" title="Графики" href="/components/charts">Все типы графиков через `:::chart`: line, bar, pie, radar и другие.</Card>
-<Card eyebrow="60" title="TOC индикатор" href="/components/toc-indicator">Оглавление с активным индикатором, SVG-линиями и pulse-анимацией.</Card>
+<Card eyebrow="65" title="Блоки уведомления" href="/components/admonition">Пять вариантов callout-блоков: note, tip, important, warning, caution.</Card>
+<Card eyebrow="66" title="Шаги со статусами" href="/components/steps">Нумерованные шаги с индикаторами: todo, active, done, warning.</Card>
+<Card eyebrow="67" title="Блок кода" href="/components/codeblock">Блоки кода с подсветкой Shiki, копированием и встроенным поиском.</Card>
+<Card eyebrow="68" title="TOC индикатор" href="/components/toc-indicator">Оглавление с активным индикатором, SVG-линиями и pulse-анимацией.</Card>
 </Cards>

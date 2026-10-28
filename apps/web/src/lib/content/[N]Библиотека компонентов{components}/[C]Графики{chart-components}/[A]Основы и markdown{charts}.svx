@@ -1,0 +1,248 @@
+---
+title: Основы и markdown
+description: Как устроены графики: ChartConfig и цвета для светлой и тёмной темы, тултип, легенда, точки, браш, фоны и синтаксис блока :::chart.
+keywords: 'Opensophy, графики, ChartConfig, chart, markdown, Svelte, UI components, библиотека компонентов, open-source'
+priority: 1
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import AreaChart from '$lib/components/charts/AreaChart.svelte';
+	import Chart from '$lib/components/docs/markdown/Chart.svelte';
+	import chartSource from '$lib/components/docs/markdown/Chart.svelte?raw';
+	import { chartSources } from '$lib/components/charts/chart-sources';
+	import { monthlyData, monthlyConfig, shortMonth } from '$lib/components/charts/chart-demo-data';
+</script>
+
+# Основы и markdown
+
+Восемь типов графиков на Svelte 5 без сторонних библиотек: [площадная](/components/area-chart), [линейная](/components/line-chart), [столбчатая](/components/bar-chart), [комбинированная](/components/composed-chart), [круговая](/components/pie-chart), [радарная](/components/radar-chart), [радиальная](/components/radial-chart) и [Санки](/components/sankey-chart). Все рисуются в SVG сразу, без вступительных анимаций, и одинаково настраиваются: данные, `config` с цветами и готовые части — тултип, легенда, точки, браш и фон.
+
+## Структура
+
+| Файл | Назначение |
+| --- | --- |
+| `AreaChart.svelte` … `SankeyChart.svelte` | Сами графики |
+| `chart-utils.ts` | `ChartConfig`, CSS-переменные цветов, шкалы, секторы |
+| `cartesian.ts` / `curves.ts` | Раскладка осей, стеки, столбцы и кривые |
+| `CartesianFrame.svelte` | Сетка, оси, курсор и отслеживание указателя |
+| `ChartContainer.svelte` | Контейнер с измерением размера и цветами темы |
+| `ChartTooltip.svelte`, `ChartLegend.svelte`, `ChartDot.svelte`, `ChartBrush.svelte`, `ChartBackground.svelte` | Общие части |
+| `sankey.ts` | Раскладка диаграммы Санки |
+| `markdown.ts` | Парсер блока `:::chart` |
+
+Все файлы лежат в `src/lib/components/charts`, а `index.ts` реэкспортирует компоненты и типы:
+
+```ts
+import { AreaChart, BarChart, type ChartConfig } from '$lib/components/charts';
+```
+
+## ChartConfig
+
+`config` связывает ключи данных с подписями и цветами. Цвета задаются отдельно для светлой и тёмной темы и превращаются в CSS-переменные `--color-<ключ>-<n>`, поэтому переключение темы ничего не перерисовывает. Несколько цветов дают градиент слева направо.
+
+```ts
+import type { ChartConfig } from '$lib/components/charts/chart-utils';
+
+const config = {
+	desktop: { label: 'Десктоп', colors: { light: ['#047857'], dark: ['#10b981'] } },
+	mobile: { label: 'Мобильные', colors: { light: ['#be123c', '#ea580c'], dark: ['#f43f5e', '#fbbf24'] } }
+} satisfies ChartConfig;
+```
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `label` | `string` | Подпись в легенде и тултипе |
+| `icon` | `Component` | Иконка вместо цветного маркера |
+| `colors` | `Partial<Record<'light' \| 'dark', string[]>>` | Цвета по темам, нужен хотя бы один ключ |
+
+Для круговой, радиальной и Санки ключами `config` служат имена секторов, колец и узлов.
+
+## Общие части
+
+Части графика включаются пропсами: `true` — с настройками по умолчанию, `false` — выключить, объект — настроить.
+
+<ComponentPreview sources={chartSources.shared}>
+	<div class="h-[360px] w-full p-4 pt-12">
+		<AreaChart
+			data={monthlyData}
+			config={monthlyConfig}
+			xDataKey="month"
+			curveType="monotone"
+			dot="border"
+			activeDot="colored-border"
+			isClickable
+			legend={{ variant: 'circle-outline', align: 'left', isClickable: true }}
+			tooltip={{ variant: 'frosted-glass', roundness: 'xl', indicator: 'line' }}
+			brush={{ formatLabel: shortMonth }}
+			backgroundVariant="grid"
+			yAxis
+			xAxis={{ tickFormatter: shortMonth }}
+			class="h-full w-full"
+		/>
+	</div>
+</ComponentPreview>
+
+```svelte
+<AreaChart
+	{data}
+	{config}
+	xDataKey="month"
+	dot="border"
+	activeDot="colored-border"
+	legend={{ variant: 'circle-outline', align: 'left', isClickable: true }}
+	tooltip={{ variant: 'frosted-glass', roundness: 'xl', indicator: 'line' }}
+	brush={{ formatLabel: (v) => String(v).slice(0, 3) }}
+	backgroundVariant="grid"
+	yAxis
+/>
+```
+
+### TooltipOptions
+
+| Поле | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `variant` | `'default' \| 'frosted-glass'` | `'default'` | Фон тултипа |
+| `roundness` | `'sm' \| 'md' \| 'lg' \| 'xl'` | `'lg'` | Скругление |
+| `indicator` | `'dot' \| 'line' \| 'dashed'` | `'dot'` | Маркер серии |
+| `defaultIndex` | `number` | — | Индекс, показанный без наведения |
+| `cursor` | `boolean` | `true` | Вертикальный курсор (линии и области) |
+| `labelFormatter` | `(label) => string` | — | Формат заголовка |
+| `valueFormatter` | `(value, key) => string` | — | Формат значений |
+
+### LegendOptions
+
+| Поле | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `variant` | `'square' \| 'circle' \| 'circle-outline' \| 'rounded-square' \| 'rounded-square-outline' \| 'vertical-bar' \| 'horizontal-bar'` | `'rounded-square'` | Форма маркера |
+| `align` | `'left' \| 'center' \| 'right'` | `'right'` | Выравнивание |
+| `verticalAlign` | `'top' \| 'bottom'` | `'top'` | Над или под графиком |
+| `isClickable` | `boolean` | `false` | Выбор серии кликом по легенде |
+
+### AxisOptions и GridOptions
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `tickFormatter` | `(value, index) => string` | Формат подписей оси |
+| `tickMargin` | `number` | Отступ подписей (по умолчанию `8`) |
+| `minTickGap` | `number` | Минимальный зазор между подписями категорий |
+| `height` / `width` | `number` / `number \| 'auto'` | Размер оси |
+| `domain` | `[number, number]` | Фиксированный диапазон значений |
+| `tickCount` | `number` | Количество делений (по умолчанию `5`) |
+| `vertical` / `horizontal` | `boolean` | Линии сетки (GridOptions) |
+| `strokeDasharray` | `string` | Пунктир сетки (по умолчанию `'3 3'`) |
+
+### Точки, браш и фон
+
+| Часть | Значения |
+| --- | --- |
+| `dot`, `activeDot` | `'default'`, `'border'`, `'colored-border'` или `false` |
+| `brush` | `height`, `formatLabel(value, index)`, `onChange(range)` |
+| `backgroundVariant` | `dots`, `grid`, `cross-hatch`, `diagonal-lines`, `plus`, `falling-triangles`, `4-pointed-star`, `tiny-checkers`, `overlapping-circles`, `wiggle-lines`, `bubbles` |
+| `curveType` | `linear`, `monotone`, `natural`, `step`, `stepBefore`, `stepAfter`, `bump`, `basis` |
+
+## Графики в markdown
+
+В `.svx`-страницах график задаётся блоком `:::chart`: параметры в формате `[имя]значение`, данные — markdown-таблицей. Первая колонка — категории (или имена секторов), остальные — числовые серии. Пустая ячейка — пропуск.
+
+````markdown
+:::chart
+[type]bar
+[title]Продажи по кварталам
+[description]Тысячи рублей
+[variant]duotone
+[colors]#047857|#10b981, #be123c|#f43f5e
+
+| Квартал | Продукт А | Продукт Б |
+|---------|-----------|-----------|
+| Q1      | 4200      | 3100      |
+| Q2      | 5800      | 4700      |
+| Q3      | 5200      | 5400      |
+| Q4      | 7100      | 6200      |
+:::
+````
+
+:::chart
+[type]bar
+[title]Продажи по кварталам
+[description]Тысячи рублей
+[variant]duotone
+[colors]#047857|#10b981, #be123c|#f43f5e
+
+| Квартал | Продукт А | Продукт Б |
+|---------|-----------|-----------|
+| Q1      | 4200      | 3100      |
+| Q2      | 5800      | 4700      |
+| Q3      | 5200      | 5400      |
+| Q4      | 7100      | 6200      |
+:::
+
+### Типы
+
+| `[type]` | График | Данные |
+| --- | --- | --- |
+| `area` | Площадная | Категория + серии |
+| `line` | Линейная | Категория + серии |
+| `bar` | Столбчатая | Категория + серии |
+| `composed` | Столбцы + линии | Категория + серии, линии задаёт `[lines]` |
+| `pie` / `donut` | Круговая / кольцевая | Имя + значение |
+| `radar` | Радарная | Ось + серии |
+| `radial` | Радиальная | Имя + значение |
+| `sankey` | Санки | Источник + цель + значение |
+
+Старые значения `ring` и `scatter` продолжают работать (`donut` и `line` с точками).
+
+### Параметры
+
+| Параметр | Значения | Для |
+| --- | --- | --- |
+| `[title]`, `[description]` | текст | все |
+| `[height]` | высота в px, по умолчанию `320` | все |
+| `[colors]` | через запятую по сериям: `#hex`, `#светлая\|#тёмная`, градиент `#a>#b` | все |
+| `[legend]` | `top`, `bottom`, `false` | все, кроме sankey |
+| `[legend-variant]` | форма маркера легенды | все, кроме sankey |
+| `[tooltip]` | `default`, `frosted-glass`, `false` | все |
+| `[background]` | вариант фона | все |
+| `[variant]` | заливка: area — `gradient`…`hatched`; bar/composed — `default`…`stripped`; radar — `filled`/`lines`; radial — `full`/`semi`; sankey — `gradient`/`solid`/`source`/`target` | все |
+| `[curve]` | `linear`, `monotone`, `natural`, `step`, `bump`, `basis` | area, line, composed |
+| `[stroke]` | `solid`, `dashed`, `animated-dashed` | area, line, composed |
+| `[dots]`, `[activeDot]` | `default`, `border`, `colored-border`, `false` | area, line, composed, radar |
+| `[stack]` | area: `stacked`, `expanded`; bar: `stacked`, `percent` | area, bar |
+| `[layout]` | `horizontal` | bar |
+| `[glow]` | `true` | line, bar, composed, pie, radar |
+| `[buffer]` | `true` — буферный последний отрезок/столбец | line, bar |
+| `[highlight]` | `true` — подсветка колонки под курсором | bar, composed |
+| `[brush]` | `true` | area, line, bar, composed |
+| `[grid]`, `[xAxis]`, `[yAxis]` | `true` / `false`; radar: `[grid]circle` | cartesian, radar |
+| `[radius]` | скругление | bar, pie, sankey |
+| `[lines]` | имена колонок-линий через запятую | composed |
+| `[innerRadius]`, `[outerRadius]`, `[padding]`, `[labels]` | радиусы, отступ секторов, подписи | pie, donut |
+| `[max]`, `[barSize]` | значение полного круга, толщина | radial |
+| `[labels]`, `[values]`, `[nodeWidth]` | `outside`/`inside`/`false`, показ значений, ширина узла | sankey |
+
+## Простой Chart
+
+Для быстрого столбчатого графика из пар `label` / `value` есть компонент `Chart`.
+
+<ComponentPreview sources={[{ name: 'Chart.svelte', code: chartSource, language: 'svelte' }]}>
+	<div class="w-full max-w-xl p-4">
+		<Chart
+			title="Популярность языков"
+			data={[
+				{ label: 'TypeScript', value: 85 },
+				{ label: 'Python', value: 72 },
+				{ label: 'Rust', value: 45 },
+				{ label: 'Go', value: 38 },
+				{ label: 'Kotlin', value: 28 }
+			]}
+		/>
+	</div>
+</ComponentPreview>
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `data` | `{ label: string; value: number }[]` | `[]` | Данные |
+| `title` | `string` | `'Chart'` | Заголовок |
+| `variant` | `BarVariant` | `'default'` | Заливка столбцов |
+| `color` | `{ light: string; dark: string }` | зелёный | Цвет |
+| `height` | `number` | `260` | Высота в px |

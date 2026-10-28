@@ -1,0 +1,271 @@
+---
+title: Площадная диаграмма
+description: AreaChart — площадные графики с градиентными, точечными и штрихованными заливками, стеками, точками, легендой, тултипом и брашем.
+keywords: 'Opensophy, AreaChart, площадная диаграмма, графики, Svelte, UI components, библиотека компонентов, open-source'
+priority: 2
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import AreaChart from '$lib/components/charts/AreaChart.svelte';
+	import { chartSources } from '$lib/components/charts/chart-sources';
+	import {
+		monthlyData,
+		monthlyConfig,
+		gradientConfig,
+		shortMonth
+	} from '$lib/components/charts/chart-demo-data';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'variant',
+			label: 'Заливка',
+			defaultValue: 'gradient',
+			options: ['gradient', 'gradient-reverse', 'solid', 'dotted', 'lines', 'hatched'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'strokeVariant',
+			label: 'Линия',
+			defaultValue: 'dashed',
+			options: ['solid', 'dashed', 'animated-dashed'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'curveType',
+			label: 'Кривая',
+			defaultValue: 'linear',
+			options: ['linear', 'monotone', 'natural', 'step', 'bump'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'stackType',
+			label: 'Стек',
+			defaultValue: 'stacked',
+			options: ['default', 'stacked', 'expanded'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'dot',
+			label: 'Точки',
+			defaultValue: 'border',
+			options: ['none', 'default', 'border', 'colored-border'].map((v) => ({ label: v, value: v }))
+		},
+		{ type: 'boolean', name: 'legend', label: 'Легенда', defaultValue: true },
+		{ type: 'boolean', name: 'brush', label: 'Браш', defaultValue: true },
+		{ type: 'boolean', name: 'yAxis', label: 'Ось Y', defaultValue: false },
+		{ type: 'boolean', name: 'isLoading', label: 'Загрузка', defaultValue: false }
+	];
+</script>
+
+# Площадная диаграмма
+
+`AreaChart` — площадная диаграмма на Svelte 5 без сторонних библиотек: чистый SVG, цвета через `ChartConfig` и CSS-переменные, поддержка светлой и тёмной темы. График рисуется сразу, без вступительных анимаций.
+
+Каждая серия сама генерирует свои градиенты и паттерны, поэтому в одном графике можно смешивать заливки, стили линий и кликабельность.
+
+## Интерактивное демо
+
+Кликните по легенде или по области, чтобы выделить серию. Браш внизу сужает видимый диапазон.
+
+<ComponentPreview controls={controls} sources={chartSources.area}>
+	{#snippet children(values)}
+		<div class="h-[380px] w-full p-4 pt-12">
+			<AreaChart
+				data={monthlyData}
+				config={monthlyConfig}
+				xDataKey="month"
+				variant={values.variant}
+				strokeVariant={values.strokeVariant}
+				curveType={values.curveType}
+				stackType={values.stackType}
+				dot={values.dot === 'none' ? false : values.dot}
+				activeDot="colored-border"
+				isClickable
+				legend={values.legend ? { isClickable: true } : false}
+				brush={values.brush ? { formatLabel: shortMonth } : false}
+				yAxis={values.yAxis}
+				isLoading={values.isLoading}
+				xAxis={{ tickFormatter: shortMonth }}
+				class="h-full w-full"
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import AreaChart from '$lib/components/charts/AreaChart.svelte';
+	import type { ChartConfig } from '$lib/components/charts/chart-utils';
+
+	const data = [
+		{ month: 'Январь', desktop: 342, mobile: 245 },
+		{ month: 'Февраль', desktop: 876, mobile: 654 },
+		{ month: 'Март', desktop: 512, mobile: 387 }
+	];
+
+	const config = {
+		desktop: { label: 'Десктоп', colors: { light: ['#047857'], dark: ['#10b981'] } },
+		mobile: { label: 'Мобильные', colors: { light: ['#be123c'], dark: ['#f43f5e'] } }
+	} satisfies ChartConfig;
+</script>
+
+<AreaChart
+	{data}
+	{config}
+	xDataKey="month"
+	stackType="stacked"
+	legend={{ isClickable: true }}
+	series={[
+		{ dataKey: 'desktop', variant: 'gradient', dot: 'border', activeDot: 'colored-border', isClickable: true },
+		{ dataKey: 'mobile', variant: 'hatched', strokeVariant: 'solid', isClickable: true }
+	]}
+	class="h-[320px] w-full"
+/>
+```
+
+Без `series` график рисует все ключи из `config`, а общие пропсы (`variant`, `strokeVariant`, `dot`, `activeDot`, `isClickable`) применяются ко всем сериям.
+
+## Примеры
+
+### Варианты заливки
+
+<div class="grid gap-4 md:grid-cols-2">
+{#each ['gradient', 'gradient-reverse', 'solid', 'dotted', 'lines', 'hatched'] as v (v)}
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">variant="{v}"</div>
+		<AreaChart data={monthlyData} config={monthlyConfig} xDataKey="month" variant={v} curveType="monotone" xAxis={{ tickFormatter: shortMonth }} class="h-[220px] w-full" />
+	</div>
+{/each}
+</div>
+
+```svelte
+<AreaChart {data} {config} xDataKey="month" variant="hatched" curveType="monotone" />
+```
+
+### Градиентные цвета
+
+Несколько цветов в `colors` строят горизонтальный градиент — он красит заливку, линию и точки.
+
+<AreaChart data={monthlyData} config={gradientConfig} xDataKey="month" curveType="bump" strokeVariant="solid" dot="colored-border" legend xAxis={{ tickFormatter: shortMonth }} class="h-[300px] w-full" />
+
+```svelte
+<script lang="ts">
+	const config = {
+		desktop: {
+			label: 'Десктоп',
+			colors: { light: ['#047857', '#0891b2', '#7c3aed'], dark: ['#10b981', '#22d3ee', '#a78bfa'] }
+		},
+		mobile: { label: 'Мобильные', colors: { light: ['#be123c', '#ea580c'], dark: ['#f43f5e', '#fbbf24'] } }
+	} satisfies ChartConfig;
+</script>
+
+<AreaChart {data} {config} xDataKey="month" curveType="bump" strokeVariant="solid" dot="colored-border" legend />
+```
+
+### Нормализованный стек
+
+`stackType="expanded"` приводит каждую точку к 100%, ось Y форматируется в процентах.
+
+<AreaChart data={monthlyData} config={monthlyConfig} xDataKey="month" stackType="expanded" variant="lines" yAxis curveType="natural" xAxis={{ tickFormatter: shortMonth }} class="h-[300px] w-full" />
+
+```svelte
+<AreaChart {data} {config} xDataKey="month" stackType="expanded" variant="lines" yAxis curveType="natural" />
+```
+
+### Ступенчатая кривая и анимированный пунктир
+
+<AreaChart data={monthlyData} config={monthlyConfig} xDataKey="month" curveType="step" strokeVariant="animated-dashed" variant="solid" xAxis={{ tickFormatter: shortMonth }} class="h-[300px] w-full" />
+
+```svelte
+<AreaChart {data} {config} xDataKey="month" curveType="step" strokeVariant="animated-dashed" variant="solid" />
+```
+
+### Состояние загрузки
+
+<AreaChart data={[]} config={monthlyConfig} isLoading curveType="bump" class="h-[260px] w-full" />
+
+```svelte
+<AreaChart data={isLoading ? [] : data} {config} {isLoading} curveType="bump" />
+```
+
+## В markdown
+
+````markdown
+:::chart
+[type]area
+[title]Посещаемость
+[stack]stacked
+[variant]gradient
+[dots]border
+[brush]true
+
+| Месяц | Десктоп | Мобильные |
+|-------|---------|-----------|
+| Янв   | 342     | 245       |
+| Фев   | 876     | 654       |
+| Мар   | 512     | 387       |
+| Апр   | 629     | 521       |
+:::
+````
+
+:::chart
+[type]area
+[title]Посещаемость
+[stack]stacked
+[variant]gradient
+[dots]border
+[brush]true
+
+| Месяц | Десктоп | Мобильные |
+|-------|---------|-----------|
+| Янв   | 342     | 245       |
+| Фев   | 876     | 654       |
+| Мар   | 512     | 387       |
+| Апр   | 629     | 521       |
+:::
+
+Все параметры блока описаны на странице [Основы и markdown](/components/charts).
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `data` | `ChartRow[]` | — | Строки данных |
+| `config` | `ChartConfig` | — | Подписи и цвета серий |
+| `series` | `AreaSeries[]` | все ключи `config` | Серии и их индивидуальные настройки |
+| `xDataKey` | `string` | — | Ключ категории (ось X, тултип, браш) |
+| `curveType` | `'linear' \| 'monotone' \| 'natural' \| 'step' \| 'bump' \| ...` | `'linear'` | Интерполяция кривой |
+| `stackType` | `'default' \| 'stacked' \| 'expanded'` | `'default'` | Наложение, стек или стек 100% |
+| `variant` | `'gradient' \| 'gradient-reverse' \| 'solid' \| 'dotted' \| 'lines' \| 'hatched'` | `'gradient'` | Заливка по умолчанию |
+| `strokeVariant` | `'solid' \| 'dashed' \| 'animated-dashed'` | `'dashed'` | Стиль линии по умолчанию |
+| `dot` / `activeDot` | `'default' \| 'border' \| 'colored-border' \| false` | `false` | Точки и точка под курсором |
+| `isClickable` | `boolean` | `false` | Выбор серии кликом |
+| `grid` | `boolean \| GridOptions` | `true` | Сетка |
+| `xAxis` / `yAxis` | `boolean \| AxisOptions` | `true` / `false` | Оси |
+| `tooltip` | `boolean \| TooltipOptions` | `true` | Тултип |
+| `legend` | `boolean \| LegendOptions` | `false` | Легенда |
+| `brush` | `boolean \| BrushOptions` | `false` | Мини-график для выбора диапазона |
+| `backgroundVariant` | `BackgroundVariant` | — | Декоративный фон |
+| `defaultSelectedDataKey` | `string \| null` | `null` | Выбранная серия при старте |
+| `onSelectionChange` | `(key: string \| null) => void` | — | Смена выбранной серии |
+| `isLoading` | `boolean` | `false` | Скелетон загрузки |
+| `loadingPoints` | `number` | `14` | Точек в скелетоне |
+| `class` | `string` | — | Классы контейнера (задайте высоту) |
+
+### AreaSeries
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `dataKey` | `string` | Ключ серии |
+| `variant` | `AreaVariant` | Заливка серии |
+| `strokeVariant` | `StrokeVariant` | Стиль линии |
+| `strokeWidth` | `number` | Толщина линии (по умолчанию `0.8`) |
+| `curveType` | `CurveType` | Кривая серии |
+| `connectNulls` | `boolean` | Соединять пропуски |
+| `isClickable` | `boolean` | Кликабельность серии |
+| `dot` / `activeDot` | `DotVariant \| false` | Точки серии |
