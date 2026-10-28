@@ -9,7 +9,7 @@ priority: 3
 	import { ComponentPreview } from '$lib';
 	import LineChart from '$lib/components/charts/LineChart.svelte';
 	import { chartSources } from '$lib/components/charts/chart-sources';
-	import { BACKGROUND_VARIANTS } from '$lib/components/charts/ChartBackground.svelte';
+	import { BACKGROUND_VARIANTS } from '$lib/components/charts/types';
 	import {
 		monthlyData,
 		monthlyConfig,

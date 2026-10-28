@@ -1,6 +1,13 @@
 <script lang="ts" module>
-	import type { BarVariant } from './BarPatternDefs.svelte';
-	import type { DotVariant } from './ChartDot.svelte';
+	import type {
+		BackgroundVariant,
+		BarVariant,
+		BrushOptions,
+		BrushRange,
+		DotVariant,
+		LegendOptions,
+		TooltipOptions
+	} from './types';
 	import type { CurveType } from './curves';
 	import type { StrokeVariant } from './chart-utils';
 
@@ -33,11 +40,10 @@
 <script lang="ts">
 	import ChartContainer from './ChartContainer.svelte';
 	import CartesianFrame from './CartesianFrame.svelte';
-	import ChartTooltip, { type TooltipOptions } from './ChartTooltip.svelte';
-	import ChartLegend, { type LegendOptions } from './ChartLegend.svelte';
-	import ChartBrush, { type BrushOptions, type BrushRange } from './ChartBrush.svelte';
+	import ChartTooltip from './ChartTooltip.svelte';
+	import ChartLegend from './ChartLegend.svelte';
+	import ChartBrush from './ChartBrush.svelte';
 	import ChartDot from './ChartDot.svelte';
-	import type { BackgroundVariant } from './ChartBackground.svelte';
 	import ChartLoadingPattern from './ChartLoadingPattern.svelte';
 	import BarPatternDefs from './BarPatternDefs.svelte';
 	import SeriesColorGradient from './SeriesColorGradient.svelte';
@@ -57,7 +63,8 @@
 		toNumber,
 		type ChartConfig,
 		type ChartRow,
-		type Margin
+		type Margin,
+		toLabel
 	} from './chart-utils';
 	import { createLoadingData } from './loading.svelte';
 
@@ -134,12 +141,8 @@
 	let selectedDataKey = $state<string | null>(defaultSelectedDataKey);
 	let activeIndex = $state<number | null>(null);
 	let pointer = $state<{ x: number; y: number } | null>(null);
-	// svelte-ignore state_referenced_locally
-	let range = $state<BrushRange>({ startIndex: 0, endIndex: Math.max(0, data.length - 1) });
-
-	$effect(() => {
-		range = { startIndex: 0, endIndex: Math.max(0, data.length - 1) };
-	});
+	// Resets to the full range whenever the data changes; the brush overrides it.
+	let range = $derived<BrushRange>({ startIndex: 0, endIndex: Math.max(0, data.length - 1) });
 
 	const loading = createLoadingData(() => isLoading, {
 		points: () => loadingBars,
@@ -234,7 +237,7 @@
 
 	function categoryLabel(index: number) {
 		const raw = categoryKey ? rows[index]?.[categoryKey] : index;
-		const text = raw == null ? '' : String(raw);
+		const text = toLabel(raw);
 		return config[text]?.label ?? text;
 	}
 </script>

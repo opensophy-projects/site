@@ -1,33 +1,6 @@
-<script lang="ts" module>
-	export type BackgroundVariant =
-		| 'dots'
-		| 'grid'
-		| 'cross-hatch'
-		| 'diagonal-lines'
-		| 'plus'
-		| 'falling-triangles'
-		| '4-pointed-star'
-		| 'tiny-checkers'
-		| 'overlapping-circles'
-		| 'wiggle-lines'
-		| 'bubbles';
-
-	export const BACKGROUND_VARIANTS: BackgroundVariant[] = [
-		'dots',
-		'grid',
-		'cross-hatch',
-		'diagonal-lines',
-		'plus',
-		'falling-triangles',
-		'4-pointed-star',
-		'tiny-checkers',
-		'overlapping-circles',
-		'wiggle-lines',
-		'bubbles'
-	];
-</script>
-
 <script lang="ts">
+	import type { BackgroundVariant } from './types';
+
 	/**
 	 * Decorative SVG pattern drawn behind the chart. Edges fade out through a
 	 * blurred mask so the texture never ends with a hard line.

@@ -1,8 +1,6 @@
-<script lang="ts" module>
-	export type AreaVariant = 'gradient' | 'gradient-reverse' | 'solid' | 'dotted' | 'lines' | 'hatched';
-</script>
-
 <script lang="ts">
+	import type { AreaVariant } from './types';
+
 	/**
 	 * Fill definitions for one area. Every variant paints the full-width series
 	 * color gradient (`{id}-colors-{dataKey}`) through a mask, so multi-color

@@ -1,35 +1,5 @@
-<script lang="ts" module>
-	import type { ChartConfigItem } from './chart-utils';
-
-	export type TooltipRoundness = 'sm' | 'md' | 'lg' | 'xl';
-	export type TooltipVariant = 'default' | 'frosted-glass';
-	export type TooltipIndicator = 'dot' | 'line' | 'dashed';
-
-	export type TooltipItem = {
-		/** Config key used for the indicator color variables. */
-		key: string;
-		/** Text shown next to the indicator. */
-		name: string;
-		value: unknown;
-		item?: ChartConfigItem;
-		/** Dims the row (another series is selected). */
-		dimmed?: boolean;
-	};
-
-	export type TooltipOptions = {
-		variant?: TooltipVariant;
-		roundness?: TooltipRoundness;
-		indicator?: TooltipIndicator;
-		/** Data index shown when the pointer is outside the chart. */
-		defaultIndex?: number;
-		/** Vertical cursor line (cartesian charts only). */
-		cursor?: boolean;
-		labelFormatter?: (label: unknown) => string;
-		valueFormatter?: (value: unknown, key: string) => string;
-	};
-</script>
-
 <script lang="ts">
+	import type { TooltipItem, TooltipOptions, TooltipRoundness, TooltipVariant } from './types';
 	import { cn } from '$lib/utils/cn';
 	import { formatValue, getColorsCount, getIndicatorBackground } from './chart-utils';
 

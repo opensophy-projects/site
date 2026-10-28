@@ -9,7 +9,7 @@ priority: 7
 	import { ComponentPreview } from '$lib';
 	import RadarChart from '$lib/components/charts/RadarChart.svelte';
 	import { chartSources } from '$lib/components/charts/chart-sources';
-	import { BACKGROUND_VARIANTS } from '$lib/components/charts/ChartBackground.svelte';
+	import { BACKGROUND_VARIANTS } from '$lib/components/charts/types';
 	import {
 		skillsData,
 		monthlyConfig,

@@ -1,6 +1,7 @@
 <script lang="ts">
+	import type { BackgroundVariant } from './types';
 	import type { Snippet } from 'svelte';
-	import ChartBackground, { type BackgroundVariant } from './ChartBackground.svelte';
+	import ChartBackground from './ChartBackground.svelte';
 	import { nearestIndex, type CartesianLayout, type GridOptions } from './cartesian';
 
 	/**

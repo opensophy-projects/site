@@ -133,9 +133,20 @@ export function toNumber(value: unknown): number | null {
 	return null;
 }
 
+/** Text for an arbitrary data value (`fallback` for null/undefined). */
+export function toLabel(value: unknown, fallback = ''): string {
+	if (value == null) return fallback;
+	if (typeof value === 'string') return value;
+	if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'bigint') {
+		return String(value);
+	}
+	if (value instanceof Date) return value.toLocaleDateString();
+	return JSON.stringify(value);
+}
+
 export function formatValue(value: unknown): string {
 	if (typeof value === 'number') return value.toLocaleString();
-	return value == null ? '' : String(value);
+	return toLabel(value);
 }
 
 /** Expanded (100%) stacks format their axis as percentages. */

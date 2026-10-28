@@ -1,6 +1,6 @@
 <script lang="ts">
 	import BarChart from '$lib/components/charts/BarChart.svelte';
-	import type { BarVariant } from '$lib/components/charts/BarPatternDefs.svelte';
+	import type { BarVariant } from '$lib/components/charts/types';
 	import type { ChartConfig } from '$lib/components/charts/chart-utils';
 
 	type Datum = { label: string; value: number };

@@ -1,5 +1,5 @@
 <script lang="ts" module>
-	import type { DotVariant } from './ChartDot.svelte';
+	import type { BackgroundVariant, DotVariant, LegendOptions, TooltipOptions } from './types';
 
 	export type RadarVariant = 'filled' | 'lines';
 
@@ -25,9 +25,9 @@
 
 <script lang="ts">
 	import ChartContainer from './ChartContainer.svelte';
-	import ChartTooltip, { type TooltipOptions } from './ChartTooltip.svelte';
-	import ChartLegend, { type LegendOptions } from './ChartLegend.svelte';
-	import ChartBackground, { type BackgroundVariant } from './ChartBackground.svelte';
+	import ChartTooltip from './ChartTooltip.svelte';
+	import ChartLegend from './ChartLegend.svelte';
+	import ChartBackground from './ChartBackground.svelte';
 	import ChartDot from './ChartDot.svelte';
 	import ChartGradientStops from './ChartGradientStops.svelte';
 	import SeriesColorGradient from './SeriesColorGradient.svelte';
@@ -41,7 +41,8 @@
 		resolveRadius,
 		toNumber,
 		type ChartConfig,
-		type ChartRow
+		type ChartRow,
+		toLabel
 	} from './chart-utils';
 
 	type Props = {
@@ -197,7 +198,7 @@
 
 	function axisLabel(index: number) {
 		const raw = rows[index]?.[angleKey];
-		return angleAxisOpts?.tickFormatter ? angleAxisOpts.tickFormatter(raw, index) : String(raw ?? '');
+		return angleAxisOpts?.tickFormatter ? angleAxisOpts.tickFormatter(raw, index) : toLabel(raw);
 	}
 </script>
 
@@ -230,7 +231,7 @@
 			role="img"
 			aria-label={ariaLabel}
 			onpointermove={(event) => {
-				const rect = (event.currentTarget as SVGSVGElement).getBoundingClientRect();
+				const rect = event.currentTarget.getBoundingClientRect();
 				const x = event.clientX - rect.left;
 				const y = event.clientY - rect.top;
 				const distance = Math.hypot(x - cx, y - cy);
@@ -391,7 +392,7 @@
 					? { index: defaultIndex, ...polarToCartesian(cx, cy, ro / 2, angleAt(defaultIndex)) }
 					: null)}
 			{#if shown}
-				{@const raw = String(rows[shown.index]?.[angleKey] ?? '')}
+				{@const raw = toLabel(rows[shown.index]?.[angleKey])}
 				<ChartTooltip
 					x={shown.x}
 					y={shown.y}

@@ -1,18 +1,7 @@
-<script lang="ts" module>
-	export type BrushRange = { startIndex: number; endIndex: number };
-
-	export type BrushOptions = {
-		/** Preview strip height in px. */
-		height?: number;
-		/** Formats the range-handle labels. */
-		formatLabel?: (value: unknown, index: number) => string;
-		onChange?: (range: BrushRange) => void;
-	};
-</script>
-
 <script lang="ts">
+	import type { BrushOptions, BrushRange } from './types';
 	import { cn } from '$lib/utils/cn';
-	import { getColorStops, toNumber, type ChartConfig, type ChartRow } from './chart-utils';
+	import { getColorStops, toNumber, type ChartConfig, type ChartRow, toLabel } from './chart-utils';
 	import { areaPath, linePath, type CurveType } from './curves';
 	import { stackSeries } from './cartesian';
 
@@ -29,7 +18,8 @@
 		minSpan?: number;
 		showLabels?: boolean;
 		options?: BrushOptions;
-		range: BrushRange;
+		/** Selected index range, defaults to the full data set. */
+		range?: BrushRange;
 		class?: string;
 	};
 
@@ -46,7 +36,7 @@
 		minSpan = 2,
 		showLabels = true,
 		options = {},
-		range = $bindable(),
+		range = $bindable({ startIndex: 0, endIndex: Math.max(0, data.length - 1) }),
 		class: className
 	}: Props = $props();
 
@@ -125,7 +115,7 @@
 	function label(index: number) {
 		if (!xDataKey) return String(index);
 		const value = data[index]?.[xDataKey];
-		return options.formatLabel ? options.formatLabel(value, index) : String(value ?? index);
+		return options.formatLabel ? options.formatLabel(value, index) : toLabel(value, String(index));
 	}
 
 	// Mini chart geometry — always shows the full data set

@@ -1,23 +1,5 @@
-<script lang="ts" module>
-	export type ChartLegendVariant =
-		| 'square'
-		| 'circle'
-		| 'circle-outline'
-		| 'rounded-square'
-		| 'rounded-square-outline'
-		| 'vertical-bar'
-		| 'horizontal-bar';
-
-	export type LegendOptions = {
-		variant?: ChartLegendVariant;
-		align?: 'left' | 'center' | 'right';
-		verticalAlign?: 'top' | 'bottom';
-		/** Each entry toggles selection of its series. */
-		isClickable?: boolean;
-	};
-</script>
-
 <script lang="ts">
+	import type { ChartLegendVariant, LegendOptions } from './types';
 	import { cn } from '$lib/utils/cn';
 	import { getIndicatorBackground, type ChartConfig } from './chart-utils';
 

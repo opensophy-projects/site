@@ -24,9 +24,10 @@
 </script>
 
 <script lang="ts">
+	import type { BackgroundVariant, TooltipOptions } from './types';
 	import ChartContainer from './ChartContainer.svelte';
-	import ChartTooltip, { type TooltipOptions } from './ChartTooltip.svelte';
-	import ChartBackground, { type BackgroundVariant } from './ChartBackground.svelte';
+	import ChartTooltip from './ChartTooltip.svelte';
+	import ChartBackground from './ChartBackground.svelte';
 	import SeriesColorGradient from './SeriesColorGradient.svelte';
 	import { resolveOptions } from './cartesian';
 	import { DEFAULT_MARGIN, estimateTextWidth, type ChartConfig } from './chart-utils';

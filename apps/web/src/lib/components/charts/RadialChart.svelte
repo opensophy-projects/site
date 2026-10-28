@@ -1,8 +1,9 @@
 <script lang="ts">
+	import type { BackgroundVariant, LegendOptions, TooltipOptions } from './types';
 	import ChartContainer from './ChartContainer.svelte';
-	import ChartTooltip, { type TooltipOptions } from './ChartTooltip.svelte';
-	import ChartLegend, { type LegendOptions } from './ChartLegend.svelte';
-	import ChartBackground, { type BackgroundVariant } from './ChartBackground.svelte';
+	import ChartTooltip from './ChartTooltip.svelte';
+	import ChartLegend from './ChartLegend.svelte';
+	import ChartBackground from './ChartBackground.svelte';
 	import SeriesColorGradient from './SeriesColorGradient.svelte';
 	import { resolveOptions } from './cartesian';
 	import {
@@ -12,7 +13,8 @@
 		sectorPath,
 		toNumber,
 		type ChartConfig,
-		type ChartRow
+		type ChartRow,
+		toLabel
 	} from './chart-utils';
 
 	type Props = {
@@ -106,9 +108,9 @@
 	const rows = $derived(
 		isLoading
 			? loadingRows
-			: data.map((row) => ({ name: String(row[nameKey] ?? ''), value: toNumber(row[dataKey]) ?? 0 }))
+			: data.map((row) => ({ name: toLabel(row[nameKey]), value: toNumber(row[dataKey]) ?? 0 }))
 	);
-	const names = $derived(data.map((row) => String(row[nameKey] ?? '')));
+	const names = $derived(data.map((row) => toLabel(row[nameKey])));
 	const domainMax = $derived.by(() => {
 		if (isLoading) return 100;
 		if (max != null && max > 0) return max;

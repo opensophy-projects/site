@@ -1,14 +1,5 @@
-<script lang="ts" module>
-	export type BarVariant =
-		| 'default'
-		| 'hatched'
-		| 'duotone'
-		| 'duotone-reverse'
-		| 'gradient'
-		| 'stripped';
-</script>
-
 <script lang="ts">
+	import type { BarVariant } from './types';
 	import ChartGradientStops from './ChartGradientStops.svelte';
 	import type { ChartConfigItem } from './chart-utils';
 

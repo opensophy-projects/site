@@ -1,8 +1,6 @@
-<script lang="ts" module>
-	export type DotVariant = 'default' | 'border' | 'colored-border';
-</script>
-
 <script lang="ts">
+	import type { DotVariant } from './types';
+
 	type Props = {
 		cx: number;
 		cy: number;

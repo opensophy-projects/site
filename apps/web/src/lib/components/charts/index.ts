@@ -25,13 +25,21 @@ export type {
 	SankeyNodeLabelOptions,
 	SankeyLinkOptions
 } from './SankeyChart.svelte';
-export type { AreaVariant } from './AreaPatternDefs.svelte';
-export type { BarVariant } from './BarPatternDefs.svelte';
-export type { DotVariant } from './ChartDot.svelte';
-export type { TooltipOptions, TooltipVariant, TooltipRoundness } from './ChartTooltip.svelte';
-export type { LegendOptions, ChartLegendVariant } from './ChartLegend.svelte';
-export type { BrushOptions, BrushRange } from './ChartBrush.svelte';
-export type { BackgroundVariant } from './ChartBackground.svelte';
+export type {
+	AreaVariant,
+	BarVariant,
+	DotVariant,
+	TooltipOptions,
+	TooltipVariant,
+	TooltipRoundness,
+	TooltipIndicator,
+	LegendOptions,
+	ChartLegendVariant,
+	BrushOptions,
+	BrushRange,
+	BackgroundVariant
+} from './types';
+export { BACKGROUND_VARIANTS } from './types';
 export type { AxisOptions, GridOptions } from './cartesian';
 export type { CurveType } from './curves';
 export type { ChartConfig, ChartConfigItem, ChartRow, StrokeVariant } from './chart-utils';

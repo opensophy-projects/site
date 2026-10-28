@@ -5,7 +5,8 @@ import {
 	getVisibleTickIndices,
 	toNumber,
 	type ChartRow,
-	type Margin
+	type Margin,
+	toLabel
 } from './chart-utils';
 
 export type AxisOptions = {
@@ -146,7 +147,7 @@ export function computeCartesianLayout({
 	const key = catOpts.dataKey ?? categoryKey;
 	const categoryLabels = rows.map((row, i) => {
 		const raw = key ? row[key] : i;
-		return catOpts.tickFormatter ? catOpts.tickFormatter(raw, i) : String(raw ?? i);
+		return catOpts.tickFormatter ? catOpts.tickFormatter(raw, i) : toLabel(raw, String(i));
 	});
 	const valueTickLabels = valueTicks.map((tick, i) =>
 		valOpts.tickFormatter

@@ -8,18 +8,20 @@
 	import RadarChart from '$lib/components/charts/RadarChart.svelte';
 	import RadialChart from '$lib/components/charts/RadialChart.svelte';
 	import SankeyChart from '$lib/components/charts/SankeyChart.svelte';
-	import type { AreaVariant } from '$lib/components/charts/AreaPatternDefs.svelte';
-	import type { BarVariant } from '$lib/components/charts/BarPatternDefs.svelte';
-	import type { DotVariant } from '$lib/components/charts/ChartDot.svelte';
+	import type {
+		AreaVariant,
+		BackgroundVariant,
+		BarVariant,
+		ChartLegendVariant,
+		DotVariant,
+		LegendOptions,
+		TooltipOptions,
+		TooltipVariant
+	} from '$lib/components/charts/types';
+	import { BACKGROUND_VARIANTS } from '$lib/components/charts/types';
 	import type { StrokeVariant } from '$lib/components/charts/chart-utils';
 	import type { ComposedSeries } from '$lib/components/charts/ComposedChart.svelte';
 	import type { SankeyLinkVariant } from '$lib/components/charts/SankeyChart.svelte';
-	import type { LegendOptions, ChartLegendVariant } from '$lib/components/charts/ChartLegend.svelte';
-	import type { TooltipOptions, TooltipVariant } from '$lib/components/charts/ChartTooltip.svelte';
-	import {
-		BACKGROUND_VARIANTS,
-		type BackgroundVariant
-	} from '$lib/components/charts/ChartBackground.svelte';
 	import type { CurveType } from '$lib/components/charts/curves';
 	import {
 		CATEGORY_KEY,
@@ -116,7 +118,7 @@
 			.map((label) => label.trim().toLowerCase())
 			.filter(Boolean);
 		return chart.keys.map((key, i) => {
-			const label = String(chart.config[key]?.label ?? '').toLowerCase();
+			const label = (chart.config[key]?.label ?? '').toLowerCase();
 			const isLine = lineLabels.length ? lineLabels.includes(label) : i > 0;
 			return isLine
 				? { type: 'line', dataKey: key }

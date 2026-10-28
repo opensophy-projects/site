@@ -1,6 +1,7 @@
 import type { SourceTab } from '$lib/components/docs/component-preview/types';
 
 import chartUtils from './chart-utils.ts?raw';
+import types from './types.ts?raw';
 import cartesian from './cartesian.ts?raw';
 import curves from './curves.ts?raw';
 import sankey from './sankey.ts?raw';
@@ -43,6 +44,7 @@ const ts = (name: string, code: string): SourceTab => ({
 
 /** Shared by every chart: config → CSS variables, container, tooltip, gradients. */
 const core: SourceTab[] = [
+	ts('types.ts', types),
 	ts('chart-utils.ts', chartUtils),
 	ts('cartesian.ts', cartesian),
 	svelte('ChartContainer.svelte', chartContainer),
