@@ -1,0 +1,184 @@
+---
+title: Радарная диаграмма
+description: RadarChart — радарные диаграммы с заливкой или контуром, полигональной или круговой сеткой, точками, свечением и выбором серии.
+keywords: 'Opensophy, RadarChart, радарная диаграмма, графики, Svelte, UI components, библиотека компонентов, open-source'
+priority: 7
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import RadarChart from '$lib/components/charts/RadarChart.svelte';
+	import { chartSources } from '$lib/components/charts/chart-sources';
+	import { BACKGROUND_VARIANTS } from '$lib/components/charts/types';
+	import {
+		skillsData,
+		monthlyConfig,
+		gradientConfig
+	} from '$lib/components/charts/chart-demo-data';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'variant',
+			label: 'Вариант',
+			defaultValue: 'filled',
+			options: ['filled', 'lines'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'gridType',
+			label: 'Сетка',
+			defaultValue: 'polygon',
+			options: ['polygon', 'circle'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'dot',
+			label: 'Точки',
+			defaultValue: 'border',
+			options: ['none', 'default', 'border', 'colored-border'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'background',
+			label: 'Фон',
+			defaultValue: 'none',
+			options: ['none', ...BACKGROUND_VARIANTS].map((v) => ({ label: v, value: v }))
+		},
+		{ type: 'number', name: 'fillOpacity', label: 'Прозрачность заливки', defaultValue: 0.3, min: 0, max: 1, step: 0.05 },
+		{ type: 'boolean', name: 'isGlowing', label: 'Свечение', defaultValue: false },
+		{ type: 'boolean', name: 'radiusAxis', label: 'Шкала значений', defaultValue: false },
+		{ type: 'boolean', name: 'gradient', label: 'Градиенты', defaultValue: false },
+		{ type: 'boolean', name: 'isLoading', label: 'Загрузка', defaultValue: false }
+	];
+</script>
+
+# Радарная диаграмма
+
+`RadarChart` сравнивает несколько серий по набору осей. `angleKey` — ключ с названием оси, остальные ключи из `config` — серии-полигоны. Первая ось сверху, дальше по часовой стрелке.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={chartSources.radar}>
+	{#snippet children(values)}
+		<div class="h-[400px] w-full p-4 pt-12">
+			<RadarChart
+				data={skillsData}
+				config={values.gradient ? gradientConfig : monthlyConfig}
+				angleKey="skill"
+				variant={values.variant}
+				polarGrid={{ gridType: values.gridType }}
+				dot={values.dot === 'none' ? false : values.dot}
+				activeDot="colored-border"
+				fillOpacity={values.fillOpacity}
+				isGlowing={values.isGlowing}
+				radiusAxis={values.radiusAxis}
+				backgroundVariant={values.background === 'none' ? undefined : values.background}
+				isClickable
+				legend={{ isClickable: true }}
+				isLoading={values.isLoading}
+				class="h-full w-full"
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import RadarChart from '$lib/components/charts/RadarChart.svelte';
+
+	const data = [
+		{ skill: 'Скорость', desktop: 86, mobile: 65 },
+		{ skill: 'Дизайн', desktop: 72, mobile: 90 },
+		{ skill: 'Цена', desktop: 60, mobile: 75 }
+	];
+</script>
+
+<RadarChart {data} {config} angleKey="skill" dot="border" isClickable legend={{ isClickable: true }} />
+```
+
+## Примеры
+
+<div class="grid gap-4 md:grid-cols-2">
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">variant="lines"</div>
+		<RadarChart data={skillsData} config={monthlyConfig} angleKey="skill" variant="lines" dot="default" class="h-[280px] w-full" />
+	</div>
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">gridType: circle</div>
+		<RadarChart data={skillsData} config={monthlyConfig} angleKey="skill" polarGrid={{ gridType: 'circle' }} class="h-[280px] w-full" />
+	</div>
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">isGlowing</div>
+		<RadarChart data={skillsData} config={monthlyConfig} angleKey="skill" isGlowing dot="colored-border" class="h-[280px] w-full" />
+	</div>
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">градиентные цвета</div>
+		<RadarChart data={skillsData} config={gradientConfig} angleKey="skill" fillOpacity={0.5} class="h-[280px] w-full" />
+	</div>
+</div>
+
+```svelte
+<RadarChart {data} {config} angleKey="skill" variant="lines" dot="default" />
+<RadarChart {data} {config} angleKey="skill" polarGrid={{ gridType: 'circle' }} />
+<RadarChart {data} {config} angleKey="skill" isGlowing dot="colored-border" />
+```
+
+## В markdown
+
+````markdown
+:::chart
+[type]radar
+[title]Оценка компетенций
+[dots]border
+
+| Навык        | Разработчик | Дизайнер |
+|--------------|-------------|----------|
+| Технический  | 9           | 5        |
+| Коммуникации | 7           | 8        |
+| Аналитика    | 8           | 7        |
+| Творчество   | 6           | 9        |
+| Управление   | 6           | 5        |
+:::
+````
+
+:::chart
+[type]radar
+[title]Оценка компетенций
+[dots]border
+
+| Навык        | Разработчик | Дизайнер |
+|--------------|-------------|----------|
+| Технический  | 9           | 5        |
+| Коммуникации | 7           | 8        |
+| Аналитика    | 8           | 7        |
+| Творчество   | 6           | 9        |
+| Управление   | 6           | 5        |
+:::
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `data` | `ChartRow[]` | — | Строка на ось |
+| `config` | `ChartConfig` | — | Подписи и цвета серий |
+| `angleKey` | `string` | — | Ключ названия оси |
+| `series` | `RadarSeries[]` | все ключи `config` | Серии и их настройки |
+| `variant` | `'filled' \| 'lines'` | `'filled'` | Заливка или только контур |
+| `fillOpacity` | `number` | `0.3` | Прозрачность заливки |
+| `isGlowing` | `boolean` | `false` | Свечение полигонов |
+| `dot` / `activeDot` | `DotVariant \| false` | `false` | Точки |
+| `outerRadius` | `number \| string` | `'80%'` | Радиус диаграммы |
+| `polarGrid` | `boolean \| PolarGridOptions` | `true` | Сетка: `gridType`, `strokeDasharray`, `strokeOpacity` |
+| `angleAxis` | `boolean \| object` | `true` | Подписи осей, `tickFormatter` |
+| `radiusAxis` | `boolean \| object` | `false` | Шкала значений |
+| `isClickable` | `boolean` | `false` | Выбор серии кликом |
+| `tooltip` | `boolean \| TooltipOptions` | `true` | Тултип |
+| `legend` | `boolean \| LegendOptions` | `false` | Легенда |
+| `backgroundVariant` | `BackgroundVariant` | — | Декоративный фон |
+| `onSelectionChange` | `(key: string \| null) => void` | — | Смена выбранной серии |
+| `isLoading` | `boolean` | `false` | Скелетон загрузки |
+| `class` | `string` | — | Классы контейнера |

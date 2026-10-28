@@ -1,0 +1,257 @@
+---
+title: Линейный график
+description: LineChart — линейные графики со свечением, пунктиром, «буферным» последним отрезком, точками, легендой, тултипом и брашем.
+keywords: 'Opensophy, LineChart, линейный график, графики, Svelte, UI components, библиотека компонентов, open-source'
+priority: 3
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import LineChart from '$lib/components/charts/LineChart.svelte';
+	import { chartSources } from '$lib/components/charts/chart-sources';
+	import { BACKGROUND_VARIANTS } from '$lib/components/charts/types';
+	import {
+		monthlyData,
+		monthlyConfig,
+		gradientConfig,
+		shortMonth
+	} from '$lib/components/charts/chart-demo-data';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'curveType',
+			label: 'Кривая',
+			defaultValue: 'monotone',
+			options: ['linear', 'monotone', 'natural', 'step', 'bump'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'strokeVariant',
+			label: 'Линия',
+			defaultValue: 'solid',
+			options: ['solid', 'dashed', 'animated-dashed'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'dot',
+			label: 'Точки',
+			defaultValue: 'border',
+			options: ['none', 'default', 'border', 'colored-border'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'background',
+			label: 'Фон',
+			defaultValue: 'none',
+			options: ['none', ...BACKGROUND_VARIANTS].map((v) => ({ label: v, value: v }))
+		},
+		{ type: 'boolean', name: 'glowing', label: 'Свечение', defaultValue: true },
+		{ type: 'boolean', name: 'buffer', label: 'Буферная линия', defaultValue: false },
+		{ type: 'boolean', name: 'brush', label: 'Браш', defaultValue: false },
+		{ type: 'boolean', name: 'yAxis', label: 'Ось Y', defaultValue: false },
+		{ type: 'boolean', name: 'isLoading', label: 'Загрузка', defaultValue: false }
+	];
+</script>
+
+# Линейный график
+
+`LineChart` — линейный график на Svelte 5 без сторонних библиотек: чистый SVG, цвета из `ChartConfig`, светлая и тёмная темы. Каждая линия может светиться, быть пунктирной или показывать последний отрезок как «буфер» — незавершённый период.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={chartSources.line}>
+	{#snippet children(values)}
+		<div class="h-[380px] w-full p-4 pt-12">
+			<LineChart
+				data={monthlyData}
+				config={monthlyConfig}
+				xDataKey="month"
+				curveType={values.curveType}
+				strokeVariant={values.strokeVariant}
+				dot={values.dot === 'none' ? false : values.dot}
+				activeDot="colored-border"
+				glowing={values.glowing}
+				series={[
+					{ dataKey: 'desktop', enableBufferLine: values.buffer },
+					{ dataKey: 'mobile', enableBufferLine: values.buffer }
+				]}
+				isClickable
+				legend={{ isClickable: true }}
+				backgroundVariant={values.background === 'none' ? undefined : values.background}
+				brush={values.brush ? { formatLabel: shortMonth } : false}
+				yAxis={values.yAxis}
+				isLoading={values.isLoading}
+				xAxis={{ tickFormatter: shortMonth }}
+				class="h-full w-full"
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import LineChart from '$lib/components/charts/LineChart.svelte';
+	import type { ChartConfig } from '$lib/components/charts/chart-utils';
+
+	const config = {
+		desktop: { label: 'Десктоп', colors: { light: ['#047857'], dark: ['#10b981'] } },
+		mobile: { label: 'Мобильные', colors: { light: ['#be123c'], dark: ['#f43f5e'] } }
+	} satisfies ChartConfig;
+</script>
+
+<LineChart
+	{data}
+	{config}
+	xDataKey="month"
+	curveType="monotone"
+	legend={{ isClickable: true }}
+	series={[
+		{ dataKey: 'desktop', glowing: true, dot: 'border', activeDot: 'colored-border', isClickable: true },
+		{ dataKey: 'mobile', strokeVariant: 'dashed', isClickable: true }
+	]}
+	class="h-[320px] w-full"
+/>
+```
+
+## Примеры
+
+### Свечение
+
+<LineChart data={monthlyData} config={monthlyConfig} xDataKey="month" curveType="monotone" series={[{ dataKey: 'desktop', glowing: true }, { dataKey: 'mobile' }]} legend xAxis={{ tickFormatter: shortMonth }} class="h-[280px] w-full" />
+
+```svelte
+<LineChart {data} {config} xDataKey="month" curveType="monotone"
+	series={[{ dataKey: 'desktop', glowing: true }, { dataKey: 'mobile' }]} legend />
+```
+
+### Буферная линия
+
+Последний отрезок рисуется пунктиром — удобно для текущего, ещё не закрытого периода.
+
+<LineChart data={monthlyData} config={monthlyConfig} xDataKey="month" series={[{ dataKey: 'desktop', enableBufferLine: true }, { dataKey: 'mobile', enableBufferLine: true }]} dot="default" xAxis={{ tickFormatter: shortMonth }} class="h-[280px] w-full" />
+
+```svelte
+<LineChart {data} {config} xDataKey="month" dot="default"
+	series={[{ dataKey: 'desktop', enableBufferLine: true }, { dataKey: 'mobile', enableBufferLine: true }]} />
+```
+
+### Варианты точек
+
+<div class="grid gap-4 md:grid-cols-3">
+{#each ['default', 'border', 'colored-border'] as v (v)}
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">dot="{v}"</div>
+		<LineChart data={monthlyData.slice(0, 6)} config={monthlyConfig} xDataKey="month" dot={v} activeDot={v} xAxis={{ tickFormatter: shortMonth }} class="h-[200px] w-full" />
+	</div>
+{/each}
+</div>
+
+### Градиентные цвета и bump-кривая
+
+<LineChart data={monthlyData} config={gradientConfig} xDataKey="month" curveType="bump" dot="colored-border" strokeVariant="solid" legend xAxis={{ tickFormatter: shortMonth }} class="h-[280px] w-full" />
+
+### Варианты легенды
+
+<div class="grid gap-4 md:grid-cols-2">
+{#each ['square', 'circle', 'circle-outline', 'rounded-square', 'rounded-square-outline', 'vertical-bar', 'horizontal-bar'] as v (v)}
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">legend.variant="{v}"</div>
+		<LineChart data={monthlyData.slice(0, 6)} config={monthlyConfig} xDataKey="month" legend={{ variant: v, isClickable: true }} xAxis={{ tickFormatter: shortMonth }} class="h-[180px] w-full" />
+	</div>
+{/each}
+</div>
+
+```svelte
+<LineChart {data} {config} xDataKey="month" legend={{ variant: 'circle-outline', isClickable: true }} />
+```
+
+### Фоновые паттерны
+
+<div class="grid gap-4 md:grid-cols-3">
+{#each BACKGROUND_VARIANTS as v (v)}
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">{v}</div>
+		<LineChart data={monthlyData.slice(0, 6)} config={monthlyConfig} xDataKey="month" curveType="monotone" grid={false} xAxis={false} backgroundVariant={v} class="h-[140px] w-full" />
+	</div>
+{/each}
+</div>
+
+```svelte
+<LineChart {data} {config} xDataKey="month" backgroundVariant="dots" />
+```
+
+## В markdown
+
+````markdown
+:::chart
+[type]line
+[title]Подписчики
+[curve]monotone
+[glow]true
+[dots]border
+
+| Месяц | Telegram | YouTube |
+|-------|----------|---------|
+| Янв   | 1400     | 900     |
+| Фев   | 1650     | 1050    |
+| Мар   | 1900     | 1300    |
+| Апр   | 2200     | 1500    |
+:::
+````
+
+:::chart
+[type]line
+[title]Подписчики
+[curve]monotone
+[glow]true
+[dots]border
+
+| Месяц | Telegram | YouTube |
+|-------|----------|---------|
+| Янв   | 1400     | 900     |
+| Фев   | 1650     | 1050    |
+| Мар   | 1900     | 1300    |
+| Апр   | 2200     | 1500    |
+:::
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `data` | `ChartRow[]` | — | Строки данных |
+| `config` | `ChartConfig` | — | Подписи и цвета серий |
+| `series` | `LineSeries[]` | все ключи `config` | Линии и их настройки |
+| `xDataKey` | `string` | — | Ключ категории |
+| `curveType` | `CurveType` | `'linear'` | Интерполяция кривой |
+| `strokeVariant` | `'solid' \| 'dashed' \| 'animated-dashed'` | `'solid'` | Стиль линии по умолчанию |
+| `dot` / `activeDot` | `DotVariant \| false` | `false` | Точки и точка под курсором |
+| `glowing` | `boolean` | `false` | Свечение всех линий |
+| `isClickable` | `boolean` | `false` | Выбор линии кликом |
+| `grid` | `boolean \| GridOptions` | `true` | Сетка |
+| `xAxis` / `yAxis` | `boolean \| AxisOptions` | `true` / `false` | Оси |
+| `tooltip` | `boolean \| TooltipOptions` | `true` | Тултип |
+| `legend` | `boolean \| LegendOptions` | `false` | Легенда |
+| `brush` | `boolean \| BrushOptions` | `false` | Выбор диапазона |
+| `backgroundVariant` | `BackgroundVariant` | — | Декоративный фон |
+| `defaultSelectedDataKey` | `string \| null` | `null` | Выбранная линия при старте |
+| `onSelectionChange` | `(key: string \| null) => void` | — | Смена выбранной линии |
+| `isLoading` | `boolean` | `false` | Скелетон загрузки |
+| `class` | `string` | — | Классы контейнера |
+
+### LineSeries
+
+| Поле | Тип | Описание |
+| --- | --- | --- |
+| `dataKey` | `string` | Ключ серии |
+| `strokeVariant` | `StrokeVariant` | Стиль линии |
+| `strokeWidth` | `number` | Толщина (по умолчанию `0.8`) |
+| `curveType` | `CurveType` | Кривая |
+| `connectNulls` | `boolean` | Соединять пропуски |
+| `isClickable` | `boolean` | Кликабельность |
+| `glowing` | `boolean` | Свечение линии |
+| `enableBufferLine` | `boolean` | Пунктирный последний отрезок |
+| `dot` / `activeDot` | `DotVariant \| false` | Точки |

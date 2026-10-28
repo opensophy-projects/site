@@ -1,0 +1,170 @@
+---
+title: Круговая диаграмма
+description: PieChart — круговые и кольцевые диаграммы с градиентными секторами, скруглением, отступами, подписями, свечением и выбором сектора.
+keywords: 'Opensophy, PieChart, круговая диаграмма, donut, графики, Svelte, UI components, библиотека компонентов, open-source'
+priority: 6
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import PieChart from '$lib/components/charts/PieChart.svelte';
+	import { chartSources } from '$lib/components/charts/chart-sources';
+	import {
+		browserData,
+		browserConfig,
+		browserGradientConfig
+	} from '$lib/components/charts/chart-demo-data';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{ type: 'number', name: 'innerRadius', label: 'Внутренний радиус', defaultValue: 50, min: 0, max: 90, step: 5, unit: '%' },
+		{ type: 'number', name: 'paddingAngle', label: 'Отступ', defaultValue: 3, min: -10, max: 15, step: 1, unit: '°' },
+		{ type: 'number', name: 'cornerRadius', label: 'Скругление', defaultValue: 6, min: 0, max: 20, step: 1 },
+		{ type: 'number', name: 'endAngle', label: 'Угол', defaultValue: 360, min: 90, max: 360, step: 10, unit: '°' },
+		{ type: 'boolean', name: 'label', label: 'Подписи', defaultValue: true },
+		{ type: 'boolean', name: 'glow', label: 'Свечение Chrome', defaultValue: false },
+		{ type: 'boolean', name: 'gradient', label: 'Градиенты', defaultValue: false },
+		{ type: 'boolean', name: 'isLoading', label: 'Загрузка', defaultValue: false }
+	];
+</script>
+
+# Круговая диаграмма
+
+`PieChart` рисует по сектору на каждую строку данных: `dataKey` — значение, `nameKey` — имя сектора, по которому берутся цвет и подпись из `config`. Ненулевой `innerRadius` превращает круг в кольцо, отрицательный `paddingAngle` накладывает секторы друг на друга.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={chartSources.pie}>
+	{#snippet children(values)}
+		<div class="h-[380px] w-full p-4 pt-12">
+			<PieChart
+				data={browserData}
+				config={values.gradient ? browserGradientConfig : browserConfig}
+				dataKey="visitors"
+				nameKey="browser"
+				innerRadius={`${values.innerRadius}%`}
+				paddingAngle={values.paddingAngle}
+				cornerRadius={values.cornerRadius}
+				endAngle={values.endAngle}
+				label={values.label}
+				glowingSectors={values.glow ? ['chrome'] : []}
+				isClickable
+				legend={{ isClickable: true }}
+				isLoading={values.isLoading}
+				class="h-full w-full"
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import PieChart from '$lib/components/charts/PieChart.svelte';
+	import type { ChartConfig } from '$lib/components/charts/chart-utils';
+
+	const data = [
+		{ browser: 'chrome', visitors: 275 },
+		{ browser: 'safari', visitors: 200 },
+		{ browser: 'firefox', visitors: 187 }
+	];
+
+	const config = {
+		chrome: { label: 'Chrome', colors: { light: ['#3b82f6'], dark: ['#60a5fa'] } },
+		safari: { label: 'Safari', colors: { light: ['#10b981'], dark: ['#34d399'] } },
+		firefox: { label: 'Firefox', colors: { light: ['#f59e0b'], dark: ['#fbbf24'] } }
+	} satisfies ChartConfig;
+</script>
+
+<PieChart {data} {config} dataKey="visitors" nameKey="browser" innerRadius="55%" isClickable legend={{ isClickable: true }} />
+```
+
+## Примеры
+
+<div class="grid gap-4 md:grid-cols-2">
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">базовая</div>
+		<PieChart data={browserData} config={browserConfig} dataKey="visitors" nameKey="browser" legend class="h-[260px] w-full" />
+	</div>
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">innerRadius="60%" label</div>
+		<PieChart data={browserData} config={browserConfig} dataKey="visitors" nameKey="browser" innerRadius="60%" label class="h-[260px] w-full" />
+	</div>
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">paddingAngle={'{5}'} cornerRadius={'{8}'}</div>
+		<PieChart data={browserData} config={browserConfig} dataKey="visitors" nameKey="browser" innerRadius="50%" paddingAngle={5} cornerRadius={8} class="h-[260px] w-full" />
+	</div>
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">paddingAngle={'{-8}'} — наложение</div>
+		<PieChart data={browserData} config={browserConfig} dataKey="visitors" nameKey="browser" innerRadius="55%" paddingAngle={-8} cornerRadius={20} class="h-[260px] w-full" />
+	</div>
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">градиенты + свечение</div>
+		<PieChart data={browserData} config={browserGradientConfig} dataKey="visitors" nameKey="browser" innerRadius="50%" paddingAngle={3} cornerRadius={6} glowingSectors={['chrome', 'edge']} class="h-[260px] w-full" />
+	</div>
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">startAngle={'{180}'} endAngle={'{0}'}</div>
+		<PieChart data={browserData} config={browserConfig} dataKey="visitors" nameKey="browser" innerRadius="60%" startAngle={180} endAngle={0} cornerRadius={4} paddingAngle={2} class="h-[260px] w-full" />
+	</div>
+</div>
+
+```svelte
+<PieChart {data} {config} dataKey="visitors" nameKey="browser" innerRadius="55%" paddingAngle={-8} cornerRadius={20} />
+<PieChart {data} {config} dataKey="visitors" nameKey="browser" glowingSectors={['chrome', 'edge']} />
+<PieChart {data} {config} dataKey="visitors" nameKey="browser" startAngle={180} endAngle={0} />
+```
+
+## В markdown
+
+`[type]pie` — круг, `[type]donut` — кольцо (старое `ring` тоже работает).
+
+````markdown
+:::chart
+[type]donut
+[title]Источники трафика
+
+| Источник     | Доля |
+|--------------|------|
+| Органический | 42   |
+| Реклама      | 28   |
+| Социальные   | 18   |
+| Прямые       | 12   |
+:::
+````
+
+:::chart
+[type]donut
+[title]Источники трафика
+
+| Источник     | Доля |
+|--------------|------|
+| Органический | 42   |
+| Реклама      | 28   |
+| Социальные   | 18   |
+| Прямые       | 12   |
+:::
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `data` | `ChartRow[]` | — | Строка на сектор |
+| `config` | `ChartConfig` | — | Цвета и подписи по имени сектора |
+| `dataKey` | `string` | — | Ключ значения |
+| `nameKey` | `string` | — | Ключ имени сектора |
+| `innerRadius` | `number \| string` | `0` | Внутренний радиус (кольцо) |
+| `outerRadius` | `number \| string` | `'80%'` | Внешний радиус |
+| `cornerRadius` | `number` | `0` | Скругление секторов |
+| `paddingAngle` | `number` | `0` | Отступ между секторами в градусах |
+| `startAngle` / `endAngle` | `number` | `0` / `360` | Дуга диаграммы (0° — «3 часа», против часовой) |
+| `isClickable` | `boolean` | `false` | Выбор сектора кликом |
+| `glowingSectors` | `string[]` | `[]` | Имена светящихся секторов |
+| `label` | `boolean \| PieLabelOptions` | `false` | Подписи значений в секторах |
+| `tooltip` | `boolean \| TooltipOptions` | `true` | Тултип |
+| `legend` | `boolean \| LegendOptions` | `false` | Легенда (по умолчанию снизу по центру) |
+| `backgroundVariant` | `BackgroundVariant` | — | Декоративный фон |
+| `defaultSelectedSector` | `string \| null` | `null` | Выбранный сектор при старте |
+| `onSelectionChange` | `(selection) => void` | — | Смена выбранного сектора |
+| `isLoading` | `boolean` | `false` | Скелетон загрузки |
+| `class` | `string` | — | Классы контейнера |

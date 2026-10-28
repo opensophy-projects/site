@@ -1,0 +1,172 @@
+---
+title: Диаграмма Санки
+description: SankeyChart — потоки между узлами: варианты окраски связей, подписи внутри и снаружи узлов, значения и подсветка связанных узлов.
+keywords: 'Opensophy, SankeyChart, диаграмма Санки, sankey, графики, Svelte, UI components, библиотека компонентов, open-source'
+priority: 9
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import SankeyChart from '$lib/components/charts/SankeyChart.svelte';
+	import { chartSources } from '$lib/components/charts/chart-sources';
+	import { funnelData, funnelConfig } from '$lib/components/charts/chart-demo-data';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'linkVariant',
+			label: 'Связи',
+			defaultValue: 'gradient',
+			options: ['gradient', 'solid', 'source', 'target'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'labels',
+			label: 'Подписи',
+			defaultValue: 'outside',
+			options: ['none', 'outside', 'inside'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'align',
+			label: 'Выравнивание',
+			defaultValue: 'justify',
+			options: ['justify', 'left'].map((v) => ({ label: v, value: v }))
+		},
+		{ type: 'number', name: 'nodeWidth', label: 'Ширина узла', defaultValue: 10, min: 4, max: 120, step: 2 },
+		{ type: 'number', name: 'nodePadding', label: 'Отступ узлов', defaultValue: 10, min: 0, max: 40, step: 2 },
+		{ type: 'number', name: 'linkCurvature', label: 'Кривизна', defaultValue: 0.5, min: 0, max: 1, step: 0.05 },
+		{ type: 'boolean', name: 'showValues', label: 'Значения', defaultValue: true },
+		{ type: 'boolean', name: 'isLoading', label: 'Загрузка', defaultValue: false }
+	];
+</script>
+
+# Диаграмма Санки
+
+`SankeyChart` показывает потоки между узлами. Данные — `{ nodes, links }`: узлы по имени, связи по индексам узлов со значением. Цвет и подпись узла берутся из `config` по его имени. Клик по узлу подсвечивает его прямые связи.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={chartSources.sankey}>
+	{#snippet children(values)}
+		<div class="h-[400px] w-full p-4 pt-12">
+			<SankeyChart
+				data={funnelData}
+				config={funnelConfig}
+				link={{ variant: values.linkVariant }}
+				nodeLabel={values.labels === 'none' ? false : { position: values.labels, showValues: values.showValues }}
+				align={values.align}
+				nodeWidth={values.nodeWidth}
+				nodePadding={values.nodePadding}
+				linkCurvature={values.linkCurvature}
+				node={{ isClickable: true, radius: 2 }}
+				isLoading={values.isLoading}
+				class="h-full w-full"
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import SankeyChart from '$lib/components/charts/SankeyChart.svelte';
+	import type { SankeyData } from '$lib/components/charts/sankey';
+
+	const data: SankeyData = {
+		nodes: [{ name: 'organic' }, { name: 'landing' }, { name: 'purchase' }, { name: 'bounced' }],
+		links: [
+			{ source: 0, target: 1, value: 42000 },
+			{ source: 1, target: 2, value: 24000 },
+			{ source: 1, target: 3, value: 18000 }
+		]
+	};
+</script>
+
+<SankeyChart
+	{data}
+	{config}
+	node={{ isClickable: true }}
+	nodeLabel={{ position: 'outside', showValues: true }}
+	link={{ variant: 'source' }}
+/>
+```
+
+## Примеры
+
+### Подписи внутри широких узлов
+
+<SankeyChart data={funnelData} config={funnelConfig} nodeWidth={90} nodeLabel={{ position: 'inside', showValues: true }} node={{ radius: 4, isClickable: true }} link={{ variant: 'solid' }} class="h-[320px] w-full" />
+
+```svelte
+<SankeyChart {data} {config} nodeWidth={90} nodeLabel={{ position: 'inside', showValues: true }}
+	node={{ radius: 4, isClickable: true }} link={{ variant: 'solid' }} />
+```
+
+### Окраска связей по цели
+
+<SankeyChart data={funnelData} config={funnelConfig} link={{ variant: 'target', verticalPadding: 2 }} nodeLabel={{ position: 'outside' }} class="h-[300px] w-full" />
+
+```svelte
+<SankeyChart {data} {config} link={{ variant: 'target', verticalPadding: 2 }} nodeLabel={{ position: 'outside' }} />
+```
+
+## В markdown
+
+Таблица из трёх колонок: источник, цель, значение. Узлы создаются автоматически.
+
+````markdown
+:::chart
+[type]sankey
+[title]Воронка продаж
+[values]true
+
+| Откуда  | Куда    | Пользователи |
+|---------|---------|--------------|
+| Поиск   | Лендинг | 42000        |
+| Реклама | Лендинг | 28000        |
+| Лендинг | Товар   | 52000        |
+| Лендинг | Отказ   | 18000        |
+| Товар   | Покупка | 24000        |
+| Товар   | Отказ   | 28000        |
+:::
+````
+
+:::chart
+[type]sankey
+[title]Воронка продаж
+[values]true
+
+| Откуда  | Куда    | Пользователи |
+|---------|---------|--------------|
+| Поиск   | Лендинг | 42000        |
+| Реклама | Лендинг | 28000        |
+| Лендинг | Товар   | 52000        |
+| Лендинг | Отказ   | 18000        |
+| Товар   | Покупка | 24000        |
+| Товар   | Отказ   | 28000        |
+:::
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `data` | `SankeyData` | — | Узлы и связи |
+| `config` | `ChartConfig` | — | Цвета и подписи по имени узла |
+| `nodeWidth` | `number` | `10` | Ширина узла |
+| `nodePadding` | `number` | `10` | Вертикальный отступ между узлами |
+| `linkCurvature` | `number` | `0.5` | Кривизна связей, 0–1 |
+| `iterations` | `number` | `32` | Проходы раскладки |
+| `sort` | `boolean` | `true` | Сортировать узлы в колонках |
+| `align` | `'left' \| 'justify'` | `'justify'` | Конечные узлы — в последнюю колонку |
+| `verticalAlign` | `'justify' \| 'top'` | `'justify'` | Вертикальная раскладка |
+| `node` | `SankeyNodeOptions` | — | `radius`, `isClickable` |
+| `nodeLabel` | `boolean \| SankeyNodeLabelOptions` | `false` | `position` (inside/outside), `showValues`, `valueFormatter` |
+| `link` | `SankeyLinkOptions` | — | `variant` (gradient/solid/source/target), `verticalPadding` |
+| `tooltip` | `boolean \| TooltipOptions` | `true` | Тултип узлов и связей |
+| `backgroundVariant` | `BackgroundVariant` | — | Декоративный фон |
+| `onSelectionChange` | `(selection) => void` | — | Смена выбранного узла |
+| `isLoading` | `boolean` | `false` | Скелетон загрузки |
+| `class` | `string` | — | Классы контейнера |

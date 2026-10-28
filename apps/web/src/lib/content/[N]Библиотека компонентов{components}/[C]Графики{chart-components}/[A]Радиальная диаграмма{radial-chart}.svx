@@ -1,0 +1,140 @@
+---
+title: Радиальная диаграмма
+description: RadialChart — концентрические радиальные столбцы в полном круге или полукруге, с дорожками, градиентами и выбором столбца.
+keywords: 'Opensophy, RadialChart, радиальная диаграмма, графики, Svelte, UI components, библиотека компонентов, open-source'
+priority: 8
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import RadialChart from '$lib/components/charts/RadialChart.svelte';
+	import { chartSources } from '$lib/components/charts/chart-sources';
+	import {
+		browserData,
+		browserConfig,
+		browserGradientConfig
+	} from '$lib/components/charts/chart-demo-data';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'variant',
+			label: 'Форма',
+			defaultValue: 'full',
+			options: ['full', 'semi'].map((v) => ({ label: v, value: v }))
+		},
+		{ type: 'number', name: 'barSize', label: 'Толщина', defaultValue: 14, min: 4, max: 30, step: 1 },
+		{ type: 'number', name: 'cornerRadius', label: 'Скругление', defaultValue: 5, min: 0, max: 15, step: 1 },
+		{ type: 'number', name: 'max', label: 'Максимум (0 — авто)', defaultValue: 0, min: 0, max: 600, step: 25 },
+		{ type: 'boolean', name: 'showBackground', label: 'Дорожки', defaultValue: true },
+		{ type: 'boolean', name: 'gradient', label: 'Градиенты', defaultValue: false },
+		{ type: 'boolean', name: 'isLoading', label: 'Загрузка', defaultValue: false }
+	];
+</script>
+
+# Радиальная диаграмма
+
+`RadialChart` рисует по кольцу на каждую строку: первая строка — внутреннее кольцо. Длина дуги пропорциональна значению; `max` фиксирует значение полного круга, иначе шкала подбирается автоматически.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={chartSources.radial}>
+	{#snippet children(values)}
+		<div class="h-[400px] w-full p-4 pt-12">
+			<RadialChart
+				data={browserData}
+				config={values.gradient ? browserGradientConfig : browserConfig}
+				dataKey="visitors"
+				nameKey="browser"
+				variant={values.variant}
+				barSize={values.barSize}
+				cornerRadius={values.cornerRadius}
+				max={values.max || undefined}
+				showBackground={values.showBackground}
+				isClickable
+				legend={{ isClickable: true }}
+				isLoading={values.isLoading}
+				class="h-full w-full"
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import RadialChart from '$lib/components/charts/RadialChart.svelte';
+</script>
+
+<RadialChart {data} {config} dataKey="visitors" nameKey="browser" isClickable legend={{ isClickable: true }} />
+```
+
+## Примеры
+
+<div class="grid gap-4 md:grid-cols-2">
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">variant="semi"</div>
+		<RadialChart data={browserData} config={browserConfig} dataKey="visitors" nameKey="browser" variant="semi" legend class="h-[280px] w-full" />
+	</div>
+	<div class="rounded-lg border border-border p-3">
+		<div class="mb-2 font-mono text-xs text-foreground-muted">градиенты, max={'{300}'}</div>
+		<RadialChart data={browserData} config={browserGradientConfig} dataKey="visitors" nameKey="browser" max={300} barSize={10} class="h-[280px] w-full" />
+	</div>
+</div>
+
+```svelte
+<RadialChart {data} {config} dataKey="visitors" nameKey="browser" variant="semi" legend />
+<RadialChart {data} {config} dataKey="visitors" nameKey="browser" max={300} barSize={10} />
+```
+
+## В markdown
+
+````markdown
+:::chart
+[type]radial
+[title]Выполнение плана
+[max]100
+
+| Команда   | Процент |
+|-----------|---------|
+| Backend   | 82      |
+| Frontend  | 64      |
+| Mobile    | 47      |
+:::
+````
+
+:::chart
+[type]radial
+[title]Выполнение плана
+[max]100
+
+| Команда   | Процент |
+|-----------|---------|
+| Backend   | 82      |
+| Frontend  | 64      |
+| Mobile    | 47      |
+:::
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `data` | `ChartRow[]` | — | Строка на кольцо |
+| `config` | `ChartConfig` | — | Цвета и подписи по имени |
+| `dataKey` | `string` | — | Ключ значения |
+| `nameKey` | `string` | — | Ключ имени |
+| `variant` | `'full' \| 'semi'` | `'full'` | Полный круг или полукруг |
+| `max` | `number` | авто | Значение полного круга |
+| `innerRadius` / `outerRadius` | `number \| string` | `'30%'` / `'100%'` | Радиусы |
+| `cornerRadius` | `number` | `5` | Скругление концов |
+| `barSize` | `number` | `14` | Толщина кольца |
+| `showBackground` | `boolean` | `true` | Дорожка под кольцом |
+| `isClickable` | `boolean` | `false` | Выбор кольца кликом |
+| `tooltip` | `boolean \| TooltipOptions` | `true` | Тултип |
+| `legend` | `boolean \| LegendOptions` | `false` | Легенда (снизу по центру) |
+| `backgroundVariant` | `BackgroundVariant` | — | Декоративный фон |
+| `onSelectionChange` | `(selection) => void` | — | Смена выбранного кольца |
+| `isLoading` | `boolean` | `false` | Скелетон загрузки |
+| `class` | `string` | — | Классы контейнера |

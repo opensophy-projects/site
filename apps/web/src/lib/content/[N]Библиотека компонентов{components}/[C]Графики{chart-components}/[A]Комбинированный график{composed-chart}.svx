@@ -1,0 +1,197 @@
+---
+title: Комбинированный график
+description: ComposedChart — столбцы и линии на одной оси: варианты заливки столбцов, стили линий, точки, свечение и подсветка колонки.
+keywords: 'Opensophy, ComposedChart, комбинированный график, графики, Svelte, UI components, библиотека компонентов, open-source'
+priority: 5
+---
+
+<script lang="ts">
+	import { ComponentPreview } from '$lib';
+	import ComposedChart from '$lib/components/charts/ComposedChart.svelte';
+	import { chartSources } from '$lib/components/charts/chart-sources';
+	import {
+		monthlyData,
+		monthlyConfig,
+		gradientConfig,
+		shortMonth
+	} from '$lib/components/charts/chart-demo-data';
+	import type { ComponentPreviewControl } from '$lib/components/docs/component-preview/types';
+
+	const controls: ComponentPreviewControl[] = [
+		{
+			type: 'select',
+			name: 'barVariant',
+			label: 'Заливка столбцов',
+			defaultValue: 'gradient',
+			options: ['default', 'hatched', 'duotone', 'duotone-reverse', 'gradient', 'stripped'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'strokeVariant',
+			label: 'Линия',
+			defaultValue: 'solid',
+			options: ['solid', 'dashed', 'animated-dashed'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'curveType',
+			label: 'Кривая',
+			defaultValue: 'linear',
+			options: ['linear', 'monotone', 'natural', 'step', 'bump'].map((v) => ({ label: v, value: v }))
+		},
+		{
+			type: 'select',
+			name: 'dot',
+			label: 'Точки',
+			defaultValue: 'border',
+			options: ['none', 'default', 'border', 'colored-border'].map((v) => ({ label: v, value: v }))
+		},
+		{ type: 'boolean', name: 'glow', label: 'Свечение', defaultValue: false },
+		{ type: 'boolean', name: 'highlight', label: 'Подсветка наведения', defaultValue: true },
+		{ type: 'boolean', name: 'yAxis', label: 'Ось Y', defaultValue: true },
+		{ type: 'boolean', name: 'isLoading', label: 'Загрузка', defaultValue: false }
+	];
+</script>
+
+# Комбинированный график
+
+`ComposedChart` совмещает столбцы и линии на общей оси. Каждая серия в `series` — это `{ type: 'bar' }` или `{ type: 'line' }` со своими настройками. Без `series` первый ключ `config` становится столбцами, остальные — линиями.
+
+## Интерактивное демо
+
+<ComponentPreview controls={controls} sources={chartSources.composed}>
+	{#snippet children(values)}
+		<div class="h-[380px] w-full p-4 pt-12">
+			<ComposedChart
+				data={monthlyData}
+				config={monthlyConfig}
+				xDataKey="month"
+				barVariant={values.barVariant}
+				strokeVariant={values.strokeVariant}
+				curveType={values.curveType}
+				dot={values.dot === 'none' ? false : values.dot}
+				activeDot="colored-border"
+				glow={values.glow}
+				enableHoverHighlight={values.highlight}
+				isClickable
+				legend={{ isClickable: true }}
+				yAxis={values.yAxis}
+				isLoading={values.isLoading}
+				xAxis={{ tickFormatter: shortMonth }}
+				class="h-full w-full"
+			/>
+		</div>
+	{/snippet}
+</ComponentPreview>
+
+## Использование
+
+```svelte
+<script lang="ts">
+	import ComposedChart from '$lib/components/charts/ComposedChart.svelte';
+</script>
+
+<ComposedChart
+	{data}
+	{config}
+	xDataKey="month"
+	legend={{ isClickable: true }}
+	series={[
+		{ type: 'bar', dataKey: 'desktop', variant: 'duotone', enableHoverHighlight: true },
+		{ type: 'line', dataKey: 'mobile', strokeVariant: 'dashed', dot: 'border', glow: true }
+	]}
+	class="h-[320px] w-full"
+/>
+```
+
+## Примеры
+
+### Две серии столбцов и линия
+
+<ComposedChart data={monthlyData.map((r) => ({ ...r, total: r.desktop + r.mobile }))} config={{ ...monthlyConfig, total: { label: 'Всего', colors: { light: ['#2563eb'], dark: ['#60a5fa'] } } }} xDataKey="month" series={[{ type: 'bar', dataKey: 'desktop', variant: 'hatched' }, { type: 'bar', dataKey: 'mobile', variant: 'hatched' }, { type: 'line', dataKey: 'total', dot: 'colored-border', curveType: 'monotone' }]} legend xAxis={{ tickFormatter: shortMonth }} class="h-[300px] w-full" />
+
+```svelte
+<ComposedChart {data} {config} xDataKey="month" legend
+	series={[
+		{ type: 'bar', dataKey: 'desktop', variant: 'hatched' },
+		{ type: 'bar', dataKey: 'mobile', variant: 'hatched' },
+		{ type: 'line', dataKey: 'total', dot: 'colored-border', curveType: 'monotone' }
+	]} />
+```
+
+### Свечение и stripped-столбцы
+
+<ComposedChart data={monthlyData} config={gradientConfig} xDataKey="month" barVariant="stripped" glow curveType="bump" dot="border" xAxis={{ tickFormatter: shortMonth }} class="h-[300px] w-full" />
+
+```svelte
+<ComposedChart {data} {config} xDataKey="month" barVariant="stripped" glow curveType="bump" dot="border" />
+```
+
+## В markdown
+
+Колонки из `[lines]` рисуются линиями, остальные — столбцами. Без `[lines]` первая колонка — столбцы, остальные — линии.
+
+````markdown
+:::chart
+[type]composed
+[title]Выручка и прибыль
+[variant]gradient
+[lines]Прибыль
+
+| Месяц | Выручка | Прибыль |
+|-------|---------|---------|
+| Янв   | 8200    | 1400    |
+| Фев   | 9100    | 1700    |
+| Мар   | 10500   | 2100    |
+| Апр   | 9800    | 1900    |
+| Май   | 11200   | 2500    |
+| Июн   | 12400   | 2900    |
+:::
+````
+
+:::chart
+[type]composed
+[title]Выручка и прибыль
+[variant]gradient
+[lines]Прибыль
+
+| Месяц | Выручка | Прибыль |
+|-------|---------|---------|
+| Янв   | 8200    | 1400    |
+| Фев   | 9100    | 1700    |
+| Мар   | 10500   | 2100    |
+| Апр   | 9800    | 1900    |
+| Май   | 11200   | 2500    |
+| Июн   | 12400   | 2900    |
+:::
+
+## Пропсы
+
+| Пропс | Тип | По умолчанию | Описание |
+| --- | --- | --- | --- |
+| `data` | `ChartRow[]` | — | Строки данных |
+| `config` | `ChartConfig` | — | Подписи и цвета серий |
+| `series` | `ComposedSeries[]` | первый ключ — bar, остальные — line | Столбцы и линии по порядку |
+| `xDataKey` | `string` | — | Ключ категории |
+| `curveType` | `CurveType` | `'linear'` | Кривая линий |
+| `barVariant` | `BarVariant` | `'default'` | Заливка столбцов по умолчанию |
+| `strokeVariant` | `StrokeVariant` | `'solid'` | Стиль линий по умолчанию |
+| `dot` / `activeDot` | `DotVariant \| false` | `false` | Точки линий |
+| `glow` | `boolean` | `false` | Свечение всех серий |
+| `enableHoverHighlight` | `boolean` | `false` | Подсветка колонки под курсором |
+| `isClickable` | `boolean` | `false` | Выбор серии кликом |
+| `barGap` / `barCategoryGap` | `number` / `number \| string` | `4` / `'10%'` | Отступы столбцов |
+| `grid`, `xAxis`, `yAxis`, `tooltip`, `legend`, `brush` | — | как у `AreaChart` | Общие части графика |
+| `backgroundVariant` | `BackgroundVariant` | — | Декоративный фон |
+| `isLoading` | `boolean` | `false` | Скелетон загрузки |
+| `class` | `string` | — | Классы контейнера |
+
+### ComposedSeries
+
+| Поле | Для | Описание |
+| --- | --- | --- |
+| `type` | — | `'bar'` или `'line'` |
+| `dataKey` | — | Ключ серии |
+| `variant`, `radius`, `enableHoverHighlight` | bar | Заливка, скругление (по умолчанию `4`), подсветка |
+| `strokeVariant`, `curveType`, `connectNulls`, `dot`, `activeDot` | line | Стиль линии, кривая, пропуски, точки |
+| `glow`, `isClickable` | обе | Свечение и кликабельность |
