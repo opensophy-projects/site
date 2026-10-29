@@ -172,7 +172,7 @@
 				{title}
 				{scrollContainerId}
 				minViewportWidth={0}
-				maxHeight="100%"
+				maxHeight="calc(100dvh - 5rem)"
 			/>
 		</div>
 	</div>
@@ -210,14 +210,5 @@
 		.toc-panel {
 			transition: none;
 		}
-	}
-
-	.toc-progress {
-		background: conic-gradient(
-			currentColor var(--toc-progress),
-			color-mix(in oklch, currentColor 20%, transparent) 0
-		);
-		mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), black 0);
-		-webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), black 0);
 	}
 </style>
