@@ -205,6 +205,15 @@
 		display: none;
 	}
 
+	.toc-progress {
+		background: conic-gradient(
+			currentColor var(--toc-progress),
+			color-mix(in oklch, currentColor 20%, transparent) 0
+		);
+		mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), black 0);
+		-webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), black 0);
+	}
+
 	@media (prefers-reduced-motion: reduce) {
 		.toc-overlay,
 		.toc-panel {
