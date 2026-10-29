@@ -172,7 +172,7 @@
 				{title}
 				{scrollContainerId}
 				minViewportWidth={0}
-				maxHeight="100%"
+				maxHeight="calc(100dvh - 5rem)"
 			/>
 		</div>
 	</div>
@@ -205,13 +205,6 @@
 		display: none;
 	}
 
-	@media (prefers-reduced-motion: reduce) {
-		.toc-overlay,
-		.toc-panel {
-			transition: none;
-		}
-	}
-
 	.toc-progress {
 		background: conic-gradient(
 			currentColor var(--toc-progress),
@@ -219,5 +212,12 @@
 		);
 		mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), black 0);
 		-webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 2px), black 0);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.toc-overlay,
+		.toc-panel {
+			transition: none;
+		}
 	}
 </style>
