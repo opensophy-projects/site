@@ -1,5 +1,6 @@
 import type { RequestHandler } from './$types';
-import { siteConfig } from '$lib';
+import { siteConfig } from '$lib/config/site';
+import { archivedProducts, flagshipProducts } from '$lib/config/products';
 export const prerender = true;
 import { contentSections } from '$lib/content/sections';
 import {
@@ -26,9 +27,15 @@ const overviewParagraphs = [
 	'## Услуги', '',
 	'- Проверка безопасности (blackbox, graybox, whitebox).', '- Code review безопасности.', '- Поиск утечек данных (Data Leak Search).', '- Интеграция DevSecOps.', '- Консультация.', '- Поиск и устранение неполадок.', '',
 	'## Продукты', '',
-		'- os.docs — платформа для документации и публикации контента.', '- os.mtls — управление mTLS-сертификатами для Traefik.', '- os.ui — библиотека UI-компонентов.', '- NginxionS — NginxionS, система управления обратным прокси на базе Nginx.', '',
+	...Object.values(flagshipProducts).map(
+		(product) => `- ${product.name} — ${product.tagline}. ${product.description}`
+	),
+	'',
+	'### Архив (завершённые проекты)', '',
+	...archivedProducts.map((product) => `- ${product.name} — ${product.description}`),
+	'',
 
-	'## LLM guidance', '', 'Use canonical URLs. Use /sitemap.xml for discovery and raw Markdown links for documentation content.'
+	'## LLM guidance', '', 'Use canonical URLs. Use /sitemap.xml for discovery and raw Markdown links for documentation content. The full text of the knowledge base is available in /llms-full.txt.'
 ];
 
 type StaticPage = {
@@ -40,7 +47,10 @@ type StaticPage = {
 const staticPages: StaticPage[] = [
 	{ title: 'Главная', path: '/', description: 'Обзор Opensophy, услуг DevSecOps и open-source продуктов.' },
 	{ title: 'Услуги', path: '/solutions', description: 'Аудит безопасности, Code review, DevSecOps, консультации и устранение неполадок.' },
+	{ title: 'NginxionS', path: '/nginxions', description: 'Open-source обратный прокси на nginx с ML-WAF, CrowdSec, своим PKI и mTLS. В разработке.' },
+	{ title: 'Библиотека компонентов os.ui', path: '/components', description: 'Обзор библиотеки Svelte-компонентов Opensophy.' },
 	{ title: 'os.mtls', path: '/mtls', description: 'Инструмент для создания и управления mTLS-сертификатами для Traefik.' },
+	{ title: 'Новости', path: '/news', description: 'Новости и обновления проектов Opensophy.' },
 
 	{ title: 'Политика сервиса', path: '/service-policy', description: 'Условия и политика предоставления сервисов Opensophy.' }
 ];
@@ -83,6 +93,7 @@ export const GET: RequestHandler = () => {
 		`- [Telegram](${siteConfig.links.telegram}): Project updates and direct contact.`,
 		`- [Email](mailto:${siteConfig.links.email}): Direct contact with Opensophy.`,
 		`- [Package](https://www.npmjs.com/package/${siteConfig.package.name}): Installation and release metadata.`,
+		`- [llms-full.txt](${new URL('/llms-full.txt', canonicalOrigin).href}): Full text of the knowledge base in one file.`,
 		`- [Sitemap](${new URL('/sitemap.xml', canonicalOrigin).href}): Machine-readable list of public URLs.`,
 		`- [Robots](${new URL('/robots.txt', canonicalOrigin).href}): Crawling guidance.`,
 	];

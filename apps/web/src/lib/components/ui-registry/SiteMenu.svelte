@@ -4,7 +4,9 @@
   import Button from "$lib/components/ui-registry/Button.svelte";
   import ThemeToggle from "$lib/components/ui-registry/ThemeToggle.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
+  import { archivedProducts, flagshipProducts } from "$lib/config/products";
   import { searchState } from "$lib/stores/search.svelte";
+  import ArrowUpRight from "carbon-icons-svelte/lib/ArrowUpRight.svelte";
   import ChevronRight from "carbon-icons-svelte/lib/ChevronRight.svelte";
   import Close from "carbon-icons-svelte/lib/Close.svelte";
   import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
@@ -17,50 +19,23 @@
   import Book from "carbon-icons-svelte/lib/Book.svelte";
   import LocationCurrent from "carbon-icons-svelte/lib/LocationCurrent.svelte";
 
-  // ---- Продукты ----
-  const productColumns = [
+  // ---- Продукты: два флагмана и архив завершённых проектов ----
+  const flagshipLinks = [
     {
-      title: "Платформы",
-      links: [
-        {
-          label: "os.docs",
-          description: "Платформа для документации и публикации контента.",
-          href: "/docs/opensophy-docs",
-          icon: DocumentMultiple_01,
-        },
-      ],
+      ...flagshipProducts.nginxions,
+      icon: IbmCloudGateKeeper,
+      meta: "В разработке",
     },
     {
-      title: "Библиотеки",
-      links: [
-        {
-          label: "os.ui",
-          description:
-            "Библиотека готовых UI-компонентов с живым превью и гибкими настройками.",
-          href: "/components/overview",
-          icon: QHintonPlot,
-        },
-      ],
-    },
-    {
-      title: "Инструменты",
-      links: [
-        {
-          label: "os.mtls",
-          description:
-            "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik.",
-          href: "/mtls",
-          icon: Network_3,
-        },
-      ],
+      ...flagshipProducts.ui,
+      icon: QHintonPlot,
+      meta: "Библиотека",
     },
   ];
 
-  // ---- Компоненты: прямая ссылка в навигации (без выпадающей панели) ----
-  const _componentsLink = {
-    id: "components",
-    label: "Компоненты",
-    href: "/components",
+  const archiveIcons: Record<string, typeof DocumentMultiple_01> = {
+    docs: DocumentMultiple_01,
+    mtls: Network_3,
   };
 
   // ---- Решения: плоский ряд карточек ----
@@ -112,55 +87,84 @@
 </script>
 
 {#snippet productsPanel(isMobile: boolean)}
-  <div data-slot="grid" class="grid grid-cols-1 md:grid-cols-3">
-    {#each productColumns as column (column.title)}
-      <div
-        data-slot="column"
-        class="flex flex-col gap-3 border-border p-4 first:md:border-l-0 md:min-h-[14rem] md:border-l"
-      >
-        <h3
-          class="text-xs font-medium tracking-wider text-foreground-muted/50 uppercase"
+  <div data-slot="grid" class="grid grid-cols-1 md:grid-cols-[1fr_1fr_0.8fr]">
+    {#each flagshipLinks as link (link.id)}
+      {@const Icon = link.icon}
+      <div data-slot="column" class="border-border p-2 first:md:border-l-0 md:border-l md:p-3">
+        <a
+          href={link.href}
+          target={"external" in link && link.external ? "_blank" : undefined}
+          rel={"external" in link && link.external ? "noopener noreferrer" : undefined}
+          class="flagship-link group/link relative flex h-full flex-col gap-3 overflow-hidden rounded-xl p-4 text-left md:min-h-[13rem]"
         >
-          {column.title}
-        </h3>
-        <div class="mt-1 flex flex-col gap-3">
-          {#each column.links as link (link.href)}
-            {@const Icon = link.icon}
-            <a
-              href={link.href}
-              class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
+          <span class="flex items-center justify-between gap-3">
+            <span
+              class="inline-flex size-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-accent"
             >
-              <span
-                class="inset-shadow inline-flex shrink-0 rounded-xl bg-background-inset p-1.5"
-              >
-                <span
-                  class="card relative inline-flex size-9 items-center justify-center rounded-lg border border-border bg-background text-foreground transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent group-active/link:scale-[0.95]"
-                >
-                  <Icon size={20} />
-                </span>
-              </span>
-              <span class="min-w-0 flex-1 leading-tight">
-                <span class="block text-sm font-medium text-foreground">
-                  {link.label}
-                </span>
-                <span
-                  class="mt-1 block text-sm leading-snug text-foreground-muted"
-                >
-                  {link.description}
-                </span>
-              </span>
-              <ChevronRight
-                class="shrink-0 text-foreground-muted/60 transition-colors duration-200 group-hover/link:text-accent"
-                size={16}
-              />
-            </a>
-          {/each}
-        </div>
+              <Icon size={22} />
+            </span>
+            <span
+              class="inline-flex items-center gap-1 font-mono text-[0.65rem] font-semibold tracking-widest text-white/50 uppercase transition-colors duration-150 group-hover/link:text-white"
+            >
+              {link.meta}
+              {#if "external" in link && link.external}
+                <ArrowUpRight size={14} />
+              {:else}
+                <ChevronRight size={14} />
+              {/if}
+            </span>
+          </span>
+          <span class="mt-auto block">
+            <span class="block text-lg font-semibold tracking-tight text-white">
+              {link.name}
+            </span>
+            <span class="mt-1 block text-sm leading-snug text-white/60">
+              {link.tagline}
+            </span>
+          </span>
+        </a>
       </div>
     {/each}
+
+    <div data-slot="column" class="flex flex-col gap-2 border-border p-4 md:border-l">
+      <h3 class="text-xs font-medium tracking-wider text-foreground-muted/50 uppercase">
+        Архив
+      </h3>
+      <div class="mt-1 flex flex-col gap-1">
+        {#each archivedProducts as link (link.id)}
+          {@const Icon = archiveIcons[link.id] ?? DocumentMultiple_01}
+          <a
+            href={link.href}
+            class="menu-link group/link relative flex items-center gap-3 rounded-lg p-2 pr-2.5 text-left text-foreground transition-colors duration-200"
+          >
+            <span
+              class="inline-flex size-8 shrink-0 items-center justify-center rounded-lg border border-border bg-background-inset text-foreground-muted transition-colors duration-150 group-hover/link:border-accent/60 group-hover/link:text-accent"
+            >
+              <Icon size={16} />
+            </span>
+            <span class="min-w-0 flex-1 leading-tight">
+              <span class="block text-sm font-medium text-foreground">{link.name}</span>
+              <span class="mt-0.5 block text-xs leading-snug text-foreground-muted">
+                {link.tagline}
+              </span>
+            </span>
+          </a>
+        {/each}
+      </div>
+    </div>
   </div>
   {#if !isMobile}
-    <div data-slot="panel-footer" class="border-t border-border px-4 py-2.5">
+    <div
+      data-slot="panel-footer"
+      class="flex items-center justify-between border-t border-border px-4 py-2.5"
+    >
+      <a
+        href="/#products"
+        class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
+      >
+        Все продукты
+        <ChevronRight size={14} />
+      </a>
       <a
         href="/status"
         class="status-link inline-flex items-center gap-1 text-sm font-medium transition-colors duration-150"
@@ -390,6 +394,21 @@
   }
   .status-link {
     color: var(--accent);
+  }
+  /* Флагманские продукты: тёмные карточки с акцентным свечением */
+  .flagship-link {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      radial-gradient(120% 90% at 100% 100%, rgba(244, 63, 94, 0.3), transparent 62%),
+      #0c0c0e;
+    transition:
+      border-color 150ms ease-out,
+      box-shadow 150ms ease-out;
+  }
+  .flagship-link:hover,
+  .flagship-link:focus-visible {
+    border-color: rgba(244, 63, 94, 0.6);
+    box-shadow: 0 14px 32px -20px rgba(244, 63, 94, 0.8);
   }
   .status-link:hover {
     color: var(--accent-secondary);

@@ -1,6 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
-import { getContentSectionModule, getContentSectionManifest, contentSections } from '$lib/content/sections';
+import { getContentSectionManifest, contentSections } from '$lib/content/sections';
+import { getContentSectionModule } from '$lib/content/content-modules';
 
 export const prerender = true;
 
@@ -25,7 +26,7 @@ export const entries = () => {
 	return result;
 };
 
-export const load: PageLoad = ({ params }) => {
+export const load: PageLoad = async ({ params }) => {
 	const { section: sectionId, slug } = params;
 
 	// Редирект с корневого URL секции на первую страницу
@@ -39,7 +40,7 @@ export const load: PageLoad = ({ params }) => {
 		redirect(302, `/${sectionId}`);
 	}
 
-	const mod = getContentSectionModule(sectionId, slug);
+	const mod = await getContentSectionModule(sectionId, slug);
 	if (!mod) {
 		error(404, 'Page not found');
 	}

@@ -60,7 +60,6 @@ export const siteConfig = {
 		'os.ui',
 		'os.mtls',
 		'NginxionS',
-		'NginxionS',
 		'WAF',
 		'web application firewall',
 		'VPN',
@@ -114,6 +113,18 @@ export const siteConfig = {
 			'opensophy pentest',
 			'opensophy security audit'
 	],
+	/**
+	 * Коды подтверждения владения сайтом. Берутся в Google Search Console
+	 * и Яндекс.Вебмастере (способ «HTML-тег», значение атрибута content).
+	 * Пустая строка — тег не выводится.
+	 */
+	verification: {
+		google: '',
+		yandex: '',
+		bing: ''
+	},
+	/** Ключ IndexNow: файл `static/<key>.txt` подтверждает владение доменом. */
+	indexNowKey: '67c86cf011fb6bb4e8fa4133b28a5e10',
 	/** Default social preview image path. */
 	ogImage: '/og-image.jpg',
 	/** External profile links used by docs actions and metadata. */

@@ -2,10 +2,10 @@ import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import {
 	getContentSectionByPathname,
-	getContentSectionRawSource,
 	getContentSectionManifest,
 	contentSections
 } from '$lib/content/sections';
+import { getContentSectionRawSource } from '$lib/server/content-raw';
 
 const normalize = (value: string) => {
 	let start = 0;

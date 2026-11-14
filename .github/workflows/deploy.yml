@@ -144,6 +144,22 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+  indexnow:
+    name: Notify search engines
+    needs: deploy
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # GitHub Pages обновляет CDN не мгновенно: ждём, пока новый sitemap станет доступен
+      - name: Wait for CDN
+        run: sleep 90
+      - name: IndexNow (Яндекс, Bing и др.)
+        run: node .github/scripts/indexnow.mjs
   summary:
     name: Pipeline Summary
     if: always()

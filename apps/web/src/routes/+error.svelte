@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-	import { siteConfig } from '$lib';
+	import { siteConfig } from '$lib/config/site';
 	import { searchState } from '$lib/stores/search.svelte';
 	import SiteMenu from '$lib/components/ui-registry/SiteMenu.svelte';
 	import Search from 'carbon-icons-svelte/lib/Search.svelte';

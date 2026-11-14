@@ -4,11 +4,11 @@
     contentUiDefaults,
     type SectionUiConfig,
   } from "$lib/config/content-ui";
-  import { searchContent } from "$lib/utils/search";
+  import { loadSearchIndex, searchContent, SEARCH_INDEX_PATH } from "$lib/utils/search";
   import { scale } from "svelte/transition";
   import { cubicOut } from "svelte/easing";
   import { goto, onNavigate } from "$app/navigation";
-  import { resolve } from "$app/paths";
+  import { base, resolve } from "$app/paths";
   import { cn } from "$lib/utils/cn";
   import ScrollArea from "$lib/components/ui-registry/ScrollArea.svelte";
   import Overlay from "$lib/components/ui-registry/Overlay.svelte";
@@ -21,7 +21,9 @@
   }: { searchConfig?: SectionUiConfig["search"] } = $props();
 
   let query = $state("");
-  let results = $derived(searchContent(query, searchConfig));
+  // Индекс подгружается при первом открытии палитры, а не вместе со страницей
+  let indexReady = $state(false);
+  let results = $derived(indexReady ? searchContent(query, searchConfig) : []);
   let selectedIndex = $state(0);
   let inputRef = $state<HTMLInputElement>();
   let contentHeight = $state(0);
@@ -64,6 +66,13 @@
       searchState.consumeInitialMode();
       inputRef.focus();
     }
+  });
+
+  $effect(() => {
+    if (!searchState.isOpen || indexReady) return;
+    void loadSearchIndex(`${base}${SEARCH_INDEX_PATH}`).then((ready) => {
+      indexReady = ready;
+    });
   });
 
   $effect(() => {
@@ -352,7 +361,7 @@
             <div
               class="py-6 text-center text-sm tracking-normal text-foreground-muted/70"
             >
-              {searchConfig.noResultsLabel}
+              {indexReady ? searchConfig.noResultsLabel : 'Загрузка индекса…'}
             </div>
           {/if}
         </div>

@@ -4,7 +4,7 @@ import { parseNamedContentPath } from '$lib/content/naming';
 
 export type SearchMode = 'global' | 'docs' | 'registry';
 
-type ContentSearchEntry = {
+export type ContentSearchEntry = {
 	title: string;
 	slug: string;
 	heading?: string;
@@ -204,14 +204,12 @@ function indexFileContent(
 	flushBuffer();
 }
 
-function parseDocsContentIndex(): ContentSearchEntry[] {
+/**
+ * Строит поисковый индекс из исходников страниц (`путь файла -> сырой .svx`).
+ * Вызывается только на сервере при пререндере `/search-index.json`.
+ */
+export function buildSearchIndex(modules: Record<string, string>): ContentSearchEntry[] {
 	const index: ContentSearchEntry[] = [];
-
-	const modules = import.meta.glob<string>('/src/lib/content/**/*.svx', {
-		query: '?raw',
-		eager: true,
-		import: 'default'
-	});
 
 	const sectionSlugs = resolveSectionSlugs(modules);
 
@@ -250,15 +248,43 @@ function parseDocsContentIndex(): ContentSearchEntry[] {
 	return index;
 }
 
+/** Адрес пререндеренного индекса; загружается при первом открытии поиска. */
+export const SEARCH_INDEX_PATH = '/search-index.json';
 
-const searchIndex = parseDocsContentIndex();
-
+let searchIndex: ContentSearchEntry[] = [];
 const pageLookup = new Map<string, string>();
-searchIndex.forEach((item) => {
-	if (item.matchType === 'title') {
-		pageLookup.set(item.slug, item.title);
+let searchIndexPromise: Promise<boolean> | null = null;
+
+function setSearchIndex(entries: ContentSearchEntry[]) {
+	searchIndex = entries;
+	pageLookup.clear();
+	for (const item of entries) {
+		if (item.matchType === 'title') {
+			pageLookup.set(item.slug, item.title);
+		}
 	}
-});
+}
+
+/**
+ * Лениво загружает поисковый индекс. Повторные вызовы возвращают тот же промис;
+ * после сетевой ошибки следующая попытка запрашивает индекс заново.
+ *
+ * @returns `true`, если индекс готов к поиску.
+ */
+export function loadSearchIndex(url: string = SEARCH_INDEX_PATH): Promise<boolean> {
+	searchIndexPromise ??= fetch(url)
+		.then(async (response) => {
+			if (!response.ok) throw new Error(`Search index: HTTP ${String(response.status)}`);
+			setSearchIndex((await response.json()) as ContentSearchEntry[]);
+			return true;
+		})
+		.catch(() => {
+			searchIndexPromise = null;
+			return false;
+		});
+
+	return searchIndexPromise;
+}
 
 // Вычисляет score и snippet для одного элемента индекса
 function scoreItem(

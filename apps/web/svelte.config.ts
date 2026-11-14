@@ -331,8 +331,10 @@ const config: Config = {
 			precompress: false,
 			strict: true
 		}),
+		// Мелкие стили встраиваются в HTML: меньше запросов на медленной сети
+		inlineStyleThreshold: 2048,
 		prerender: {
-			entries: ['*', '/robots.txt'],
+			entries: ['*', '/robots.txt', '/sitemap.xml', '/llms.txt', '/llms-full.txt', '/search-index.json'],
 			handleMissingId: 'ignore'
 		},
 		typescript: {

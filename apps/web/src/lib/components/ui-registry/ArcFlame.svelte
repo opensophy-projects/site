@@ -250,10 +250,19 @@ void main () {
   vec3 smokeCol = mix(vec3(0.5), uColor, 0.5);
   float sA = clamp(smk, 0.0, 1.0);
   float a = clamp(fireA + sA * (1.0 - fireA), 0.0, 1.0);
-  outColor = vec4(
+  vec4 col = vec4(
     fireCol * fireA + glow + smokeCol * sA * (1.0 - fireA),
     clamp(a + halo * 0.6, 0.0, 1.0)
   );
+  // Дизеринг только внутри огня и свечения: шум в полтора шага 8-битного
+  // цвета убирает полосы, а полностью прозрачные пиксели не трогает
+  if (col.a > 0.004) {
+    float dn = fract(52.9829189 * fract(dot(gl_FragCoord.xy, vec2(0.06711056, 0.00583715)))) - 0.5;
+    col += vec4(dn, dn, dn, dn) * (1.5 / 255.0);
+    col = clamp(col, 0.0, 1.0);
+    col.rgb = min(col.rgb, vec3(col.a));
+  }
+  outColor = col;
 }`;
 
   /** GLSL ES 3.00 → 1.00 для устройств без WebGL2 (старые iOS/Android). */

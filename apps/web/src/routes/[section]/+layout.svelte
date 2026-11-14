@@ -1,12 +1,10 @@
 <script lang="ts">
-	import {
-		ContentNavigation,
-		DocShareActions,
-		MobileDocShareActions,
-		TableOfContents,
-		resolveTocSelector,
-		siteConfig
-	} from '$lib';
+	import ContentNavigation from '$lib/components/content/ContentNavigation.svelte';
+	import DocShareActions from '$lib/components/docs/DocShareActions.svelte';
+	import MobileDocShareActions from '$lib/components/docs/MobileDocShareActions.svelte';
+	import TableOfContents from '$lib/components/docs/TableOfContents.svelte';
+	import { resolveTocSelector } from '$lib/config/content-ui';
+	import { siteConfig } from '$lib/config/site';
 	import ContentSectionLayout from '$lib/components/content/ContentSectionLayout.svelte';
 	import {
 		getContentSectionConfig,

@@ -1,7 +1,7 @@
 import type { ContentItem, ContentSectionLink, ContentSectionConfig } from '$lib/config/navigation';
 import { parseNamedContentPath } from '$lib/content/naming';
 import { mergeSectionUiConfig, type SectionUiConfig } from '$lib/config/content-ui';
-import { parseContentSource } from '$lib/content/frontmatter';
+import type { ContentFrontmatter } from '$lib/content/frontmatter';
 import { getCustomPage } from '$lib/content/custom-pages';
 import {
 	flattenNavigationToManifest,
@@ -38,19 +38,16 @@ function basePathFor(id: string): string {
 	return `/${id}`;
 }
 
-// Glob-импорты контента
-const allSvxRaw = import.meta.glob<string>('/src/lib/content/**/*.svx', {
-	query: '?raw',
+// Glob-импорты контента.
+// В клиентский бандл попадают только лёгкие метаданные (frontmatter + заголовки,
+// см. vite-plugins/content-meta.ts), а сами страницы подгружаются по требованию.
+// Полные исходники доступны только на сервере: $lib/server/content-raw.ts.
+type ContentMeta = ContentFrontmatter & { headings: [number, string][] };
+
+const allSvxMeta = import.meta.glob<ContentMeta>('/src/lib/content/**/*.svx', {
+	query: '?meta',
 	eager: true,
 	import: 'default'
-});
-
-const allSvxModules = import.meta.glob<ContentModule>('/src/lib/content/**/*.svx', {
-	eager: true
-});
-
-const allSvelteModules = import.meta.glob<ContentModule>('/src/lib/content/**/*.svelte', {
-	eager: true
 });
 
 const allSvelteMetadatas = import.meta.glob<Record<string, unknown>>(
@@ -61,7 +58,9 @@ const allSvelteMetadatas = import.meta.glob<Record<string, unknown>>(
 	}
 );
 
-const allPaths = [...Object.keys(allSvxRaw), ...Object.keys(allSvelteModules)];
+const allSveltePaths = Object.keys(allSvelteMetadatas);
+
+const allPaths = [...Object.keys(allSvxMeta), ...allSveltePaths];
 
 /**
  * Карта slug секции -> реальный путь директории в файловой системе.
@@ -163,9 +162,8 @@ function generateNavigationFromSection(
 		const item: ContentItem = { slug, name };
 
 		// Получаем заголовок и приоритет из frontmatter, если есть
-		const rawSource = allSvxRaw[path];
-		if (rawSource) {
-			const { metadata } = parseContentSource(rawSource);
+		const metadata = allSvxMeta[path] as ContentMeta | undefined;
+		if (metadata) {
 			if (metadata.title) item.name = metadata.title;
 			else if (metadata.name) item.name = metadata.name;
 			if (metadata.priority !== undefined) {
@@ -282,7 +280,7 @@ function findSvxKey(sectionId: string, slug: string): string | null {
 	const sectionDirPath = sectionDirMap.get(sectionId);
 	if (!sectionDirPath) return null;
 
-	for (const path of Object.keys(allSvxModules)) {
+	for (const path of Object.keys(allSvxMeta)) {
 		if (!path.startsWith(sectionDirPath + '/')) continue;
 
 		const filename = path.split('/').pop() ?? '';
@@ -308,7 +306,7 @@ function findSvelteKey(sectionId: string, slug: string): string | null {
 	const sectionDirPath = sectionDirMap.get(sectionId);
 	if (!sectionDirPath) return null;
 
-	for (const path of Object.keys(allSvelteModules)) {
+	for (const path of allSveltePaths) {
 		if (!path.startsWith(sectionDirPath + '/')) continue;
 
 		const filename = path.split('/').pop() ?? '';
@@ -385,9 +383,8 @@ export function getContentSectionMetadata(
 	const sourceType: ContentMetadata['sourceType'] = svxKey ? 'svx' : 'svelte';
 
 	if (svxKey) {
-		const rawSource = allSvxRaw[svxKey];
-		if (rawSource) {
-			const { metadata } = parseContentSource(rawSource);
+		const metadata = allSvxMeta[svxKey] as ContentMeta | undefined;
+		if (metadata) {
 			title = metadata.title ?? metadata.name ?? title;
 			description = metadata.description;
 			keywords = metadata.keywords;
@@ -414,35 +411,14 @@ export function getContentSectionMetadata(
 	};
 }
 
-export function getContentSectionModule(
-	sectionId: ContentSectionId,
-	slug: string
-): ContentModule | null {
-	const svxKey = findSvxKey(sectionId, slug);
-	if (svxKey) {
-		return allSvxModules[svxKey] ?? null;
-	}
-
-	const customPage = getCustomPage(sectionId, slug);
-	if (customPage) {
-		return { default: customPage.component };
-	}
-
-	const svelteKey = findSvelteKey(sectionId, slug);
-	if (svelteKey) {
-		return allSvelteModules[svelteKey] ?? null;
-	}
-
-	return null;
+/** Путь исходного `.svx` файла страницы (ключ glob-импорта) или `null`. */
+export function getContentSectionSourcePath(sectionId: ContentSectionId, slug: string) {
+	return findSvxKey(sectionId, slug);
 }
 
-export function getContentSectionRawSource(
-	sectionId: ContentSectionId,
-	slug: string
-): string | null {
-	const svxKey = findSvxKey(sectionId, slug);
-	if (!svxKey) return null;
-	return allSvxRaw[svxKey] ?? null;
+/** Путь `.svelte`-страницы контента (ключ glob-импорта) или `null`. */
+export function getContentSectionSveltePath(sectionId: ContentSectionId, slug: string) {
+	return findSvelteKey(sectionId, slug);
 }
 
 export function getContentSectionTocHeadings(
@@ -450,11 +426,11 @@ export function getContentSectionTocHeadings(
 	slug: string,
 	selector: string
 ): ContentTocHeading[] {
-	const rawSource = getContentSectionRawSource(sectionId, slug);
-	if (!rawSource) return [];
+	const svxKey = findSvxKey(sectionId, slug);
+	const meta = svxKey ? (allSvxMeta[svxKey] as ContentMeta | undefined) : undefined;
+	if (!meta) return [];
 
-	const { body } = parseContentSource(rawSource);
-	return extractTocHeadings(body, selector);
+	return extractTocHeadings(meta.headings, selector);
 }
 
 export function getContentSectionItemBySlug(sectionId: ContentSectionId, slug: string) {
@@ -552,27 +528,18 @@ function normalizeHeadingText(rawText: string) {
 	);
 }
 
-function extractTocHeadings(source: string, selector: string): ContentTocHeading[] {
+function extractTocHeadings(
+	source: [number, string][],
+	selector: string
+): ContentTocHeading[] {
 	const levels = extractHeadingLevels(selector);
 	const slugger = new GithubSlugger();
 	const headings: ContentTocHeading[] = [];
-	let inFence = false;
 
-	for (const line of source.split(/\r?\n/)) {
-		if (/^\s*(```|~~~)/.test(line)) {
-			inFence = !inFence;
-			continue;
-		}
-
-		if (inFence) continue;
-
-		const match = /^( {0,3})(#{1,6})\s+(.+?)\s*$/.exec(line);
-		if (!match) continue;
-
-		const level = match[2].length;
+	for (const [level, rawText] of source) {
 		if (!levels.has(level)) continue;
 
-		const text = normalizeHeadingText(match[3]);
+		const text = normalizeHeadingText(rawText);
 		if (!text) continue;
 
 		headings.push({

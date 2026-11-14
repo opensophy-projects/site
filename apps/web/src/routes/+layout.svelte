@@ -1,9 +1,11 @@
 <script lang="ts">
 	import './layout.css';
 	import './illustration-theme.css';
-	import 'katex/dist/katex.min.css';
 	import { page } from '$app/state';
-	import { CommandPalette, contentUiDefaults, siteConfig } from '$lib';
+	import CommandPalette from '$lib/components/content/search/CommandPalette.svelte';
+	import { contentUiDefaults } from '$lib/config/content-ui';
+	import { siteConfig } from '$lib/config/site';
+	import { flagshipProducts } from '$lib/config/products';
 	import { getContentSectionByPathname, getContentSectionUiConfig } from '$lib/content/sections';
 	import type { SectionUiConfig } from '$lib/config/content-ui';
 	import { type Snippet } from 'svelte';
@@ -31,7 +33,7 @@
 	const authorName = siteConfig.author;
 	const homeTitle = `${siteConfig.name} — Мастерская DevSecOps`;
 	const homeDescription = siteConfig.description;
-	const homeKeywords = siteConfig.keywords.join(', ');
+	const homeKeywords = siteConfig.keywords.slice(0, 24).join(', ');
 	const sharedOgImage = new URL(siteConfig.ogImage, siteOrigin).href;
 	const homeStructuredData = $derived.by(() =>
 		JSON.stringify({
@@ -40,17 +42,13 @@
 			name: siteName,
 			alternateName: siteConfig.shortName,
 			url: canonicalUrl,
+			inLanguage: 'ru',
 			description: homeDescription,
 			image: sharedOgImage,
 			author: {
 				'@type': 'Organization',
 				name: authorName,
 				url: siteOrigin
-			},
-			potentialAction: {
-				'@type': 'SearchAction',
-				target: `${siteOrigin}/docs?q={search_term_string}`,
-				'query-input': 'required name=search_term_string'
 			}
 		})
 	);
@@ -60,8 +58,9 @@
 		'@type': 'Organization',
 		name: 'Opensophy',
 		url: siteOrigin,
-		logo: `${siteOrigin}/light_logo.png`,
-		sameAs: [siteConfig.links.github],
+		logo: `${siteOrigin}/logo-1024.png`,
+		description: siteConfig.description,
+		sameAs: [siteConfig.links.github, siteConfig.links.telegram],
 		contactPoint: {
 			'@type': 'ContactPoint',
 			email: siteConfig.links.email,
@@ -69,15 +68,49 @@
 		}
 	});
 
+	const navigationLinks = [
+		['NginxionS', '/nginxions'],
+		['Услуги', '/solutions'],
+		['Библиотека компонентов os.ui', '/components/overview'],
+		['База знаний', '/article/general'],
+		['Новости', '/news'],
+		['Статус', '/status']
+	];
+
 	const siteNavigationStructuredData = JSON.stringify({
 		'@context': 'https://schema.org',
 		'@type': 'ItemList',
-		itemListElement: [
-			{ '@type': 'SiteNavigationElement', position: 1, name: 'Новости', url: `${siteOrigin}/news` },
-			{ '@type': 'SiteNavigationElement', position: 2, name: 'База Знаний', url: `${siteOrigin}/article/general` },
-			{ '@type': 'SiteNavigationElement', position: 3, name: 'os.ui', url: `${siteOrigin}/components/overview` },
-			{ '@type': 'SiteNavigationElement', position: 4, name: 'Политика оказания услуг', url: `${siteOrigin}/service-policy` },
-				{ '@type': 'SiteNavigationElement', position: 6, name: 'Статус', url: `${siteOrigin}/status` }
+		itemListElement: navigationLinks.map(([name, path], index) => ({
+			'@type': 'SiteNavigationElement',
+			position: index + 1,
+			name,
+			url: `${siteOrigin}${path}`
+		}))
+	});
+
+	// Флагманские продукты: поисковики и ИИ-ассистенты получают их как сущности
+	const productsStructuredData = JSON.stringify({
+		'@context': 'https://schema.org',
+		'@graph': [
+			{
+				'@type': 'SoftwareApplication',
+				name: flagshipProducts.nginxions.name,
+				description: flagshipProducts.nginxions.description,
+				applicationCategory: 'SecurityApplication',
+				operatingSystem: 'Linux, Docker',
+				url: `${siteOrigin}${flagshipProducts.nginxions.href}`,
+				offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+				author: { '@type': 'Organization', name: 'Opensophy', url: siteOrigin }
+			},
+			{
+				'@type': 'SoftwareSourceCode',
+				name: flagshipProducts.ui.name,
+				description: flagshipProducts.ui.description,
+				programmingLanguage: 'Svelte',
+				url: `${siteOrigin}${flagshipProducts.ui.href}`,
+				codeRepository: siteConfig.links.repository,
+				author: { '@type': 'Organization', name: 'Opensophy', url: siteOrigin }
+			}
 		]
 	});
 </script>
@@ -91,12 +124,21 @@
 		name="docs-package-manager-enabled"
 		content={contentUiDefaults.packageManager.enabled.join(',')}
 	/>
+	{#if siteConfig.verification.google}
+		<meta name="google-site-verification" content={siteConfig.verification.google} />
+	{/if}
+	{#if siteConfig.verification.yandex}
+		<meta name="yandex-verification" content={siteConfig.verification.yandex} />
+	{/if}
+	{#if siteConfig.verification.bing}
+		<meta name="msvalidate.01" content={siteConfig.verification.bing} />
+	{/if}
 	<meta property="og:site_name" content={siteName} />
 	<meta property="og:locale" content="ru_RU" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:site" content="@opensophy" />
 	<link rel="manifest" href="/site.webmanifest" />
-	<link rel="preload" href="/logo-96.png" as="image" type="image/png" fetchpriority="high" />
+	<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
 	<meta name="mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 	<meta name="apple-mobile-web-app-title" content={siteName} />
@@ -106,6 +148,7 @@
 		<meta name="description" content={homeDescription} />
 		<meta name="keywords" content={homeKeywords} />
 		<meta name="author" content={authorName} />
+		<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 		<link rel="canonical" href={canonicalUrl} />
 		<meta property="og:title" content={homeTitle} />
 		<meta property="og:description" content={homeDescription} />
@@ -127,6 +170,9 @@
 		</svelte:element>
 		<svelte:element this={'script'} type="application/ld+json">
 			{siteNavigationStructuredData}
+		</svelte:element>
+		<svelte:element this={'script'} type="application/ld+json">
+			{productsStructuredData}
 		</svelte:element>
 	{/if}
 </svelte:head>

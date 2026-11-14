@@ -1,74 +1,79 @@
 import type { RequestHandler } from './$types';
-import { siteConfig } from '$lib';
+import { siteConfig } from '$lib/config/site';
+import {
+	contentSections,
+	getContentSectionHref,
+	getContentSectionManifest,
+	getContentSectionSourcePath
+} from '$lib/content/sections';
+import { getLastModified } from '$lib/server/git-dates';
+
 export const prerender = true;
-import { contentSections, getContentSectionHref, getContentSectionManifest } from '$lib/content/sections';
 
 type SitemapEntry = {
 	path: string;
-	changefreq?: string;
-	priority?: string;
+	lastmod: string;
 };
 
-const staticPages: SitemapEntry[] = [
-	{ path: '/', changefreq: 'weekly', priority: '1.0' },
-	{ path: '/llms.txt', changefreq: 'weekly', priority: '0.4' },
-	{ path: '/solutions', changefreq: 'monthly', priority: '0.8' },
-	{ path: '/mtls', changefreq: 'weekly', priority: '0.8' },
-	{ path: '/service-policy', changefreq: 'yearly', priority: '0.5' }
+const HOME_SOURCES = [
+	'/src/routes/+page.svelte',
+	'/src/lib/components/home/NginxionsSection.svelte',
+	'/src/lib/components/home/ProductsPanel.svelte',
+	'/src/lib/config/products.ts'
 ];
 
-const buildTimestamp = new Date().toISOString();
+const customPage = (route: string, extension = 'svelte') =>
+	`/src/routes/(custom-pages)/${route}/+page.${extension}`;
 
-const toAbsoluteUrl = (origin: string, path: string) => new URL(path, origin).href;
+// Только канонические страницы с собственным содержимым. Корни секций
+// (/article, /docs) — редиректы на первую статью, в карту сайта не входят.
+const staticPages: SitemapEntry[] = [
+	{ path: '/', lastmod: getLastModified(...HOME_SOURCES) },
+	{ path: '/nginxions', lastmod: getLastModified(customPage('nginxions'), '/src/lib/config/products.ts') },
+	{ path: '/solutions', lastmod: getLastModified(customPage('solutions')) },
+	{ path: '/components', lastmod: getLastModified(customPage('components')) },
+	{ path: '/mtls', lastmod: getLastModified(customPage('mtls')) },
+	{ path: '/news', lastmod: getLastModified(customPage('news', 'svx')) },
+	{ path: '/status', lastmod: getLastModified(customPage('status', 'svx')) },
+	{ path: '/service-policy', lastmod: getLastModified(customPage('service-policy')) },
+	{ path: '/data-policy', lastmod: getLastModified(customPage('data-policy')) }
+];
 
-const createUrlEntry = (origin: string, entry: SitemapEntry) => {
-	const loc = toAbsoluteUrl(origin, entry.path);
-	const changefreqTag = entry.changefreq ? `<changefreq>${entry.changefreq}</changefreq>` : '';
-	const priorityTag = entry.priority ? `<priority>${entry.priority}</priority>` : '';
-	return `<url><loc>${loc}</loc><lastmod>${buildTimestamp}</lastmod>${changefreqTag}${priorityTag}</url>`;
-};
-
-const dedupeEntries = (entries: SitemapEntry[]) => {
-	const map = new Map<string, SitemapEntry>();
-	for (const entry of entries) {
-		if (!map.has(entry.path)) {
-			map.set(entry.path, entry);
-		}
-	}
-	return Array.from(map.values());
-};
+const escapeXml = (value: string) =>
+	value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 export const GET: RequestHandler = () => {
-	const canonicalOrigin = new URL(siteConfig.url).origin;
+	const origin = new URL(siteConfig.url).origin;
 
-	const sectionRootEntries: SitemapEntry[] = contentSections.map((section) => ({
-		path: `/${section.id}`,
-		changefreq: 'weekly',
-		priority: '0.9'
-	}));
-
-	const sectionEntries: SitemapEntry[] = contentSections.flatMap((section) =>
-		getContentSectionManifest(section.id).map((item) => ({
-			path: getContentSectionHref(section.id, item.slug),
-			changefreq: 'weekly',
-			priority: '0.8'
-		}))
+	const contentPages: SitemapEntry[] = contentSections.flatMap((section) =>
+		getContentSectionManifest(section.id).map((item) => {
+			const source = getContentSectionSourcePath(section.id, item.slug);
+			return {
+				path: getContentSectionHref(section.id, item.slug),
+				lastmod: source ? getLastModified(source) : getLastModified()
+			};
+		})
 	);
-	const uniqueEntries = dedupeEntries([
-		...staticPages,
-		...sectionRootEntries,
-		...sectionEntries
-	]);
+
+	const entries = new Map<string, SitemapEntry>();
+	for (const entry of [...staticPages, ...contentPages]) {
+		if (!entries.has(entry.path)) entries.set(entry.path, entry);
+	}
 
 	const body =
-		`<?xml version="1.0" encoding="UTF-8"?>` +
-		`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` +
-		uniqueEntries.map((entry) => createUrlEntry(canonicalOrigin, entry)).join('') +
-		`</urlset>`;
+		`<?xml version="1.0" encoding="UTF-8"?>\n` +
+		`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+		Array.from(entries.values())
+			.map(
+				(entry) =>
+					`<url><loc>${escapeXml(new URL(entry.path, origin).href)}</loc><lastmod>${entry.lastmod}</lastmod></url>`
+			)
+			.join('\n') +
+		`\n</urlset>\n`;
 
 	return new Response(body, {
 		headers: {
-			'content-type': 'application/xml',
+			'content-type': 'application/xml; charset=utf-8',
 			'cache-control': 'public, max-age=3600'
 		}
 	});

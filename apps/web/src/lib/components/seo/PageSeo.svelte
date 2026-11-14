@@ -5,7 +5,7 @@
 	let {
 		title,
 		description,
-		keywords = siteConfig.keywords,
+		keywords = siteConfig.keywords.slice(0, 24),
 		type = 'website'
 	}: {
 		title: string;

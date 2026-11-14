@@ -1,15 +1,5 @@
-<svelte:head>
-  <link rel="preload" as="image" href="/logo-ascii-wide.webp" media="(min-width: 1024px)" fetchpriority="high" />
-  <link rel="preload" as="image" href="/logo-ascii-narrow.webp" media="(max-width: 1023px)" fetchpriority="high" />
-  <!-- AsciiObject грузит исходник через fetch(), поэтому as="fetch" + crossorigin -->
-  <link rel="preload" as="fetch" href="/logo-1024.png" crossorigin="anonymous" />
-</svelte:head>
-
 <script lang="ts">
   import { onMount, type Component } from "svelte";
-  import AsciiObject from "$lib/components/ui-registry/AsciiObject.svelte";
-  import ArcFlame from "$lib/components/ui-registry/ArcFlame.svelte";
-  import FlameWrap from "$lib/components/ui-registry/FlameWrap.svelte";
   import SiteMenu from "$lib/components/ui-registry/SiteMenu.svelte";
   import LogoCarousel from "$lib/components/ui-registry/logo-carousel.svelte";
   import Badge from "$lib/components/ui-registry/Badge.svelte";
@@ -17,12 +7,44 @@
   import Phosphor from "$lib/components/ui-registry/Phosphor.svelte";
   import Terminal from "$lib/components/ui-registry/Terminal.svelte";
   import Radar from "$lib/components/ui-registry/Radar.svelte";
-  import GhostCursor from "$lib/components/ui-registry/GhostCursor.svelte";
-  import DocumentMultiple_01 from "carbon-icons-svelte/lib/DocumentMultiple_01.svelte";
-  import QHintonPlot from "carbon-icons-svelte/lib/QHintonPlot.svelte";
-  import Network_3 from "carbon-icons-svelte/lib/Network_3.svelte";
-  import IbmCloudGateKeeper from "carbon-icons-svelte/lib/IbmCloudGateKeeper.svelte";
+  import NginxionsSection from "$lib/components/home/NginxionsSection.svelte";
+  import ProductsPanel from "$lib/components/home/ProductsPanel.svelte";
   import { contactsState } from "$lib/stores/contacts.svelte";
+
+  // ─── Тяжёлые эффекты hero ─────────────────────────────────────
+  // three.js и WebGL-эффекты не входят в критический путь: страница сразу
+  // показывает статичный постер логотипа и CSS-дугу, а живые эффекты
+  // догружаются после загрузки страницы. На медленной сети или в режиме
+  // экономии трафика они не грузятся вовсе — постер остаётся на месте.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  type LazyComponent = Component<any> | null;
+  let AsciiObject = $state<LazyComponent>(null);
+  let ArcFlame = $state<LazyComponent>(null);
+  let GhostCursor = $state<LazyComponent>(null);
+  // Живой ASCII-рендер отрисован — статичный постер можно убрать
+  let logoLive = $state(false);
+
+  type NetworkInformation = { saveData?: boolean; effectiveType?: string };
+
+  function shouldLoadEffects() {
+    const connection = (navigator as Navigator & { connection?: NetworkInformation }).connection;
+    if (connection?.saveData) return false;
+    if (connection?.effectiveType && /(^|-)2g$/.test(connection.effectiveType)) return false;
+    return !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function loadEffects() {
+    // Каждый эффект независим: сбой одной загрузки не ломает остальные
+    void import("$lib/components/ui-registry/ArcFlame.svelte")
+      .then((m) => (ArcFlame = m.default))
+      .catch(() => undefined);
+    void import("$lib/components/ui-registry/AsciiObject.svelte")
+      .then((m) => (AsciiObject = m.default))
+      .catch(() => undefined);
+    void import("$lib/components/ui-registry/GhostCursor.svelte")
+      .then((m) => (GhostCursor = m.default))
+      .catch(() => undefined);
+  }
 
   // ─── Нам доверяют ─────────────────────────────────────────────
   type Sponsor = { name: string; description: string; logo?: string };
@@ -117,7 +139,18 @@
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
 
+    // Эффекты — только после полной загрузки страницы и в свободное время
+    let effectsTimer = 0;
+    const scheduleEffects = () => {
+      if (!shouldLoadEffects()) return;
+      effectsTimer = window.setTimeout(loadEffects, 200);
+    };
+    if (document.readyState === "complete") scheduleEffects();
+    else window.addEventListener("load", scheduleEffects, { once: true });
+
     return () => {
+      window.clearTimeout(effectsTimer);
+      window.removeEventListener("load", scheduleEffects);
       mq.removeEventListener("change", onChange);
       phoneMq.removeEventListener("change", onPhoneChange);
       ro.disconnect();
@@ -128,47 +161,6 @@
 
   // Цвет пламени совпадает с акцентом сайта (#f43f5e)
   const flameColor: [number, number, number] = [0.956, 0.247, 0.369];
-
-  // ─── Продукты ─────────────────────────────────────────────────
-  type Project = {
-    title: string;
-    description: string;
-    icon: Component<{ size?: number; class?: string }>;
-    statusLabel: string;
-    href: string;
-  };
-
-  // Порядок: ui → mtls → docs
-  const projects: Project[] = [
-    {
-      title: "os.ui",
-      icon: QHintonPlot,
-      description:
-        "Библиотека готовых UI-компонентов с живым превью и гибкими настройками. Включает анимации, интерактивные блоки и фирменные компоненты Opensophy — для разработчиков и дизайнеров.",
-      statusLabel: "Проект в релизе",
-      href: "https://opensophy.com/components/overview",
-    },
-    {
-      title: "os.mtls",
-      icon: Network_3,
-      description:
-        "Инструмент для быстрого создания и управления mTLS-сертификатами для Traefik. Позволяет надёжно закрыть доступ к сервисам и серверам без лишних сложностей.",
-      statusLabel: "Проект в релизе",
-      href: "https://opensophy.com/mtls",
-    },
-    {
-      title: "os.docs",
-      icon: DocumentMultiple_01,
-      description:
-        "Платформа для документации и публикации контента. Подходит для технических команд, авторов и всех, кто хочет структурированно делиться знаниями.",
-      statusLabel: "Проект в релизе",
-      href: "https://opensophy.com/docs/opensophy-docs",
-    },
-  ];
-
-  function isExternal(href: string) {
-    return /^https?:\/\//.test(href);
-  }
 </script>
 
 <a
@@ -195,6 +187,7 @@
       <div class="hero-halo"></div>
       <div class="hero-arc" bind:this={arcEl}></div>
       <!-- Огонь по дуге: эллипс берётся из .hero-arc -->
+      {#if ArcFlame}
       <ArcFlame
         arc={arcEl}
         color={flameColor}
@@ -206,9 +199,10 @@
         smoke={1.3}
         rim={3}
       />
+      {/if}
     </div>
 
-    {#if !isPhone}
+    {#if GhostCursor && !isPhone}
       <GhostCursor color="#f43f5e" zIndex={1} class="hero-ghost" />
     {/if}
 
@@ -218,27 +212,42 @@
         <span class="hero-lead-line text-accent">Мастерская DevSecOps</span>
       </h1>
 
-      <div class="hero-logo" aria-label="Opensophy ASCII logo" bind:this={logoEl}>
-        <AsciiObject
-          src="/logo-1024.png"
-          poster="/logo-ascii-wide.webp"
-          posterNarrow="/logo-ascii-narrow.webp"
-          ascii={true}
-          colored={false}
-          color="#f43f5e"
-          highlight="#f43f5e"
-          background=""
-          cellSize={isMobile ? 8 : 9}
-          contrast={1.5}
-          exposure={1}
-          scale={isMobile ? 5 : 4}
-          orbit={false}
-          autoRotate={false}
-          rotationIntensity={0.5}
-          floatIntensity={isMobile ? 1.5 : 2.5}
-          floatSpeed={1.6}
-          class="hero-logo-canvas"
-        />
+      <div class="hero-logo" bind:this={logoEl}>
+        <!-- Статичный постер: есть в HTML с первого байта и не зависит от JS -->
+        <picture class="hero-poster" class:hero-poster-hidden={logoLive}>
+          <source media="(max-width: 1023px)" srcset="/logo-ascii-narrow.webp" />
+          <img
+            src="/logo-ascii-wide.webp"
+            alt="Логотип Opensophy, собранный из ASCII-символов"
+            decoding="async"
+            fetchpriority="high"
+            draggable="false"
+          />
+        </picture>
+        {#if AsciiObject}
+          <AsciiObject
+            src="/logo-1024.png"
+            ascii={true}
+            colored={false}
+            color="#f43f5e"
+            highlight="#f43f5e"
+            background=""
+            cellSize={isMobile ? 8 : 9}
+            contrast={1.5}
+            exposure={1}
+            scale={isMobile ? 5 : 4}
+            orbit={false}
+            autoRotate={false}
+            rotationIntensity={0.5}
+            floatIntensity={isMobile ? 1.5 : 2.5}
+            floatSpeed={1.6}
+            class="hero-logo-canvas {logoLive ? '' : 'hero-logo-canvas-pending'}"
+            onLoad={() => {
+              // Два кадра на отрисовку модели, затем плавная смена постера
+              requestAnimationFrame(() => requestAnimationFrame(() => (logoLive = true)));
+            }}
+          />
+        {/if}
       </div>
 
       <div class="services-actions hero-actions">
@@ -346,64 +355,11 @@
     </div>
   </section>
 
-  <!-- Products -->
-  <section class="section-block products-section w-full px-4" aria-label="Продукты">
-    <!-- Акцентная панель: ui · mtls · docs в одну линию -->
-    <div class="products-panel">
-      <p class="section-overline"><Badge variant="default">Продукты</Badge></p>
+  <!-- Продукты: NginxionS -->
+  <NginxionsSection />
 
-      <div class="projects-grid">
-        {#each projects as project (project.title)}
-          {@render projectCard(project)}
-        {/each}
-      </div>
-    </div>
-  </section>
-
-      <!-- NginxionS: длинная карточка с эффектом пламени -->
-    <div class="nginxions-slot">
-      <FlameWrap
-        color={flameColor}
-        radius={12}
-        height={90}
-        spread={8}
-        intensity={0.5}
-        sparks={1.2}
-        smoke={1}
-        scorch={0}
-      >
-        <div class="project-shell inset-shadow relative overflow-hidden rounded-xl bg-background-inset p-1.5">
-          <article class="project-card nginxions-card card rounded-lg bg-background">
-            <div class="project-card-top">
-              <div
-                class="project-icon inset-shadow grid size-10 shrink-0 place-items-center rounded-sm bg-background-inset text-accent"
-              >
-                <IbmCloudGateKeeper size={22} />
-              </div>
-              <div class="project-card-header">
-                <span class="project-slug">NginxionS</span>
-                <a
-                  class="project-status project-status-link nginxions-link"
-                  href="https://github.com/opensophy-projects/NginxionS"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >Изучить NginxionS <span aria-hidden="true">↗</span></a>
-              </div>
-            </div>
-
-            <p class="nginxions-subtitle">
-              Платформа проксирования и безопасности приложений нового поколения
-            </p>
-            <p class="project-desc">
-              Обратный прокси на Nginx со встроенной защитой: WAF на машинном обучении, CrowdSec,
-              собственный центр сертификации и mTLS, аналитика трафика и гибкая система ролей.
-              Управляйте всем из единого интерфейса — без зависимости от облачных сервисов.
-            </p>
-
-          </article>
-        </div>
-      </FlameWrap>
-    </div>
+  <!-- Продукты: os.ui · os.mtls · os.docs -->
+  <ProductsPanel />
 
   <!-- Contacts -->
   <section class="section-block contact-section" aria-label="Контакты">
@@ -428,34 +384,6 @@
     </div>
   </section>
 </main>
-
-<!-- Карточка продукта: внешний inset-слой + внутренняя карточка -->
-{#snippet projectCard(project: Project)}
-  {@const Icon = project.icon}
-  <div class="project-shell inset-shadow relative overflow-hidden rounded-xl bg-background-inset p-1.5">
-    <article class="project-card card rounded-lg bg-background">
-      <div class="project-card-top">
-        <div
-          class="project-icon inset-shadow grid size-10 shrink-0 place-items-center rounded-sm bg-background-inset text-accent"
-        >
-          <Icon size={22} />
-        </div>
-        <div class="project-card-header">
-          <span class="project-slug">{project.title}</span>
-          <a
-            href={project.href}
-            target={isExternal(project.href) ? "_blank" : undefined}
-            rel={isExternal(project.href) ? "noreferrer" : undefined}
-            class="project-status project-status-link"
-          >
-            {project.statusLabel}
-          </a>
-        </div>
-      </div>
-      <p class="project-desc">{project.description}</p>
-    </article>
-  </div>
-{/snippet}
 
 {#snippet sponsorFace(s: Sponsor)}
   {#if s.logo}
@@ -495,10 +423,26 @@
     overflow: hidden;
     box-shadow: none;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 calc(100% - 6rem), transparent 100%);
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 calc(100% - 6rem),
+      rgba(0, 0, 0, 0.85) calc(100% - 4.8rem),
+      rgba(0, 0, 0, 0.5) calc(100% - 3rem),
+      rgba(0, 0, 0, 0.15) calc(100% - 1.2rem),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 calc(100% - 6rem),
+      rgba(0, 0, 0, 0.85) calc(100% - 4.8rem),
+      rgba(0, 0, 0, 0.5) calc(100% - 3rem),
+      rgba(0, 0, 0, 0.15) calc(100% - 1.2rem),
+      transparent 100%
+    );
   }
 
+  /* Затухания — по плавной кривой с промежуточными точками: на больших
+     тёмных экранах обычный двухточечный градиент даёт видимые полосы */
   .hero-halo {
     position: absolute;
     inset: 0;
@@ -506,14 +450,31 @@
     background:
       radial-gradient(
         ellipse 75% 55% at 50% 100%,
-        rgba(244, 63, 94, 0.5) 0%,
-        rgba(244, 63, 94, 0.22) 38%,
-        transparent 72%
+        rgba(244, 63, 94, 0.500) 0.0%,
+        rgba(244, 63, 94, 0.496) 7.2%,
+        rgba(244, 63, 94, 0.471) 14.4%,
+        rgba(244, 63, 94, 0.418) 21.6%,
+        rgba(244, 63, 94, 0.341) 28.8%,
+        rgba(244, 63, 94, 0.250) 36.0%,
+        rgba(244, 63, 94, 0.159) 43.2%,
+        rgba(244, 63, 94, 0.082) 50.4%,
+        rgba(244, 63, 94, 0.029) 57.6%,
+        rgba(244, 63, 94, 0.004) 64.8%,
+        rgba(244, 63, 94, 0.000) 72.0%
       ),
       radial-gradient(
         ellipse 100% 70% at 50% 100%,
-        rgba(244, 63, 94, 0.12) 0%,
-        transparent 75%
+        rgba(244, 63, 94, 0.120) 0.0%,
+        rgba(244, 63, 94, 0.119) 7.5%,
+        rgba(244, 63, 94, 0.113) 15.0%,
+        rgba(244, 63, 94, 0.100) 22.5%,
+        rgba(244, 63, 94, 0.082) 30.0%,
+        rgba(244, 63, 94, 0.060) 37.5%,
+        rgba(244, 63, 94, 0.038) 45.0%,
+        rgba(244, 63, 94, 0.020) 52.5%,
+        rgba(244, 63, 94, 0.007) 60.0%,
+        rgba(244, 63, 94, 0.001) 67.5%,
+        rgba(244, 63, 94, 0.000) 75.0%
       );
   }
 
@@ -603,9 +564,35 @@
   }
 
   :global(.hero-logo-canvas) {
+    position: absolute !important;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
+    transition: opacity 500ms ease-out;
+  }
+
+  :global(.hero-logo-canvas-pending) {
+    opacity: 0;
+  }
+
+  .hero-poster {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    transition: opacity 500ms ease-out;
+  }
+
+  .hero-poster img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    user-select: none;
+  }
+
+  .hero-poster-hidden {
+    opacity: 0;
   }
 
   @media (max-width: 1023px) {
@@ -982,211 +969,9 @@
     color: #fff;
   }
 
-  /* ─── Products ─────────────────────────────────────────────── */
-  .products-section {
-    position: relative;
-    z-index: 1;
-    padding-bottom: 0;
-  }
-
-  /* NginxionS: ширина как у акцентной панели; отступ сверху — место под языки пламени */
-  .nginxions-slot {
-    width: 100%;
-    max-width: 92rem;
-    margin: 1.25rem auto 2.5rem;
-    box-sizing: border-box;
-  }
-
-  .nginxions-card {
-    gap: 0.9rem;
-    min-height: 0;
-  }
-
-  .nginxions-subtitle {
-    margin: 0;
-    color: var(--foreground);
-    font-size: clamp(1.05rem, 1.7vw, 1.35rem);
-    font-weight: 600;
-    line-height: 1.4;
-    letter-spacing: -0.02em;
-  }
-
-  .nginxions-card .project-desc {
-    flex: none;
-    max-width: 70rem;
-  }
-
-  .nginxions-features {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .nginxions-features span {
-    padding: 0.35rem 0.65rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--background-inset);
-    color: var(--foreground-muted);
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-  }
-
-  .nginxions-link {
-    gap: 0.4rem;
-  }
-
-  /* Акцентный прямоугольник */
-  .products-panel {
-    width: 100%;
-    max-width: 92rem;
-    margin: 0 auto;
-    box-sizing: border-box;
-    padding: 2.5rem 1.25rem;
-    border-radius: var(--radius-3xl, 3.3rem);
-    background: radial-gradient(
-      farthest-corner at 50% 50%,
-      color-mix(in srgb, color-mix(in srgb, #f43f5e 85%, white) 32%, transparent) 0%,
-      color-mix(in srgb, #f43f5e 32%, transparent) 55%,
-      color-mix(in srgb, color-mix(in srgb, #f43f5e 80%, black) 32%, transparent) 100%
-    );
-  }
-
-  :global(.dark) .products-panel {
-    background: radial-gradient(
-      farthest-corner at 50% 50%,
-      color-mix(in srgb, color-mix(in srgb, #f43f5e 85%, white) 22%, transparent) 0%,
-      color-mix(in srgb, #f43f5e 22%, transparent) 55%,
-      color-mix(in srgb, color-mix(in srgb, #f43f5e 80%, black) 22%, transparent) 100%
-    );
-  }
-
-  /* ui · mtls · docs — одна линия */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.75rem;
-    max-width: 80rem;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 1023px) {
-    .projects-grid {
-      grid-template-columns: 1fr;
-      max-width: 40rem;
-    }
-  }
-
-  @media (max-width: 767px) {
-    .products-panel {
-      padding: 2rem 0.75rem;
-      border-radius: 1.75rem;
-    }
-  }
-
-  .project-shell {
-    height: 100%;
-    box-sizing: border-box;
-  }
-
-  .project-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-    height: 100%;
-    min-height: 11rem;
-    padding: 1.25rem 1.375rem 1.375rem;
-    box-sizing: border-box;
-  }
-
-  .project-card-top {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .project-card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    min-width: 0;
-  }
-
-  .project-slug {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    color: var(--foreground);
-  }
-
-  @media (min-width: 768px) {
-    .project-slug {
-      font-size: 1rem;
-    }
-  }
-
-  .project-status {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.62rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    border: none;
-    padding: 0;
-    cursor: default;
-  }
-
-  .project-status-badge {
-    text-transform: uppercase;
-    color: var(--foreground-muted);
-    background: var(--background-inset);
-    border: 1px solid var(--border);
-    padding: 0.15rem 0.45rem;
-    border-radius: 999px;
-  }
-
-  .project-status-link {
-    display: inline-flex;
-    align-items: center;
-    font-size: 0.9rem;
-    font-weight: 500;
-    font-family: inherit;
-    letter-spacing: normal;
-    text-transform: none;
-    text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, var(--accent) 50%, transparent);
-    text-decoration-style: dotted;
-    text-underline-offset: 4px;
-    color: var(--accent);
-    background: transparent;
-    border: none;
-    padding: 0;
-    border-radius: 0;
-    transition: color 150ms ease-out, text-decoration-color 150ms ease-out;
-    cursor: pointer;
-  }
-
-  .project-status-link:hover {
-    color: var(--foreground);
-    text-decoration-color: var(--foreground-muted);
-  }
-
-  .project-desc {
-    font-size: clamp(1rem, 1.35vw, 1.2rem);
-    font-weight: 500;
-    line-height: 1.45;
-    letter-spacing: -0.02em;
-    color: var(--foreground-muted);
-    margin: 0;
-    flex: 1;
-  }
-
   /* ─── Contacts ─────────────────────────────────────────────── */
   .contact-section {
-    width: 92rem;
+    width: 82rem;
     max-width: calc(100vw - 2rem);
     margin: 0 auto;
     box-sizing: border-box;
